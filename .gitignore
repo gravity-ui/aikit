@@ -1,0 +1,9 @@
+# IDE settings
+.idea
+.vscode
+
+# Dependencies
+node_modules
+
+# Artifacts
+dist
