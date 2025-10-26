@@ -11,39 +11,40 @@ jobs:
     name: Verify Files
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: 'npm'
-    - name: Install Packages
-      run: npm ci
-    - name: Lint Files
-      run: npm run lint
-    - name: Typecheck
-      run: npm run typecheck
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Install Packages
+        run: npm ci
+      - name: Lint Files
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
 
   tests:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: 'npm'
-    - name: Install Packages
-      run: npm ci
-    - name: Unit Tests
-      run: npm run test
-    - name: Integration Tests
-      run: npm run test:ct
-
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Install Packages
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+      - name: Unit Tests
+        run: npm run test
+      - name: Integration Tests
+        run: npm run test:ct
