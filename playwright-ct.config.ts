@@ -6,9 +6,8 @@ import {defineConfig, devices} from '@playwright/experimental-ct-react';
  */
 export default defineConfig({
     testDir: './src',
-    testMatch: '**/*.spec.tsx',
-    snapshotPathTemplate:
-        '{testDir}/{testFileDir}/__snapshots__/{arg}{-projectName}{-snapshotSuffix}{ext}',
+    testMatch: '**/*.integration.spec.tsx',
+    snapshotPathTemplate: '{testDir}/{testFileDir}/__snapshots__/{arg}{-projectName}{ext}',
 
     // Maximum time one test can run for
     timeout: 10 * 1000,
