@@ -5,16 +5,16 @@ const config: StorybookConfig = {
     addons: [
         '@storybook/preset-scss',
         {name: '@storybook/addon-essentials', options: {backgrounds: false}},
-        '@storybook/addon-webpack5-compiler-babel'
+        '@storybook/addon-webpack5-compiler-babel',
     ],
 
     framework: {
         name: '@storybook/react-webpack5',
-        options: {}
+        options: {},
     },
 
     docs: {
-        autodocs: true
+        autodocs: true,
     },
     core: {
         disableTelemetry: true,

@@ -22,6 +22,9 @@
     "lint": "run-p lint:*",
     "typecheck": "tsc --noEmit",
     "test": "jest",
+    "test:ct": "playwright test -c playwright-ct.config.ts",
+    "test:ct:ui": "playwright test -c playwright-ct.config.ts --ui",
+    "test:ct:update": "playwright test -c playwright-ct.config.ts --update-snapshots",
     "build": "tsc",
     "start": "TS_NODE_PROJECT=.storybook/tsconfig.json storybook dev",
     "prepublishOnly": "npm run build"
@@ -33,6 +36,8 @@
     "@gravity-ui/prettier-config": "^1.1.0",
     "@gravity-ui/stylelint-config": "^4.0.1",
     "@gravity-ui/tsconfig": "^1.0.0",
+    "@playwright/experimental-ct-react": "^1.56.1",
+    "@playwright/test": "^1.56.1",
     "@storybook/addon-essentials": "^8.0.0",
     "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
     "@storybook/preset-scss": "^1.0.3",
@@ -71,5 +76,10 @@
     "*.md": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@diplodoc/transform": "^4.63.3",
+    "@gravity-ui/uikit": "^7.24.0",
+    "react-window": "^2.2.1"
   }
 }

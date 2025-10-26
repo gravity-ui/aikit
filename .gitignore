@@ -3,7 +3,34 @@
 .vscode
 
 # Dependencies
-node_modules
+node_modules/
+.pnp
+.pnp.js
 
-# Artifacts
-dist
+# Tests
+coverage/
+.nyc_output/
+
+# Production
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Storybook
+storybook-static/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Misc
+.cache/
+.temp/
+.tmp/
