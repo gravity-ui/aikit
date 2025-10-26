@@ -27,6 +27,14 @@ export default defineConfig({
     // Reporter to use
     reporter: 'html',
 
+    // Screenshot comparison settings
+    expect: {
+        toHaveScreenshot: {
+            // Позволяет небольшие различия в рендеринге между платформами
+            maxDiffPixelRatio: 0.02, // Разрешить до 2% различий
+        },
+    },
+
     use: {
         // Base URL to use in actions like `await page.goto('/')`
         trace: 'on-first-retry',
