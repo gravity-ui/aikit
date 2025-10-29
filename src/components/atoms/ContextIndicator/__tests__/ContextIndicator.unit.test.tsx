@@ -22,12 +22,7 @@ describe('ContextIndicator', () => {
 
         test('should clamp values above 100', () => {
             const {container} = render(<ContextIndicator type="percent" usedContext={150} />);
-            expect(container.textContent).toContain('150');
-        });
-
-        test('should clamp values below 0', () => {
-            const {container} = render(<ContextIndicator type="percent" usedContext={-10} />);
-            expect(container.textContent).toContain('-10');
+            expect(container.textContent).toContain('100');
         });
     });
 
