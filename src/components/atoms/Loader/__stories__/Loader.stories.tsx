@@ -1,4 +1,6 @@
 import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Showcase} from '../../../../demo/Showcase';
+import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 import {Loader, LoaderProps} from '..';
 
 export default {
@@ -6,26 +8,37 @@ export default {
     component: Loader,
 } as Meta;
 
+type Story = StoryObj<typeof Loader>;
+
+const defaultDecorators = [
+    (Story) => (
+        <Showcase>
+            <Story />
+        </Showcase>
+    ),
+] satisfies Story['decorators'];
+
 export const Playground: StoryFn<LoaderProps> = (args) => <Loader {...args} />;
-Playground.storyName = 'Loader';
+Playground.storyName = 'Streaming';
 
 export const Spin: StoryFn<LoaderProps> = (args) => <Loader {...args} view="loading" />;
-Spin.storyName = 'Spin';
+Spin.storyName = 'Loading';
 
 export const Size: StoryObj<LoaderProps> = {
     render: (args) => (
         <>
-            <div>
+            <ShowcaseItem title="Size s">
                 <Loader {...args} size="s" />
-            </div>
-            <div>
+            </ShowcaseItem>
+            <ShowcaseItem title="Size m">
                 <Loader {...args} size="m" />
-            </div>
-            <div>
+            </ShowcaseItem>
+            <ShowcaseItem title="Size l">
                 <Loader {...args} size="l" />
-            </div>
+            </ShowcaseItem>
         </>
     ),
+    decorators: defaultDecorators,
     args: {view: 'streaming'},
 };
 Size.storyName = 'Size';

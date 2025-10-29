@@ -1,0 +1,9 @@
+.showcase-item {
+    &__title {
+        font-family: var(--g-text-subheader-font-family);
+        font-weight: var(--g-text-subheader-font-weight);
+        font-size: var(--g-text-subheader-3-font-size);
+        line-height: var(--g-text-subheader-3-line-height);
+        margin-block-end: var(--g-spacing-3);
+    }
+}

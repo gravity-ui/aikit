@@ -12,6 +12,19 @@ export interface LoaderProps {
     className?: string;
 }
 
+const getSizeForLoading = (size: LoaderSize) => {
+    switch (size) {
+        case 's':
+            return 'xs';
+        case 'm':
+            return 's';
+        case 'l':
+            return 'm';
+        default:
+            return 's';
+    }
+};
+
 export function Loader({view = 'streaming', size = 'm', className}: LoaderProps) {
     if (view === 'streaming') {
         return (
@@ -23,5 +36,5 @@ export function Loader({view = 'streaming', size = 'm', className}: LoaderProps)
         );
     }
 
-    return <Spin size="xs" />;
+    return <Spin size={getSizeForLoading(size)} />;
 }
