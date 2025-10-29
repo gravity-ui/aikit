@@ -44,6 +44,15 @@ export default defineConfig({
 
         // Screenshot on failure
         screenshot: 'only-on-failure',
+
+        // Vite config for resolving tilde imports
+        ctViteConfig: {
+            resolve: {
+                alias: {
+                    '~@gravity-ui/uikit/styles/styles.css': '@gravity-ui/uikit/styles/styles.css',
+                },
+            },
+        },
     },
 
     projects: [

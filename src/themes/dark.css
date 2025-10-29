@@ -15,5 +15,6 @@
 
     --ai-chat-border-color: #404040;
     --ai-chat-accent-color: #0077ff;
-}
 
+    --ai-chat-line-brand: var(--ai-chat-accent-color);
+}

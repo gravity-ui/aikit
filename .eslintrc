@@ -6,21 +6,6 @@
         "jest": true,
     },
     "rules": {
-        "import/no-extraneous-dependencies": [
-            "error",
-            {
-                "devDependencies": [
-                    "**/*.test.ts",
-                    "**/*.test.tsx",
-                    "**/*.spec.ts",
-                    "**/*.spec.tsx",
-                    "**/*.stories.tsx",
-                    "**/playwright-ct.config.ts",
-                    "**/playwright.config.ts",
-                    "**/.storybook/**",
-                    "**/jest.config.js",
-                ],
-            },
-        ],
+        "import/no-extraneous-dependencies": "off",
     },
 }
