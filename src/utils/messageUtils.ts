@@ -1,3 +1,5 @@
+import {v4 as uuidv4} from 'uuid';
+
 /**
  * Message utilities
  */
@@ -9,55 +11,7 @@ import type {BaseMessage} from '../types';
  * @returns {string} Unique message identifier
  */
 export function generateMessageId(): string {
-    return `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-
-/**
- * Format message timestamp
- * @param {string} timestamp - ISO timestamp string to format
- * @returns {string} Formatted timestamp string
- */
-export function formatMessageTimestamp(timestamp: string): string {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-
-    // Less than a minute
-    if (diff < 60000) {
-        return 'just now';
-    }
-
-    // Less than an hour
-    if (diff < 3600000) {
-        const minutes = Math.floor(diff / 60000);
-        return `${minutes} min ago`;
-    }
-
-    // Today
-    if (date.toDateString() === now.toDateString()) {
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    }
-
-    // Yesterday
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    if (date.toDateString() === yesterday.toDateString()) {
-        return `yesterday at ${date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-        })}`;
-    }
-
-    // Older
-    return date.toLocaleDateString('en-US', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+    return uuidv4();
 }
 
 /**
