@@ -10,15 +10,13 @@ import type {BaseMessage, ChatType} from '../types';
  * @returns {boolean} True if value is a valid chat
  */
 export function isValidChat(chat: unknown): chat is ChatType {
-    if (typeof chat !== 'object' || chat === null) {
-        return false;
-    }
-
-    const c = chat as Record<string, unknown>;
     return (
-        typeof c.id === 'string' &&
-        typeof c.name === 'string' &&
-        (c.createTime === null || typeof c.createTime === 'string')
+        typeof chat === 'object' &&
+        chat !== null &&
+        typeof (chat as ChatType).id === 'string' &&
+        typeof (chat as ChatType).name === 'string' &&
+        ((chat as ChatType).createTime === null ||
+            typeof (chat as ChatType).createTime === 'string')
     );
 }
 
@@ -28,17 +26,14 @@ export function isValidChat(chat: unknown): chat is ChatType {
  * @returns {boolean} True if value is a valid message
  */
 export function isValidMessage(message: unknown): message is BaseMessage {
-    if (typeof message !== 'object' || message === null) {
-        return false;
-    }
-
-    const m = message as Record<string, unknown>;
     return (
-        typeof m.id === 'string' &&
-        typeof m.type === 'string' &&
-        typeof m.author === 'string' &&
-        typeof m.timestamp === 'string' &&
-        m.data !== undefined
+        typeof message === 'object' &&
+        message !== null &&
+        typeof (message as BaseMessage).id === 'string' &&
+        typeof (message as BaseMessage).type === 'string' &&
+        typeof (message as BaseMessage).author === 'string' &&
+        typeof (message as BaseMessage).timestamp === 'string' &&
+        (message as BaseMessage).data !== undefined
     );
 }
 
