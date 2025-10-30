@@ -47,4 +47,4 @@ jobs:
       - name: Unit Tests
         run: npm run test
       - name: Integration Tests
-        run: npm run test:ct
+        run: npm run playwright

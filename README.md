@@ -1,10 +1,10 @@
-# Aikit
+# @gravity-ui/aikit
 
 UI component library for AI chats built with Atomic Design principles.
 
 ## Description
 
-**Aikit** is a flexible and extensible React component library for building AI chats of any complexity. The library provides a set of ready-made components that can be used as-is or customized to fit your needs.
+**@gravity-ui/aikit** is a flexible and extensible React component library for building AI chats of any complexity. The library provides a set of ready-made components that can be used as-is or customized to fit your needs.
 
 ### Key Features
 
@@ -34,14 +34,14 @@ src/
 ## Installation
 
 ```bash
-npm install Aikit
+npm install @gravity-ui/aikit
 ```
 
 ## Quick Start
 
 ```typescript
-import { ChatContainer } from 'aikit';
-import type { ChatType, MessageType } from 'aikit';
+import { ChatContainer } from '@gravity-ui/aikit';
+import type { ChatType, MessageType } from '@gravity-ui/aikit';
 
 function App() {
     const [messages, setMessages] = useState<MessageType[]>([]);
@@ -128,8 +128,7 @@ Full integrations:
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Project Structure](./docs/PROJECT_STRUCTURE.md)
 - [Testing Guide](./docs/TESTING.md)
-- [Playwright Commands](./docs/PLAYWRIGHT.md)
-- [Full Specification](./plan.md)
+- [Playwright Guide](./playwright/README.md)
 
 ## Testing
 
@@ -138,17 +137,20 @@ The project uses Playwright Component Testing for visual regression testing.
 ### Run tests
 
 ```bash
-# Run all component tests
-npm run test:ct
+# Install Playwright browsers (run once)
+npm run playwright:install
 
-# Run with interactive UI
-npm run test:ct:ui
+# Run all component tests
+npm run playwright
 
 # Update screenshot baselines
-npm run test:ct:update
+npm run playwright:update
+
+# Run tests via Docker (for non-Linux systems)
+npm run playwright:docker
 ```
 
-For detailed testing documentation, see [docs/TESTING.md](./docs/TESTING.md).
+For detailed testing documentation, see [Playwright Guide](./playwright/README.md).
 
 ## Development
 

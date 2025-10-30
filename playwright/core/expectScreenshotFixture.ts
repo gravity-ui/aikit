@@ -1,0 +1,50 @@
+import {expect} from '@playwright/experimental-ct-react';
+
+import type {CaptureScreenshotParams, ExpectScreenshotFixture, PlaywrightFixture} from './types';
+
+const defaultParams: CaptureScreenshotParams = {
+    themes: ['light', 'dark'],
+};
+
+export const expectScreenshotFixture: PlaywrightFixture<ExpectScreenshotFixture> = async (
+    {page},
+    use,
+    testInfo,
+) => {
+    const expectScreenshot: ExpectScreenshotFixture = async ({
+        component,
+        nameSuffix,
+        ...pageScreenshotOptions
+    } = defaultParams) => {
+        const captureScreenshot = async () => {
+            return (component || page.locator('.playwright-wrapper-test')).screenshot({
+                animations: 'disabled',
+                ...pageScreenshotOptions,
+            });
+        };
+
+        const nameScreenshot =
+            testInfo.titlePath.slice(1).join(' ') + (nameSuffix ? ` ${nameSuffix}` : '');
+
+        // Wait for loading of all the images
+        const locators = await page.locator('//img').all();
+        await Promise.all(
+            locators.map((locator) =>
+                locator.evaluate(
+                    (image: HTMLImageElement) =>
+                        image.complete ||
+                        new Promise<unknown>((resolve) => image.addEventListener('load', resolve)),
+                ),
+            ),
+        );
+
+        // Wait for loading fonts
+        await page.evaluate(() => document.fonts.ready);
+
+        expect(await captureScreenshot()).toMatchSnapshot({
+            name: `${nameScreenshot}.png`,
+        });
+    };
+
+    await use(expectScreenshot);
+};

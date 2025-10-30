@@ -3,9 +3,13 @@
   "compilerOptions": {
     "declaration": true,
     "resolveJsonModule": true,
+    "baseUrl": ".",
     "outDir": "dist",
     "module": "esnext",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "~playwright/*": ["playwright/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["**/__tests__", "**/*.test.ts", "**/*.test.tsx"]
