@@ -1,5 +1,7 @@
 import React from 'react';
+
 import {expect, test} from '@playwright/experimental-ct-react';
+
 import {ContextIndicator} from '../index';
 
 test.describe('ContextIndicator', () => {
