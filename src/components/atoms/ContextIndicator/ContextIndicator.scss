@@ -2,8 +2,17 @@
 
 $block: '.#{variables.$ns}context-indicator';
 
+@mixin progress-color($opacity: 1) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    opacity: $opacity;
+}
+
 #{$block} {
     &__container {
+        $container: &;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -12,29 +21,51 @@ $block: '.#{variables.$ns}context-indicator';
         &_orientation {
             &_horizontal {
                 flex-direction: row;
+
+                &#{$container}_reversed {
+                    flex-direction: row-reverse;
+                }
             }
 
             &_vertical {
                 flex-direction: column;
+
+                &#{$container}_reversed {
+                    flex-direction: column-reverse;
+                }
             }
         }
     }
 
     &__progress {
         --percentage: 0;
+        --progress-color: var(--g-aikit-ci-color-progress-1);
+
         display: inline-flex;
         align-items: center;
         justify-content: center;
         width: 16px;
         height: 16px;
         border-radius: 50%;
-        background: conic-gradient(
-            var(--ai-chat-line-brand, var(--g-color-line-brand)) 0deg,
-            var(--ai-chat-line-brand, var(--g-color-line-brand)) calc(3.6deg * var(--percentage)),
-            transparent calc(3.6deg * var(--percentage)),
-            transparent 360deg
-        );
         position: relative;
+
+        &::before {
+            @include progress-color(0.3);
+
+            background: var(--progress-color);
+            opacity: 0.3;
+        }
+
+        &::after {
+            @include progress-color(1);
+
+            background: conic-gradient(
+                var(--progress-color) 0deg,
+                var(--progress-color) calc(3.6deg * var(--percentage)),
+                transparent calc(3.6deg * var(--percentage)),
+                transparent 360deg
+            );
+        }
     }
 
     &__inner {
@@ -42,16 +73,18 @@ $block: '.#{variables.$ns}context-indicator';
         width: calc(100% - 4px);
         height: calc(100% - 4px);
         border-radius: 50%;
-        background: var(--ai-chat-base-background, var(--g-color-base-background));
+        background: var(--g-aikit-color-bg-primary);
+        position: relative;
+        z-index: 1;
     }
 
     &__value {
-        color: var(--ai-chat-font-family, var(--g-color-text-primary));
-        font-family: var(--ai-chat-text-body-font-family, var(--g-font-family-sans));
-        font-size: var(--ai-chat-text-body-1-font-size, var(--g-text-body-1-font-size));
+        color: var(--g-color-text-primary);
+        font-family: var(--g-text-body-font-family);
+        font-size: var(--g-text-body-1-font-size);
         font-style: normal;
-        font-weight: var(--ai-chat-text-body-1-font-weight, var(--g-text-body-font-weight));
-        line-height: var(--ai-chat-text-body-1-line-height, var(--g-text-body-1-line-height));
+        font-weight: var(--g-text-body-font-weight);
+        line-height: var(--g-text-body-1-line-height);
 
         &::after {
             content: '%';

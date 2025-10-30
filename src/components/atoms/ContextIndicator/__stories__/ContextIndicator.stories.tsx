@@ -1,5 +1,7 @@
 import {Meta, StoryFn} from '@storybook/react';
+
 import {ContextIndicator, type ContextIndicatorProps} from '..';
+
 import MDXDocs from './Docs.mdx';
 
 export default {
@@ -29,6 +31,10 @@ export default {
             control: 'radio',
             options: ['horizontal', 'vertical'],
             description: 'Layout orientation of the indicator',
+        },
+        reversed: {
+            control: 'boolean',
+            description: 'Reverses the order of value and progress bar',
         },
         className: {
             control: 'text',
@@ -99,5 +105,65 @@ export const VerticalWithNumber = () => (
             maxContext={1000}
             orientation="vertical"
         />
+    </div>
+);
+
+export const AllReversedVariants = () => (
+    <div style={{display: 'flex', flexDirection: 'column', gap: '32px'}}>
+        <div>
+            <h4 style={{marginBottom: '16px'}}>Horizontal Reversed</h4>
+            <div style={{display: 'flex', gap: '16px', alignItems: 'center'}}>
+                <ContextIndicator type="percent" usedContext={0} reversed />
+                <ContextIndicator type="percent" usedContext={25} reversed />
+                <ContextIndicator type="percent" usedContext={50} reversed />
+                <ContextIndicator type="percent" usedContext={75} reversed />
+                <ContextIndicator type="percent" usedContext={100} reversed />
+            </div>
+        </div>
+        <div>
+            <h4 style={{marginBottom: '16px'}}>Vertical Reversed</h4>
+            <div style={{display: 'flex', gap: '16px', alignItems: 'flex-start'}}>
+                <ContextIndicator type="percent" usedContext={0} orientation="vertical" reversed />
+                <ContextIndicator type="percent" usedContext={25} orientation="vertical" reversed />
+                <ContextIndicator type="percent" usedContext={50} orientation="vertical" reversed />
+                <ContextIndicator type="percent" usedContext={75} orientation="vertical" reversed />
+                <ContextIndicator
+                    type="percent"
+                    usedContext={100}
+                    orientation="vertical"
+                    reversed
+                />
+            </div>
+        </div>
+    </div>
+);
+
+export const GrayColors = () => (
+    <div
+        style={{
+            display: 'flex',
+            gap: '16px',
+            alignItems: 'center',
+            // Override all progress colors to gray
+            ['--g-aikit-ci-color-progress-1' as string]: '#999999',
+            ['--g-aikit-ci-color-progress-2' as string]: '#999999',
+            ['--g-aikit-ci-color-progress-3' as string]: '#999999',
+        }}
+    >
+        <div style={{textAlign: 'center'}}>
+            <ContextIndicator type="percent" usedContext={0} />
+        </div>
+        <div style={{textAlign: 'center'}}>
+            <ContextIndicator type="percent" usedContext={25} />
+        </div>
+        <div style={{textAlign: 'center'}}>
+            <ContextIndicator type="percent" usedContext={50} />
+        </div>
+        <div style={{textAlign: 'center'}}>
+            <ContextIndicator type="percent" usedContext={75} />
+        </div>
+        <div style={{textAlign: 'center'}}>
+            <ContextIndicator type="percent" usedContext={100} />
+        </div>
     </div>
 );

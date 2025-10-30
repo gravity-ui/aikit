@@ -6,6 +6,7 @@
 export type MessageState = 'initial' | 'loading' | 'success' | 'error' | 'streaming';
 
 // Base message with common fields
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type BaseMessage<TData = any> = {
     id: string;
     type: string;
@@ -13,6 +14,7 @@ export type BaseMessage<TData = any> = {
     timestamp: string;
     state?: MessageState;
     data: TData;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     metadata?: Record<string, any>;
 };
 
@@ -45,7 +47,9 @@ export type ToolMessageData = {
     toolName: string;
     toolStatus: 'submitted' | 'streaming' | 'ready' | 'error' | 'submitting' | 'confirming';
     content?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     input?: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     output?: Record<string, any>;
     onApprove?: () => void | Promise<void>;
     onReject?: () => void | Promise<void>;

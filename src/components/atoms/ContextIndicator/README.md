@@ -21,58 +21,54 @@ import {ContextIndicator} from '@/components/atoms/ContextIndicator';
 
 // Calculated from numbers
 <ContextIndicator type="number" usedContext={750} maxContext={1000} />
+
+// With orientation
+<ContextIndicator type="percent" usedContext={50} orientation="horizontal" />
+<ContextIndicator type="percent" usedContext={50} orientation="vertical" />
+
+// Reversed variants (value before indicator)
+<ContextIndicator type="percent" usedContext={50} orientation="horizontal" reversed />
+<ContextIndicator type="percent" usedContext={50} orientation="vertical" reversed />
 ```
 
 ## Props
 
-The component accepts a discriminated union based on the `type` prop:
-
-### Type: 'percent'
-
-- `type`: `'percent'` - Use direct percentage value
-- `usedContext`: `number` - Percentage value (0-100)
-- `className?`: `string` - Additional CSS class
-- `qa?`: `string` - QA/test identifier
-- `orientation?`: `'horizontal' | 'vertical'` - Layout orientation (default: 'horizontal')
-
-### Type: 'number'
-
-- `type`: `'number'` - Calculate percentage from numbers
-- `usedContext`: `number` - Current context usage
-- `maxContext`: `number` - Maximum context available
-- `className?`: `string` - Additional CSS class
-- `qa?`: `string` - QA/test identifier
-- `orientation?`: `'horizontal' | 'vertical'` - Layout orientation (default: 'horizontal')
+| Prop          | Type                         | Required                 | Default        | Description                                                                         |
+| ------------- | ---------------------------- | ------------------------ | -------------- | ----------------------------------------------------------------------------------- |
+| `type`        | `'percent' \| 'number'`      | ✓                        | -              | Input mode: `'percent'` for direct value, `'number'` to calculate from used/max     |
+| `usedContext` | `number`                     | ✓                        | -              | For `'percent'`: percentage value (0-100)<br/>For `'number'`: current context usage |
+| `maxContext`  | `number`                     | ✓ (when `type='number'`) | -              | Maximum context available (only for `type='number'`)                                |
+| `className`   | `string`                     | -                        | -              | Additional CSS class                                                                |
+| `qa`          | `string`                     | -                        | -              | QA/test identifier                                                                  |
+| `orientation` | `'horizontal' \| 'vertical'` | -                        | `'horizontal'` | Layout orientation                                                                  |
+| `reversed`    | `boolean`                    | -                        | `false`        | Reverses the order of indicator and value text                                      |
 
 ## Styling
 
 The component uses CSS variables for theming:
 
-### Colors
+### Progress Colors
+
+The progress ring color changes dynamically based on percentage:
 
 ```css
---ai-chat-line-brand              /* Progress ring color */
---ai-chat-base-background         /* Inner circle background */
---ai-chat-font-family             /* Text color */
+--g-aikit-ci-color-progress-1  /* 0-33%: Low usage */
+--g-aikit-ci-color-progress-2  /* 34-65%: Medium usage */
+--g-aikit-ci-color-progress-3  /* 66-100%: High usage */
+```
+
+### Background
+
+```css
+--g-aikit-color-bg-primary  /* Inner circle background */
 ```
 
 ### Typography
 
 ```css
---ai-chat-text-body-font-family   /* Font family for percentage text */
---ai-chat-text-body-1-font-size   /* Font size for percentage text */
---ai-chat-text-body-1-font-weight /* Font weight for percentage text */
---ai-chat-text-body-1-line-height /* Line height for percentage text */
+--g-color-text-primary            /* Text color */
+--g-text-body-font-family         /* Font family */
+--g-text-body-1-font-size         /* Font size */
+--g-text-body-font-weight         /* Font weight */
+--g-text-body-1-line-height       /* Line height */
 ```
-
-### Fallbacks
-
-All variables fall back to Gravity UI tokens when custom variables aren't defined:
-
-- `--ai-chat-line-brand` → `--g-color-line-brand`
-- `--ai-chat-base-background` → `--g-color-base-background`
-- `--ai-chat-font-family` → `--g-color-text-primary`
-- `--ai-chat-text-body-font-family` → `--g-font-family-sans`
-- `--ai-chat-text-body-1-font-size` → `--g-text-body-1-font-size`
-- `--ai-chat-text-body-1-font-weight` → `--g-text-body-font-weight`
-- `--ai-chat-text-body-1-line-height` → `--g-text-body-1-line-height`

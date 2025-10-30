@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {beforeMount} from '@playwright/experimental-ct-react/hooks';
 import {ThemeProvider} from '@gravity-ui/uikit';
+import {beforeMount} from '@playwright/experimental-ct-react/hooks';
 
 import './index.scss';
 

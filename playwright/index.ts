@@ -4,4 +4,4 @@
 // Import any global styles here if needed
 // import '../src/themes/variables.css';
 
-import './index.css';
+import './index.scss';

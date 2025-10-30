@@ -201,16 +201,13 @@ const customTypes: MessageTypeRegistry = {
 All styles are controlled through CSS variables:
 
 ```css
-:root {
-  --ai-chat-bg-primary: #ffffff;
-  --ai-chat-text-primary: #000000;
-  --ai-chat-border-radius: 12px;
+.g-root {
+  --g-aikit-color-bg-primary: #ffffff;
   /* ... */
 }
 
 [data-theme='dark'] {
-  --ai-chat-bg-primary: #1a1a1a;
-  --ai-chat-text-primary: #ffffff;
+  --g-aikit-bg-primary: #1a1a1a;
   /* ... */
 }
 ```
