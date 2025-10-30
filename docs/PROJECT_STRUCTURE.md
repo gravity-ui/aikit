@@ -1,9 +1,9 @@
-# Orbit Project Structure
+# Aikit Project Structure
 
 ## File Tree
 
 ```
-orbit/
+aikit/
 ├── 📁 .storybook/              # Storybook configuration
 │   ├── main.ts
 │   └── preview.ts

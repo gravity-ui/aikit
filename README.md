@@ -1,10 +1,10 @@
-# Orbit
+# Aikit
 
 UI component library for AI chats built with Atomic Design principles.
 
 ## Description
 
-**Orbit** is a flexible and extensible React component library for building AI chats of any complexity. The library provides a set of ready-made components that can be used as-is or customized to fit your needs.
+**Aikit** is a flexible and extensible React component library for building AI chats of any complexity. The library provides a set of ready-made components that can be used as-is or customized to fit your needs.
 
 ### Key Features
 
@@ -34,14 +34,14 @@ src/
 ## Installation
 
 ```bash
-npm install orbit
+npm install Aikit
 ```
 
 ## Quick Start
 
 ```typescript
-import { ChatContainer } from 'orbit';
-import type { ChatType, MessageType } from 'orbit';
+import { ChatContainer } from 'aikit';
+import type { ChatType, MessageType } from 'aikit';
 
 function App() {
     const [messages, setMessages] = useState<MessageType[]>([]);
