@@ -1,0 +1,5 @@
+* @lomtev @mariamelior @niktverd @Postamentovich
+# Allow everyone to update dependencies
+
+/package.json
+/package-lock.json
