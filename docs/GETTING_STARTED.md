@@ -1,15 +1,15 @@
 # Quick Start
 
-This guide will help you get started with the Orbit library.
+This guide will help you get started with the Aikit library.
 
 ## Installation
 
 ```bash
-npm install orbit
+npm install aikit
 # or
-yarn add orbit
+yarn add aikit
 # or
-pnpm add orbit
+pnpm add aikit
 ```
 
 ## Basic Usage
@@ -20,8 +20,8 @@ The fastest way to get started is to use the ready-made `ChatContainer` componen
 
 ```typescript
 import React, { useState } from 'react';
-import { ChatContainer } from 'orbit';
-import type { ChatType, MessageType } from 'orbit';
+import { ChatContainer } from 'aikit';
+import type { ChatType, MessageType } from 'aikit';
 
 function App() {
     const [messages, setMessages] = useState<MessageType[]>([]);
@@ -63,7 +63,7 @@ import {
     Header,
     MessageList,
     PromptBox,
-} from 'orbit';
+} from 'aikit';
 
 function CustomChat() {
     return (
@@ -90,7 +90,7 @@ function CustomChat() {
 ### 3. Using Hooks for Full Customization
 
 ```typescript
-import { usePromptBox } from 'orbit';
+import { usePromptBox } from 'aikit';
 
 function MyCustomPromptBox() {
     const {
@@ -132,7 +132,7 @@ The library supports three built-in message types:
 3. **Tool** — tool execution
 
 ```typescript
-import type {SimpleMessageType} from 'orbit';
+import type {SimpleMessageType} from 'aikit';
 
 const message: SimpleMessageType = {
   type: 'simple',
@@ -151,7 +151,7 @@ const message: SimpleMessageType = {
 You can create your own message types:
 
 ```typescript
-import type { BaseMessage, MessageTypeRegistry } from 'orbit';
+import type { BaseMessage, MessageTypeRegistry } from 'aikit';
 
 // 1. Define data
 interface ImageMessageData {

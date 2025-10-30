@@ -1,5 +1,5 @@
 {
-  "name": "@gravity-ui/package-example",
+  "name": "@gravity-ui/aikit",
   "version": "0.0.1",
   "description": "",
   "license": "MIT",
@@ -9,12 +9,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gravity-ui/package-example.git"
+    "url": "git+https://github.com/gravity-ui/aikit.git"
   },
   "bugs": {
-    "url": "https://github.com/gravity-ui/package-example/issues"
+    "url": "https://github.com/gravity-ui/aikit/issues"
   },
-  "homepage": "https://github.com/gravity-ui/package-example#readme",
+  "homepage": "https://github.com/gravity-ui/aikit#readme",
   "scripts": {
     "prepare": "husky",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",

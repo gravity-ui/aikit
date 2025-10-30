@@ -1,4 +1,4 @@
-# Orbit Library Architecture
+# Aikit Library Architecture
 
 ## Atomic Design Principles
 
@@ -82,7 +82,7 @@ Each organism provides two ways of usage:
 Fully assembled component with UI and logic:
 
 ```typescript
-import { PromptBox } from 'orbit';
+import { PromptBox } from 'aikit';
 
 <PromptBox
     onSend={handleSend}
@@ -95,7 +95,7 @@ import { PromptBox } from 'orbit';
 Hook for creating custom view:
 
 ```typescript
-import { usePromptBox } from 'orbit';
+import { usePromptBox } from 'aikit';
 
 function CustomPromptBox() {
     const {
