@@ -7,7 +7,7 @@ const b = block('loader');
 export type LoaderSize = 's' | 'm' | 'l';
 
 export interface LoaderProps {
-    view: 'streaming' | 'loading';
+    view?: 'streaming' | 'loading';
     size?: LoaderSize;
     className?: string;
 }
