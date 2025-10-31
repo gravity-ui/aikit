@@ -43,5 +43,5 @@ The component uses CSS variables for theming:
 ### Background
 
 ```css
-    --g-aikit-color-bg-message-user  /* Loading circle background */
+    --g-aikit-color-bg-loader  /* Loading circle background */
 ```
