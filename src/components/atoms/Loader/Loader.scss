@@ -71,6 +71,6 @@ $animation: pulse ease $pulse-duration infinite;
     }
 
     &_view_loading {
-        --g-color-line-brand: var(--g-aikit-color-bg-message-user);
+        --g-color-line-brand: var(--g-aikit-color-bg-loader);
     }
 }
