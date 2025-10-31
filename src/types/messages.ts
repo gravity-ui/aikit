@@ -2,20 +2,24 @@
  * Base types for chat messages
  */
 
+export type TSubmitData = {
+    content: string;
+    attachments?: File[];
+    metadata?: Record<string, unknown>;
+};
+
 // Message states
 export type MessageState = 'initial' | 'loading' | 'success' | 'error' | 'streaming';
 
 // Base message with common fields
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type BaseMessage<TData = any> = {
+export type BaseMessage<TData = unknown> = {
     id: string;
     type: string;
     author: 'user' | 'assistant' | string;
     timestamp: string;
     state?: MessageState;
     data: TData;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 };
 
 // Simple text message
@@ -47,10 +51,8 @@ export type ToolMessageData = {
     toolName: string;
     toolStatus: 'submitted' | 'streaming' | 'ready' | 'error' | 'submitting' | 'confirming';
     content?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    input?: Record<string, any>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    output?: Record<string, any>;
+    input?: Record<string, unknown>;
+    output?: Record<string, unknown>;
     onApprove?: () => void | Promise<void>;
     onReject?: () => void | Promise<void>;
     onCancel?: () => void | Promise<void>;
