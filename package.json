@@ -94,6 +94,7 @@
   "dependencies": {
     "@bem-react/classname": "^1.7.0",
     "@diplodoc/transform": "^4.63.3",
+    "@gravity-ui/icons": "^2.16.0",
     "@gravity-ui/uikit": "^7.24.0",
     "react-window": "^2.2.1",
     "uuid": "^13.0.0"
