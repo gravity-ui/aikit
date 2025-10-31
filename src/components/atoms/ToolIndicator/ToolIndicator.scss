@@ -1,0 +1,15 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}tool-indicator';
+
+#{$block} {
+    &__success {
+        color: var(--g-color-text-positive);
+    }
+    &__error {
+        color: var(--g-color-text-danger);
+    }
+    &__info {
+        color: var(--g-color-text-secondary);
+    }
+}
