@@ -1,3 +1,5 @@
+import {resolve} from 'path';
+
 import {defineConfig, devices} from '@playwright/experimental-ct-react';
 
 /**
@@ -5,8 +7,10 @@ import {defineConfig, devices} from '@playwright/experimental-ct-react';
  * See https://playwright.dev/docs/test-components
  */
 export default defineConfig({
+    outputDir: resolve(__dirname, 'playwright/test-results'),
     testDir: './src',
-    testMatch: '**/*.integration.spec.tsx',
+    testMatch: '**/__tests__/*.visual.spec.tsx',
+    updateSnapshots: process.env.UPDATE_REQUEST ? 'all' : 'missing',
     snapshotPathTemplate: '{testDir}/{testFileDir}/__snapshots__/{arg}{-projectName}{ext}',
 
     // Maximum time one test can run for
@@ -44,6 +48,27 @@ export default defineConfig({
 
         // Screenshot on failure
         screenshot: 'only-on-failure',
+
+        // Vite configuration
+        ctViteConfig: {
+            plugins: [
+                {
+                    name: 'stub-mdx-files',
+                    resolveId(id) {
+                        if (id.endsWith('.mdx')) {
+                            return id;
+                        }
+                        return null;
+                    },
+                    load(id) {
+                        if (id.endsWith('.mdx')) {
+                            return 'export default () => null;';
+                        }
+                        return null;
+                    },
+                },
+            ],
+        },
     },
 
     projects: [

@@ -6,6 +6,8 @@ import type {ChatType} from '../types';
 
 /**
  * Sort chats by creation date (newest first)
+ * @param {ChatType[]} chats - Array of chats to sort
+ * @returns {ChatType[]} Sorted array of chats
  */
 export function sortChatsByDate(chats: ChatType[]): ChatType[] {
     return [...chats].sort((a, b) => {
@@ -17,6 +19,8 @@ export function sortChatsByDate(chats: ChatType[]): ChatType[] {
 
 /**
  * Group chats by date
+ * @param {ChatType[]} chats - Array of chats to group
+ * @returns {Record<string, ChatType[]>} Object with chats grouped by date categories
  */
 export function groupChatsByDate(chats: ChatType[]): Record<string, ChatType[]> {
     const groups: Record<string, ChatType[]> = {

@@ -30,6 +30,8 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.52.0-jammy
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,8 +45,8 @@ jobs:
       - name: Install Packages
         run: npm ci
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
+        run: npm run playwright:install
       - name: Unit Tests
         run: npm run test
       - name: Integration Tests
-        run: npm run test:ct
+        run: npm run playwright

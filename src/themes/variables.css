@@ -2,46 +2,24 @@
  * CSS variables for library theming
  */
 
-:root {
+.g-root {
     /* === Colors === */
-    --ai-chat-bg-primary: #ffffff;
-    --ai-chat-bg-secondary: #f5f5f5;
-    --ai-chat-bg-message-user: #0077ff;
-    --ai-chat-bg-message-assistant: #f0f0f0;
+    --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-background));
+    --g-aikit-color-bg-secondary: #f5f5f5;
+    --g-aikit-color-bg-message-user: #0077ff;
+    --g-aikit-color-bg-message-assistant: #f0f0f0;
 
-    --ai-chat-text-primary: #000000;
-    --ai-chat-text-secondary: #666666;
-    --ai-chat-text-message-user: #ffffff;
-    --ai-chat-text-message-assistant: #000000;
-
-    --ai-chat-border-color: #e0e0e0;
-    --ai-chat-accent-color: #0077ff;
-
-    /* === Sizes === */
-    --ai-chat-header-height: 64px;
-    --ai-chat-footer-height: 48px;
-    --ai-chat-message-max-width: 800px;
-    --ai-chat-border-radius: 12px;
-    --ai-chat-spacing-xs: 4px;
-    --ai-chat-spacing-s: 8px;
-    --ai-chat-spacing-m: 16px;
-    --ai-chat-spacing-l: 24px;
-
-    /* === Typography === */
-    --ai-chat-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-        Roboto, sans-serif;
-    --ai-chat-font-size-xs: 12px;
-    --ai-chat-font-size-s: 14px;
-    --ai-chat-font-size-m: 16px;
-    --ai-chat-font-size-l: 18px;
-
-    /* === Shadows === */
-    --ai-chat-shadow-s: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --ai-chat-shadow-m: 0 4px 8px rgba(0, 0, 0, 0.1);
-    --ai-chat-shadow-l: 0 8px 16px rgba(0, 0, 0, 0.15);
-
-    /* === Animation === */
-    --ai-chat-transition-duration: 0.2s;
-    --ai-chat-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    /* === Context Indicator === */
+    --g-aikit-ci-color-progress-1: var(
+        --g-aikit-ci-progress-1,
+        var(--g-color-private-green-550-solid)
+    );
+    --g-aikit-ci-color-progress-2: var(
+        --g-aikit-ci-progress-2,
+        var(--g-color-private-orange-500-solid)
+    );
+    --g-aikit-ci-color-progress-3: var(
+        --g-aikit-ci-progress-3,
+        var(--g-color-private-red-500-solid)
+    );
 }
-

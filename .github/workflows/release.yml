@@ -8,7 +8,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - uses: gravity-ui/release-action@v1
-      with:
-        github-token: ${{ secrets.GRAVITY_UI_BOT_GITHUB_TOKEN }}
-        npm-token: ${{ secrets.GRAVITY_UI_BOT_NPM_TOKEN }}
+      - uses: gravity-ui/release-action@v1
+        with:
+          github-token: ${{ secrets.GRAVITY_UI_BOT_GITHUB_TOKEN }}
+          npm-token: ${{ secrets.GRAVITY_UI_BOT_NPM_TOKEN }}

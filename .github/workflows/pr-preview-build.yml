@@ -11,4 +11,3 @@ jobs:
       - uses: gravity-ui/preview-build-action@v2
         with:
           node-version: 20
-

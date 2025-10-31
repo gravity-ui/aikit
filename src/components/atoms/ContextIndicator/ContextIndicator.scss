@@ -1,0 +1,93 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}context-indicator';
+
+@mixin progress-color($opacity: 1) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    opacity: $opacity;
+}
+
+#{$block} {
+    &__container {
+        $container: &;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        &_orientation {
+            &_horizontal {
+                flex-direction: row;
+
+                &#{$container}_reversed {
+                    flex-direction: row-reverse;
+                }
+            }
+
+            &_vertical {
+                flex-direction: column;
+
+                &#{$container}_reversed {
+                    flex-direction: column-reverse;
+                }
+            }
+        }
+    }
+
+    &__progress {
+        --percentage: 0;
+        --progress-color: var(--g-aikit-ci-color-progress-1);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        position: relative;
+
+        &::before {
+            @include progress-color(0.3);
+
+            background: var(--progress-color);
+            opacity: 0.3;
+        }
+
+        &::after {
+            @include progress-color(1);
+
+            background: conic-gradient(
+                var(--progress-color) 0deg,
+                var(--progress-color) calc(3.6deg * var(--percentage)),
+                transparent calc(3.6deg * var(--percentage)),
+                transparent 360deg
+            );
+        }
+    }
+
+    &__inner {
+        box-sizing: border-box;
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+        border-radius: 50%;
+        background: var(--g-aikit-color-bg-primary);
+        position: relative;
+        z-index: 1;
+    }
+
+    &__value {
+        color: var(--g-color-text-primary);
+        font-family: var(--g-text-body-font-family);
+        font-size: var(--g-text-body-1-font-size);
+        font-style: normal;
+        font-weight: var(--g-text-body-font-weight);
+        line-height: var(--g-text-body-1-line-height);
+
+        &::after {
+            content: '%';
+        }
+    }
+}

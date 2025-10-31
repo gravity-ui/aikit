@@ -6,6 +6,7 @@ import type {BaseMessage} from '../types';
 
 /**
  * Generate unique ID for message
+ * @returns {string} Unique message identifier
  */
 export function generateMessageId(): string {
     return `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -13,6 +14,8 @@ export function generateMessageId(): string {
 
 /**
  * Format message timestamp
+ * @param {string} timestamp - ISO timestamp string to format
+ * @returns {string} Formatted timestamp string
  */
 export function formatMessageTimestamp(timestamp: string): string {
     const date = new Date(timestamp);
@@ -59,6 +62,8 @@ export function formatMessageTimestamp(timestamp: string): string {
 
 /**
  * Check if message is from user
+ * @param {BaseMessage} message - Message to check
+ * @returns {boolean} True if message is from user
  */
 export function isUserMessage(message: BaseMessage): boolean {
     return message.author === 'user';
@@ -66,6 +71,8 @@ export function isUserMessage(message: BaseMessage): boolean {
 
 /**
  * Check if message is from assistant
+ * @param {BaseMessage} message - Message to check
+ * @returns {boolean} True if message is from assistant
  */
 export function isAssistantMessage(message: BaseMessage): boolean {
     return message.author === 'assistant';
@@ -73,6 +80,8 @@ export function isAssistantMessage(message: BaseMessage): boolean {
 
 /**
  * Get last message from list
+ * @param {BaseMessage[]} messages - Array of messages
+ * @returns {BaseMessage | null} Last message or null if array is empty
  */
 export function getLastMessage(messages: BaseMessage[]): BaseMessage | null {
     return messages.length > 0 ? messages[messages.length - 1] : null;

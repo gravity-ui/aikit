@@ -3,17 +3,18 @@
  */
 
 [data-theme='dark'] {
-    --ai-chat-bg-primary: #1a1a1a;
-    --ai-chat-bg-secondary: #2a2a2a;
-    --ai-chat-bg-message-user: #0066cc;
-    --ai-chat-bg-message-assistant: #2a2a2a;
+    --g-aikit-bg-primary: #1a1a1a;
+    --g-aikit-bg-secondary: #2a2a2a;
+    --g-aikit-bg-message-user: #0066cc;
+    --g-aikit-bg-message-assistant: #2a2a2a;
 
-    --ai-chat-text-primary: #ffffff;
-    --ai-chat-text-secondary: #999999;
-    --ai-chat-text-message-user: #ffffff;
-    --ai-chat-text-message-assistant: #ffffff;
+    --g-aikit-text-primary: #ffffff;
+    --g-aikit-text-secondary: #999999;
+    --g-aikit-text-message-user: #ffffff;
+    --g-aikit-text-message-assistant: #ffffff;
 
-    --ai-chat-border-color: #404040;
-    --ai-chat-accent-color: #0077ff;
+    --g-aikit-border-color: #404040;
+    --g-aikit-accent-color: #0077ff;
+
+    --g-aikit-line-brand: var(--g-aikit-accent-color);
 }
-

@@ -1,7 +1,7 @@
 {
-    "extends": "..",
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "ES2017"
-    }
+  "extends": "..",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2017"
+  }
 }
