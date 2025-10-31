@@ -1,0 +1,76 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}loader';
+
+$pulse-duration: 800ms;
+$pulse-delay: $pulse-duration * 0.25;
+$animation: pulse ease $pulse-duration infinite;
+
+@keyframes pulse {
+    100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 70%;
+    }
+    0% {
+        opacity: 40%;
+    }
+}
+
+#{$block} {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--g-spacing-1);
+
+    &__left,
+    &__center,
+    &__right {
+        background: var(--g-color-text-secondary);
+        border-radius: 50%;
+        animation: $animation;
+    }
+
+    &_size_s {
+        #{$block}__left,
+        #{$block}__center,
+        #{$block}__right {
+            width: 3px;
+            height: 3px;
+        }
+    }
+
+    &_size_m {
+        #{$block}__left,
+        #{$block}__center,
+        #{$block}__right {
+            width: 5px;
+            height: 5px;
+        }
+    }
+
+    &_size_l {
+        #{$block}__left,
+        #{$block}__center,
+        #{$block}__right {
+            width: 8px;
+            height: 8px;
+        }
+    }
+
+    &__left {
+        animation-delay: $pulse-delay;
+    }
+
+    &__center {
+        animation-delay: 2 * $pulse-delay;
+    }
+
+    &__right {
+        animation-delay: 3 * $pulse-delay;
+    }
+
+    &_view_loading {
+        --g-color-line-brand: var(--g-aikit-color-bg-message-user);
+    }
+}
