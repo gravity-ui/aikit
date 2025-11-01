@@ -22,7 +22,7 @@ export default {
         },
         size: {
             control: 'radio',
-            options: ['s', 'm', 'l'],
+            options: ['xs', 's', 'm'],
             description: 'Size of element',
         },
         className: {
@@ -47,7 +47,7 @@ const defaultDecorators = [
 ] satisfies Story['decorators'];
 
 export const Playground: StoryFn<LoaderProps> = (args) => <Loader {...args} />;
-Playground.args = {view: 'streaming', size: 'm'};
+Playground.args = {view: 'streaming', size: 's'};
 
 export const Loading: StoryFn<LoaderProps> = (args) => <Loader {...args} view="loading" />;
 
@@ -56,14 +56,14 @@ export const Streaming: StoryFn<LoaderProps> = (args) => <Loader {...args} view=
 export const Size: StoryObj<LoaderProps> = {
     render: (args) => (
         <>
+            <ShowcaseItem title="Size xs">
+                <Loader {...args} size="xs" />
+            </ShowcaseItem>
             <ShowcaseItem title="Size s">
                 <Loader {...args} size="s" />
             </ShowcaseItem>
             <ShowcaseItem title="Size m">
                 <Loader {...args} size="m" />
-            </ShowcaseItem>
-            <ShowcaseItem title="Size l">
-                <Loader {...args} size="l" />
             </ShowcaseItem>
         </>
     ),
