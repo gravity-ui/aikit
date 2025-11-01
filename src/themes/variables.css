@@ -8,6 +8,7 @@
     --g-aikit-color-bg-secondary: #f5f5f5;
     --g-aikit-color-bg-message-user: #0077ff;
     --g-aikit-color-bg-message-assistant: #f0f0f0;
+    --g-aikit-color-bg-loader: #5282ff;
 
     /* === Context Indicator === */
     --g-aikit-ci-color-progress-1: var(
