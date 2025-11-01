@@ -1,4 +1,5 @@
-import {resolve} from 'path';
+import {existsSync, readdirSync} from 'fs';
+import {dirname, join, resolve} from 'path';
 
 import {defineConfig, devices} from '@playwright/experimental-ct-react';
 
@@ -52,6 +53,69 @@ export default defineConfig({
         // Vite configuration
         ctViteConfig: {
             plugins: [
+                {
+                    name: 'playwright-resolution',
+                    resolveId(id, importer) {
+                        if (id !== './helpersPlaywright') {
+                            return null;
+                        }
+
+                        if (importer?.includes('/__tests__/')) {
+                            const importerDir = dirname(importer);
+                            const extensions = ['.tsx', '.ts', '.jsx', '.js'];
+                            for (const ext of extensions) {
+                                const resolvedPath = join(importerDir, 'helpersPlaywright' + ext);
+                                if (existsSync(resolvedPath)) {
+                                    return resolvedPath;
+                                }
+                            }
+                        }
+
+                        const hasHelpersPlaywright = (testDir: string): boolean => {
+                            const extensions = ['.tsx', '.ts', '.jsx', '.js'];
+                            return extensions.some((ext) =>
+                                existsSync(join(testDir, 'helpersPlaywright' + ext)),
+                            );
+                        };
+
+                        const findTestDirsWithHelpers = (dir: string): string[] => {
+                            const testDirs: string[] = [];
+                            try {
+                                const entries = readdirSync(dir, {withFileTypes: true});
+                                for (const entry of entries) {
+                                    if (!entry.isDirectory()) {
+                                        continue;
+                                    }
+
+                                    const fullPath = join(dir, entry.name);
+                                    if (entry.name === '__tests__') {
+                                        if (hasHelpersPlaywright(fullPath)) {
+                                            testDirs.push(fullPath);
+                                        }
+                                    } else {
+                                        testDirs.push(...findTestDirsWithHelpers(fullPath));
+                                    }
+                                }
+                            } catch {}
+
+                            return testDirs;
+                        };
+
+                        const testDirs = findTestDirsWithHelpers(resolve(__dirname, 'src'));
+
+                        for (const testDir of testDirs) {
+                            const extensions = ['.tsx', '.ts', '.jsx', '.js'];
+                            for (const ext of extensions) {
+                                const candidatePath = join(testDir, 'helpersPlaywright' + ext);
+                                if (existsSync(candidatePath)) {
+                                    return candidatePath;
+                                }
+                            }
+                        }
+
+                        return null;
+                    },
+                },
                 {
                     name: 'stub-mdx-files',
                     resolveId(id) {
