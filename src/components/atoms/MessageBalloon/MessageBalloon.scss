@@ -1,0 +1,10 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}message-balloon';
+
+#{$block} {
+    display: inline-block;
+    background-color: var(--g-color-base-info-light);
+    padding: var(--g-spacing-2) var(--g-spacing-3);
+    border-radius: var(--g-spacing-3) 0 var(--g-spacing-3) var(--g-spacing-3);
+}
