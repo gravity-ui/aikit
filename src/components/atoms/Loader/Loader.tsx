@@ -5,7 +5,7 @@ import {block} from '../../../utils/cn';
 import './Loader.scss';
 const b = block('loader');
 
-export type LoaderSize = 's' | 'm' | 'l';
+export type LoaderSize = 'xs' | 's' | 'm';
 
 export interface LoaderProps {
     view?: 'streaming' | 'loading';
@@ -14,20 +14,7 @@ export interface LoaderProps {
     qa?: string;
 }
 
-const getSizeForLoading = (size: LoaderSize) => {
-    switch (size) {
-        case 's':
-            return 'xs';
-        case 'm':
-            return 's';
-        case 'l':
-            return 'm';
-        default:
-            return 's';
-    }
-};
-
-export function Loader({view = 'streaming', size = 'm', className, qa}: LoaderProps) {
+export function Loader({view = 'streaming', size = 's', className, qa}: LoaderProps) {
     if (view === 'streaming') {
         return (
             <div className={b({size}, className)} data-qa={qa}>
@@ -38,5 +25,5 @@ export function Loader({view = 'streaming', size = 'm', className, qa}: LoaderPr
         );
     }
 
-    return <Spin size={getSizeForLoading(size)} data-qa={qa} className={b({view})} />;
+    return <Spin size={size} data-qa={qa} className={b({view})} />;
 }
