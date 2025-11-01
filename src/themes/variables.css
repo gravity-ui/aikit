@@ -23,4 +23,10 @@
         --g-aikit-ci-progress-3,
         var(--g-color-private-red-500-solid)
     );
+
+    /* === Shimmer === */
+    --g-aikit-shimmer-color-from: var(--g-aikit-shimmer-from, rgba(0, 0, 0, 0.35));
+    --g-aikit-shimmer-color-to: var(--g-aikit-shimmer-to, rgba(0, 0, 0, 0.85));
+    --g-aikit-shimmer-duration: var(--g-aikit-shimmer-time, 2.5s);
+    --g-aikit-shimmer-gradient-size: 200%;
 }
