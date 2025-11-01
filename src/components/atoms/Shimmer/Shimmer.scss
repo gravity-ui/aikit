@@ -1,0 +1,32 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}shimmer';
+
+#{$block} {
+    &__container {
+        position: relative;
+        display: inline-block;
+
+        background: linear-gradient(
+            90deg,
+            var(--g-aikit-shimmer-color-from) 0%,
+            var(--g-aikit-shimmer-color-from) 40%,
+            var(--g-aikit-shimmer-color-to) 50%,
+            var(--g-aikit-shimmer-color-from) 60%,
+            var(--g-aikit-shimmer-color-from) 100%
+        );
+        background-size: var(--g-aikit-shimmer-gradient-size) 100%;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer var(--g-aikit-shimmer-duration) infinite linear;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
