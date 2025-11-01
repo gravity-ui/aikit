@@ -21,6 +21,7 @@ type MessageTypeRegistry<TData = unknown> = {
 
 /**
  * Create a new message type registry
+ * @returns An empty message type registry
  */
 export function createMessageTypeRegistry(): MessageTypeRegistry {
     return {};
@@ -28,6 +29,10 @@ export function createMessageTypeRegistry(): MessageTypeRegistry {
 
 /**
  * Register a message type in the registry
+ * @param registry - The message type registry to register in
+ * @param type - The message type identifier
+ * @param config - Configuration object for the message type
+ * @returns The updated message type registry
  */
 export function registerMessageType<TData = unknown>(
     registry: MessageTypeRegistry,
@@ -52,6 +57,9 @@ export function registerMessageType<TData = unknown>(
 
 /**
  * Get message component from registry
+ * @param registry - The message type registry to query
+ * @param type - The message type identifier
+ * @returns The component for the message type, or undefined if not found
  */
 export function getMessageComponent(
     registry: MessageTypeRegistry,
@@ -62,6 +70,10 @@ export function getMessageComponent(
 
 /**
  * Validate message against registered validator
+ * @param registry - The message type registry to query
+ * @param type - The message type identifier
+ * @param message - The message to validate
+ * @returns True if message is valid or no validator is registered, false otherwise
  */
 export function validateMessage(
     registry: MessageTypeRegistry,
@@ -74,6 +86,8 @@ export function validateMessage(
 
 /**
  * Get all registered message types
+ * @param registry - The message type registry to query
+ * @returns Array of all registered message type identifiers
  */
 export function getRegisteredTypes(registry: MessageTypeRegistry): string[] {
     return Object.keys(registry);
@@ -81,6 +95,9 @@ export function getRegisteredTypes(registry: MessageTypeRegistry): string[] {
 
 /**
  * Check if message type is registered
+ * @param registry - The message type registry to query
+ * @param type - The message type identifier to check
+ * @returns True if the type is registered, false otherwise
  */
 export function isTypeRegistered(registry: MessageTypeRegistry, type: string): boolean {
     return type in registry;
@@ -88,6 +105,9 @@ export function isTypeRegistered(registry: MessageTypeRegistry, type: string): b
 
 /**
  * Get default props for message type
+ * @param registry - The message type registry to query
+ * @param type - The message type identifier
+ * @returns Default props for the message type, or undefined if not found
  */
 export function getDefaultProps(
     registry: MessageTypeRegistry,
@@ -98,6 +118,9 @@ export function getDefaultProps(
 
 /**
  * Get metadata for message type
+ * @param registry - The message type registry to query
+ * @param type - The message type identifier
+ * @returns Metadata for the message type, or undefined if not found
  */
 export function getMessageTypeMetadata(
     registry: MessageTypeRegistry,

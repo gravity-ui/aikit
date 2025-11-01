@@ -24,8 +24,8 @@
     "lint:fix": "run-s lint:js:fix lint:styles:fix lint:prettier:fix typecheck",
     "lint:js:fix": "eslint '**/*.{js,jsx,ts,tsx}' --max-warnings=0 --quiet --fix",
     "lint:styles:fix": "stylelint **/*.scss --fix",
-    "lint:prettier": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md}'",
-    "lint:prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md}'",
+    "lint:prettier": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
+    "lint:prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "test": "jest",
     "build": "tsc",
     "start": "TS_NODE_PROJECT=.storybook/tsconfig.json storybook dev",
@@ -87,7 +87,7 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix --quiet"
     ],
-    "*.md": [
+    "*.{md,mdx}": [
       "prettier --write"
     ]
   },
