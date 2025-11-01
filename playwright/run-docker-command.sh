@@ -32,6 +32,7 @@ fi
 if [[ "$*" = "clear-cache" ]]; then
   rm -rf "$NODE_MODULES_CACHE_DIR"
   rm -rf "./playwright/.cache-docker"
+  rm -rf "./playwright/.cache"
   exit 0
 fi
 
