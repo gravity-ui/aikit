@@ -1,0 +1,36 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}diff-stat';
+
+#{$block} {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    color: var(--g-color-text-danger);
+    font-family: var(--g-text-code-font-family);
+    font-size: var(--g-text-code-inline-1);
+    font-style: normal;
+    font-weight: var(--g-text-code-font-weight);
+    line-height: var(--g-text-code-inline-1-line-height);
+
+    &__added {
+        color: var(--g-color-text-positive-heavy);
+
+        &_allow_sign {
+            &::before {
+                content: '+';
+            }
+        }
+    }
+
+    &__deleted {
+        color: var(--g-color-text-danger);
+
+        &_allow_sign {
+            &::before {
+                content: '-';
+            }
+        }
+    }
+}
