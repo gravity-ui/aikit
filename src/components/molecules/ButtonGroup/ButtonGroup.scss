@@ -1,0 +1,30 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}button-group';
+
+#{$block} {
+    display: flex;
+    flex-wrap: wrap;
+
+    &_size_xs {
+        gap: var(--g-spacing-1);
+    }
+
+    &_size_s {
+        gap: var(--g-spacing-2);
+    }
+
+    &_size_m {
+        gap: var(--g-spacing-3);
+    }
+
+    &_or_vertical {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &_or_horizontal {
+        flex-direction: row;
+        align-items: center;
+    }
+}
