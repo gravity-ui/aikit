@@ -25,5 +25,5 @@ export function Loader({view = 'streaming', size = 's', className, qa}: LoaderPr
         );
     }
 
-    return <Spin size={size} data-qa={qa} className={b({view})} />;
+    return <Spin size={size} data-qa={qa} className={b({view}, className)} />;
 }
