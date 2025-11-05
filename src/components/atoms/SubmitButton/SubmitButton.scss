@@ -1,0 +1,29 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}submit-button';
+
+#{$block} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &_size_s#{&}_loading {
+        padding: 4px;
+    }
+
+    &_size_m#{&}_loading {
+        padding: 6px;
+    }
+
+    &_size_l#{&}_loading {
+        padding: 10px;
+    }
+
+    &__loader {
+        display: flex;
+    }
+
+    &__spinner {
+        --g-color-line-brand: var(--g-color-text-brand-contrast);
+    }
+}
