@@ -43,7 +43,7 @@ The component uses CSS variables for theming:
 ### Background
 
 ```css
-    --g-aikit-color-bg-loader  /* Loading circle background */
+    --g-color-line-brand  /* Loading circle background */
     --g-color-text-secondary   /* Streaming dots background */
     --g-spacing-1 /* Streaming dots gap */
 ```

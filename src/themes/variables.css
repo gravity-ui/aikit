@@ -11,9 +11,6 @@
     --g-aikit-color-bg-message-user: #0077ff;
     --g-aikit-color-bg-message-assistant: #f0f0f0;
 
-    /* === Loader === */
-    --g-aikit-color-bg-loader: #5282ff;
-
     /* === Disclaimer === */
     --g-aikit-disclaimer-gap: 10px;
     --g-aikit-suggestions-box-shadow: 0 3px 10px rgba(198, 172, 255, 0.52);
