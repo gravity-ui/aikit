@@ -34,9 +34,9 @@ import {ButtonGroup} from '@/components/molecules/ButtonGroup';
 
 | Prop          | Type                         | Required | Default        | Description             |
 | ------------- | ---------------------------- | -------- | -------------- | ----------------------- |
+| `children`    | `React.ReactNode[]`          | ✓        | -              | Buttons for render      |
 | `orientation` | `'horizontal' \| 'vertical'` | -        | `'horizontal'` | Orientation of buttons  |
 | `size`        | `'xs' \| 's'\| 'm'`          | -        | `'s'`          | Spacing between buttons |
-| `children`    | `React.ReactNode[]`          | ✓        | -              | Spacing between buttons |
 | `className`   | `string`                     | -        | -              | Additional CSS class    |
 | `qa`          | `string`                     | -        | -              | QA/test identifier      |
 

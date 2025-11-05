@@ -16,9 +16,15 @@ export default {
         },
     },
     argTypes: {
-        children: {
-            control: 'text',
-            description: 'Content of message',
+        orientation: {
+            control: 'radio',
+            options: ['horizontal', 'vertical'],
+            description: 'Orientation of buttons',
+        },
+        size: {
+            control: 'radio',
+            options: ['xs', 's', 'm'],
+            description: 'Spacing',
         },
         className: {
             control: 'text',
