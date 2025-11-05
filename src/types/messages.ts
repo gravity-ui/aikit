@@ -12,7 +12,7 @@ export type TSubmitData = {
 export type MessageState = 'initial' | 'loading' | 'success' | 'error' | 'streaming';
 
 // Base message with common fields
-export type BaseMessage<TData = unknown> = {
+export type BaseMessageType<TData = unknown> = {
     id: string;
     type: string;
     author: 'user' | 'assistant' | string;
@@ -27,7 +27,7 @@ export type SimpleMessageData = {
     formattedText: string;
 };
 
-export type SimpleMessageType = BaseMessage<SimpleMessageData> & {
+export type SimpleMessageType = BaseMessageType<SimpleMessageData> & {
     type: 'simple';
 };
 
@@ -42,7 +42,7 @@ export type ThinkingMessageData = {
     }>;
 };
 
-export type ThinkingMessageType = BaseMessage<ThinkingMessageData> & {
+export type ThinkingMessageType = BaseMessageType<ThinkingMessageData> & {
     type: 'thinking';
 };
 
@@ -58,7 +58,7 @@ export type ToolMessageData = {
     onCancel?: () => void | Promise<void>;
 };
 
-export type ToolMessageType = BaseMessage<ToolMessageData> & {
+export type ToolMessageType = BaseMessageType<ToolMessageData> & {
     type: 'tool';
 };
 
