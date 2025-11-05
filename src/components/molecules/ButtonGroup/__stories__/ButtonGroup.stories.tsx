@@ -21,11 +21,6 @@ export default {
             options: ['horizontal', 'vertical'],
             description: 'Orientation of buttons',
         },
-        size: {
-            control: 'radio',
-            options: ['xs', 's', 'm'],
-            description: 'Spacing',
-        },
         className: {
             control: 'text',
             description: 'Additional CSS class',
@@ -59,7 +54,6 @@ export const Playground: StoryFn<ButtonGroupProps> = (args) => <ButtonGroup {...
 Playground.args = {
     children: buttonChildren,
     orientation: 'horizontal',
-    size: 's',
 };
 
 export const Orientation: StoryObj<ButtonGroupProps> = {
@@ -72,29 +66,6 @@ export const Orientation: StoryObj<ButtonGroupProps> = {
             </ShowcaseItem>
             <ShowcaseItem title="Vertical">
                 <ButtonGroup {...args} orientation="vertical">
-                    {buttonChildren}
-                </ButtonGroup>
-            </ShowcaseItem>
-        </>
-    ),
-    decorators: defaultDecorators,
-};
-
-export const Size: StoryObj<ButtonGroupProps> = {
-    render: (args) => (
-        <>
-            <ShowcaseItem title="Size xs">
-                <ButtonGroup {...args} size="xs">
-                    {buttonChildren}
-                </ButtonGroup>
-            </ShowcaseItem>
-            <ShowcaseItem title="Size s">
-                <ButtonGroup {...args} size="s">
-                    {buttonChildren}
-                </ButtonGroup>
-            </ShowcaseItem>
-            <ShowcaseItem title="Size m">
-                <ButtonGroup {...args} size="m">
                     {buttonChildren}
                 </ButtonGroup>
             </ShowcaseItem>

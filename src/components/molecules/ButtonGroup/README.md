@@ -7,10 +7,6 @@ Wrapper for buttons group
 - **Two Orientation Modes**:
   - `horizontal`
   - `vertical`
-- **Different Spacing Modes**:
-  - `xs`
-  - `s`
-  - `m`
 
 ## Usage
 
@@ -22,23 +18,16 @@ import {ButtonGroup} from '@/components/molecules/ButtonGroup';
 
 // Vertical orientation
 <ButtonGroup orientation="vertical"><Button>Button 1</Button><Button>Button 1</Button></ButtonGroup>
-
-// Different sizes
-<ButtonGroup size='xs'></ButtonGroup>
-<ButtonGroup size='s'></ButtonGroup>
-<ButtonGroup size='m'></ButtonGroup>
-
 ```
 
 ## Props
 
-| Prop          | Type                         | Required | Default        | Description             |
-| ------------- | ---------------------------- | -------- | -------------- | ----------------------- |
-| `children`    | `React.ReactNode[]`          | ✓        | -              | Buttons for render      |
-| `orientation` | `'horizontal' \| 'vertical'` | -        | `'horizontal'` | Orientation of buttons  |
-| `size`        | `'xs' \| 's'\| 'm'`          | -        | `'s'`          | Spacing between buttons |
-| `className`   | `string`                     | -        | -              | Additional CSS class    |
-| `qa`          | `string`                     | -        | -              | QA/test identifier      |
+| Prop          | Type                         | Required | Default        | Description            |
+| ------------- | ---------------------------- | -------- | -------------- | ---------------------- |
+| `children`    | `React.ReactNode[]`          | ✓        | -              | Buttons for render     |
+| `orientation` | `'horizontal' \| 'vertical'` | -        | `'horizontal'` | Orientation of buttons |
+| `className`   | `string`                     | -        | -              | Additional CSS class   |
+| `qa`          | `string`                     | -        | -              | QA/test identifier     |
 
 ## Styling
 
@@ -48,6 +37,4 @@ The component uses CSS variables for theming:
 
 ```css
     --g-spacing-1 /* Spacing between buttons */
-    --g-spacing-2 /* Spacing between buttons */
-    --g-spacing-3 /* Spacing between buttons */
 ```

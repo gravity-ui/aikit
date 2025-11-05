@@ -10,10 +10,4 @@ test.describe('ButtonGroup', {tag: '@ButtonGroup'}, () => {
 
         await expectScreenshot();
     });
-
-    test('should render all sizes', async ({mount, expectScreenshot}) => {
-        await mount(<ButtonGroupStories.Size />);
-
-        await expectScreenshot();
-    });
 });
