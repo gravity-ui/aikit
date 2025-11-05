@@ -48,22 +48,17 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-// Mock functions for demonstration
-const mockOnSend = async () => {
+// Mock function for demonstration
+const mockOnClick = async () => {
     // eslint-disable-next-line no-console
-    console.log('Start sending');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log('Button clicked');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     // eslint-disable-next-line no-console
-    console.log('End sending');
-};
-
-const mockOnCancel = async () => {
-    // eslint-disable-next-line no-console
-    console.log('Cancelled');
+    console.log('Action completed');
 };
 
 export const Playground: StoryFn<SubmitButtonProps> = (args) => {
-    return <SubmitButton {...args} onSend={mockOnSend} onCancel={mockOnCancel} />;
+    return <SubmitButton {...args} onClick={mockOnClick} />;
 };
 Playground.args = {
     size: 'm',
@@ -71,19 +66,19 @@ Playground.args = {
 };
 
 export const Enabled: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="enabled" />;
+    return <SubmitButton onClick={mockOnClick} state="enabled" />;
 };
 
 export const Disabled: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="disabled" />;
+    return <SubmitButton onClick={mockOnClick} state="disabled" />;
 };
 
 export const Loading: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="loading" />;
+    return <SubmitButton onClick={mockOnClick} state="loading" />;
 };
 
 export const Cancelable: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="cancelable" />;
+    return <SubmitButton onClick={mockOnClick} state="cancelable" />;
 };
 
 export const Size: StoryObj<SubmitButtonProps> = {
@@ -91,13 +86,13 @@ export const Size: StoryObj<SubmitButtonProps> = {
         return (
             <>
                 <ShowcaseItem title="Size s">
-                    <SubmitButton {...args} onSend={mockOnSend} onCancel={mockOnCancel} size="s" />
+                    <SubmitButton {...args} onClick={mockOnClick} size="s" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Size m">
-                    <SubmitButton {...args} onSend={mockOnSend} onCancel={mockOnCancel} size="m" />
+                    <SubmitButton {...args} onClick={mockOnClick} size="m" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Size l">
-                    <SubmitButton {...args} onSend={mockOnSend} onCancel={mockOnCancel} size="l" />
+                    <SubmitButton {...args} onClick={mockOnClick} size="l" />
                 </ShowcaseItem>
             </>
         );
@@ -110,16 +105,16 @@ export const States: StoryObj<SubmitButtonProps> = {
         return (
             <>
                 <ShowcaseItem title="Enabled">
-                    <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="enabled" />
+                    <SubmitButton onClick={mockOnClick} state="enabled" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Disabled">
-                    <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="disabled" />
+                    <SubmitButton onClick={mockOnClick} state="disabled" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Loading">
-                    <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="loading" />
+                    <SubmitButton onClick={mockOnClick} state="loading" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Cancelable">
-                    <SubmitButton onSend={mockOnSend} onCancel={mockOnCancel} state="cancelable" />
+                    <SubmitButton onClick={mockOnClick} state="cancelable" />
                 </ShowcaseItem>
             </>
         );
@@ -133,21 +128,22 @@ export const Interactive: StoryFn<SubmitButtonProps> = (args) => {
         'enabled',
     );
 
-    const handleSend = async () => {
-        setState('loading');
-        await mockOnSend();
-        setState('cancelable');
-    };
-
-    const handleCancel = async () => {
-        await mockOnCancel();
-        setState('enabled');
+    const handleClick = async () => {
+        if (state === 'enabled') {
+            setState('loading');
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setState('cancelable');
+        } else if (state === 'cancelable') {
+            // eslint-disable-next-line no-console
+            console.log('Cancelled');
+            setState('enabled');
+        }
     };
 
     return (
         <Showcase>
             <ShowcaseItem title="Click the button to see loading and cancelable states">
-                <SubmitButton {...args} onSend={handleSend} onCancel={handleCancel} state={state} />
+                <SubmitButton {...args} onClick={handleClick} state={state} />
             </ShowcaseItem>
         </Showcase>
     );

@@ -18,14 +18,15 @@ import {useState} from 'react';
 const [state, setState] = useState<'enabled' | 'disabled' | 'loading' | 'cancelable'>('enabled');
 
 <SubmitButton
-  onSend={async () => {
-    setState('cancelable');
-    await sendMessage();
-    setState('enabled');
-  }}
-  onCancel={async () => {
-    await cancelMessage();
-    setState('enabled');
+  onClick={async () => {
+    if (state === 'enabled') {
+      setState('loading');
+      await sendMessage();
+      setState('cancelable');
+    } else if (state === 'cancelable') {
+      await cancelMessage();
+      setState('enabled');
+    }
   }}
   state={state}
   size="m"
@@ -34,14 +35,13 @@ const [state, setState] = useState<'enabled' | 'disabled' | 'loading' | 'cancela
 
 ## Props
 
-| Prop        | Type                                                   | Required | Default     | Description             |
-| ----------- | ------------------------------------------------------ | -------- | ----------- | ----------------------- |
-| `onSend`    | `() => Promise<void>`                                  | Yes      | -           | Data submission handler |
-| `onCancel`  | `() => Promise<void>`                                  | Yes      | -           | Cancellation handler    |
-| `state`     | `'enabled' \| 'disabled' \| 'loading' \| 'cancelable'` | No       | `'enabled'` | Button state            |
-| `className` | `string`                                               | No       | -           | Additional CSS class    |
-| `size`      | `'s' \| 'm' \| 'l'`                                    | No       | `'m'`       | Button size             |
-| `qa`        | `string`                                               | No       | -           | QA/test identifier      |
+| Prop        | Type                                                   | Required | Default | Description          |
+| ----------- | ------------------------------------------------------ | -------- | ------- | -------------------- |
+| `onClick`   | `() => void \| Promise<void>`                          | Yes      | -       | Click handler        |
+| `state`     | `'enabled' \| 'disabled' \| 'loading' \| 'cancelable'` | Yes      | -       | Button state         |
+| `className` | `string`                                               | No       | -       | Additional CSS class |
+| `size`      | `'s' \| 'm' \| 'l'`                                    | No       | `'m'`   | Button size          |
+| `qa`        | `string`                                               | No       | -       | QA/test identifier   |
 
 ## States
 
@@ -66,21 +66,22 @@ The component does not manage states internally. All state management should be 
 ```tsx
 const [state, setState] = useState<'enabled' | 'disabled' | 'loading' | 'cancelable'>('enabled');
 
-const handleSend = async () => {
-  setState('cancelable');
-  try {
-    await sendMessage();
-  } finally {
+const handleClick = async () => {
+  if (state === 'enabled') {
+    setState('loading');
+    try {
+      await sendMessage();
+      setState('cancelable');
+    } catch (error) {
+      setState('enabled');
+    }
+  } else if (state === 'cancelable') {
+    await cancelMessage();
     setState('enabled');
   }
 };
 
-const handleCancel = async () => {
-  await cancelMessage();
-  setState('enabled');
-};
-
-<SubmitButton onSend={handleSend} onCancel={handleCancel} state={state} />;
+<SubmitButton onClick={handleClick} state={state} />;
 ```
 
 ## Styling

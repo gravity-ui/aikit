@@ -1,3 +1,5 @@
+import {useCallback} from 'react';
+
 import {ArrowUp, Stop} from '@gravity-ui/icons';
 import {Button, Icon, Spin} from '@gravity-ui/uikit';
 
@@ -12,17 +14,13 @@ export type SubmitButtonState = 'enabled' | 'disabled' | 'loading' | 'cancelable
 
 export interface SubmitButtonProps {
     /**
-     * Data submission handler
+     * Click handler
      */
-    onSend: () => Promise<void>;
-    /**
-     * Cancellation handler
-     */
-    onCancel: () => Promise<void>;
+    onClick: () => Promise<void>;
     /**
      * Button state
      */
-    state?: SubmitButtonState;
+    state: SubmitButtonState;
     /**
      * Additional CSS class
      */
@@ -48,25 +46,18 @@ export interface SubmitButtonProps {
  *
  * @returns Submit button component
  */
-export function SubmitButton({
-    onSend,
-    onCancel,
-    state = 'enabled',
-    className,
-    size = 'm',
-    qa,
-}: SubmitButtonProps) {
+export function SubmitButton({onClick, state, className, size = 'm', qa}: SubmitButtonProps) {
     const isCancelable = state === 'cancelable';
     const isLoading = state === 'loading';
     const isDisabled = state === 'disabled';
     const iconData = isCancelable ? Stop : ArrowUp;
-    let onClick;
+    const handleClick = useCallback(async () => {
+        if (['enabled', 'cancelable'].includes(state)) {
+            return onClick();
+        }
 
-    if (isCancelable) {
-        onClick = onCancel;
-    } else if (state === 'enabled') {
-        onClick = onSend;
-    }
+        return Promise.resolve();
+    }, [state, onClick]);
 
     return (
         <Button
@@ -74,7 +65,7 @@ export function SubmitButton({
             size={size}
             color="brand"
             disabled={isDisabled}
-            onClick={onClick}
+            onClick={handleClick}
             className={b({size, loading: isLoading, cancelable: isCancelable}, className)}
             qa={qa}
         >
