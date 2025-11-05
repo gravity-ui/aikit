@@ -9,6 +9,7 @@
     --g-aikit-color-bg-message-user: #0077ff;
     --g-aikit-color-bg-message-assistant: #f0f0f0;
     --g-aikit-color-bg-loader: #5282ff;
+    --g-aikit-disclaimer-gap: 10px;
 
     /* === Context Indicator === */
     --g-aikit-ci-color-progress-1: var(
