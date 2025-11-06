@@ -41,6 +41,12 @@ test.describe('ChatDate', {tag: '@ChatDate'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with custom style', async ({mount, expectScreenshot}) => {
+        await mount(<ChatDateStories.WithCustomStyle />);
+
+        await expectScreenshot();
+    });
+
     test('should render different formats', async ({mount, expectScreenshot}) => {
         await mount(<ChatDateStories.DifferentFormats />);
 

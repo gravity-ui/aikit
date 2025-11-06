@@ -30,7 +30,7 @@ export type ChatDateProps = QAProps &
  * @returns React component
  */
 export function ChatDate(props: ChatDateProps) {
-    const {date, showTime = false, format, className, qa, relative = false} = props;
+    const {date, showTime = false, format, className, qa, relative = false, style} = props;
 
     const {formattedDate, formattedTime, fullDate, dateObject, isValid, diffDays} =
         useDateFormatter({
@@ -48,6 +48,7 @@ export function ChatDate(props: ChatDateProps) {
             dateTime={dateObject.toISOString()}
             title={fullDate}
             data-qa={qa}
+            style={style}
         >
             {relative && typeof diffDays === 'number' ? (
                 <span>{i18n('ago', {count: diffDays})}</span>

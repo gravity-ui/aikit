@@ -32,6 +32,10 @@ export default {
             control: 'text',
             description: 'QA/test identifier',
         },
+        style: {
+            control: 'object',
+            description: 'Inline styles for the component',
+        },
         locale: {
             control: 'text',
             description: 'Locale for date formatting',
@@ -80,6 +84,14 @@ export const CustomFormat: StoryFn<ChatDateProps> = (args) => (
 
 export const CustomFormatWithTime: StoryFn<ChatDateProps> = (args) => (
     <ChatDate {...args} date="2024-01-15T10:30:00Z" format="DD/MM/YYYY HH:mm" showTime />
+);
+
+export const WithCustomStyle: StoryFn<ChatDateProps> = (args) => (
+    <ChatDate
+        {...args}
+        date="2024-01-15T10:30:00Z"
+        style={{color: 'red', fontWeight: 'bold', fontSize: '18px'}}
+    />
 );
 
 export const DifferentFormats: StoryObj<ChatDateProps> = {

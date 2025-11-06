@@ -47,6 +47,7 @@ import {ChatDate} from '@/components/atoms/ChatDate';
 | `showTime`  | `boolean`                  | -        | `false`      | Show time along with date                           |
 | `format`    | `string`                   | -        | `YYYY.MM.DD` | Custom format string (dayjs format)                 |
 | `className` | `string`                   | -        | -            | Additional CSS class                                |
+| `style`     | `React.CSSProperties`      | -        | -            | Inline styles for the component                     |
 | `qa`        | `string`                   | -        | -            | QA/test identifier                                  |
 | `locale`    | `string`                   | -        | Browser      | Locale for date formatting (e.g., 'en-US', 'ru-RU') |
 | `relative`  | `boolean`                  | -        | `false`      | Display relative dates (today, yesterday, etc.)     |
