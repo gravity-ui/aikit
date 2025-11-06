@@ -1,0 +1,12 @@
+import {Meta, Canvas, Controls, Markdown} from '@storybook/blocks';
+import * as Stories from './Suggestions.stories';
+import Readme from '../README.md?raw';
+
+<Meta of={Stories} />
+
+<Markdown>{Readme}</Markdown>
+
+## Playground
+
+<Canvas of={Stories.Playground} />
+<Controls of={Stories.Playground} />

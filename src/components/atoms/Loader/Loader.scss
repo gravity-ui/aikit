@@ -69,8 +69,4 @@ $animation: pulse ease $pulse-duration infinite;
     &__right {
         animation-delay: 3 * $pulse-delay;
     }
-
-    &_view_loading {
-        --g-color-line-brand: var(--g-aikit-color-bg-loader);
-    }
 }

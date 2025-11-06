@@ -1,0 +1,45 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}suggestions';
+
+#{$block} {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: var(--g-spacing-2) var(--g-spacing-2);
+    align-self: stretch;
+    flex-wrap: wrap;
+
+    &_layout_grid {
+        flex-direction: row;
+    }
+
+    &_layout_list {
+        flex-direction: column;
+    }
+
+    &_layout_list &__button {
+        width: 100%;
+    }
+
+    &__button {
+        box-shadow: none;
+
+        &:hover {
+            border-radius: var(--g-border-radius-l);
+            box-shadow: var(--g-aikit-suggestions-box-shadow);
+        }
+
+        &_text-align_left {
+            justify-content: flex-start;
+        }
+
+        &_text-align_center {
+            justify-content: center;
+        }
+
+        &_text-align_right {
+            justify-content: flex-end;
+        }
+    }
+}
