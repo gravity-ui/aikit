@@ -1,0 +1,115 @@
+import React from 'react';
+
+import {
+    ChevronsCollapseUpRight,
+    ChevronsExpandUpRight,
+    ClockArrowRotateLeft,
+    Plus,
+    Xmark,
+} from '@gravity-ui/icons';
+import {Button, Icon, Text} from '@gravity-ui/uikit';
+
+import {block} from '../../../utils/cn';
+import {ButtonGroup} from '../../molecules';
+
+import {HeaderAction, type HeaderProps} from './types';
+import {ActionItem, useHeader} from './useHeader';
+
+import './Header.scss';
+
+const b = block('header');
+
+// Icons for base actions
+const ACTION_ICONS: Record<HeaderAction, typeof Xmark> = {
+    [HeaderAction.NewChat]: Plus,
+    [HeaderAction.History]: ClockArrowRotateLeft,
+    [HeaderAction.Folding]: ChevronsCollapseUpRight, // Default icon, will be switched based on state
+    [HeaderAction.Close]: Xmark,
+};
+
+// Icons for folding states
+const FOLDING_ICONS = {
+    collapsed: ChevronsExpandUpRight,
+    opened: ChevronsCollapseUpRight,
+};
+
+/**
+ * Header component for displaying chat header with navigation and actions
+ *
+ * @param props - Component props
+ * @returns Header component
+ */
+export function Header(props: HeaderProps) {
+    const {title, preview, icon, baseActions, additionalActions, titlePosition, className} =
+        useHeader(props);
+
+    // Render base action
+    const renderBaseAction = (action: ActionItem) => {
+        let IconComponent = ACTION_ICONS[action.id as HeaderAction];
+
+        // Handle folding icon based on state
+        if (action.id === HeaderAction.Folding && action.foldingState) {
+            IconComponent = FOLDING_ICONS[action.foldingState];
+        }
+
+        if (!IconComponent) {
+            return null;
+        }
+
+        return (
+            <Button
+                key={action.id}
+                size="m"
+                view="flat"
+                onClick={action.onClick}
+                className={b('action-button')}
+                qa={`header-action-${action.id}`}
+            >
+                <Icon data={IconComponent} size={16} />
+            </Button>
+        );
+    };
+
+    // Render additional action
+    const renderAdditionalAction = (action: (typeof additionalActions)[0], index: number) => {
+        if (action.content && React.isValidElement(action.content)) {
+            return (
+                <React.Fragment key={action.id || `additional-${index}`}>
+                    {action.content}
+                </React.Fragment>
+            );
+        }
+
+        if (action.buttonProps) {
+            return <Button key={action.id} {...action.buttonProps} />;
+        }
+
+        return null;
+    };
+
+    // Determine class for title positioning
+    const titlePositionClass = b('title-container', {position: titlePosition});
+
+    return (
+        <div className={b('', className)}>
+            {/* Left part: icon */}
+            {icon && <div className={b('icon')}>{icon}</div>}
+
+            {/* Center part: title with preview */}
+            <div className={titlePositionClass}>
+                {title && (
+                    <Text as="div" variant="subheader-2" className={b('title')}>
+                        {title}
+                    </Text>
+                )}
+                {preview && <div className={b('preview')}>{preview}</div>}
+            </div>
+
+            {/* Right part: additional and base actions */}
+            <ButtonGroup>
+                {additionalActions.map((action, index) => renderAdditionalAction(action, index))}
+                {baseActions.map((action) => renderBaseAction(action))}
+            </ButtonGroup>
+        </div>
+    );
+}

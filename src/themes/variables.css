@@ -6,10 +6,19 @@
     /* === Colors === */
     --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-background));
     --g-aikit-color-bg-secondary: #f5f5f5;
+
+    /* === Messages === */
     --g-aikit-color-bg-message-user: #0077ff;
     --g-aikit-color-bg-message-assistant: #f0f0f0;
+
+    /* === Loader === */
     --g-aikit-color-bg-loader: #5282ff;
+
+    /* === Disclaimer === */
     --g-aikit-disclaimer-gap: 10px;
+
+    /* === Header === */
+    --g-aikit-header-background: none;
 
     /* === Context Indicator === */
     --g-aikit-ci-color-progress-1: var(
