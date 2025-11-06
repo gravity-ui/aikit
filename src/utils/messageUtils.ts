@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid';
  * Message utilities
  */
 
-import type {BaseMessage} from '../types';
+import type {BaseMessageType} from '../types';
 
 /**
  * Generate unique ID for message
@@ -16,10 +16,10 @@ export function generateMessageId(): string {
 
 /**
  * Check if message is from user
- * @param {BaseMessage} message - Message to check
+ * @param {BaseMessageType} message - Message to check
  * @returns {boolean} True if message is from user
  */
-export function isUserMessage(message: BaseMessage): boolean {
+export function isUserMessage(message: BaseMessageType): boolean {
     return message.author === 'user';
 }
 
@@ -28,15 +28,15 @@ export function isUserMessage(message: BaseMessage): boolean {
  * @param {BaseMessage} message - Message to check
  * @returns {boolean} True if message is from assistant
  */
-export function isAssistantMessage(message: BaseMessage): boolean {
+export function isAssistantMessage(message: BaseMessageType): boolean {
     return message.author === 'assistant';
 }
 
 /**
  * Get last message from list
- * @param {BaseMessage[]} messages - Array of messages
- * @returns {BaseMessage | null} Last message or null if array is empty
+ * @param {BaseMessageType[]} messages - Array of messages
+ * @returns {BaseMessageType | null} Last message or null if array is empty
  */
-export function getLastMessage(messages: BaseMessage[]): BaseMessage | null {
+export function getLastMessage(messages: BaseMessageType[]): BaseMessageType | null {
     return messages.length > 0 ? messages[messages.length - 1] : null;
 }

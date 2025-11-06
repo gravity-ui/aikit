@@ -25,14 +25,14 @@ import {BaseMessage} from '@/components/molecules/BaseMessage';
 
 ## Props
 
-| Prop                 | Type                                | Required | Default | Description                                |
-| -------------------- | ----------------------------------- | -------- | ------- | ------------------------------------------ |
-| `children`           | `React.ReactNode`                   | ✓        | -       | Message                                    |
-| `variant`            | `'user' \| 'assistant' \| 'system'` | ✓        | -       | Type of message                            |
-| `showActionsOnHover` | `boolean`                           | -        | false   | Should actions be always shown or on hover |
-| `actions`            | ``                                  | -        | -       | Buttons array                              |
-| `className`          | `string`                            | -        | -       | Additional CSS class                       |
-| `qa`                 | `string`                            | -        | -       | QA/test identifier                         |
+| Prop                 | Type                                                                              | Required | Default | Description                                |
+| -------------------- | --------------------------------------------------------------------------------- | -------- | ------- | ------------------------------------------ |
+| `children`           | `React.ReactNode`                                                                 | ✓        | -       | Message                                    |
+| `variant`            | `'user' \| 'assistant' \| 'system'`                                               | ✓        | -       | Type of message                            |
+| `showActionsOnHover` | `boolean`                                                                         | -        | false   | Should actions be always shown or on hover |
+| `actions`            | `Array<{type: BaseMessageAction \| string;onClick: () => void;icon?: IconData;}>` | -        | -       | Buttons array                              |
+| `className`          | `string`                                                                          | -        | -       | Additional CSS class                       |
+| `qa`                 | `string`                                                                          | -        | -       | QA/test identifier                         |
 
 ## Styling
 
