@@ -1,0 +1,56 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}header';
+
+#{$block} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--g-spacing-2);
+    gap: var(--g-spacing-2);
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--g-aikit-header-background);
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    &__title-container {
+        display: flex;
+        gap: var(--g-spacing-1);
+        flex: 1;
+        align-items: baseline;
+
+        &_position_left {
+            justify-content: flex-start;
+        }
+
+        &_position_center {
+            justify-content: center;
+        }
+
+        &_position_right {
+            justify-content: flex-end;
+        }
+    }
+
+    &__title {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    &__preview {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    &__action-button {
+        flex-shrink: 0;
+    }
+}
