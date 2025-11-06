@@ -1,0 +1,29 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}alert';
+
+#{$block} {
+    display: flex;
+    align-items: center;
+    gap: var(--g-spacing-2);
+
+    &__icon {
+        flex-shrink: 0;
+
+        &_variant_error {
+            color: var(--g-color-text-danger);
+        }
+
+        &_variant_warning {
+            color: var(--g-color-text-warning-heavy);
+        }
+
+        &_variant_info {
+            color: var(--g-color-text-info);
+        }
+    }
+
+    &__action {
+        margin-left: auto;
+    }
+}
