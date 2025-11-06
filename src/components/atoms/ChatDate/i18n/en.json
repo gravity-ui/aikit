@@ -1,0 +1,7 @@
+{
+  "ago": {
+    "zero": "Today",
+    "one": "Yesterday",
+    "other": "{{count}} days ago"
+  }
+}

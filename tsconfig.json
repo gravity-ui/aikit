@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "outDir": "dist",
     "module": "esnext",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "paths": {
       "~playwright/*": ["playwright/*"]
