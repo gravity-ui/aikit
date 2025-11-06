@@ -1,0 +1,30 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}base-message';
+
+#{$block} {
+    display: flex;
+    flex-direction: column;
+    gap: var(--g-spacing-1);
+
+    &_variant_user {
+        align-items: flex-end;
+    }
+
+    &_variant_system,
+    &_variant_assistant {
+        align-items: flex-start;
+    }
+
+    &_btn-hover {
+        #{$block}__actions {
+            visibility: hidden;
+        }
+
+        &:hover {
+            #{$block}__actions {
+                visibility: visible;
+            }
+        }
+    }
+}

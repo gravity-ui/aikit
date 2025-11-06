@@ -2,7 +2,7 @@
  * Data validation utilities
  */
 
-import type {BaseMessage, ChatType} from '../types';
+import type {BaseMessageType, ChatType} from '../types';
 
 /**
  * Validate chat structure
@@ -25,15 +25,15 @@ export function isValidChat(chat: unknown): chat is ChatType {
  * @param {unknown} message - Value to validate as message
  * @returns {boolean} True if value is a valid message
  */
-export function isValidMessage(message: unknown): message is BaseMessage {
+export function isValidMessage(message: unknown): message is BaseMessageType {
     return (
         typeof message === 'object' &&
         message !== null &&
-        typeof (message as BaseMessage).id === 'string' &&
-        typeof (message as BaseMessage).type === 'string' &&
-        typeof (message as BaseMessage).author === 'string' &&
-        typeof (message as BaseMessage).timestamp === 'string' &&
-        (message as BaseMessage).data !== undefined
+        typeof (message as BaseMessageType).id === 'string' &&
+        typeof (message as BaseMessageType).type === 'string' &&
+        typeof (message as BaseMessageType).author === 'string' &&
+        typeof (message as BaseMessageType).timestamp === 'string' &&
+        (message as BaseMessageType).data !== undefined
     );
 }
 
