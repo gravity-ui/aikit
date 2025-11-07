@@ -1,0 +1,15 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}chat-date';
+
+#{$block} {
+    color: var(--g-color-text-secondary);
+
+    font-family: var(--g-text-body-font-family);
+    font-size: var(--g-text-body-1-font-size);
+    font-style: normal;
+    font-weight: var(--g-text-body-font-weight);
+    line-height: var(--g-text-body-1-line-height);
+
+    display: inline-block;
+}

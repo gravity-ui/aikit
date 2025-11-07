@@ -1,6 +1,8 @@
 import type {Preview} from '@storybook/react';
 import React from 'react';
 
+import {withLang} from './decorators/withLang';
+
 import '../src/styles/styles.scss';
 import '../src/themes/variables.css';
 
@@ -18,7 +20,7 @@ const ThemeDecorator = (Story: any, context: any) => {
 };
 
 const preview: Preview = {
-    decorators: [ThemeDecorator],
+    decorators: [ThemeDecorator, withLang],
     parameters: {
         docs: {
             autodocs: true,
@@ -31,7 +33,20 @@ const preview: Preview = {
             },
         },
     },
-    globalTypes: {},
+    globalTypes: {
+        lang: {
+            name: 'Language',
+            description: 'Internationalization locale',
+            defaultValue: 'en',
+            toolbar: {
+                icon: 'globe',
+                items: [
+                    {value: 'en', right: '🇺🇸', title: 'English'},
+                    {value: 'ru', right: '🇷🇺', title: 'Russian'},
+                ],
+            },
+        },
+    },
 };
 
 export default preview;
