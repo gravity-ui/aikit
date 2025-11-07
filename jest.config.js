@@ -10,7 +10,10 @@ module.exports = {
             {
                 tsconfig: {
                     jsx: 'react-jsx',
+                    module: 'commonjs',
+                    moduleResolution: 'node',
                 },
+                isolatedModules: true,
             },
         ],
     },

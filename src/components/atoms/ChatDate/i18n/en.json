@@ -3,5 +3,6 @@
     "zero": "Today",
     "one": "Yesterday",
     "other": "{{count}} days ago"
-  }
+  },
+  "invalid-date": "Input date is invalid"
 }

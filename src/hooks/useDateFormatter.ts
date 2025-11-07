@@ -40,7 +40,7 @@ function getFullDate(dateObject: Dayjs): string {
  * @param relative - Whether to use relative date formatting
  * @returns Formatted date string
  */
-function getFormattedDate(dateObject: Dayjs, format?: string): string {
+export function getFormattedDate(dateObject: Dayjs, format?: string): string {
     if (!format) {
         return dateObject.format('YYYY.MM.DD');
     }
@@ -61,7 +61,7 @@ function getFormattedDate(dateObject: Dayjs, format?: string): string {
  * @param format - Optional format string
  * @returns Formatted time string
  */
-function getFormattedTime(dateObject: Dayjs, format?: string): string {
+export function getFormattedTime(dateObject: Dayjs, format?: string): string {
     if (!format) {
         return dateObject.format('HH:mm');
     }

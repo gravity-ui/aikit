@@ -39,7 +39,7 @@ export function ChatDate(props: ChatDateProps) {
         });
 
     if (!isValid || !dateObject) {
-        return null;
+        return i18n('invalid-date');
     }
 
     return (

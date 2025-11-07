@@ -64,4 +64,10 @@ test.describe('ChatDate', {tag: '@ChatDate'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render invalid date', async ({mount, expectScreenshot}) => {
+        await mount(<ChatDateStories.InvalidDate />);
+
+        await expectScreenshot();
+    });
 });

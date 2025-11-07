@@ -161,3 +161,7 @@ export const RecentDates: StoryObj<ChatDateProps> = {
     },
     decorators: defaultDecorators,
 };
+
+export const InvalidDate: StoryFn<ChatDateProps> = (args) => (
+    <ChatDate {...args} date="invalid-date-string" />
+);
