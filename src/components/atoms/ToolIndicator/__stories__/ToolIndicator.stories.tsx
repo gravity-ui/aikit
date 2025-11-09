@@ -16,7 +16,7 @@ export default {
     argTypes: {
         status: {
             control: 'radio',
-            options: ['success', 'error', 'info'],
+            options: ['success', 'error', 'info', 'loading'],
             description: 'Current status of the tool execution',
         },
         className: {
@@ -50,5 +50,10 @@ export const Error = () => (
 export const Info = () => (
     <ContentWrapper>
         <ToolIndicator status="info" />
+    </ContentWrapper>
+);
+export const Loading = () => (
+    <ContentWrapper>
+        <ToolIndicator status="loading" />
     </ContentWrapper>
 );

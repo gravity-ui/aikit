@@ -2,11 +2,12 @@ import {CircleCheck, CircleInfo, CircleXmark} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+import {Loader} from '../Loader';
 
 import './ToolIndicator.scss';
 
 export type ToolIndicatorProps = {
-    status?: 'success' | 'error' | 'info';
+    status?: 'success' | 'error' | 'info' | 'loading';
     className?: string;
     qa?: string;
 };
@@ -28,6 +29,8 @@ export const ToolIndicator = (props: ToolIndicatorProps) => {
             return <Icon {...commonProps} data={CircleXmark} className={b('error', className)} />;
         case 'info':
             return <Icon {...commonProps} data={CircleInfo} className={b('info', className)} />;
+        case 'loading':
+            return <Loader view="loading" size="xs" className={className} qa={qa} />;
         default:
             return null;
     }
