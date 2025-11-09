@@ -1,0 +1,23 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}tool-header';
+
+#{$block} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+
+    &__left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--g-spacing-2);
+    }
+
+    &__right {
+        display: flex;
+        align-items: center;
+        gap: var(--g-spacing-3);
+    }
+}
