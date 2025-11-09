@@ -1,0 +1,14 @@
+@use '../../../styles/variables.scss';
+
+$block: '.#{variables.$ns}prompt-input-header';
+
+#{$block} {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--g-spacing-1);
+    align-self: stretch;
+
+    &__context {
+        margin-left: auto;
+    }
+}

@@ -1,0 +1,5 @@
+// spacing @gravity-ui/uikit layout
+
+@function spacing($multiplier: 1) {
+    @return calc(var(--g-spacing-base) * $multiplier);
+}

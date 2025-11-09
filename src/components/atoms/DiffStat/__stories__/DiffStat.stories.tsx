@@ -1,6 +1,7 @@
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {DiffStat} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -40,13 +41,19 @@ type Story = StoryObj<typeof DiffStat>;
 
 const defaultDecorators = [
     (Story) => (
-        <Showcase>
-            <Story />
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <Story />
+            </Showcase>
+        </ContentWrapper>
     ),
 ] satisfies Story['decorators'];
 
-export const Playground: StoryFn<DiffStatProps> = (args) => <DiffStat {...args} />;
+export const Playground: StoryFn<DiffStatProps> = (args) => (
+    <ContentWrapper>
+        <DiffStat {...args} />
+    </ContentWrapper>
+);
 Playground.args = {
     added: 10,
     deleted: 5,

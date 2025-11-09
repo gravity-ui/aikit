@@ -31,10 +31,6 @@ $block: '.#{variables.$ns}header';
         &_position_center {
             justify-content: center;
         }
-
-        &_position_right {
-            justify-content: flex-end;
-        }
     }
 
     &__title {

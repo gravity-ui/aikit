@@ -1,10 +1,16 @@
-import type {Preview} from '@storybook/react';
+import type {Preview} from '@storybook/react-webpack5';
 import React from 'react';
+import {DocsDecorator} from '../src/demo/DocsDecorator/DocsDecorator';
+import {ThemeContext} from '../src/demo/DocsDecorator/ThemeContext';
 
 import {withLang} from './decorators/withLang';
+import {WithTheme} from './decorators/withTheme';
+import {themes} from './theme';
 
 import '../src/styles/styles.scss';
 import '../src/themes/variables.css';
+import '../src/themes/light.css';
+import '../src/themes/dark.css';
 
 // Theme decorator
 const ThemeDecorator = (Story: any, context: any) => {
@@ -13,19 +19,32 @@ const ThemeDecorator = (Story: any, context: any) => {
     React.useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
         document.body.classList.add('g-root');
-        document.body.classList.add('g-root_theme_light');
+        document.body.classList.add(`g-root_theme_${theme}`);
+
+        // Update docs theme
+        const docsRoot = document.querySelector('.docs-story');
+        if (docsRoot) {
+            docsRoot.setAttribute('data-theme', theme);
+        }
     }, [theme]);
 
-    return <Story />;
+    return (
+        <ThemeContext.Provider value={theme}>
+            <Story />
+        </ThemeContext.Provider>
+    );
 };
 
 const preview: Preview = {
-    decorators: [ThemeDecorator, withLang],
+    decorators: [ThemeDecorator, WithTheme, withLang],
+
     parameters: {
         docs: {
-            autodocs: true,
+            theme: themes.light,
+            container: DocsDecorator,
+            codePanel: true,
         },
-        backgrounds: {disable: true},
+        backgrounds: {disabled: true},
         options: {
             storySort: {
                 order: ['Components', ['Atoms', 'Molecules', 'Organisms', 'Templates', 'Pages']],
@@ -33,20 +52,35 @@ const preview: Preview = {
             },
         },
     },
+
     globalTypes: {
+        theme: {
+            defaultValue: 'light',
+            toolbar: {
+                title: 'Theme',
+                icon: 'mirror',
+                items: [
+                    {value: 'light', right: '☼', title: 'Light'},
+                    {value: 'dark', right: '☾', title: 'Dark'},
+                ],
+                dynamicTitle: true,
+            },
+        },
         lang: {
-            name: 'Language',
-            description: 'Internationalization locale',
             defaultValue: 'en',
             toolbar: {
+                title: 'Language',
                 icon: 'globe',
                 items: [
                     {value: 'en', right: '🇺🇸', title: 'English'},
                     {value: 'ru', right: '🇷🇺', title: 'Russian'},
                 ],
+                dynamicTitle: true,
             },
         },
     },
+
+    tags: ['autodocs'],
 };
 
 export default preview;

@@ -1,0 +1,22 @@
+@use '../../../styles/variables.scss';
+
+$block: '.#{variables.$ns}prompt-input-body';
+
+#{$block} {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-self: stretch;
+
+    &__textarea {
+        width: 100%;
+    }
+
+    &__textarea-control {
+        resize: none;
+    }
+
+    .g-text-area_disabled {
+        --_--background-color: none;
+    }
+}

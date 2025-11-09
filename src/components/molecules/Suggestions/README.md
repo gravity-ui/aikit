@@ -8,6 +8,8 @@ A Suggestions component displays a group of clickable suggestion buttons arrange
 - **Item support**: Each suggestion can have an optional ID and required title
 - **Click handling**: Callback function receives both content and optional ID
 - **Text alignment**: Control text alignment inside buttons (left, center, right)
+- **Icon support**: Add ChevronLeft or ChevronRight icons to suggestion buttons
+- **Tooltips**: Automatic tooltips displaying the suggestion title on hover
 
 ## Usage
 
@@ -60,18 +62,51 @@ import {Suggestions} from '@/components/molecules/Suggestions';
     console.log('Clicked:', content);
   }}
 />
+
+// With icons
+<Suggestions
+  items={[
+    {id: '1', title: 'Previous page', icon: 'left'},
+    {id: '2', title: 'Next page', icon: 'right'},
+  ]}
+  onClick={(content, id) => {
+    console.log('Clicked:', content, id);
+  }}
+/>
+
+// Mixed icons and no icons
+<Suggestions
+  items={[
+    {id: '1', title: 'Back', icon: 'left'},
+    {id: '2', title: 'Home'},
+    {id: '3', title: 'Forward', icon: 'right'},
+  ]}
+  layout="grid"
+  onClick={(content, id) => {
+    console.log('Clicked:', content, id);
+  }}
+/>
 ```
 
 ## Props
 
 | Prop        | Type                                                      | Required | Default    | Description                                                    |
 | ----------- | --------------------------------------------------------- | -------- | ---------- | -------------------------------------------------------------- |
-| `items`     | `Array<{id?: string; title: string}>`                     | Yes      | -          | Array of suggestion items to display                           |
+| `items`     | `SuggestionsItem[]`                                       | Yes      | -          | Array of suggestion items to display                           |
 | `onClick`   | `(content: string, id?: string) => void \| Promise<void>` | Yes      | -          | Callback function called when a suggestion is clicked          |
 | `layout`    | `'grid' \| 'list'`                                        | No       | `'list'`   | Layout orientation: 'grid' for horizontal, 'list' for vertical |
 | `textAlign` | `'left' \| 'center' \| 'right'`                           | No       | `'center'` | Text alignment inside buttons                                  |
 | `className` | `string`                                                  | No       | -          | Additional CSS class                                           |
 | `qa`        | `string`                                                  | No       | -          | QA/test identifier                                             |
+
+### SuggestionsItem
+
+| Prop    | Type                        | Required | Default      | Description                                                     |
+| ------- | --------------------------- | -------- | ------------ | --------------------------------------------------------------- |
+| `id`    | `string`                    | No       | -            | Optional unique identifier for the item                         |
+| `title` | `string`                    | Yes      | -            | Title text to display on the button                             |
+| `view`  | `ButtonButtonProps['view']` | No       | `'outlined'` | Button view style                                               |
+| `icon`  | `'left' \| 'right'`         | No       | -            | Icon position: 'left' for ChevronLeft, 'right' for ChevronRight |
 
 ## Styling
 

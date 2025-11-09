@@ -2,8 +2,9 @@ import {useState} from 'react';
 
 import {Gear} from '@gravity-ui/icons';
 import {Button, Icon} from '@gravity-ui/uikit';
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 import {Header, HeaderAction, type HeaderProps} from '../index';
@@ -21,7 +22,7 @@ export default {
     argTypes: {
         titlePosition: {
             control: 'radio',
-            options: ['left', 'center', 'right'],
+            options: ['left', 'center'],
             description: 'Title position',
         },
     },
@@ -58,11 +59,11 @@ const mockHandlers = {
 };
 
 export const Playground: StoryFn<HeaderProps> = (args) => {
-    return <Header {...args} />;
-};
-
-const HeaderWrapper = ({children}: {children: React.ReactNode}) => {
-    return <div style={{width: 480, border: '1px solid green'}}>{children}</div>;
+    return (
+        <ContentWrapper width="480px">
+            <Header {...args} />
+        </ContentWrapper>
+    );
 };
 
 Playground.args = {
@@ -79,20 +80,20 @@ Playground.args = {
 
 export const WithTitle: StoryFn<HeaderProps> = (args) => {
     return (
-        <HeaderWrapper>
+        <ContentWrapper width="480px">
             <Header
                 title="Chat Header"
                 baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
                 {...mockHandlers}
                 {...args}
             />
-        </HeaderWrapper>
+        </ContentWrapper>
     );
 };
 
 export const WithIcon: StoryFn<HeaderProps> = (args) => {
     return (
-        <HeaderWrapper>
+        <ContentWrapper width="480px">
             <Header
                 icon={<div style={{width: 24, height: 24, background: '#ccc', borderRadius: 4}} />}
                 title="Chat Header"
@@ -100,13 +101,13 @@ export const WithIcon: StoryFn<HeaderProps> = (args) => {
                 {...mockHandlers}
                 {...args}
             />
-        </HeaderWrapper>
+        </ContentWrapper>
     );
 };
 
 export const WithPreview: StoryFn<HeaderProps> = (args) => {
     return (
-        <HeaderWrapper>
+        <ContentWrapper width="480px">
             <Header
                 title="Chat Header"
                 preview={<div>Preview</div>}
@@ -114,7 +115,7 @@ export const WithPreview: StoryFn<HeaderProps> = (args) => {
                 {...mockHandlers}
                 {...args}
             />
-        </HeaderWrapper>
+        </ContentWrapper>
     );
 };
 
@@ -123,7 +124,7 @@ export const TitlePositions: StoryObj<HeaderProps> = {
         return (
             <>
                 <ShowcaseItem title="Left">
-                    <HeaderWrapper>
+                    <ContentWrapper width="480px">
                         <Header
                             title="Left Title"
                             titlePosition="left"
@@ -131,10 +132,10 @@ export const TitlePositions: StoryObj<HeaderProps> = {
                             {...mockHandlers}
                             {...args}
                         />
-                    </HeaderWrapper>
+                    </ContentWrapper>
                 </ShowcaseItem>
                 <ShowcaseItem title="Center">
-                    <HeaderWrapper>
+                    <ContentWrapper width="480px">
                         <Header
                             title="Center Title"
                             titlePosition="center"
@@ -142,18 +143,7 @@ export const TitlePositions: StoryObj<HeaderProps> = {
                             {...mockHandlers}
                             {...args}
                         />
-                    </HeaderWrapper>
-                </ShowcaseItem>
-                <ShowcaseItem title="Right">
-                    <HeaderWrapper>
-                        <Header
-                            title="Right Title"
-                            titlePosition="right"
-                            baseActions={[HeaderAction.NewChat, HeaderAction.Close]}
-                            {...mockHandlers}
-                            {...args}
-                        />
-                    </HeaderWrapper>
+                    </ContentWrapper>
                 </ShowcaseItem>
             </>
         );
@@ -166,7 +156,7 @@ export const BaseActions: StoryObj<HeaderProps> = {
         return (
             <>
                 <ShowcaseItem title="All actions">
-                    <HeaderWrapper>
+                    <ContentWrapper width="480px">
                         <Header
                             title="All Actions"
                             baseActions={[
@@ -178,10 +168,10 @@ export const BaseActions: StoryObj<HeaderProps> = {
                             foldingState="opened"
                             {...mockHandlers}
                         />
-                    </HeaderWrapper>
+                    </ContentWrapper>
                 </ShowcaseItem>
                 <ShowcaseItem title="Folding opened">
-                    <HeaderWrapper>
+                    <ContentWrapper width="480px">
                         <Header
                             title="With Folding (opened)"
                             baseActions={[
@@ -192,10 +182,10 @@ export const BaseActions: StoryObj<HeaderProps> = {
                             foldingState="opened"
                             {...mockHandlers}
                         />
-                    </HeaderWrapper>
+                    </ContentWrapper>
                 </ShowcaseItem>
                 <ShowcaseItem title="Folding collapsed">
-                    <HeaderWrapper>
+                    <ContentWrapper width="480px">
                         <Header
                             title="With Folding (collapsed)"
                             baseActions={[
@@ -207,7 +197,7 @@ export const BaseActions: StoryObj<HeaderProps> = {
                             {...mockHandlers}
                             {...args}
                         />
-                    </HeaderWrapper>
+                    </ContentWrapper>
                 </ShowcaseItem>
             </>
         );
@@ -217,7 +207,7 @@ export const BaseActions: StoryObj<HeaderProps> = {
 
 export const AdditionalActions: StoryFn<HeaderProps> = (args) => {
     return (
-        <HeaderWrapper>
+        <ContentWrapper width="480px">
             <Header
                 title="With Additional Actions"
                 baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
@@ -236,13 +226,13 @@ export const AdditionalActions: StoryFn<HeaderProps> = (args) => {
                 {...mockHandlers}
                 {...args}
             />
-        </HeaderWrapper>
+        </ContentWrapper>
     );
 };
 
 export const FullExample: StoryFn<HeaderProps> = (args) => {
     return (
-        <HeaderWrapper>
+        <ContentWrapper width="480px">
             <Header
                 icon={<div style={{width: 24, height: 24, background: '#ccc', borderRadius: 4}} />}
                 title="Chat Header"
@@ -266,7 +256,7 @@ export const FullExample: StoryFn<HeaderProps> = (args) => {
                 {...mockHandlers}
                 {...args}
             />
-        </HeaderWrapper>
+        </ContentWrapper>
     );
 };
 
@@ -275,7 +265,7 @@ export const FoldingInteractive: StoryFn<HeaderProps> = (args) => {
     const [foldingState, setFoldingState] = useState<'collapsed' | 'opened'>('opened');
 
     return (
-        <HeaderWrapper>
+        <ContentWrapper width="480px">
             <Header
                 title="Interactive Folding"
                 baseActions={[
@@ -295,6 +285,6 @@ export const FoldingInteractive: StoryFn<HeaderProps> = (args) => {
                 handleClose={mockHandlers.handleClose}
                 {...args}
             />
-        </HeaderWrapper>
+        </ContentWrapper>
     );
 };

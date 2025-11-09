@@ -4,3 +4,6 @@ export * from './Tabs';
 export * from './Suggestions';
 export * from './InputContext';
 export * from './BaseMessage';
+export * from './PromptInputHeader';
+export * from './PromptInputBody';
+export * from './PromptInputFooter';

@@ -1,0 +1,96 @@
+@use '../../styles/variables';
+@use '@gravity-ui/uikit/styles/mixins';
+
+$offset-xs: 4px;
+$offset-s: 8px;
+$offset-m: 16px;
+$offset-l: 40px;
+
+$root: '.docs-decorator';
+
+#{$root}#{$root}#{$root}#{$root}#{$root} {
+    p,
+    li:not([class*='#{variables.$ns}']),
+    a:not([class*='#{variables.$ns}']) {
+        @include mixins.text-body-2;
+    }
+
+    .sbdocs-wrapper {
+        padding: 0 $offset-l;
+    }
+
+    .sbdocs-content {
+        max-width: 800px;
+    }
+
+    p,
+    ul:not([class*='#{variables.$ns}']),
+    ol:not([class*='#{variables.$ns}']) {
+        margin: $offset-xs 0;
+
+        & + p,
+        & + ul,
+        & + ol {
+            margin-block-start: $offset-s;
+        }
+    }
+
+    li + li:not([class*='#{variables.$ns}']) {
+        margin-block-start: $offset-xs;
+    }
+
+    ul:not([class*='#{variables.$ns}']),
+    ol:not([class*='#{variables.$ns}']) {
+        padding-inline-start: $offset-m;
+    }
+
+    h1 {
+        @include mixins.text-display-3;
+    }
+
+    h2 {
+        @include mixins.text-display-1;
+        border: 0;
+        padding: 0;
+    }
+
+    h3 {
+        @include mixins.text-header-2;
+    }
+
+    h1,
+    h2,
+    h3 {
+        margin-block: $offset-l $offset-m;
+    }
+
+    a:not([class*='#{variables.$ns}']) {
+        text-decoration: none;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        cursor: pointer;
+
+        color: var(--g-color-text-link);
+
+        &:hover {
+            color: var(--g-color-text-link-hover);
+        }
+    }
+
+    p code,
+    li:not([class*='#{variables.$ns}']) code {
+        @include mixins.text-code-inline-2;
+        line-height: 1;
+        padding: 1px 4px;
+        background: var(--g-color-base-misc-light);
+        color: var(--g-color-text-misc);
+    }
+
+    .docblock-source {
+        margin: $offset-m 0;
+    }
+
+    .docs-example {
+        margin: $offset-m 0;
+    }
+}

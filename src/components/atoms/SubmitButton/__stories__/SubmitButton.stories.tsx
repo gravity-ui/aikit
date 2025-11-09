@@ -1,8 +1,9 @@
 import {useState} from 'react';
 
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {SubmitButton, SubmitButtonProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -42,9 +43,11 @@ type Story = StoryObj<typeof SubmitButton>;
 
 const defaultDecorators = [
     (Story: StoryFn) => (
-        <Showcase>
-            <Story />
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <Story />
+            </Showcase>
+        </ContentWrapper>
     ),
 ] satisfies Story['decorators'];
 
@@ -58,7 +61,11 @@ const mockOnClick = async () => {
 };
 
 export const Playground: StoryFn<SubmitButtonProps> = (args) => {
-    return <SubmitButton {...args} onClick={mockOnClick} />;
+    return (
+        <ContentWrapper>
+            <SubmitButton {...args} onClick={mockOnClick} />
+        </ContentWrapper>
+    );
 };
 Playground.args = {
     size: 'm',
@@ -66,19 +73,35 @@ Playground.args = {
 };
 
 export const Enabled: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onClick={mockOnClick} state="enabled" />;
+    return (
+        <ContentWrapper>
+            <SubmitButton onClick={mockOnClick} state="enabled" />
+        </ContentWrapper>
+    );
 };
 
 export const Disabled: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onClick={mockOnClick} state="disabled" />;
+    return (
+        <ContentWrapper>
+            <SubmitButton onClick={mockOnClick} state="disabled" />
+        </ContentWrapper>
+    );
 };
 
 export const Loading: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onClick={mockOnClick} state="loading" />;
+    return (
+        <ContentWrapper>
+            <SubmitButton onClick={mockOnClick} state="loading" />
+        </ContentWrapper>
+    );
 };
 
 export const Cancelable: StoryFn<SubmitButtonProps> = () => {
-    return <SubmitButton onClick={mockOnClick} state="cancelable" />;
+    return (
+        <ContentWrapper>
+            <SubmitButton onClick={mockOnClick} state="cancelable" />
+        </ContentWrapper>
+    );
 };
 
 export const Size: StoryObj<SubmitButtonProps> = {
@@ -141,10 +164,12 @@ export const Interactive: StoryFn<SubmitButtonProps> = (args) => {
     };
 
     return (
-        <Showcase>
-            <ShowcaseItem title="Click the button to see loading and cancelable states">
-                <SubmitButton {...args} onClick={handleClick} state={state} />
-            </ShowcaseItem>
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <ShowcaseItem title="Click the button to see loading and cancelable states">
+                    <SubmitButton {...args} onClick={handleClick} state={state} />
+                </ShowcaseItem>
+            </Showcase>
+        </ContentWrapper>
     );
 };

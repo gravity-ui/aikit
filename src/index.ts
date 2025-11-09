@@ -25,7 +25,6 @@ export * from './components/molecules/BaseMessage';
 
 // === Organisms ===
 export * from './components/organisms/Header';
-export * from './components/organisms/Footer';
 export * from './components/organisms/UserMessage';
 export * from './components/organisms/ThinkingMessage';
 export * from './components/organisms/ToolMessage';

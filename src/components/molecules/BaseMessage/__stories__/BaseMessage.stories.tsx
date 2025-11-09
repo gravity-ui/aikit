@@ -1,6 +1,7 @@
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {BaseMessage, type BaseMessageProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -39,9 +40,11 @@ type Story = StoryObj<typeof BaseMessage>;
 
 const defaultDecorators = [
     (Story) => (
-        <Showcase>
-            <Story />
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <Story />
+            </Showcase>
+        </ContentWrapper>
     ),
 ] satisfies Story['decorators'];
 
@@ -54,7 +57,11 @@ const buttons = [
     {type: 'unlike', onClick: () => console.log('unlike')},
 ];
 
-export const Playground: StoryFn<BaseMessageProps> = (args) => <BaseMessage {...args} />;
+export const Playground: StoryFn<BaseMessageProps> = (args) => (
+    <ContentWrapper>
+        <BaseMessage {...args} />
+    </ContentWrapper>
+);
 Playground.args = {
     children: 'My message',
     actions: buttons,
@@ -84,7 +91,9 @@ export const Variant: StoryObj<BaseMessageProps> = {
     decorators: defaultDecorators,
 };
 export const ShowActionsOnHover: StoryFn<BaseMessageProps> = (args) => (
-    <BaseMessage {...args} actions={buttons} variant="assistant" showActionsOnHover={true}>
-        {'My message'}
-    </BaseMessage>
+    <ContentWrapper>
+        <BaseMessage {...args} actions={buttons} variant="assistant" showActionsOnHover={true}>
+            {'My message'}
+        </BaseMessage>
+    </ContentWrapper>
 );

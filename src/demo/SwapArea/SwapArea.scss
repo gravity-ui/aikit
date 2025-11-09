@@ -1,0 +1,15 @@
+@use '../../styles/variables.scss';
+
+$block: '.#{variables.$ns}swap-area';
+
+#{$block} {
+    display: flex;
+    padding: 3px 6px;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    align-self: stretch;
+    border-radius: 4px;
+    border: 1px dashed var(--g-color-line-generic);
+    background: var(--g-color-base-generic);
+}

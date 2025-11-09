@@ -27,7 +27,7 @@ export type HeaderProps = {
     foldingState?: 'collapsed' | 'opened';
 
     // Display settings
-    titlePosition?: 'left' | 'center' | 'right'; // default: center
+    titlePosition?: 'left' | 'center'; // default: left
 
     className?: string;
 };

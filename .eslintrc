@@ -1,5 +1,10 @@
 {
-    "extends": ["@gravity-ui/eslint-config", "@gravity-ui/eslint-config/prettier", "@gravity-ui/eslint-config/import-order"],
+    "extends": [
+        "@gravity-ui/eslint-config",
+        "@gravity-ui/eslint-config/prettier",
+        "@gravity-ui/eslint-config/import-order",
+        "plugin:storybook/recommended",
+    ],
     "root": true,
     "env": {
         "node": true,
@@ -8,4 +13,5 @@
     "rules": {
         "import/no-extraneous-dependencies": "off",
     },
+    "ignorePatterns": ["dist/**/*"],
 }
