@@ -38,8 +38,8 @@ Playground.args = {
     children: 'User question',
 };
 
-export const User = () => (
+export const User: StoryFn<MessageBalloonProps> = (args) => (
     <ContentWrapper>
-        <MessageBalloon>User question</MessageBalloon>
+        <MessageBalloon {...args}>User question</MessageBalloon>
     </ContentWrapper>
 );
