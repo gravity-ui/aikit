@@ -1,0 +1,87 @@
+@use '../../../styles/variables';
+@use '../../../styles/functions' as *;
+
+$block: '.#{variables.$ns}chat-history';
+
+#{$block} {
+    &__popup {
+        max-width: 400px;
+        max-height: 600px;
+    }
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        width: 360px;
+        max-height: 560px;
+        background: var(--g-color-base-background);
+    }
+
+    &__list-wrapper {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    &__list {
+        padding: 0 spacing(2);
+    }
+
+    &__list-item {
+        border-radius: 6px;
+    }
+
+    &__filter {
+        display: flex;
+        padding: spacing(2);
+        align-items: center;
+        gap: spacing(2);
+        align-self: stretch;
+        border-bottom: 1px solid var(--line-generic-color-line-generic);
+    }
+
+    &__date-header {
+        display: flex;
+        padding: var(--g-spacing-3) var(--g-spacing-2) var(--g-spacing-1) var(--g-spacing-2);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: spacing(3);
+        align-self: stretch;
+    }
+
+    &__chat-item {
+        display: flex;
+        padding: spacing(2) spacing(4);
+        align-items: center;
+        gap: spacing(4);
+        align-self: stretch;
+        flex: 1;
+    }
+
+    &__chat-content {
+        height: 24px;
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &__icon-button {
+        color: var(--g-color-text-secondary);
+    }
+
+    &__delete-button {
+        margin-left: spacing(2);
+    }
+
+    &__empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: spacing(8) spacing(4);
+        color: var(--g-color-text-secondary);
+        font-size: var(--g-text-body-2-font-size);
+        text-align: center;
+        flex: 1;
+    }
+}

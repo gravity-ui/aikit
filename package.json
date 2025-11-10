@@ -32,7 +32,7 @@
     "prepublishOnly": "npm run build",
     "playwright:install": "playwright install chromium webkit --with-deps",
     "playwright": "playwright test --config=playwright-ct.config.ts",
-    "playwright:update": "npm run playwright -- -u",
+    "playwright:update": "npm run playwright -- -u all",
     "playwright:clear-cache": "rm -rf ./playwright/.cache",
     "playwright:docker": "./playwright/run-docker-command.sh npm run playwright --",
     "playwright:docker:update": "./playwright/run-docker-command.sh npm run playwright:update --",
