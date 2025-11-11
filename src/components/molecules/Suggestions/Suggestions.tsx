@@ -1,7 +1,8 @@
 import {ChevronLeft, ChevronRight} from '@gravity-ui/icons';
-import {ActionTooltip, Button, ButtonButtonProps, Icon, Text} from '@gravity-ui/uikit';
+import {ButtonButtonProps, Icon, Text} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+import {ActionButton} from '../../atoms';
 
 import './Suggestions.scss';
 
@@ -51,8 +52,10 @@ export function Suggestions(props: SuggestionsProps) {
     };
 
     const renderButton = (item: SuggestionsItem, index: number) => {
-        const button = (
-            <Button
+        return (
+            <ActionButton
+                key={item.id || index}
+                tooltipTitle={item.title}
                 size="m"
                 view={item.view || 'outlined'}
                 onClick={() => handleClick(item)}
@@ -79,13 +82,7 @@ export function Suggestions(props: SuggestionsProps) {
                         </div>
                     )}
                 </div>
-            </Button>
-        );
-
-        return (
-            <ActionTooltip key={item.id || index} title={item.title}>
-                {button}
-            </ActionTooltip>
+            </ActionButton>
         );
     };
 

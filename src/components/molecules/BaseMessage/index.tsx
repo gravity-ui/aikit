@@ -6,9 +6,10 @@ import {
     ThumbsUp,
     TrashBin,
 } from '@gravity-ui/icons';
-import {ActionTooltip, Button, Icon, IconData} from '@gravity-ui/uikit';
+import {Icon, IconData} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+import {ActionButton} from '../../atoms';
 import {ButtonGroup} from '../ButtonGroup';
 
 import {i18n} from './i18n';
@@ -68,8 +69,16 @@ export const BaseMessage = (props: BaseMessageProps) => {
             <ButtonGroup className={b('actions')}>
                 {actions?.map((action) => {
                     const tooltipText = getTooltipText(action.type);
-                    const button = (
-                        <Button key={action.type} view="flat-secondary" onClick={action.onClick}>
+
+                    return (
+                        <ActionButton
+                            key={action.type}
+                            tooltipTitle={
+                                tooltipText && action.type !== 'custom' ? tooltipText : undefined
+                            }
+                            view="flat-secondary"
+                            onClick={action.onClick}
+                        >
                             {action.icon || BaseMessageActionIcons[action.type] ? (
                                 <Icon
                                     size={16}
@@ -78,15 +87,7 @@ export const BaseMessage = (props: BaseMessageProps) => {
                             ) : (
                                 action.type
                             )}
-                        </Button>
-                    );
-
-                    return tooltipText && action.type !== 'custom' ? (
-                        <ActionTooltip key={action.type} title={tooltipText}>
-                            {button}
-                        </ActionTooltip>
-                    ) : (
-                        button
+                        </ActionButton>
                     );
                 })}
             </ButtonGroup>
