@@ -103,3 +103,33 @@ export const ShowActionsOnHover: StoryFn<BaseMessageProps> = (args) => (
         </BaseMessage>
     </ContentWrapper>
 );
+
+export const ShowTimestamp: StoryObj<BaseMessageProps> = {
+    render: (args) => (
+        <>
+            <ShowcaseItem title="User">
+                <BaseMessage
+                    {...args}
+                    actions={buttons}
+                    variant="user"
+                    showTimestamp={true}
+                    timestamp="1705312234567"
+                >
+                    {'My message'}
+                </BaseMessage>
+            </ShowcaseItem>
+            <ShowcaseItem title="Assistant">
+                <BaseMessage
+                    {...args}
+                    actions={buttons}
+                    variant="assistant"
+                    showTimestamp={true}
+                    timestamp="1705312234567"
+                >
+                    {'My message'}
+                </BaseMessage>
+            </ShowcaseItem>
+        </>
+    ),
+    decorators: defaultDecorators,
+};

@@ -27,4 +27,14 @@ $block: '.#{variables.$ns}base-message';
             }
         }
     }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: var(--g-spacing-3);
+
+        &_reverse {
+            flex-direction: row-reverse;
+        }
+    }
 }
