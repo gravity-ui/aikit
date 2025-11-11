@@ -1,0 +1,15 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}tool-footer';
+
+#{$block} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__left {
+        display: flex;
+        align-items: center;
+        gap: var(--g-spacing-2);
+    }
+}

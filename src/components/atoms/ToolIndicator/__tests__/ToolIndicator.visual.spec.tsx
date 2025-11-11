@@ -20,4 +20,10 @@ test.describe('ToolIndicator', {tag: '@ToolIndicator'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render loading state', async ({mount, expectScreenshot}) => {
+        await mount(<ToolIndicatorStories.Loading />);
+
+        await expectScreenshot();
+    });
 });
