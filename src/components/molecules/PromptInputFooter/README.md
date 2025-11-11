@@ -4,10 +4,11 @@ A footer component for prompt input that displays action icons (settings, attach
 
 ## Features
 
-- **Action Icons**: Optional settings, attachment, and microphone icons
+- **Action Icons**: Optional settings, attachment, and microphone icons with tooltips
 - **Submit Button**: Integrated SubmitButton with multiple states
 - **Custom Content**: Replace default footer content (SubmitButton always visible)
 - **Flexible Actions**: Configurable click handlers for all actions
+- **Internationalization**: Full i18n support for tooltips (English and Russian)
 
 ## Usage
 
@@ -64,6 +65,14 @@ import {PromptInputFooter} from '@gravity-ui/aikit';
 | `children`          | `ReactNode`         | -        | -       | Custom content to replace the default footer (SubmitButton remains) |
 | `className`         | `string`            | -        | -       | Additional CSS class                                                |
 | `qa`                | `string`            | -        | -       | QA/test identifier                                                  |
+
+## Action Tooltips
+
+Action buttons include tooltips to improve usability:
+
+- **Settings**: "Settings" (English) / "Настройки" (Russian)
+- **Attachment**: "Attach file" (English) / "Прикрепить файл" (Russian)
+- **Microphone**: "Voice input" (English) / "Голосовой ввод" (Russian)
 
 ## SubmitButton States
 

@@ -6,7 +6,7 @@ import {PromptBoxStories} from './helpersPlaywright';
 
 test.describe('PromptBox', {tag: '@PromptBox'}, () => {
     test('should render simple view', async ({mount, expectScreenshot}) => {
-        await mount(<PromptBoxStories.SimpleView />);
+        await mount(<PromptBoxStories.Playground />);
 
         await expectScreenshot();
     });

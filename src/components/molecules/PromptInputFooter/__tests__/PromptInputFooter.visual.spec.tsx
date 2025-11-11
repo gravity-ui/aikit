@@ -6,7 +6,7 @@ import {PromptInputFooterStories} from './helpersPlaywright';
 
 test.describe('PromptInputFooter', {tag: '@PromptInputFooter'}, () => {
     test('should render default state', async ({mount, expectScreenshot}) => {
-        await mount(<PromptInputFooterStories.Default />);
+        await mount(<PromptInputFooterStories.Playground />);
 
         await expectScreenshot();
     });

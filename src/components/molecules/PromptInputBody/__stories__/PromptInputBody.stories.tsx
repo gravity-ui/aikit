@@ -28,7 +28,7 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-export const Default: Story = {
+export const Playground: Story = {
     args: {
         placeholder: 'Plan, code, build and test anything',
     },

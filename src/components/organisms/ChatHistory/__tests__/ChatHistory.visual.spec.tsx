@@ -6,7 +6,7 @@ import {ChatHistoryStories} from './helpersPlaywright';
 
 test.describe('ChatHistory', {tag: '@ChatHistory'}, () => {
     test('should render default view', async ({mount, expectScreenshot}) => {
-        await mount(<ChatHistoryStories.Default />);
+        await mount(<ChatHistoryStories.Playground />);
 
         await expectScreenshot();
     });

@@ -35,7 +35,7 @@ const handleSend = async (data: TSubmitData) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 };
 
-export const SimpleView: Story = {
+export const Playground: Story = {
     args: {
         view: 'simple',
         onSend: handleSend,

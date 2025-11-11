@@ -1,9 +1,11 @@
 import {useCallback} from 'react';
 
 import {ArrowUp, Stop} from '@gravity-ui/icons';
-import {Button, ButtonButtonProps, Icon, Spin} from '@gravity-ui/uikit';
+import {ActionTooltip, Button, ButtonButtonProps, Icon, Spin} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+
+import {i18n} from './i18n';
 
 import './SubmitButton.scss';
 
@@ -59,22 +61,24 @@ export function SubmitButton({onClick, state, className, size = 'm', qa}: Submit
     }, [state, onClick]);
 
     return (
-        <Button
-            view="action"
-            size={size}
-            color="brand"
-            disabled={isDisabled}
-            onClick={handleClick}
-            className={b({size, loading: isLoading, cancelable: isCancelable}, className)}
-            qa={qa}
-        >
-            {isLoading ? (
-                <div className={b('loader')}>
-                    <Spin className={b('spinner')} size="xs" />
-                </div>
-            ) : (
-                <Icon size={16} data={iconData} />
-            )}
-        </Button>
+        <ActionTooltip title={i18n('tooltip-send')}>
+            <Button
+                view="action"
+                size={size}
+                color="brand"
+                disabled={isDisabled}
+                onClick={handleClick}
+                className={b({size, loading: isLoading, cancelable: isCancelable}, className)}
+                qa={qa}
+            >
+                {isLoading ? (
+                    <div className={b('loader')}>
+                        <Spin className={b('spinner')} size="xs" />
+                    </div>
+                ) : (
+                    <Icon size={16} data={iconData} />
+                )}
+            </Button>
+        </ActionTooltip>
     );
 }

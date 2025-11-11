@@ -6,7 +6,7 @@ import {PromptInputBodyStories} from './helpersPlaywright';
 
 test.describe('PromptInputBody', {tag: '@PromptInputBody'}, () => {
     test('should render default state', async ({mount, expectScreenshot}) => {
-        await mount(<PromptInputBodyStories.Default />);
+        await mount(<PromptInputBodyStories.Playground />);
 
         await expectScreenshot();
     });
