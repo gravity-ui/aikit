@@ -1,6 +1,7 @@
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {Loader, LoaderProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -40,18 +41,32 @@ type Story = StoryObj<typeof Loader>;
 
 const defaultDecorators = [
     (Story) => (
-        <Showcase>
-            <Story />
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <Story />
+            </Showcase>
+        </ContentWrapper>
     ),
 ] satisfies Story['decorators'];
 
-export const Playground: StoryFn<LoaderProps> = (args) => <Loader {...args} />;
+export const Playground: StoryFn<LoaderProps> = (args) => (
+    <ContentWrapper>
+        <Loader {...args} />
+    </ContentWrapper>
+);
 Playground.args = {view: 'streaming', size: 's'};
 
-export const Loading: StoryFn<LoaderProps> = (args) => <Loader {...args} view="loading" />;
+export const Loading: StoryFn<LoaderProps> = (args) => (
+    <ContentWrapper>
+        <Loader {...args} view="loading" />
+    </ContentWrapper>
+);
 
-export const Streaming: StoryFn<LoaderProps> = (args) => <Loader {...args} view="streaming" />;
+export const Streaming: StoryFn<LoaderProps> = (args) => (
+    <ContentWrapper>
+        <Loader {...args} view="streaming" />
+    </ContentWrapper>
+);
 
 export const Size: StoryObj<LoaderProps> = {
     render: (args) => (

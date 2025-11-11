@@ -7,7 +7,8 @@ Header component for displaying chat header with navigation and actions.
 - Display chat title
 - Navigation (history, new chat, close)
 - Additional actions
-- Title positioning (left, center, right)
+- Title positioning (left, center)
+- Internationalized tooltips for action buttons
 
 ## Usage
 
@@ -86,15 +87,6 @@ import {Header, HeaderAction} from '@gravity-ui/aikit';
   handleNewChat={() => console.log('New chat')}
   handleClose={() => console.log('Close')}
 />;
-
-// Right
-<Header
-  title="Right Title"
-  titlePosition="right"
-  baseActions={[HeaderAction.NewChat, HeaderAction.Close]}
-  handleNewChat={() => console.log('New chat')}
-  handleClose={() => console.log('Close')}
-/>;
 ```
 
 ## Using useHeader hook
@@ -124,6 +116,18 @@ Base actions order: `newChat` → `history` → `folding` → `close`
 
 - `folding` - toggle between collapsed and opened states
 
+### Action Tooltips
+
+Each base action button has a tooltip that shows the action name. Tooltips are implemented using the `ActionTooltip` component from `@gravity-ui/uikit` and are internationalized to support multiple languages (English and Russian by default).
+
+Available tooltip keys in i18n:
+
+- `action-tooltip-newChat` - "New chat" / "Новый чат"
+- `action-tooltip-history` - "History" / "История"
+- `action-tooltip-folding-collapsed` - "Expand" / "Развернуть"
+- `action-tooltip-folding-opened` - "Collapse" / "Свернуть"
+- `action-tooltip-close` - "Close" / "Закрыть"
+
 ## Styling
 
 The component uses CSS variables for theming:
@@ -140,20 +144,20 @@ The component uses CSS variables for theming:
 
 ### HeaderProps
 
-| Prop                  | Type                                       | Description                          |
-| --------------------- | ------------------------------------------ | ------------------------------------ |
-| `icon`                | `React.ReactNode`                          | Icon to the left of the title        |
-| `title`               | `string`                                   | Chat title                           |
-| `preview`             | `React.ReactNode`                          | Preview after the title              |
-| `baseActions`         | `HeaderAction[]`                           | Array of base actions                |
-| `handleNewChat`       | `() => void`                               | New chat handler                     |
-| `handleHistoryToggle` | `() => void`                               | History toggle handler               |
-| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | Folding handler                      |
-| `handleClose`         | `() => void`                               | Close handler                        |
-| `additionalActions`   | `AdditionalActionsConfig[]`                | Array of additional actions          |
-| `foldingState`        | `'collapsed' \| 'opened'`                  | Folding state (default: `'opened'`)  |
-| `titlePosition`       | `'left' \| 'center' \| 'right'`            | Title position (default: `'center'`) |
-| `className`           | `string`                                   | Additional CSS class                 |
+| Prop                  | Type                                       | Description                         |
+| --------------------- | ------------------------------------------ | ----------------------------------- |
+| `icon`                | `React.ReactNode`                          | Icon to the left of the title       |
+| `title`               | `string`                                   | Chat title                          |
+| `preview`             | `React.ReactNode`                          | Preview after the title             |
+| `baseActions`         | `HeaderAction[]`                           | Array of base actions               |
+| `handleNewChat`       | `() => void`                               | New chat handler                    |
+| `handleHistoryToggle` | `() => void`                               | History toggle handler              |
+| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | Folding handler                     |
+| `handleClose`         | `() => void`                               | Close handler                       |
+| `additionalActions`   | `AdditionalActionsConfig[]`                | Array of additional actions         |
+| `foldingState`        | `'collapsed' \| 'opened'`                  | Folding state (default: `'opened'`) |
+| `titlePosition`       | `'left' \| 'center'`                       | Title position (default: `'left'`)  |
+| `className`           | `string`                                   | Additional CSS class                |
 
 ### HeaderAction
 

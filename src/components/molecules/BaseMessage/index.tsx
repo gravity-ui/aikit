@@ -1,8 +1,17 @@
-import {ArrowRotateLeft, Copy, Pencil, ThumbsDown, ThumbsUp, TrashBin} from '@gravity-ui/icons';
-import {Button, Icon, IconData} from '@gravity-ui/uikit';
+import {
+    ArrowRotateLeft,
+    Copy as CopyIcon,
+    Pencil,
+    ThumbsDown,
+    ThumbsUp,
+    TrashBin,
+} from '@gravity-ui/icons';
+import {ActionTooltip, Button, Icon, IconData} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 import {ButtonGroup} from '../ButtonGroup';
+
+import {i18n} from './i18n';
 
 import './BaseMessage.scss';
 
@@ -18,7 +27,7 @@ export enum BaseMessageAction {
 }
 
 const BaseMessageActionIcons: Record<BaseMessageAction | string, IconData> = {
-    [BaseMessageAction.Copy]: Copy,
+    [BaseMessageAction.Copy]: CopyIcon,
     [BaseMessageAction.Edit]: Pencil,
     [BaseMessageAction.Retry]: ArrowRotateLeft,
     [BaseMessageAction.Like]: ThumbsUp,
@@ -42,22 +51,44 @@ export type BaseMessageProps = {
 export const BaseMessage = (props: BaseMessageProps) => {
     const {className, qa, showActionsOnHover, actions, children, variant} = props;
 
+    // Get tooltip text for action
+    const getTooltipText = (actionType: BaseMessageAction | string): string => {
+        const tooltipKey = `action-tooltip-${actionType}`;
+        // Check if tooltip exists in i18n, otherwise return empty string
+        try {
+            return i18n(tooltipKey as Parameters<typeof i18n>[0]);
+        } catch {
+            return '';
+        }
+    };
+
     return (
         <div className={b({variant, 'btn-hover': showActionsOnHover}, className)} data-qa={qa}>
             {children}
             <ButtonGroup className={b('actions')}>
-                {actions?.map((action) => (
-                    <Button key={action.type} view="flat-secondary" onClick={action.onClick}>
-                        {action.icon || BaseMessageActionIcons[action.type] ? (
-                            <Icon
-                                size={16}
-                                data={action.icon || BaseMessageActionIcons[action.type]}
-                            />
-                        ) : (
-                            action.type
-                        )}
-                    </Button>
-                ))}
+                {actions?.map((action) => {
+                    const tooltipText = getTooltipText(action.type);
+                    const button = (
+                        <Button key={action.type} view="flat-secondary" onClick={action.onClick}>
+                            {action.icon || BaseMessageActionIcons[action.type] ? (
+                                <Icon
+                                    size={16}
+                                    data={action.icon || BaseMessageActionIcons[action.type]}
+                                />
+                            ) : (
+                                action.type
+                            )}
+                        </Button>
+                    );
+
+                    return tooltipText && action.type !== 'custom' ? (
+                        <ActionTooltip key={action.type} title={tooltipText}>
+                            {button}
+                        </ActionTooltip>
+                    ) : (
+                        button
+                    );
+                })}
             </ButtonGroup>
         </div>
     );

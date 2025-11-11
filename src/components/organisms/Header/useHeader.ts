@@ -19,7 +19,7 @@ export function useHeader(props: HeaderProps): {
     icon: React.ReactNode | undefined;
     baseActions: ActionItem[];
     additionalActions: ActionItem[];
-    titlePosition: 'left' | 'center' | 'right';
+    titlePosition: 'left' | 'center';
     className?: string;
 } {
     const {
@@ -33,7 +33,7 @@ export function useHeader(props: HeaderProps): {
         handleFolding,
         foldingState = 'opened',
         additionalActions = [],
-        titlePosition = 'center',
+        titlePosition = 'left',
         className,
     } = props;
 

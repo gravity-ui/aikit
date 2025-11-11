@@ -1,6 +1,7 @@
-import {Meta, StoryFn} from '@storybook/react';
+import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {ToolIndicator, ToolIndicatorProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 
 import MDXDocs from './Docs.mdx';
 
@@ -29,9 +30,25 @@ export default {
     },
 } as Meta;
 
-export const Playground: StoryFn<ToolIndicatorProps> = (args) => <ToolIndicator {...args} />;
+export const Playground: StoryFn<ToolIndicatorProps> = (args) => (
+    <ContentWrapper>
+        <ToolIndicator {...args} />
+    </ContentWrapper>
+);
 Playground.args = {status: 'success'};
 
-export const Success = () => <ToolIndicator status="success" />;
-export const Error = () => <ToolIndicator status="error" />;
-export const Info = () => <ToolIndicator status="info" />;
+export const Success = () => (
+    <ContentWrapper>
+        <ToolIndicator status="success" />
+    </ContentWrapper>
+);
+export const Error = () => (
+    <ContentWrapper>
+        <ToolIndicator status="error" />
+    </ContentWrapper>
+);
+export const Info = () => (
+    <ContentWrapper>
+        <ToolIndicator status="info" />
+    </ContentWrapper>
+);

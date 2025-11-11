@@ -1,0 +1,25 @@
+@use '../../../styles/variables.scss';
+
+$block: '.#{variables.$ns}prompt-input-footer';
+
+#{$block} {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    align-self: stretch;
+    gap: var(--g-spacing-1);
+
+    &__action-button {
+        color: var(--g-color-text-secondary);
+
+        &:hover {
+            color: var(--g-color-text-primary);
+        }
+    }
+
+    &__content {
+        display: flex;
+        align-items: center;
+        flex: 1;
+    }
+}

@@ -4,8 +4,8 @@ const config: StorybookConfig = {
     stories: ['../src/**/*.stories.@(ts|tsx)', '../src/**/*.mdx'],
     addons: [
         '@storybook/preset-scss',
-        {name: '@storybook/addon-essentials', options: {backgrounds: false}},
         '@storybook/addon-webpack5-compiler-babel',
+        '@storybook/addon-docs',
     ],
 
     framework: {
@@ -14,10 +14,15 @@ const config: StorybookConfig = {
     },
 
     docs: {
-        autodocs: true,
+        defaultName: 'Docs',
     },
+
     core: {
         disableTelemetry: true,
+    },
+
+    features: {
+        backgrounds: false,
     },
 };
 

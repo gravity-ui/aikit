@@ -5,13 +5,15 @@ import {
     ChevronsExpandUpRight,
     ClockArrowRotateLeft,
     Plus,
+    Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {Button, Icon, Text} from '@gravity-ui/uikit';
+import {ActionTooltip, Button, Icon, Text} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 import {ButtonGroup} from '../../molecules';
 
+import {i18n} from './i18n';
 import {HeaderAction, type HeaderProps} from './types';
 import {ActionItem, useHeader} from './useHeader';
 
@@ -56,17 +58,24 @@ export function Header(props: HeaderProps) {
             return null;
         }
 
+        // Get tooltip text
+        let tooltipKey = `action-tooltip-${action.id}`;
+        if (action.id === HeaderAction.Folding && action.foldingState) {
+            tooltipKey = `action-tooltip-folding-${action.foldingState}`;
+        }
+
         return (
-            <Button
-                key={action.id}
-                size="m"
-                view="flat"
-                onClick={action.onClick}
-                className={b('action-button')}
-                qa={`header-action-${action.id}`}
-            >
-                <Icon data={IconComponent} size={16} />
-            </Button>
+            <ActionTooltip key={action.id} title={i18n(tooltipKey as Parameters<typeof i18n>[0])}>
+                <Button
+                    size="m"
+                    view="flat"
+                    onClick={action.onClick}
+                    className={b('action-button')}
+                    qa={`header-action-${action.id}`}
+                >
+                    <Icon data={IconComponent} size={16} />
+                </Button>
+            </ActionTooltip>
         );
     };
 
@@ -93,7 +102,7 @@ export function Header(props: HeaderProps) {
     return (
         <div className={b('', className)}>
             {/* Left part: icon */}
-            {icon && <div className={b('icon')}>{icon}</div>}
+            {icon ? <div className={b('icon')}>{icon}</div> : <Icon data={Sparkles} size={16} />}
 
             {/* Center part: title with preview */}
             <div className={titlePositionClass}>

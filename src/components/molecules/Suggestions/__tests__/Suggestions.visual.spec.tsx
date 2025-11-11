@@ -58,4 +58,37 @@ test.describe('Suggestions', {tag: '@Suggestions'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with left icon', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithLeftIcon />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with right icon', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithRightIcon />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with mixed icons', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithMixedIcons />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with icons in list layout with container', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<SuggestionsStories.IconsWithContainer />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with icons in grid layout', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithIconsInGridLayout />);
+
+        await expectScreenshot();
+    });
 });

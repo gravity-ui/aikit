@@ -1,6 +1,7 @@
-import {Meta, StoryFn} from '@storybook/react';
+import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {MessageBalloon, type MessageBalloonProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 
 import MDXDocs from './Docs.mdx';
 
@@ -28,9 +29,17 @@ export default {
     },
 } as Meta;
 
-export const Playground: StoryFn<MessageBalloonProps> = (args) => <MessageBalloon {...args} />;
+export const Playground: StoryFn<MessageBalloonProps> = (args) => (
+    <ContentWrapper>
+        <MessageBalloon {...args} />
+    </ContentWrapper>
+);
 Playground.args = {
     children: 'User question',
 };
 
-export const User = () => <MessageBalloon>User question</MessageBalloon>;
+export const User = () => (
+    <ContentWrapper>
+        <MessageBalloon>User question</MessageBalloon>
+    </ContentWrapper>
+);

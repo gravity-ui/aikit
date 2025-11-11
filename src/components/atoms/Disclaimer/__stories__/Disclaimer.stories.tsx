@@ -1,6 +1,7 @@
-import {Meta, StoryFn} from '@storybook/react';
+import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {Disclaimer, DisclaimerProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 
 import MDXDocs from './Docs.mdx';
 
@@ -28,21 +29,31 @@ export default {
     },
 } as Meta;
 
-export const Playground: StoryFn<DisclaimerProps> = (args) => <Disclaimer {...args} />;
+export const Playground: StoryFn<DisclaimerProps> = (args) => (
+    <ContentWrapper>
+        <Disclaimer {...args} />
+    </ContentWrapper>
+);
 Playground.args = {text: 'This is a disclaimer text'};
 
 export const WithText: StoryFn<DisclaimerProps> = (args) => (
-    <Disclaimer {...args} text="This is an important disclaimer message" />
+    <ContentWrapper>
+        <Disclaimer {...args} text="This is an important disclaimer message" />
+    </ContentWrapper>
 );
 
 export const WithChildren: StoryFn<DisclaimerProps> = (args) => (
-    <Disclaimer {...args}>
-        <span>Custom content goes here</span>
-    </Disclaimer>
+    <ContentWrapper>
+        <Disclaimer {...args}>
+            <span>Custom content goes here</span>
+        </Disclaimer>
+    </ContentWrapper>
 );
 
 export const WithTextAndChildren: StoryFn<DisclaimerProps> = (args) => (
-    <Disclaimer {...args} text="Disclaimer text">
-        <span>Additional content</span>
-    </Disclaimer>
+    <ContentWrapper>
+        <Disclaimer {...args} text="Disclaimer text">
+            <span>Additional content</span>
+        </Disclaimer>
+    </ContentWrapper>
 );

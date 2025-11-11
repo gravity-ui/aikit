@@ -1,7 +1,8 @@
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {ChatDate, ChatDateProps} from '..';
 import {RELATIVE_DATE_THRESHOLD} from '../../../../constants';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -51,47 +52,67 @@ type Story = StoryObj<typeof ChatDate>;
 
 const defaultDecorators = [
     (Story) => (
-        <Showcase>
-            <Story />
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <Story />
+            </Showcase>
+        </ContentWrapper>
     ),
 ] satisfies Story['decorators'];
 
-export const Playground: StoryFn<ChatDateProps> = (args) => <ChatDate {...args} />;
+export const Playground: StoryFn<ChatDateProps> = (args) => (
+    <ContentWrapper>
+        <ChatDate {...args} />
+    </ContentWrapper>
+);
 Playground.args = {
     date: new Date().toISOString(),
 };
 
 export const DateString: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate {...args} date="2024-01-15T10:30:00Z" />
+    <ContentWrapper>
+        <ChatDate {...args} date="2024-01-15T10:30:00Z" />
+    </ContentWrapper>
 );
 
 export const DateObject: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate {...args} date={new Date(2024, 0, 15, 10, 30)} />
+    <ContentWrapper>
+        <ChatDate {...args} date={new Date(2024, 0, 15, 10, 30)} />
+    </ContentWrapper>
 );
 
 export const Timestamp: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate {...args} date={1705312200000} />
+    <ContentWrapper>
+        <ChatDate {...args} date={1705312200000} />
+    </ContentWrapper>
 );
 
 export const WithTime: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate {...args} date="2024-01-15T10:30:00Z" showTime />
+    <ContentWrapper>
+        <ChatDate {...args} date="2024-01-15T10:30:00Z" showTime />
+    </ContentWrapper>
 );
 
 export const CustomFormat: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate {...args} date="2024-01-15T10:30:00Z" format="DD/MM/YYYY" />
+    <ContentWrapper>
+        <ChatDate {...args} date="2024-01-15T10:30:00Z" format="DD/MM/YYYY" />
+    </ContentWrapper>
 );
 
 export const CustomFormatWithTime: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate {...args} date="2024-01-15T10:30:00Z" format="DD/MM/YYYY HH:mm" showTime />
+    <ContentWrapper>
+        <ChatDate {...args} date="2024-01-15T10:30:00Z" format="DD/MM/YYYY HH:mm" showTime />
+    </ContentWrapper>
 );
 
 export const WithCustomStyle: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate
-        {...args}
-        date="2024-01-15T10:30:00Z"
-        style={{color: 'red', fontWeight: 'bold', fontSize: '18px'}}
-    />
+    <ContentWrapper>
+        <ChatDate
+            {...args}
+            date="2024-01-15T10:30:00Z"
+            style={{color: 'red', fontWeight: 'bold', fontSize: '18px'}}
+        />
+    </ContentWrapper>
 );
 
 export const DifferentFormats: StoryObj<ChatDateProps> = {
@@ -163,5 +184,7 @@ export const RecentDates: StoryObj<ChatDateProps> = {
 };
 
 export const InvalidDate: StoryFn<ChatDateProps> = (args) => (
-    <ChatDate {...args} date="invalid-date-string" />
+    <ContentWrapper>
+        <ChatDate {...args} date="invalid-date-string" />
+    </ContentWrapper>
 );

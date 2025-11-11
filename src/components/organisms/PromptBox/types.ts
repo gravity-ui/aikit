@@ -1,0 +1,66 @@
+import {ReactNode} from 'react';
+
+import {PromptInputHeaderProps} from '../../molecules/PromptInputHeader';
+import {SuggestionsItem, SuggestionsProps} from '../../molecules/Suggestions';
+
+/**
+ * Props for the header section of PromptBox
+ */
+export type PromptBoxHeaderProps = {
+    /** Custom content for header area */
+    topContent?: ReactNode;
+    /** Show context indicator in header */
+    showContextIndicator?: boolean;
+    /** Props for context indicator */
+    contextIndicatorProps?: PromptInputHeaderProps['contextIndicatorProps'];
+};
+
+/**
+ * Props for the body/textarea section of PromptBox
+ */
+export type PromptBoxBodyProps = {
+    /** Placeholder text for textarea */
+    placeholder?: string;
+    /** Minimum number of textarea rows */
+    minRows?: number;
+    /** Maximum number of textarea rows */
+    maxRows?: number;
+    /** Auto focus textarea on mount */
+    autoFocus?: boolean;
+};
+
+/**
+ * Props for the footer section of PromptBox
+ */
+export type PromptBoxFooterProps = {
+    /** Custom content for footer area (SubmitButton will still be shown) */
+    bottomContent?: ReactNode;
+    /** Show settings icon in footer */
+    showSettings?: boolean;
+    /** Settings icon click handler */
+    onSettingsClick?: () => void;
+    /** Show attachment icon in footer */
+    showAttachment?: boolean;
+    /** Attachment icon click handler */
+    onAttachmentClick?: () => void;
+    /** Show microphone icon in footer */
+    showMicrophone?: boolean;
+    /** Microphone icon click handler */
+    onMicrophoneClick?: () => void;
+};
+
+/**
+ * Props for the suggestions section of PromptBox
+ */
+export type PromptBoxSuggestionsProps = {
+    /** Submit suggestions array */
+    suggestions?: SuggestionsItem[];
+    /** Show submit suggestions */
+    showSuggestions?: boolean;
+    /** Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical */
+    suggestionsLayout?: SuggestionsProps['layout'];
+    /** Text alignment inside suggestion buttons */
+    suggestionsTextAlign?: SuggestionsProps['textAlign'];
+    /** Callback when suggestion is clicked */
+    onSuggestionClick?: (content: string, id?: string) => void;
+};

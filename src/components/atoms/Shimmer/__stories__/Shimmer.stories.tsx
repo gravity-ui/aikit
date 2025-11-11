@@ -1,6 +1,7 @@
-import {Meta, StoryFn} from '@storybook/react';
+import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {Shimmer, ShimmerProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 
 import MDXDocs from './Docs.mdx';
 
@@ -29,7 +30,9 @@ export default {
 } as Meta;
 
 export const Playground: StoryFn<ShimmerProps> = (args) => (
-    <Shimmer {...args}>
-        <span>Awaiting confirmation</span>
-    </Shimmer>
+    <ContentWrapper>
+        <Shimmer {...args}>
+            <span>Awaiting confirmation</span>
+        </Shimmer>
+    </ContentWrapper>
 );

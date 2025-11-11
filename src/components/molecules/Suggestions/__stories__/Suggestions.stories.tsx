@@ -1,6 +1,7 @@
-import {Meta, StoryFn} from '@storybook/react';
+import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {Suggestions, SuggestionsProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 
 import MDXDocs from './Docs.mdx';
 
@@ -42,7 +43,11 @@ export default {
     },
 } as Meta;
 
-export const Playground: StoryFn<SuggestionsProps> = (args) => <Suggestions {...args} />;
+export const Playground: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions {...args} />
+    </ContentWrapper>
+);
 Playground.args = {
     items: [
         {id: '1', title: 'First suggestion'},
@@ -56,22 +61,7 @@ Playground.args = {
 };
 
 export const ListLayout: StoryFn<SuggestionsProps> = (args) => (
-    <Suggestions
-        {...args}
-        items={[
-            {id: '1', title: 'Example suggestion'},
-            {id: '2', title: 'Another one suggestion'},
-            {id: '3', title: 'Looooooong suggestion for testing'},
-        ]}
-        layout="list"
-        onClick={() => {
-            // onClick handler
-        }}
-    />
-);
-
-export const ListLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
-    <div style={{width: '200px', border: '1px solid red'}}>
+    <ContentWrapper>
         <Suggestions
             {...args}
             items={[
@@ -84,27 +74,28 @@ export const ListLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
                 // onClick handler
             }}
         />
-    </div>
+    </ContentWrapper>
+);
+
+export const ListLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper width="200px">
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Example suggestion'},
+                {id: '2', title: 'Another one suggestion'},
+                {id: '3', title: 'Looooooong suggestion for testing'},
+            ]}
+            layout="list"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
 );
 
 export const GridLayout: StoryFn<SuggestionsProps> = (args) => (
-    <Suggestions
-        {...args}
-        items={[
-            {id: '1', title: 'Option 1'},
-            {id: '2', title: 'Option 2'},
-            {id: '3', title: 'Option 3'},
-            {id: '4', title: 'Option 4'},
-        ]}
-        layout="grid"
-        onClick={() => {
-            // onClick handler
-        }}
-    />
-);
-
-export const GridLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
-    <div style={{width: '300px', border: '1px solid red'}}>
+    <ContentWrapper>
         <Suggestions
             {...args}
             items={[
@@ -118,67 +109,179 @@ export const GridLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
                 // onClick handler
             }}
         />
-    </div>
+    </ContentWrapper>
+);
+
+export const GridLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper width="300px">
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Option 1'},
+                {id: '2', title: 'Option 2'},
+                {id: '3', title: 'Option 3'},
+                {id: '4', title: 'Option 4'},
+            ]}
+            layout="grid"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
 );
 
 export const WithoutIds: StoryFn<SuggestionsProps> = (args) => (
-    <Suggestions
-        {...args}
-        items={[{title: 'First item'}, {title: 'Second item'}, {title: 'Third item'}]}
-        onClick={() => {
-            // onClick handler
-        }}
-    />
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[{title: 'First item'}, {title: 'Second item'}, {title: 'Third item'}]}
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
 );
 
 export const SingleItem: StoryFn<SuggestionsProps> = (args) => (
-    <Suggestions
-        {...args}
-        items={[{id: '1', title: 'Only one suggestion'}]}
-        onClick={() => {
-            // onClick handler
-        }}
-    />
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[{id: '1', title: 'Only one suggestion'}]}
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
 );
 
 export const TextAlignLeft: StoryFn<SuggestionsProps> = (args) => (
-    <Suggestions
-        {...args}
-        items={[
-            {id: '1', title: 'Left aligned text'},
-            {id: '2', title: 'Another left aligned suggestion'},
-        ]}
-        textAlign="left"
-        onClick={() => {
-            // onClick handler
-        }}
-    />
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Left aligned text'},
+                {id: '2', title: 'Another left aligned suggestion'},
+            ]}
+            textAlign="left"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
 );
 
 export const TextAlignCenter: StoryFn<SuggestionsProps> = (args) => (
-    <Suggestions
-        {...args}
-        items={[
-            {id: '1', title: 'Center aligned text'},
-            {id: '2', title: 'Another centered suggestion'},
-        ]}
-        textAlign="center"
-        onClick={() => {
-            // onClick handler
-        }}
-    />
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Center aligned text'},
+                {id: '2', title: 'Another centered suggestion'},
+            ]}
+            textAlign="center"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
 );
 
 export const TextAlignRight: StoryFn<SuggestionsProps> = (args) => (
-    <Suggestions
-        {...args}
-        items={[
-            {id: '1', title: 'Right aligned text'},
-            {id: '2', title: 'Another right aligned suggestion'},
-        ]}
-        textAlign="right"
-        onClick={() => {
-            // onClick handler
-        }}
-    />
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Right aligned text'},
+                {id: '2', title: 'Another right aligned suggestion'},
+            ]}
+            textAlign="right"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithLeftIcon: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Previous page', icon: 'left'},
+                {id: '2', title: 'Go back', icon: 'left'},
+                {id: '3', title: 'Return to start', icon: 'left'},
+            ]}
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithRightIcon: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Next page', icon: 'right'},
+                {id: '2', title: 'Continue', icon: 'right'},
+                {id: '3', title: 'Go forward', icon: 'right'},
+            ]}
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithMixedIcons: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Previous', icon: 'left'},
+                {id: '2', title: 'No action'},
+                {id: '3', title: 'Next', icon: 'right'},
+            ]}
+            layout="grid"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const IconsWithContainer: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper width="200px">
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Example suggestion', icon: 'right'},
+                {id: '2', title: 'Another one suggestion', icon: 'right'},
+                {id: '3', title: 'Looooooong suggestion for testing', icon: 'right'},
+            ]}
+            layout="list"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithIconsInGridLayout: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            items={[
+                {id: '1', title: 'Back', icon: 'left'},
+                {id: '2', title: 'Home'},
+                {id: '3', title: 'Settings'},
+                {id: '4', title: 'Forward', icon: 'right'},
+            ]}
+            layout="grid"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
 );

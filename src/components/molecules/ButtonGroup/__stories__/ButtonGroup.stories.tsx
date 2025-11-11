@@ -1,7 +1,8 @@
 import {Button} from '@gravity-ui/uikit';
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {ButtonGroup, type ButtonGroupProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -36,9 +37,11 @@ type Story = StoryObj<typeof ButtonGroup>;
 
 const defaultDecorators = [
     (Story) => (
-        <Showcase>
-            <Story />
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <Story />
+            </Showcase>
+        </ContentWrapper>
     ),
 ] satisfies Story['decorators'];
 
@@ -50,7 +53,11 @@ const buttonChildren = (
     </>
 );
 
-export const Playground: StoryFn<ButtonGroupProps> = (args) => <ButtonGroup {...args} />;
+export const Playground: StoryFn<ButtonGroupProps> = (args) => (
+    <ContentWrapper>
+        <ButtonGroup {...args} />
+    </ContentWrapper>
+);
 Playground.args = {
     children: buttonChildren,
     orientation: 'horizontal',

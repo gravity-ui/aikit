@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
 
 import {ArrowUp, Stop} from '@gravity-ui/icons';
-import {Button, Icon, Spin} from '@gravity-ui/uikit';
+import {Button, ButtonButtonProps, Icon, Spin} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
@@ -9,7 +9,6 @@ import './SubmitButton.scss';
 
 const b = block('submit-button');
 
-export type SubmitButtonSize = 's' | 'm' | 'l';
 export type SubmitButtonState = 'enabled' | 'disabled' | 'loading' | 'cancelable';
 
 export interface SubmitButtonProps {
@@ -28,7 +27,7 @@ export interface SubmitButtonProps {
     /**
      * Button size
      */
-    size?: SubmitButtonSize;
+    size?: ButtonButtonProps['size'];
     /**
      * QA/test identifier
      */
