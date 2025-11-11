@@ -1,8 +1,9 @@
 import {Arrows3RotateLeft} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {Alert, AlertProps} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -33,13 +34,19 @@ type Story = StoryObj<typeof Alert>;
 
 const defaultDecorators = [
     (Story) => (
-        <Showcase>
-            <Story />
-        </Showcase>
+        <ContentWrapper>
+            <Showcase>
+                <Story />
+            </Showcase>
+        </ContentWrapper>
     ),
 ] satisfies Story['decorators'];
 
-export const Playground: StoryFn<AlertProps> = (args) => <Alert {...args} />;
+export const Playground: StoryFn<AlertProps> = (args) => (
+    <ContentWrapper>
+        <Alert {...args} />
+    </ContentWrapper>
+);
 Playground.args = {
     text: 'Alert message',
     variant: 'default',
@@ -67,7 +74,9 @@ export const Variant: StoryObj<AlertProps> = {
 };
 
 export const Action: StoryFn<AlertProps> = (args) => (
-    <Alert {...args} button={{content: 'Retry', onClick: () => ({})}} />
+    <ContentWrapper>
+        <Alert {...args} button={{content: 'Retry', onClick: () => ({})}} />
+    </ContentWrapper>
 );
 Action.args = {
     text: 'Alert message',
@@ -75,7 +84,9 @@ Action.args = {
 };
 
 export const LongText: StoryFn<AlertProps> = (args) => (
-    <Alert {...args} button={{content: 'Retry', onClick: () => ({})}} />
+    <ContentWrapper>
+        <Alert {...args} button={{content: 'Retry', onClick: () => ({})}} />
+    </ContentWrapper>
 );
 LongText.args = {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
@@ -83,7 +94,9 @@ LongText.args = {
 };
 
 export const CustomIcon: StoryFn<AlertProps> = (args) => (
-    <Alert {...args} icon={<Icon data={Arrows3RotateLeft} size={20} />} />
+    <ContentWrapper>
+        <Alert {...args} icon={<Icon data={Arrows3RotateLeft} size={20} />} />
+    </ContentWrapper>
 );
 CustomIcon.args = {
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
