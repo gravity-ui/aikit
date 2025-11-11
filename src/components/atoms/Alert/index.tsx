@@ -1,3 +1,5 @@
+import {useMemo} from 'react';
+
 import {CircleExclamationFill, CircleInfoFill, TriangleExclamationFill} from '@gravity-ui/icons';
 import {Button, Icon, IconData, Text} from '@gravity-ui/uikit';
 
@@ -26,13 +28,21 @@ const statusIcons: Record<string, IconData> = {
 };
 
 export function Alert({text, icon, button, variant = 'default', className, qa}: AlertProps) {
-    const iconData = variant ? statusIcons[variant] : null;
+    const statusIcon = useMemo(() => {
+        if (icon) {
+            return <div className={b('icon')}>{icon}</div>;
+        }
+        const iconData = variant ? statusIcons[variant] : null;
+
+        if (iconData) {
+            return <Icon data={iconData} size={14} className={b('icon', {variant})} />;
+        }
+        return null;
+    }, [icon, variant]);
+
     return (
         <div className={b(null, className)} data-qa={qa}>
-            {icon ||
-                (iconData ? (
-                    <Icon data={iconData} size={14} className={b('icon', {variant})} />
-                ) : null)}
+            {statusIcon}
             <Text variant="body-1">{text}</Text>
             {button ? (
                 <Button onClick={button.onClick} size="s" view="outlined" className={b('action')}>

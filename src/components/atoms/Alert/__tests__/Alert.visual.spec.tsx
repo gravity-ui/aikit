@@ -16,4 +16,16 @@ test.describe('Alert', {tag: '@Alert'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should correct render custom icon', async ({mount, expectScreenshot}) => {
+        await mount(<AlertStories.CustomIcon />);
+
+        await expectScreenshot();
+    });
+
+    test('should correct render with long text', async ({mount, expectScreenshot}) => {
+        await mount(<AlertStories.LongText />);
+
+        await expectScreenshot();
+    });
 });

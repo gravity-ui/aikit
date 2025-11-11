@@ -1,3 +1,5 @@
+import {Arrows3RotateLeft} from '@gravity-ui/icons';
+import {Icon} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react';
 
 import {Alert, AlertProps} from '..';
@@ -40,6 +42,7 @@ const defaultDecorators = [
 export const Playground: StoryFn<AlertProps> = (args) => <Alert {...args} />;
 Playground.args = {
     text: 'Alert message',
+    variant: 'default',
 };
 
 export const Variant: StoryObj<AlertProps> = {
@@ -69,4 +72,21 @@ export const Action: StoryFn<AlertProps> = (args) => (
 Action.args = {
     text: 'Alert message',
     variant: 'default',
+};
+
+export const LongText: StoryFn<AlertProps> = (args) => (
+    <Alert {...args} button={{content: 'Retry', onClick: () => ({})}} />
+);
+LongText.args = {
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
+    variant: 'warning',
+};
+
+export const CustomIcon: StoryFn<AlertProps> = (args) => (
+    <Alert {...args} icon={<Icon data={Arrows3RotateLeft} size={20} />} />
+);
+CustomIcon.args = {
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
+    variant: 'default',
+    button: {content: 'Retry', onClick: () => ({})},
 };
