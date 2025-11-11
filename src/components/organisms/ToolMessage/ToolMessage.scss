@@ -1,0 +1,18 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}tool-message';
+
+#{$block} {
+    padding: var(--g-spacing-2);
+    border-radius: var(--g-border-radius-xl);
+
+    &_waiting {
+        border-color: var(--g-color-line-brand);
+    }
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--g-spacing-2);
+    }
+}

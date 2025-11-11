@@ -1,8 +1,9 @@
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {ToolFooterAction, ToolFooterProps} from 'src/types';
 
 import {ToolFooter} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
@@ -56,14 +57,10 @@ const cancelAction: ToolFooterAction = {
 
 const defaultActions: ToolFooterAction[] = [rejectAction, acceptAction];
 
-const ToolWrapper = ({children}: {children: React.ReactNode}) => (
-    <div style={{width: '430px'}}>{children}</div>
-);
-
 export const Playground: StoryFn<ToolFooterProps> = (args) => (
-    <ToolWrapper>
+    <ContentWrapper width="430px">
         <ToolFooter {...args} />
-    </ToolWrapper>
+    </ContentWrapper>
 );
 Playground.args = {
     content: 'Awaiting confirmation',
@@ -74,9 +71,9 @@ Playground.args = {
 export const ConfirmationState: StoryObj<ToolFooterProps> = {
     render: (args) => (
         <ShowcaseItem title="Confirmation State">
-            <ToolWrapper>
+            <ContentWrapper width="430px">
                 <ToolFooter {...args} content="Awaiting confirmation" actions={defaultActions} />
-            </ToolWrapper>
+            </ContentWrapper>
         </ShowcaseItem>
     ),
     decorators: defaultDecorators,
@@ -85,9 +82,9 @@ export const ConfirmationState: StoryObj<ToolFooterProps> = {
 export const WaitingState: StoryObj<ToolFooterProps> = {
     render: (args) => (
         <ShowcaseItem title="Waiting State">
-            <ToolWrapper>
+            <ContentWrapper width="430px">
                 <ToolFooter {...args} content="Awaiting form submission" actions={[cancelAction]} />
-            </ToolWrapper>
+            </ContentWrapper>
         </ShowcaseItem>
     ),
     decorators: defaultDecorators,

@@ -1,8 +1,9 @@
 import {ChevronDown, Copy, Pencil} from '@gravity-ui/icons';
 import {Icon, Text} from '@gravity-ui/uikit';
-import {Meta, StoryFn, StoryObj} from '@storybook/react';
+import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {ToolHeader} from '..';
+import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import type {ToolHeaderAction, ToolHeaderProps} from '../../../../types/tool';
 
@@ -51,14 +52,10 @@ const collapseAction: ToolHeaderAction = {
     icon: <Icon data={ChevronDown} size={16} />,
 };
 
-const ToolWrapper = ({children}: {children: React.ReactNode}) => (
-    <div style={{width: '430px'}}>{children}</div>
-);
-
 export const Playground: StoryFn<ToolHeaderProps> = (args) => (
-    <ToolWrapper>
+    <ContentWrapper width="430px">
         <ToolHeader {...args} />
-    </ToolWrapper>
+    </ContentWrapper>
 );
 Playground.args = {
     toolIcon: <Icon data={Pencil} size={16} />,
@@ -73,7 +70,7 @@ Playground.args = {
 
 export const Loading: StoryObj<ToolHeaderProps> = {
     render: (args) => (
-        <ToolWrapper>
+        <ContentWrapper width="430px">
             <ToolHeader
                 {...args}
                 toolIcon={<Icon data={Pencil} size={16} />}
@@ -85,14 +82,14 @@ export const Loading: StoryObj<ToolHeaderProps> = {
                 }
                 status="loading"
             />
-        </ToolWrapper>
+        </ContentWrapper>
     ),
     decorators: defaultDecorators,
 };
 
 export const Success: StoryObj<ToolHeaderProps> = {
     render: (args) => (
-        <ToolWrapper>
+        <ContentWrapper width="430px">
             <ToolHeader
                 {...args}
                 toolIcon={<Icon data={Pencil} size={16} />}
@@ -105,7 +102,7 @@ export const Success: StoryObj<ToolHeaderProps> = {
                 actions={[collapseAction, copyAction]}
                 status="success"
             />
-        </ToolWrapper>
+        </ContentWrapper>
     ),
     decorators: defaultDecorators,
 };
