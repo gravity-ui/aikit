@@ -4,13 +4,8 @@ import {DOMProps, Popup, QAProps} from '@gravity-ui/uikit';
 
 import {ChatType} from '../../../types';
 import {ChatFilterFunction} from '../../../utils/chatUtils';
-import {block} from '../../../utils/cn';
 
 import {ChatHistoryList} from './ChatHistoryList';
-
-import './ChatHistory.scss';
-
-const b = block('chat-history');
 
 /**
  * Props for the ChatHistory component
@@ -80,13 +75,7 @@ export function ChatHistory(props: ChatHistoryProps) {
     };
 
     return (
-        <Popup
-            className={b('popup')}
-            anchorRef={anchorRef}
-            placement="bottom-end"
-            open={open}
-            onOpenChange={onOpenChange}
-        >
+        <Popup anchorRef={anchorRef} placement="bottom-end" open={open} onOpenChange={onOpenChange}>
             <ChatHistoryList
                 chats={chats}
                 selectedChat={selectedChat}

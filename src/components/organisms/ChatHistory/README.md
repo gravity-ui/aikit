@@ -291,7 +291,9 @@ function AdvancedChatApp() {
 
 The component uses CSS variables for theming:
 
-| Variable                         | Usage                              |
+### Color and Layout Variables
+
+| Variable                         | Description                        |
 | -------------------------------- | ---------------------------------- |
 | `--g-color-base-background`      | Background color                   |
 | `--g-color-line-generic`         | Border color                       |
@@ -302,11 +304,34 @@ The component uses CSS variables for theming:
 | `--g-color-base-selection-hover` | Selected chat hover background     |
 | `--g-spacing-*`                  | Spacing variables                  |
 
-### Component Dimensions
+### Component Size Variables
 
-- **Popup width**: 360px
-- **Popup max height**: 560px
-- **Chat item min height**: 60px
+| Variable                             | Description                                                     |
+| ------------------------------------ | --------------------------------------------------------------- |
+| `--g-aikit-chat-history-width`       | Width of the chat history container (default: `360px`)          |
+| `--g-aikit-chat-history-max-height`  | Maximum height of the chat history container (default: `560px`) |
+| `--g-aikit-chat-history-item-height` | Height of chat content item (default: `24px`)                   |
+
+```css
+/* Example: Custom dimensions */
+.custom-chat-history {
+  --g-aikit-chat-history-width: 400px;
+  --g-aikit-chat-history-max-height: 600px;
+  --g-aikit-chat-history-item-height: 28px;
+}
+```
+
+```tsx
+/* Example: Inline styles */
+<ChatHistory
+  className="custom-chat-history"
+  style={{
+    '--g-aikit-chat-history-width': '450px',
+  }}
+  chats={chats}
+  anchorRef={anchorRef}
+/>
+```
 
 ## Accessibility
 

@@ -39,4 +39,9 @@
     --g-aikit-shimmer-color-to: var(--g-aikit-shimmer-to, rgba(0, 0, 0, 0.85));
     --g-aikit-shimmer-duration: var(--g-aikit-shimmer-time, 2.5s);
     --g-aikit-shimmer-gradient-size: 200%;
+
+    /* === Chat History === */
+    --g-aikit-chat-history-width: 360px;
+    --g-aikit-chat-history-max-height: 560px;
+    --g-aikit-chat-history-item-height: 24px;
 }

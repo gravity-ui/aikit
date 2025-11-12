@@ -4,16 +4,11 @@
 $block: '.#{variables.$ns}chat-history';
 
 #{$block} {
-    &__popup {
-        max-width: 400px;
-        max-height: 600px;
-    }
-
     &__container {
         display: flex;
         flex-direction: column;
-        width: 360px;
-        max-height: 560px;
+        width: var(--g-aikit-chat-history-width);
+        max-height: var(--g-aikit-chat-history-max-height);
         background: var(--g-color-base-background);
     }
 
@@ -23,7 +18,7 @@ $block: '.#{variables.$ns}chat-history';
     }
 
     &__list {
-        padding: 0 spacing(2);
+        padding: 0 spacing(2) spacing(2) spacing(2);
     }
 
     &__list-item {
@@ -55,15 +50,23 @@ $block: '.#{variables.$ns}chat-history';
         gap: spacing(4);
         align-self: stretch;
         flex: 1;
+        min-width: 0;
     }
 
     &__chat-content {
-        height: 24px;
+        height: var(--g-aikit-chat-history-item-height);
         flex: 1;
         min-width: 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
+
+        > * {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
     }
 
     &__icon-button {

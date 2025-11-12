@@ -149,12 +149,10 @@ export function ChatHistoryList(props: ChatHistoryListProps) {
             return <DateHeaderItem key={`date-${item.date}`} date={item.date} />;
         }
 
-        const chat = item;
-
         return (
             <ChatItem
-                key={chat.id}
-                chat={chat}
+                key={item.id}
+                chat={item}
                 showActions={showActions}
                 onChatClick={handleChatClick}
                 onDeleteClick={onDeleteChat ? handleDeleteClick : undefined}

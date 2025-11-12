@@ -1,12 +1,13 @@
 import {useRef, useState} from 'react';
 
 import {ClockArrowRotateLeft} from '@gravity-ui/icons';
-import {ActionTooltip, Button, Icon} from '@gravity-ui/uikit';
+import {Icon} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {ChatHistory, ChatHistoryProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {ChatType} from '../../../../types';
+import {ActionButton} from '../../../atoms/ActionButton';
 
 import MDXDocs from './Docs.mdx';
 
@@ -36,7 +37,10 @@ const generateMockChats = (count: number): ChatType[] => {
             id: `chat-${i}`,
             name: `Chat ${i + 1}`,
             createTime: date.toISOString(),
-            lastMessage: `Last message from chat ${i + 1}...`,
+            lastMessage:
+                i % 3 === 0
+                    ? `Looooooooong last message for example ellipsis from chat ${i + 1}`
+                    : `Last message from chat ${i + 1}`,
             metadata: {},
         });
     }
@@ -57,11 +61,15 @@ function ChatHistoryWithTrigger({initialOpen = true, ...props}: ChatHistoryWithT
 
     return (
         <div style={{paddingLeft: '400px'}}>
-            <ActionTooltip title="Chat History">
-                <Button ref={anchorRef} view="flat" size="m" onClick={() => setOpen(!open)}>
-                    <Icon data={ClockArrowRotateLeft} size={16} />
-                </Button>
-            </ActionTooltip>
+            <ActionButton
+                ref={anchorRef}
+                view="flat"
+                size="m"
+                onClick={() => setOpen(!open)}
+                tooltipTitle="Chat History"
+            >
+                <Icon data={ClockArrowRotateLeft} size={16} />
+            </ActionButton>
             <ChatHistory {...props} open={open} onOpenChange={setOpen} anchorRef={anchorRef} />
         </div>
     );
@@ -264,8 +272,29 @@ export const WithCustomEmptyPlaceholder: Story = {
         groupBy: 'date',
         showActions: true,
         emptyPlaceholder: (
-            <div style={{padding: '40px', textAlign: 'center', color: '#999'}}>
-                <div style={{fontSize: '48px', marginBottom: '16px'}}>💬</div>
+            <div
+                style={{
+                    padding: '40px',
+                    color: '#999',
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: '48px',
+                        height: '48px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginBottom: '16px',
+                    }}
+                >
+                    💬
+                </div>
                 <div
                     style={{
                         fontSize: '16px',

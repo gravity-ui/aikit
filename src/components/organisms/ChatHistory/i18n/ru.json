@@ -2,5 +2,6 @@
   "action-load-more": "Загрузить еще",
   "search-placeholder": "Поиск по чатам",
   "empty-state": "Чаты не найдены",
-  "tooltip-history": "История чатов"
+  "tooltip-history": "История чатов",
+  "tooltip-delete": "Удалить"
 }

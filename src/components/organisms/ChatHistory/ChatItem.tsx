@@ -1,10 +1,13 @@
 import React from 'react';
 
 import {TrashBin} from '@gravity-ui/icons';
-import {Button, Icon, Text} from '@gravity-ui/uikit';
+import {Icon, Text} from '@gravity-ui/uikit';
 
 import {ChatType} from '../../../types';
 import {block} from '../../../utils/cn';
+import {ActionButton} from '../../atoms/ActionButton';
+
+import {i18n} from './i18n';
 
 const b = block('chat-history');
 
@@ -38,15 +41,16 @@ export function ChatItem({chat, showActions, onChatClick, onDeleteClick}: ChatIt
                 <Text variant="body-1">{chat.lastMessage || chat.name}</Text>
             </div>
             {showDeleteButton && (
-                <Button
+                <ActionButton
                     view="flat"
                     size="s"
                     color="secondary"
                     className={b('delete-button')}
                     onClick={(e) => onDeleteClick(e, chat)}
+                    tooltipTitle={i18n('tooltip-delete')}
                 >
                     <Icon className={b('icon-button')} data={TrashBin} size={16} />
-                </Button>
+                </ActionButton>
             )}
         </div>
     );
