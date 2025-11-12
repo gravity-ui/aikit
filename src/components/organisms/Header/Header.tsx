@@ -8,9 +8,10 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {ActionTooltip, Button, Icon, Text} from '@gravity-ui/uikit';
+import {Button, Icon, Text} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+import {ActionButton} from '../../atoms';
 import {ButtonGroup} from '../../molecules';
 
 import {i18n} from './i18n';
@@ -65,17 +66,17 @@ export function Header(props: HeaderProps) {
         }
 
         return (
-            <ActionTooltip key={action.id} title={i18n(tooltipKey as Parameters<typeof i18n>[0])}>
-                <Button
-                    size="m"
-                    view="flat"
-                    onClick={action.onClick}
-                    className={b('action-button')}
-                    qa={`header-action-${action.id}`}
-                >
-                    <Icon data={IconComponent} size={16} />
-                </Button>
-            </ActionTooltip>
+            <ActionButton
+                key={action.id}
+                tooltipTitle={i18n(tooltipKey as Parameters<typeof i18n>[0])}
+                size="m"
+                view="flat"
+                onClick={action.onClick}
+                className={b('action-button')}
+                qa={`header-action-${action.id}`}
+            >
+                <Icon data={IconComponent} size={16} />
+            </ActionButton>
         );
     };
 
