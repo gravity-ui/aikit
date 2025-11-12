@@ -3,7 +3,6 @@
  */
 
 [data-theme='dark'] {
-    --g-aikit-bg-primary: #1a1a1a;
     --g-aikit-bg-secondary: #2a2a2a;
     --g-aikit-bg-message-user: #0066cc;
     --g-aikit-bg-message-assistant: #2a2a2a;

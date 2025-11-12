@@ -4,7 +4,7 @@
 
 .g-root {
     /* === Colors === */
-    --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-background));
+    --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-float));
     --g-aikit-color-bg-secondary: #f5f5f5;
 
     /* === Messages === */
