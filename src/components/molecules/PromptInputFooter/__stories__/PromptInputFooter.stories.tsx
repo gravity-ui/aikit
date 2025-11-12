@@ -26,7 +26,7 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-export const Default: Story = {
+export const Playground: Story = {
     args: {
         submitButton: {
             // eslint-disable-next-line no-console

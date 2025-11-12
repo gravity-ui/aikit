@@ -28,7 +28,7 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-export const Default: Story = {
+export const Playground: Story = {
     args: {
         placeholder: 'Plan, code, build and test anything',
     },
@@ -36,10 +36,11 @@ export const Default: Story = {
 };
 
 export const WithValue: Story = {
-    render: () => {
+    render: (args) => {
         const [value, setValue] = useState('Hello, this is a test message!');
         return (
             <PromptInputBody
+                {...args}
                 value={value}
                 onChange={setValue}
                 placeholder="Plan, code, build and test anything"
@@ -50,12 +51,13 @@ export const WithValue: Story = {
 };
 
 export const MultiLine: Story = {
-    render: () => {
+    render: (args) => {
         const [value, setValue] = useState(
             'This is a multi-line\ntext input\nwith several lines\nof content',
         );
         return (
             <PromptInputBody
+                {...args}
                 value={value}
                 onChange={setValue}
                 placeholder="Plan, code, build and test anything"
@@ -68,11 +70,12 @@ export const MultiLine: Story = {
 };
 
 export const WithMaxLength: Story = {
-    render: () => {
+    render: (args) => {
         const [value, setValue] = useState('');
         return (
             <>
                 <PromptInputBody
+                    {...args}
                     value={value}
                     onChange={setValue}
                     placeholder="Maximum 100 characters"
@@ -101,10 +104,11 @@ export const WithCustomContent: Story = {
 };
 
 export const Disabled: Story = {
-    render: () => {
+    render: (args) => {
         const [value, setValue] = useState('This input is disabled');
         return (
             <PromptInputBody
+                {...args}
                 value={value}
                 onChange={setValue}
                 placeholder="Plan, code, build and test anything"

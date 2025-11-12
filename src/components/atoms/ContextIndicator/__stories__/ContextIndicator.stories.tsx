@@ -59,81 +59,82 @@ Playground.args = {
     maxContext: 100,
 };
 
-export const Empty = () => (
+export const Empty: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ContextIndicator type="percent" usedContext={0} />
+        <ContextIndicator {...args} type="percent" usedContext={0} />
     </ContentWrapper>
 );
-export const Quarter = () => (
+export const Quarter: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ContextIndicator type="percent" usedContext={25} />
+        <ContextIndicator {...args} type="percent" usedContext={25} />
     </ContentWrapper>
 );
-export const Half = () => (
+export const Half: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ContextIndicator type="percent" usedContext={50} />
+        <ContextIndicator {...args} type="percent" usedContext={50} />
     </ContentWrapper>
 );
-export const ThreeQuarters = () => (
+export const ThreeQuarters: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ContextIndicator type="percent" usedContext={75} />
+        <ContextIndicator {...args} type="percent" usedContext={75} />
     </ContentWrapper>
 );
-export const Full = () => (
+export const Full: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ContextIndicator type="percent" usedContext={100} />
-    </ContentWrapper>
-);
-
-export const WithNumber = () => (
-    <ContentWrapper>
-        <ContextIndicator type="number" usedContext={50} maxContext={100} />
-    </ContentWrapper>
-);
-export const WithNumberHalf = () => (
-    <ContentWrapper>
-        <ContextIndicator type="number" usedContext={500} maxContext={1000} />
+        <ContextIndicator {...args} type="percent" usedContext={100} />
     </ContentWrapper>
 );
 
-export const AllStates = () => (
+export const WithNumber: StoryFn<ContextIndicatorProps> = (args) => (
+    <ContentWrapper>
+        <ContextIndicator {...args} type="number" usedContext={50} maxContext={100} />
+    </ContentWrapper>
+);
+export const WithNumberHalf: StoryFn<ContextIndicatorProps> = (args) => (
+    <ContentWrapper>
+        <ContextIndicator {...args} type="number" usedContext={500} maxContext={1000} />
+    </ContentWrapper>
+);
+
+export const AllStates: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
         <div style={{display: 'flex', gap: '16px', alignItems: 'center'}}>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={0} />
+                <ContextIndicator {...args} type="percent" usedContext={0} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={25} />
+                <ContextIndicator {...args} type="percent" usedContext={25} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={50} />
+                <ContextIndicator {...args} type="percent" usedContext={50} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={75} />
+                <ContextIndicator {...args} type="percent" usedContext={75} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={100} />
+                <ContextIndicator {...args} type="percent" usedContext={100} />
             </div>
         </div>
     </ContentWrapper>
 );
 
-export const VerticalOrientation = () => (
+export const VerticalOrientation: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
         <div style={{display: 'flex', gap: '16px', alignItems: 'flex-end'}}>
-            <ContextIndicator type="percent" usedContext={0} orientation="vertical" />
-            <ContextIndicator type="percent" usedContext={25} orientation="vertical" />
-            <ContextIndicator type="percent" usedContext={50} orientation="vertical" />
-            <ContextIndicator type="percent" usedContext={75} orientation="vertical" />
-            <ContextIndicator type="percent" usedContext={100} orientation="vertical" />
+            <ContextIndicator {...args} type="percent" usedContext={0} orientation="vertical" />
+            <ContextIndicator {...args} type="percent" usedContext={25} orientation="vertical" />
+            <ContextIndicator {...args} type="percent" usedContext={50} orientation="vertical" />
+            <ContextIndicator {...args} type="percent" usedContext={75} orientation="vertical" />
+            <ContextIndicator {...args} type="percent" usedContext={100} orientation="vertical" />
         </div>
     </ContentWrapper>
 );
 
-export const VerticalWithNumber = () => (
+export const VerticalWithNumber: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
         <div style={{display: 'flex', gap: '16px', alignItems: 'flex-end'}}>
             <ContextIndicator
+                {...args}
                 type="number"
                 usedContext={500}
                 maxContext={1000}
@@ -143,47 +144,52 @@ export const VerticalWithNumber = () => (
     </ContentWrapper>
 );
 
-export const AllReversedVariants = () => (
+export const AllReversedVariants: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
         <div style={{display: 'flex', flexDirection: 'column', gap: '32px'}}>
             <div>
                 <h4 style={{marginBottom: '16px'}}>Horizontal Reversed</h4>
                 <div style={{display: 'flex', gap: '16px', alignItems: 'center'}}>
-                    <ContextIndicator type="percent" usedContext={0} reversed />
-                    <ContextIndicator type="percent" usedContext={25} reversed />
-                    <ContextIndicator type="percent" usedContext={50} reversed />
-                    <ContextIndicator type="percent" usedContext={75} reversed />
-                    <ContextIndicator type="percent" usedContext={100} reversed />
+                    <ContextIndicator {...args} type="percent" usedContext={0} reversed />
+                    <ContextIndicator {...args} type="percent" usedContext={25} reversed />
+                    <ContextIndicator {...args} type="percent" usedContext={50} reversed />
+                    <ContextIndicator {...args} type="percent" usedContext={75} reversed />
+                    <ContextIndicator {...args} type="percent" usedContext={100} reversed />
                 </div>
             </div>
             <div>
                 <h4 style={{marginBottom: '16px'}}>Vertical Reversed</h4>
                 <div style={{display: 'flex', gap: '16px', alignItems: 'flex-start'}}>
                     <ContextIndicator
+                        {...args}
                         type="percent"
                         usedContext={0}
                         orientation="vertical"
                         reversed
                     />
                     <ContextIndicator
+                        {...args}
                         type="percent"
                         usedContext={25}
                         orientation="vertical"
                         reversed
                     />
                     <ContextIndicator
+                        {...args}
                         type="percent"
                         usedContext={50}
                         orientation="vertical"
                         reversed
                     />
                     <ContextIndicator
+                        {...args}
                         type="percent"
                         usedContext={75}
                         orientation="vertical"
                         reversed
                     />
                     <ContextIndicator
+                        {...args}
                         type="percent"
                         usedContext={100}
                         orientation="vertical"
@@ -195,7 +201,7 @@ export const AllReversedVariants = () => (
     </ContentWrapper>
 );
 
-export const GrayColors = () => (
+export const GrayColors: StoryFn<ContextIndicatorProps> = (args) => (
     <ContentWrapper>
         <div
             style={{
@@ -209,19 +215,19 @@ export const GrayColors = () => (
             }}
         >
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={0} />
+                <ContextIndicator {...args} type="percent" usedContext={0} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={25} />
+                <ContextIndicator {...args} type="percent" usedContext={25} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={50} />
+                <ContextIndicator {...args} type="percent" usedContext={50} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={75} />
+                <ContextIndicator {...args} type="percent" usedContext={75} />
             </div>
             <div style={{textAlign: 'center'}}>
-                <ContextIndicator type="percent" usedContext={100} />
+                <ContextIndicator {...args} type="percent" usedContext={100} />
             </div>
         </div>
     </ContentWrapper>

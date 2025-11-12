@@ -60,46 +60,46 @@ Playground.args = {
 };
 
 export const Lengths: StoryObj<typeof DiffStat> = {
-    render: () => (
+    render: (args) => (
         <>
             <ShowcaseItem title="Digits">
                 <div style={{display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap'}}>
-                    <DiffStat added={0} deleted={0} />
-                    <DiffStat added={0} deleted={1} />
-                    <DiffStat added={1} deleted={0} />
-                    <DiffStat added={1} deleted={1} />
-                    <DiffStat added={5} deleted={3} />
-                    <DiffStat added={9} deleted={9} />
+                    <DiffStat {...args} added={0} deleted={0} />
+                    <DiffStat {...args} added={0} deleted={1} />
+                    <DiffStat {...args} added={1} deleted={0} />
+                    <DiffStat {...args} added={1} deleted={1} />
+                    <DiffStat {...args} added={5} deleted={3} />
+                    <DiffStat {...args} added={9} deleted={9} />
                 </div>
             </ShowcaseItem>
             <ShowcaseItem title="Tens">
                 <div style={{display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap'}}>
-                    <DiffStat added={10} deleted={0} />
-                    <DiffStat added={0} deleted={10} />
-                    <DiffStat added={10} deleted={10} />
-                    <DiffStat added={25} deleted={15} />
-                    <DiffStat added={50} deleted={30} />
-                    <DiffStat added={99} deleted={99} />
+                    <DiffStat {...args} added={10} deleted={0} />
+                    <DiffStat {...args} added={0} deleted={10} />
+                    <DiffStat {...args} added={10} deleted={10} />
+                    <DiffStat {...args} added={25} deleted={15} />
+                    <DiffStat {...args} added={50} deleted={30} />
+                    <DiffStat {...args} added={99} deleted={99} />
                 </div>
             </ShowcaseItem>
             <ShowcaseItem title="Hundreds">
                 <div style={{display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap'}}>
-                    <DiffStat added={100} deleted={0} />
-                    <DiffStat added={0} deleted={100} />
-                    <DiffStat added={100} deleted={100} />
-                    <DiffStat added={250} deleted={150} />
-                    <DiffStat added={500} deleted={300} />
-                    <DiffStat added={999} deleted={999} />
+                    <DiffStat {...args} added={100} deleted={0} />
+                    <DiffStat {...args} added={0} deleted={100} />
+                    <DiffStat {...args} added={100} deleted={100} />
+                    <DiffStat {...args} added={250} deleted={150} />
+                    <DiffStat {...args} added={500} deleted={300} />
+                    <DiffStat {...args} added={999} deleted={999} />
                 </div>
             </ShowcaseItem>
             <ShowcaseItem title="Thousands">
                 <div style={{display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap'}}>
-                    <DiffStat added={1000} deleted={0} />
-                    <DiffStat added={0} deleted={1000} />
-                    <DiffStat added={1000} deleted={1000} />
-                    <DiffStat added={2500} deleted={1500} />
-                    <DiffStat added={5000} deleted={3000} />
-                    <DiffStat added={12345} deleted={6789} />
+                    <DiffStat {...args} added={1000} deleted={0} />
+                    <DiffStat {...args} added={0} deleted={1000} />
+                    <DiffStat {...args} added={1000} deleted={1000} />
+                    <DiffStat {...args} added={2500} deleted={1500} />
+                    <DiffStat {...args} added={5000} deleted={3000} />
+                    <DiffStat {...args} added={12345} deleted={6789} />
                 </div>
             </ShowcaseItem>
         </>

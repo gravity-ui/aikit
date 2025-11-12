@@ -6,7 +6,7 @@ import {PromptInputHeaderStories} from './helpersPlaywright';
 
 test.describe('PromptInputHeader', {tag: '@PromptInputHeader'}, () => {
     test('should render default state', async ({mount, expectScreenshot}) => {
-        await mount(<PromptInputHeaderStories.Default />);
+        await mount(<PromptInputHeaderStories.Playground />);
 
         await expectScreenshot();
     });

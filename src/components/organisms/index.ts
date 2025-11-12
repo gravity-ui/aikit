@@ -5,3 +5,4 @@ export * from './ThinkingMessage';
 export * from './ToolMessage';
 export * from './PromptBox';
 export * from './MessageList';
+export * from './ChatHistory';

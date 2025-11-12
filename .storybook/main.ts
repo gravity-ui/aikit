@@ -6,6 +6,7 @@ const config: StorybookConfig = {
         '@storybook/preset-scss',
         '@storybook/addon-webpack5-compiler-babel',
         '@storybook/addon-docs',
+        'storybook-addon-mock-date',
     ],
 
     framework: {

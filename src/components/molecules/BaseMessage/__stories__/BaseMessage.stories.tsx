@@ -49,11 +49,17 @@ const defaultDecorators = [
 ] satisfies Story['decorators'];
 
 const buttons = [
+    // eslint-disable-next-line no-console
     {type: 'copy', onClick: () => console.log('copy')},
+    // eslint-disable-next-line no-console
     {type: 'edit', onClick: () => console.log('edit')},
+    // eslint-disable-next-line no-console
     {type: 'delete', onClick: () => console.log('delete')},
+    // eslint-disable-next-line no-console
     {type: 'custom', onClick: () => console.log('custom')},
+    // eslint-disable-next-line no-console
     {type: 'like', onClick: () => console.log('like')},
+    // eslint-disable-next-line no-console
     {type: 'unlike', onClick: () => console.log('unlike')},
 ];
 

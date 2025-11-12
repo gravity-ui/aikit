@@ -35,7 +35,7 @@ const handleSend = async (data: TSubmitData) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 };
 
-export const SimpleView: Story = {
+export const Playground: Story = {
     args: {
         view: 'simple',
         onSend: handleSend,
@@ -158,7 +158,7 @@ export const Disabled: Story = {
 };
 
 export const Streaming: Story = {
-    render: () => {
+    render: (args) => {
         const [isStreaming, setIsStreaming] = useState(false);
 
         const handleSendWithStreaming = async (data: TSubmitData) => {
@@ -177,6 +177,7 @@ export const Streaming: Story = {
 
         return (
             <PromptBox
+                {...args}
                 view="full"
                 onSend={handleSendWithStreaming}
                 onCancel={handleCancel}
@@ -196,7 +197,7 @@ export const Streaming: Story = {
 };
 
 export const ComplexExample: Story = {
-    render: () => {
+    render: (args) => {
         const [isStreaming, setIsStreaming] = useState(false);
 
         const handleSendComplex = async (data: TSubmitData) => {
@@ -215,6 +216,7 @@ export const ComplexExample: Story = {
 
         return (
             <PromptBox
+                {...args}
                 view="full"
                 onSend={handleSendComplex}
                 onCancel={handleCancel}

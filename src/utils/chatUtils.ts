@@ -2,64 +2,59 @@
  * Chat utilities
  */
 
-import type {ChatType} from '../types';
+import type {ListItemData} from '@gravity-ui/uikit';
+
+import type {ChatType, ListItemChatData} from '../types';
 
 /**
- * Sort chats by creation date (newest first)
- * @param {ChatType[]} chats - Array of chats to sort
- * @returns {ChatType[]} Sorted array of chats
+ * Groups chats by date
+ *
+ * @param chats - Array of chats to group
+ * @returns Map of date keys to chat arrays
  */
-export function sortChatsByDate(chats: ChatType[]): ChatType[] {
-    return [...chats].sort((a, b) => {
-        const dateA = a.createTime ? new Date(a.createTime).getTime() : 0;
-        const dateB = b.createTime ? new Date(b.createTime).getTime() : 0;
-        return dateB - dateA;
+export function groupChatsByDate(chats: ChatType[]): Map<string, ChatType[]> {
+    const grouped = new Map<string, ChatType[]>();
+
+    chats.forEach((chat) => {
+        if (!chat.createTime) return;
+
+        const date = new Date(chat.createTime);
+        const dateKey = date.toDateString();
+
+        if (!grouped.has(dateKey)) {
+            grouped.set(dateKey, []);
+        }
+        grouped.get(dateKey)?.push(chat);
     });
+
+    return grouped;
 }
 
 /**
- * Group chats by date
- * @param {ChatType[]} chats - Array of chats to group
- * @returns {Record<string, ChatType[]>} Object with chats grouped by date categories
+ * Filter function type for chat list
  */
-export function groupChatsByDate(chats: ChatType[]): Record<string, ChatType[]> {
-    const groups: Record<string, ChatType[]> = {
-        today: [],
-        yesterday: [],
-        week: [],
-        month: [],
-        older: [],
+export type ChatFilterFunction = (
+    filter: string,
+) => (item: ListItemData<ListItemChatData>) => boolean;
+
+/**
+ * Default filter function - searches in chat name and last message
+ *
+ * @param filter - Search query string
+ * @returns Function that filters list items
+ */
+export function defaultChatFilter(filter: string) {
+    return (item: ListItemData<ListItemChatData>): boolean => {
+        // Skip date headers from filtering
+        if (item.type === 'date-header') {
+            return true;
+        }
+
+        const chat = item;
+        const lowerQuery = filter.toLowerCase();
+        return (
+            chat.name.toLowerCase().includes(lowerQuery) ||
+            (chat.lastMessage?.toLowerCase().includes(lowerQuery) ?? false)
+        );
     };
-
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const weekAgo = new Date(today);
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    const monthAgo = new Date(today);
-    monthAgo.setMonth(monthAgo.getMonth() - 1);
-
-    chats.forEach((chat) => {
-        if (!chat.createTime) {
-            groups.older.push(chat);
-            return;
-        }
-
-        const chatDate = new Date(chat.createTime);
-
-        if (chatDate >= today) {
-            groups.today.push(chat);
-        } else if (chatDate >= yesterday) {
-            groups.yesterday.push(chat);
-        } else if (chatDate >= weekAgo) {
-            groups.week.push(chat);
-        } else if (chatDate >= monthAgo) {
-            groups.month.push(chat);
-        } else {
-            groups.older.push(chat);
-        }
-    });
-
-    return groups;
 }

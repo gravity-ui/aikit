@@ -1,12 +1,15 @@
 import {ReactNode} from 'react';
 
 import {Microphone, Paperclip, Sliders} from '@gravity-ui/icons';
-import {Button, Icon} from '@gravity-ui/uikit';
+import {Icon} from '@gravity-ui/uikit';
 import type {ButtonButtonProps} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+import {ActionButton} from '../../atoms/ActionButton';
 import {SubmitButton, SubmitButtonProps} from '../../atoms/SubmitButton';
 import {ButtonGroup} from '../ButtonGroup';
+
+import {i18n} from './i18n';
 
 import './PromptInputFooter.scss';
 
@@ -79,36 +82,39 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
         <div className={b(null, className)} data-qa={qa}>
             <ButtonGroup>
                 {showSettings && (
-                    <Button
+                    <ActionButton
                         view="flat"
                         size={buttonSize}
                         onClick={onSettingsClick}
                         className={b('action-button')}
+                        tooltipTitle={i18n('tooltip-settings')}
                     >
                         <Icon data={Sliders} size={16} />
-                    </Button>
+                    </ActionButton>
                 )}
             </ButtonGroup>
             <ButtonGroup>
                 {showAttachment && (
-                    <Button
+                    <ActionButton
                         view="flat"
                         size={buttonSize}
                         onClick={onAttachmentClick}
                         className={b('action-button')}
+                        tooltipTitle={i18n('tooltip-attachment')}
                     >
                         <Icon data={Paperclip} size={16} />
-                    </Button>
+                    </ActionButton>
                 )}
                 {showMicrophone && (
-                    <Button
+                    <ActionButton
                         view="flat"
                         size={buttonSize}
                         onClick={onMicrophoneClick}
                         className={b('action-button')}
+                        tooltipTitle={i18n('tooltip-microphone')}
                     >
                         <Icon data={Microphone} size={16} />
-                    </Button>
+                    </ActionButton>
                 )}
                 <SubmitButton {...submitButton} size={buttonSize} />
             </ButtonGroup>

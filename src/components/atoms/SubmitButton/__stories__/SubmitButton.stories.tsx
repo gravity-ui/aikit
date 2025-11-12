@@ -72,34 +72,34 @@ Playground.args = {
     state: 'enabled',
 };
 
-export const Enabled: StoryFn<SubmitButtonProps> = () => {
+export const Enabled: StoryFn<SubmitButtonProps> = (args) => {
     return (
         <ContentWrapper>
-            <SubmitButton onClick={mockOnClick} state="enabled" />
+            <SubmitButton {...args} onClick={mockOnClick} state="enabled" />
         </ContentWrapper>
     );
 };
 
-export const Disabled: StoryFn<SubmitButtonProps> = () => {
+export const Disabled: StoryFn<SubmitButtonProps> = (args) => {
     return (
         <ContentWrapper>
-            <SubmitButton onClick={mockOnClick} state="disabled" />
+            <SubmitButton {...args} onClick={mockOnClick} state="disabled" />
         </ContentWrapper>
     );
 };
 
-export const Loading: StoryFn<SubmitButtonProps> = () => {
+export const Loading: StoryFn<SubmitButtonProps> = (args) => {
     return (
         <ContentWrapper>
-            <SubmitButton onClick={mockOnClick} state="loading" />
+            <SubmitButton {...args} onClick={mockOnClick} state="loading" />
         </ContentWrapper>
     );
 };
 
-export const Cancelable: StoryFn<SubmitButtonProps> = () => {
+export const Cancelable: StoryFn<SubmitButtonProps> = (args) => {
     return (
         <ContentWrapper>
-            <SubmitButton onClick={mockOnClick} state="cancelable" />
+            <SubmitButton {...args} onClick={mockOnClick} state="cancelable" />
         </ContentWrapper>
     );
 };
@@ -124,20 +124,20 @@ export const Size: StoryObj<SubmitButtonProps> = {
 };
 
 export const States: StoryObj<SubmitButtonProps> = {
-    render: () => {
+    render: (args) => {
         return (
             <>
                 <ShowcaseItem title="Enabled">
-                    <SubmitButton onClick={mockOnClick} state="enabled" />
+                    <SubmitButton {...args} onClick={mockOnClick} state="enabled" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Disabled">
-                    <SubmitButton onClick={mockOnClick} state="disabled" />
+                    <SubmitButton {...args} onClick={mockOnClick} state="disabled" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Loading">
-                    <SubmitButton onClick={mockOnClick} state="loading" />
+                    <SubmitButton {...args} onClick={mockOnClick} state="loading" />
                 </ShowcaseItem>
                 <ShowcaseItem title="Cancelable">
-                    <SubmitButton onClick={mockOnClick} state="cancelable" />
+                    <SubmitButton {...args} onClick={mockOnClick} state="cancelable" />
                 </ShowcaseItem>
             </>
         );

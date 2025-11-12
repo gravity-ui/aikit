@@ -37,19 +37,19 @@ export const Playground: StoryFn<ToolIndicatorProps> = (args) => (
 );
 Playground.args = {status: 'success'};
 
-export const Success = () => (
+export const Success: StoryFn<ToolIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ToolIndicator status="success" />
+        <ToolIndicator {...args} status="success" />
     </ContentWrapper>
 );
-export const Error = () => (
+export const Error: StoryFn<ToolIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ToolIndicator status="error" />
+        <ToolIndicator {...args} status="error" />
     </ContentWrapper>
 );
-export const Info = () => (
+export const Info: StoryFn<ToolIndicatorProps> = (args) => (
     <ContentWrapper>
-        <ToolIndicator status="info" />
+        <ToolIndicator {...args} status="info" />
     </ContentWrapper>
 );
 export const Loading = () => (

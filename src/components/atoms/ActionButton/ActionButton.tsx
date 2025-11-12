@@ -44,40 +44,48 @@ export interface ActionButtonProps extends Omit<ButtonButtonProps, 'className'> 
  * a convenient way to add tooltips to action buttons throughout the application.
  *
  * @param props - Component props
+ * @param ref - Forwarded ref to the button element
  * @returns ActionButton component
  */
-export function ActionButton({
-    tooltipTitle,
-    tooltipPlacement,
-    tooltipDisabled,
-    tooltipOpenDelay,
-    tooltipCloseDelay,
-    wrapperClassName,
-    className,
-    children,
-    ...buttonProps
-}: ActionButtonProps) {
-    const button = (
-        <Button {...buttonProps} className={className}>
-            {children}
-        </Button>
-    );
+export const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProps>(
+    (
+        {
+            tooltipTitle,
+            tooltipPlacement,
+            tooltipDisabled,
+            tooltipOpenDelay,
+            tooltipCloseDelay,
+            wrapperClassName,
+            className,
+            children,
+            ...buttonProps
+        },
+        ref,
+    ) => {
+        const button = (
+            <Button {...buttonProps} ref={ref} className={className}>
+                {children}
+            </Button>
+        );
 
-    // If no tooltip props provided, return button without tooltip
-    if (!tooltipTitle) {
-        return button;
-    }
+        // If no tooltip props provided, return button without tooltip
+        if (!tooltipTitle) {
+            return button;
+        }
 
-    return (
-        <ActionTooltip
-            title={tooltipTitle}
-            placement={tooltipPlacement}
-            disabled={tooltipDisabled}
-            openDelay={tooltipOpenDelay}
-            closeDelay={tooltipCloseDelay}
-            className={wrapperClassName}
-        >
-            {button}
-        </ActionTooltip>
-    );
-}
+        return (
+            <ActionTooltip
+                title={tooltipTitle}
+                placement={tooltipPlacement}
+                disabled={tooltipDisabled}
+                openDelay={tooltipOpenDelay}
+                closeDelay={tooltipCloseDelay}
+                className={wrapperClassName}
+            >
+                {button}
+            </ActionTooltip>
+        );
+    },
+);
+
+ActionButton.displayName = 'ActionButton';
