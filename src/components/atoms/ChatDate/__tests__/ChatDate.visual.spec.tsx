@@ -59,7 +59,8 @@ test.describe('ChatDate', {tag: '@ChatDate'}, () => {
         await expectScreenshot();
     });
 
-    test('should render recent dates', async ({mount, expectScreenshot}) => {
+    test('should render recent dates', async ({page, mount, expectScreenshot}) => {
+        await page.clock.setFixedTime(new Date('2025-11-11T10:19:59.971Z'));
         await mount(<ChatDateStories.RecentDates />);
 
         await expectScreenshot();

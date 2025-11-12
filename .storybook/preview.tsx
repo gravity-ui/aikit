@@ -12,6 +12,8 @@ import '../src/themes/variables.css';
 import '../src/themes/light.css';
 import '../src/themes/dark.css';
 
+const MOCK_DATE = new Date('2025-11-12T10:19:59.971Z');
+
 // Theme decorator
 const ThemeDecorator = (Story: any, context: any) => {
     const theme = context.globals.theme || 'light';
@@ -39,6 +41,7 @@ const preview: Preview = {
     decorators: [ThemeDecorator, WithTheme, withLang],
 
     parameters: {
+        mockingDate: MOCK_DATE,
         docs: {
             theme: themes.light,
             container: DocsDecorator,
