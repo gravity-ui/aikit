@@ -159,7 +159,7 @@ export const DifferentDateTypes: StoryObj<ChatDateProps> = {
 
 export const RecentDates: StoryObj<ChatDateProps> = {
     render: (args) => {
-        const today = new Date('2025-11-11');
+        const today = new Date('2025-11-10');
 
         const getTitle = (daysAgo: number) => {
             return daysAgo ? `[ + ${daysAgo} ]` : `[ 0 ]`;
