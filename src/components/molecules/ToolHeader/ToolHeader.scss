@@ -7,6 +7,7 @@ $block: '.#{variables.$ns}tool-header';
     justify-content: space-between;
     align-items: center;
     height: 24px;
+    gap: var(--g-spacing-2);
 
     &__left {
         display: flex;
