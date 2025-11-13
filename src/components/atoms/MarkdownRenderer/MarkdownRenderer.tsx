@@ -17,11 +17,15 @@ export interface MarkdownRendererProps {
 
 export function MarkdownRenderer({content, className, qa}: MarkdownRendererProps) {
     const html = useMemo(() => {
+        if (typeof content !== 'string') {
+            return '';
+        }
         try {
             const result = transform(content);
             return result.result.html;
         } catch (error: unknown) {
-            console.error(error);
+            // eslint-disable-next-line no-console
+            console.error('Error transforming markdown:', error);
             return '';
         }
     }, [content]);
