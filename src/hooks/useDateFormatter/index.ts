@@ -2,7 +2,7 @@ import {useMemo} from 'react';
 
 import dayjs, {Dayjs} from 'dayjs';
 
-import {RELATIVE_DATE_THRESHOLD} from '../constants';
+import {RELATIVE_DATE_THRESHOLD} from '../../constants';
 
 export interface UseDateFormatterOptions {
     date: string | Date | number;
