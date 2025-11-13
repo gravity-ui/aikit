@@ -47,9 +47,9 @@ export function getFormattedDate(dateObject: Dayjs, format?: string): string {
 
     // Extract date part from custom format
     // Remove common time format tokens (HH, H, hh, h, mm, ss, A, a, etc.)
-    let dateFormat = format.replace(/\s*(HH?|hh?|mm|ss|A|a|Z|z).*/g, '').trim();
+    const dateFormat = format.replace(/\s*(HH?|hh?|mm|ss|A|a|Z|z).*/g, '').trim();
     if (!dateFormat) {
-        dateFormat = 'YYYY.MM.DD';
+        return '';
     }
 
     return dateObject.format(dateFormat);

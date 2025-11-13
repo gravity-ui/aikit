@@ -19,4 +19,10 @@ test.describe('BaseMessage', {tag: '@BaseMessage'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render timestamp', async ({mount, expectScreenshot}) => {
+        await mount(<BaseMessageStories.ShowTimestamp />);
+
+        await expectScreenshot();
+    });
 });
