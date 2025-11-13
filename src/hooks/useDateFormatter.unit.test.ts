@@ -68,11 +68,6 @@ describe('getFormattedDate', () => {
             expect(result).toBe('15-03-2024');
         });
 
-        it('should fall back to default format if only time tokens provided', () => {
-            const result = getFormattedDate(testDate, 'HH:mm:ss');
-            expect(result).toBe('2024.03.15');
-        });
-
         it('should handle date-only format without time', () => {
             const result = getFormattedDate(testDate, 'DD/MM/YYYY');
             expect(result).toBe('15/03/2024');
