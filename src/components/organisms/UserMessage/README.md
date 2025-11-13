@@ -5,6 +5,7 @@ Component for rendering user message
 ## Features
 
 - Support render avatar of user
+- Support rendering markdown
 - Support different type of actions
 - Support rendering timestamp
 
@@ -37,6 +38,7 @@ import {UserMessage} from '@/components/organisms/UserMessage';
 | Prop                 | Type                                                                              | Required | Default | Description                                |
 | -------------------- | --------------------------------------------------------------------------------- | -------- | ------- | ------------------------------------------ |
 | `data`               | `string \| React.ReactNode`                                                       | ✓        | -       | Message                                    |
+| `format`             | `plain \| markdown`                                                               | -        | `plain` | Type of data                               |
 | `timestamp`          | `string`                                                                          | -        | -       | Time of message                            |
 | `showTimestamp`      | `boolean`                                                                         | -        | false   | Should be rendered timestamp               |
 | `showAvatar`         | `boolean`                                                                         | -        | false   | Should be rendered Avatar of user          |

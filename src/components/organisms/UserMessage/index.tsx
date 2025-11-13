@@ -1,6 +1,7 @@
 import {Avatar} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 import {MessageBalloon} from '../../atoms/MessageBalloon';
 import {BaseMessage, BaseMessageProps} from '../../molecules/BaseMessage';
 
@@ -31,6 +32,7 @@ export const UserMessage = (props: UserMessageProps) => {
         avatarUrl = '',
         timestamp = '',
         showTimestamp,
+        format = 'plain',
     } = props;
 
     return (
@@ -43,7 +45,9 @@ export const UserMessage = (props: UserMessageProps) => {
                 showTimestamp={showTimestamp}
                 timestamp={timestamp}
             >
-                <MessageBalloon>{data}</MessageBalloon>
+                <MessageBalloon>
+                    {format === 'markdown' ? <MarkdownRenderer content={data as string} /> : data}
+                </MessageBalloon>
             </BaseMessage>
         </div>
     );
