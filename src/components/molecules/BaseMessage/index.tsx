@@ -74,40 +74,45 @@ export const BaseMessage = (props: BaseMessageProps) => {
             return '';
         }
     };
+    const hasActions = actions && actions.length > 0;
 
     return (
         <div className={b({variant, 'btn-hover': showActionsOnHover}, className)} data-qa={qa}>
             {children}
-            <div className={b('actions', {reverse: variant !== 'user'})}>
-                {showTimestamp ? <ChatDate date={timestamp} format="HH:mm" showTime /> : null}
-                <ButtonGroup>
-                    {actions?.map((action) => {
-                        const tooltipText = getTooltipText(action.type);
+            {hasActions && (
+                <div className={b('actions', {reverse: variant !== 'user'})}>
+                    {showTimestamp ? <ChatDate date={timestamp} format="HH:mm" showTime /> : null}
+                    <ButtonGroup>
+                        {actions?.map((action) => {
+                            const tooltipText = getTooltipText(action.type);
 
-                        return (
-                            <ActionButton
-                                key={action.type}
-                                tooltipTitle={
-                                    tooltipText && action.type !== 'custom'
-                                        ? tooltipText
-                                        : undefined
-                                }
-                                view="flat-secondary"
-                                onClick={action.onClick}
-                            >
-                                {action.icon || BaseMessageActionIcons[action.type] ? (
-                                    <Icon
-                                        size={16}
-                                        data={action.icon || BaseMessageActionIcons[action.type]}
-                                    />
-                                ) : (
-                                    action.type
-                                )}
-                            </ActionButton>
-                        );
-                    })}
-                </ButtonGroup>
-            </div>
+                            return (
+                                <ActionButton
+                                    key={action.type}
+                                    tooltipTitle={
+                                        tooltipText && action.type !== 'custom'
+                                            ? tooltipText
+                                            : undefined
+                                    }
+                                    view="flat-secondary"
+                                    onClick={action.onClick}
+                                >
+                                    {action.icon || BaseMessageActionIcons[action.type] ? (
+                                        <Icon
+                                            size={16}
+                                            data={
+                                                action.icon || BaseMessageActionIcons[action.type]
+                                            }
+                                        />
+                                    ) : (
+                                        action.type
+                                    )}
+                                </ActionButton>
+                            );
+                        })}
+                    </ButtonGroup>
+                </div>
+            )}
         </div>
     );
 };
