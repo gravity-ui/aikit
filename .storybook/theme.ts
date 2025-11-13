@@ -14,7 +14,7 @@ function renderBrandTitle(theme: 'light' | 'dark') {
     <div style="flex-shrink: 0; line-height: 0">${logo}</div>
     <div style="margin-inline-start: 8px">
         <div style="font-size: 26px; line-height: 32px; color: ${titleColor}; font-weight: 600;">Gravity&nbsp;UI</div>
-        <div style="font-size: 14px; color: ${descriptionColor}; font-weight: 400;">UIKit&nbsp;v${pkg.version}</div>
+        <div style="font-size: 14px; color: ${descriptionColor}; font-weight: 400;">AIKit&nbsp;v${pkg.version}</div>
     </div>
 </div>
     `.trim();
