@@ -7,8 +7,6 @@ import type {DocsContainerProps} from '@storybook/addon-docs';
 import {themes} from '../../../.storybook/theme';
 import {cn} from '../../utils/cn';
 
-import {ThemeContext} from './ThemeContext';
-
 import './DocsDecorator.scss';
 
 export interface DocsDecoratorProps extends React.PropsWithChildren<DocsContainerProps> {}
@@ -16,7 +14,8 @@ export interface DocsDecoratorProps extends React.PropsWithChildren<DocsContaine
 const b = cn('docs-decorator');
 
 export function DocsDecorator({children, context}: DocsDecoratorProps) {
-    const theme = React.useContext(ThemeContext);
+    // @ts-expect-error
+    const theme = context.store.userGlobals.globals.theme;
     return (
         <div className={b()}>
             <DocsContainer context={context} theme={themes[getThemeType(theme)]}>
