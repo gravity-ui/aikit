@@ -1,8 +1,8 @@
-import {Button, Text} from '@gravity-ui/uikit';
+import {Text} from '@gravity-ui/uikit';
 
 import type {ToolHeaderProps, ToolStatus} from '../../../types/tool';
 import {block} from '../../../utils/cn';
-import {ToolIndicator} from '../../atoms';
+import {ActionButton, ToolIndicator} from '../../atoms';
 import {ButtonGroup} from '../ButtonGroup';
 
 import './ToolHeader.scss';
@@ -34,15 +34,15 @@ export function ToolHeader(props: ToolHeaderProps) {
                 {hasActions && (
                     <ButtonGroup>
                         {actions.map((action, index) => (
-                            <Button
-                                title={action.label}
+                            <ActionButton
+                                tooltipTitle={action.label}
                                 view="flat-secondary"
                                 key={index}
-                                onClick={action.onClick}
                                 size="s"
+                                {...action}
                             >
                                 {action.icon}
-                            </Button>
+                            </ActionButton>
                         ))}
                     </ButtonGroup>
                 )}
