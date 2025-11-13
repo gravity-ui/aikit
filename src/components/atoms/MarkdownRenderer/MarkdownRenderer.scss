@@ -1,0 +1,5 @@
+@use '../../../styles/variables';
+
+@import '@diplodoc/transform/dist/css/yfm.css';
+
+$block: '.#{variables.$ns}markdown-renderer';

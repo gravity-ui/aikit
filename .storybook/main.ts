@@ -25,6 +25,18 @@ const config: StorybookConfig = {
     features: {
         backgrounds: false,
     },
+
+    webpackFinal: async (config) => {
+        config.resolve = config.resolve || {};
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            process: require.resolve('process/browser'),
+            url: false,
+            fs: false,
+            path: false,
+        };
+        return config;
+    },
 };
 
 module.exports = config;

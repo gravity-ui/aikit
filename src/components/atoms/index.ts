@@ -9,3 +9,4 @@ export * from './DiffStat';
 export * from './Shimmer';
 export * from './InlineCitation';
 export * from './ChatDate';
+export * from './MarkdownRenderer';
