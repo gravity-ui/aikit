@@ -3,18 +3,18 @@ import {ReactNode} from 'react';
 import {block} from '../../../utils/cn';
 import {Suggestions} from '../../molecules/Suggestions';
 
-import {PromptBoxSuggestionsProps} from './types';
+import {PromptInputSuggestionsConfig} from './types';
 
-const b = block('prompt-box');
+const b = block('prompt-input');
 
 /**
- * Props for the PromptBoxWithSuggestions component
+ * Props for the PromptInputWithSuggestions component
  */
-export type PromptBoxWithSuggestionsProps = {
-    /** Child component (PromptBox) */
+export type PromptInputWithSuggestionsProps = {
+    /** Child component (PromptInput) */
     children: ReactNode;
     /** Suggestions-related props */
-    suggestionsProps?: PromptBoxSuggestionsProps;
+    suggestionsProps?: PromptInputSuggestionsConfig;
     /** Additional CSS class */
     className?: string;
     /** QA/test identifier */
@@ -22,12 +22,12 @@ export type PromptBoxWithSuggestionsProps = {
 };
 
 /**
- * PromptBoxWithSuggestions component - wrapper that shows suggestions above the prompt box
+ * PromptInputWithSuggestions component - wrapper that shows suggestions above the prompt input
  *
  * @param props - Component props
  * @returns React component
  */
-export function PromptBoxWithSuggestions(props: PromptBoxWithSuggestionsProps) {
+export function PromptInputWithSuggestions(props: PromptInputWithSuggestionsProps) {
     const {children, suggestionsProps = {}, className, qa} = props;
 
     const {

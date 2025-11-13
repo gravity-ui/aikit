@@ -1,17 +1,20 @@
 import {useState} from 'react';
 
+import {Xmark} from '@gravity-ui/icons';
+import {Icon} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
-import {PromptBox} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import {SwapArea} from '../../../../demo/SwapArea/SwapArea';
+import {SwapArea} from '../../../../demo/SwapArea';
 import type {TSubmitData} from '../../../../types/messages';
+import {ActionButton} from '../../../atoms/ActionButton';
+import {PromptInput} from '../PromptInput';
 
 import MDXDocs from './Docs.mdx';
 
 export default {
-    title: 'organisms/PromptBox',
-    component: PromptBox,
+    title: 'organisms/PromptInput',
+    component: PromptInput,
     parameters: {
         docs: {
             page: MDXDocs,
@@ -19,7 +22,7 @@ export default {
     },
 } as Meta;
 
-type Story = StoryObj<typeof PromptBox>;
+type Story = StoryObj<typeof PromptInput>;
 
 const defaultDecorators = [
     (Story) => (
@@ -145,6 +148,118 @@ export const WithCustomBottomContent: Story = {
     decorators: defaultDecorators,
 };
 
+export const WithTopPanel: Story = {
+    args: {
+        view: 'simple',
+        onSend: handleSend,
+        bodyProps: {
+            placeholder: 'Plan, code, build and test anything',
+        },
+        topPanel: {
+            isOpen: true,
+            children: <SwapArea />,
+        },
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithBottomPanel: Story = {
+    args: {
+        view: 'simple',
+        onSend: handleSend,
+        bodyProps: {
+            placeholder: 'Plan, code, build and test anything',
+        },
+        bottomPanel: {
+            isOpen: true,
+            children: <SwapArea />,
+        },
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithBothPanels: Story = {
+    args: {
+        view: 'full',
+        onSend: handleSend,
+        bodyProps: {
+            placeholder: 'Plan, code, build and test anything',
+        },
+        headerProps: {
+            showContextIndicator: true,
+            contextIndicatorProps: {
+                type: 'percent',
+                usedContext: 24,
+            },
+        },
+        topPanel: {
+            isOpen: true,
+            children: <SwapArea />,
+        },
+        bottomPanel: {
+            isOpen: true,
+            children: <SwapArea />,
+        },
+    },
+    decorators: defaultDecorators,
+};
+
+const PanelExample = ({onClose}: {onClose: () => void}) => {
+    return (
+        <>
+            <SwapArea />
+
+            <ActionButton view="flat" size="m" onClick={onClose}>
+                <Icon data={Xmark} size={16} />
+            </ActionButton>
+        </>
+    );
+};
+
+export const WithPanelToggle: Story = {
+    render: () => {
+        const [isTopPanelOpen, setIsTopPanelOpen] = useState(false);
+        const [isBottomPanelOpen, setIsBottomPanelOpen] = useState(false);
+
+        return (
+            <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                <div style={{display: 'flex', gap: '8px'}}>
+                    <ActionButton
+                        view="action"
+                        size="m"
+                        onClick={() => setIsTopPanelOpen((prev) => !prev)}
+                    >
+                        Toggle Top Panel
+                    </ActionButton>
+                    <ActionButton
+                        view="action"
+                        size="m"
+                        onClick={() => setIsBottomPanelOpen((prev) => !prev)}
+                    >
+                        Toggle Bottom Panel
+                    </ActionButton>
+                </div>
+                <PromptInput
+                    view="full"
+                    onSend={handleSend}
+                    bodyProps={{
+                        placeholder: 'Plan, code, build and test anything',
+                    }}
+                    topPanel={{
+                        isOpen: isTopPanelOpen,
+                        children: <PanelExample onClose={() => setIsTopPanelOpen(false)} />,
+                    }}
+                    bottomPanel={{
+                        isOpen: isBottomPanelOpen,
+                        children: <PanelExample onClose={() => setIsBottomPanelOpen(false)} />,
+                    }}
+                />
+            </div>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
 export const Disabled: Story = {
     args: {
         view: 'simple',
@@ -176,7 +291,7 @@ export const Streaming: Story = {
         };
 
         return (
-            <PromptBox
+            <PromptInput
                 {...args}
                 view="full"
                 onSend={handleSendWithStreaming}
@@ -215,7 +330,7 @@ export const ComplexExample: Story = {
         };
 
         return (
-            <PromptBox
+            <PromptInput
                 {...args}
                 view="full"
                 onSend={handleSendComplex}

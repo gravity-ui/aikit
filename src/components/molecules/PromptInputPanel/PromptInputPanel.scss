@@ -1,0 +1,11 @@
+@use '../../../styles/variables.scss';
+
+$block: '.#{variables.$ns}prompt-input-panel';
+
+#{$block} {
+    display: flex;
+    padding: var(--g-spacing-2);
+    flex-direction: row;
+    align-items: center;
+    gap: var(--g-spacing-2);
+}

@@ -4,7 +4,7 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {PromptInputBody} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import {SwapArea} from '../../../../demo/SwapArea/SwapArea';
+import {SwapArea} from '../../../../demo/SwapArea';
 
 import MDXDocs from './Docs.mdx';
 
