@@ -6,7 +6,7 @@ import {ToolMessage} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import {SwapArea} from '../../../../demo/SwapArea/SwapArea';
+import {SwapArea} from '../../../../demo/SwapArea';
 import type {ToolMessageProps} from '../../../../types/tool';
 
 import MDXDocs from './Docs.mdx';

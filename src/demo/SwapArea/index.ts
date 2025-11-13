@@ -1,0 +1,1 @@
+export {SwapArea} from './SwapArea';

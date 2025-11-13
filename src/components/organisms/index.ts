@@ -3,6 +3,6 @@ export * from './Header';
 export * from './UserMessage';
 export * from './ThinkingMessage';
 export * from './ToolMessage';
-export * from './PromptBox';
+export * from './PromptInput';
 export * from './MessageList';
 export * from './ChatHistory';

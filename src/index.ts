@@ -28,7 +28,7 @@ export * from './components/organisms/Header';
 export * from './components/organisms/UserMessage';
 export * from './components/organisms/ThinkingMessage';
 export * from './components/organisms/ToolMessage';
-export * from './components/organisms/PromptBox';
+export * from './components/organisms/PromptInput';
 export * from './components/organisms/MessageList';
 export * from './components/organisms/ChatHistory';
 

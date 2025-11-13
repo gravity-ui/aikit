@@ -4,9 +4,19 @@ import {PromptInputHeaderProps} from '../../molecules/PromptInputHeader';
 import {SuggestionsItem, SuggestionsProps} from '../../molecules/Suggestions';
 
 /**
- * Props for the header section of PromptBox
+ * Props for a panel (top or bottom)
  */
-export type PromptBoxHeaderProps = {
+export type PromptInputPanelConfig = {
+    /** Is panel open */
+    isOpen: boolean;
+    /** Panel content */
+    children?: ReactNode;
+};
+
+/**
+ * Props for the header section of PromptInput
+ */
+export type PromptInputHeaderConfig = {
     /** Custom content for header area */
     topContent?: ReactNode;
     /** Show context indicator in header */
@@ -16,9 +26,9 @@ export type PromptBoxHeaderProps = {
 };
 
 /**
- * Props for the body/textarea section of PromptBox
+ * Props for the body/textarea section of PromptInput
  */
-export type PromptBoxBodyProps = {
+export type PromptInputBodyConfig = {
     /** Placeholder text for textarea */
     placeholder?: string;
     /** Minimum number of textarea rows */
@@ -30,9 +40,9 @@ export type PromptBoxBodyProps = {
 };
 
 /**
- * Props for the footer section of PromptBox
+ * Props for the footer section of PromptInput
  */
-export type PromptBoxFooterProps = {
+export type PromptInputFooterConfig = {
     /** Custom content for footer area (SubmitButton will still be shown) */
     bottomContent?: ReactNode;
     /** Show settings icon in footer */
@@ -50,9 +60,9 @@ export type PromptBoxFooterProps = {
 };
 
 /**
- * Props for the suggestions section of PromptBox
+ * Props for the suggestions section of PromptInput
  */
-export type PromptBoxSuggestionsProps = {
+export type PromptInputSuggestionsConfig = {
     /** Submit suggestions array */
     suggestions?: SuggestionsItem[];
     /** Show submit suggestions */

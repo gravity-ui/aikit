@@ -44,4 +44,7 @@
     --g-aikit-chat-history-width: 360px;
     --g-aikit-chat-history-max-height: 560px;
     --g-aikit-chat-history-item-height: 24px;
+
+    /* === Prompt Input === */
+    --g-aikit-prompt-input-panel-max-height: 500px;
 }

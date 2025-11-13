@@ -3,9 +3,9 @@ import {useCallback, useState} from 'react';
 import {TSubmitData} from '../../../types';
 
 /**
- * Hook props for managing PromptBox state
+ * Hook props for managing PromptInput state
  */
-export type UsePromptBoxProps = {
+export type UsePromptInputProps = {
     /** Callback when message is sent */
     onSend: (data: TSubmitData) => Promise<void>;
     /** Callback when sending is cancelled */
@@ -21,9 +21,9 @@ export type UsePromptBoxProps = {
 };
 
 /**
- * Hook return type for PromptBox state management
+ * Hook return type for PromptInput state management
  */
-export type UsePromptBoxReturn = {
+export type UsePromptInputReturn = {
     /** Current input value */
     value: string;
     /** Set the input value */
@@ -49,12 +49,12 @@ export type UsePromptBoxReturn = {
 };
 
 /**
- * Custom hook for managing PromptBox state and behavior
+ * Custom hook for managing PromptInput state and behavior
  *
  * @param props - Hook props
  * @returns Hook return value with state and handlers
  */
-export function usePromptBox(props: UsePromptBoxProps): UsePromptBoxReturn {
+export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn {
     const {
         onSend,
         onCancel,

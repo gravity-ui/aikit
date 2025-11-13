@@ -9,3 +9,4 @@ export * from './ToolHeader';
 export * from './PromptInputHeader';
 export * from './PromptInputBody';
 export * from './PromptInputFooter';
+export * from './PromptInputPanel';

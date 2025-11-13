@@ -3,23 +3,23 @@ import {PromptInputBody} from '../../molecules/PromptInputBody';
 import {PromptInputFooter} from '../../molecules/PromptInputFooter';
 import {PromptInputHeader} from '../../molecules/PromptInputHeader';
 
-import {PromptBoxBodyProps, PromptBoxFooterProps, PromptBoxHeaderProps} from './types';
-import {UsePromptBoxReturn} from './usePromptBox';
+import {PromptInputBodyConfig, PromptInputFooterConfig, PromptInputHeaderConfig} from './types';
+import {UsePromptInputReturn} from './usePromptInput';
 
-const b = block('prompt-box');
+const b = block('prompt-input');
 
 /**
- * Props for the PromptBoxFull component
+ * Props for the PromptInputFull component
  */
-export type PromptBoxFullProps = {
+export type PromptInputFullProps = {
     /** Hook return value with state and handlers */
-    hookState: UsePromptBoxReturn;
+    hookState: UsePromptInputReturn;
     /** Header-related props */
-    headerProps?: PromptBoxHeaderProps;
+    headerProps?: PromptInputHeaderConfig;
     /** Body/textarea-related props */
-    bodyProps?: PromptBoxBodyProps;
+    bodyProps?: PromptInputBodyConfig;
     /** Footer-related props */
-    footerProps?: PromptBoxFooterProps;
+    footerProps?: PromptInputFooterConfig;
     /** Additional CSS class */
     className?: string;
     /** QA/test identifier */
@@ -27,12 +27,12 @@ export type PromptBoxFullProps = {
 };
 
 /**
- * PromptBoxFull component - full view with header, body, and footer
+ * PromptInputFull component - full view with header, body, and footer
  *
  * @param props - Component props
  * @returns React component
  */
-export function PromptBoxFull(props: PromptBoxFullProps) {
+export function PromptInputFull(props: PromptInputFullProps) {
     const {hookState, headerProps = {}, bodyProps = {}, footerProps = {}, className, qa} = props;
 
     const {topContent, showContextIndicator = false, contextIndicatorProps} = headerProps;
