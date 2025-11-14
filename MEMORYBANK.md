@@ -202,128 +202,157 @@ export const Playground: Story = {
 
 ## Testing Guidelines
 
-Tests should be created based on Storybook stories to ensure consistency between documentation and functionality.
+Tests should be created based on Storybook stories to ensure consistency between documentation and functionality. We use **Playwright Component Testing** for visual regression testing and interaction testing.
 
 ### Test File Structure
 
-**Location**: `ComponentName/ComponentName.unit.test.ts` (for unit tests)
+**Location**: `ComponentName/__tests__/` directory with the following files:
 
-**Standard Template**:
+- `helpersPlaywright.tsx` - exports composed stories
+- `ComponentName.visual.spec.tsx` - Playwright test file
+- `__snapshots__/` - directory for visual regression snapshots
+
+**Helper File Template** (`helpersPlaywright.tsx`):
 
 ```tsx
-import {describe, it, expect} from '@jest/globals';
-import {ComponentName} from './ComponentName';
+import {composeStories} from '@storybook/react';
 
-describe('ComponentName', () => {
-  describe('Story: Playground', () => {
-    it('should render with default props', () => {
-      // Test implementation based on Playground story
-    });
+import * as DefaultComponentNameStories from '../__stories__/ComponentName.stories';
+
+export const ComponentNameStories = composeStories(DefaultComponentNameStories);
+```
+
+**Test File Template** (`ComponentName.visual.spec.tsx`):
+
+```tsx
+import React from 'react';
+
+import {test} from '~playwright/core';
+
+import {ComponentNameStories} from './helpersPlaywright';
+
+test.describe('ComponentName', {tag: '@ComponentName'}, () => {
+  test('should render playground state', async ({mount, expectScreenshot}) => {
+    await mount(<ComponentNameStories.Playground />);
+
+    await expectScreenshot();
   });
 
-  describe('Story: WithValue', () => {
-    it('should handle value changes', () => {
-      // Test implementation based on WithValue story
-    });
+  test('should render default state', async ({mount, expectScreenshot}) => {
+    await mount(<ComponentNameStories.Default />);
+
+    await expectScreenshot();
   });
 
-  // More describe blocks for each story
+  // More tests for each story
 });
 ```
 
 ### Testing Rules Based on Stories
 
-1. **One `describe` Block Per Story**
-   - Create a separate `describe` block for each exported story
-   - Name it: `describe('Story: StoryName', () => {})`
+1. **One Test Per Story**
+   - Create a separate `test()` for each exported story
+   - Name it descriptively: `test('should render [story name] state', async () => {})`
    - This ensures clear mapping between stories and tests
 
-2. **Test Story Props and Behavior**
+2. **Visual Regression Testing**
+
+   Every story should have a visual regression test:
 
    ```tsx
-   describe('Story: Playground', () => {
-     it('should render with args from Playground story', () => {
-       const args = Playground.args;
-       // Use exact args from the story
-     });
+   test('should render playground state', async ({mount, expectScreenshot}) => {
+     await mount(<ComponentNameStories.Playground />);
+
+     await expectScreenshot();
    });
    ```
 
-3. **Test State Management from Stories**
-   - If a story uses `useState`, test state changes
-   - If a story uses `render` function, replicate that logic in tests
+3. **Interaction Testing**
+
+   Test user interactions like clicks, hovers, and input:
 
    ```tsx
-   describe('Story: WithValue', () => {
-     it('should update value on change', () => {
-       // Replicate useState logic from story
-       const [value, setValue] = useState('test');
-       // Test the interaction
-     });
+   test('should handle button click', async ({mount, page}) => {
+     await mount(<ComponentNameStories.WithButton />);
+
+     const button = page.getByRole('button', {name: 'Click me'});
+     await button.click();
+
+     // Verify the result
+     await page.getByText('Clicked!').waitFor();
    });
    ```
 
-4. **Test Variants and Edge Cases**
+4. **Hover States and Tooltips**
 
    ```tsx
-   describe('Story: Disabled', () => {
-     it('should be disabled when disabled prop is true', () => {
-       const args = Disabled.args;
-       // Test disabled state
-     });
+   test('should show tooltip on hover', async ({mount, page, expectScreenshot}) => {
+     await mount(<ComponentNameStories.WithTooltip />);
 
-     it('should not trigger onClick when disabled', () => {
-       // Test interaction blocking
-     });
+     await page.locator('.element').hover();
+     await page.waitForTimeout(500); // Wait for tooltip to appear
+
+     await expectScreenshot();
    });
    ```
 
-5. **Test Different Input Types**
-   - For each story variant, test the specific input type or configuration
-   - Example: If story shows `size="l"`, test large size behavior
+5. **Async Behavior Testing**
 
-6. **Nested Describe Blocks for Complex Tests**
+   For components with async operations:
 
    ```tsx
-   describe('ComponentName', () => {
-     describe('Story: Playground', () => {
-       describe('with default props', () => {
-         it('should render correctly', () => {});
-       });
+   test('should handle async operation', async ({mount, page}) => {
+     await mount(<ComponentNameStories.WithAsync />);
 
-       describe('with custom props', () => {
-         it('should handle custom values', () => {});
-       });
-     });
+     await page.getByRole('button').click();
+
+     // Wait for async operation to complete
+     await page.getByText('Loaded!').waitFor();
    });
    ```
 
-7. **Test Coverage Requirements**
-   - Every exported story should have corresponding tests
-   - Test at least the happy path for each story
-   - Test error cases and edge cases shown in stories
-   - Test interactions (clicks, inputs, state changes)
-   - Test accessibility features demonstrated in stories
+6. **Test Coverage Requirements**
+   - Every exported story should have at least one test
+   - Include visual regression tests for all visual states
+   - Include interaction tests for interactive components
+   - Test edge cases (disabled, loading, error states)
+   - Test different viewport sizes if responsive behavior is important
 
-8. **Test Naming Conventions**
-   - Use descriptive test names: `it('should [expected behavior] when [condition]', () => {})`
+7. **Test Naming Conventions**
+   - Use descriptive test names: `test('should [expected behavior]', async () => {})`
    - Examples:
-     - `it('should render ArrowUp icon when state is enabled', () => {})`
-     - `it('should call onClick handler when button is clicked', () => {})`
-     - `it('should show loading spinner when state is loading', () => {})`
+     - `test('should render enabled state', async () => {})`
+     - `test('should display all suggestions', async () => {})`
+     - `test('should handle suggestion click', async () => {})`
 
-9. **Test Data Consistency**
-   - Use the same test data as in stories when possible
-   - If stories use specific strings/numbers, use those in tests
-   - Maintain consistency between story examples and test assertions
+8. **Using Playwright Fixtures**
+   - `mount` - mounts React components
+   - `page` - provides access to Playwright's page object
+   - `expectScreenshot` - performs visual regression testing
+   - Always use `async/await` for Playwright operations
 
-10. **Snapshot Testing (Optional)**
+9. **Waiting for Elements**
+
+   Use Playwright's built-in waiting mechanisms:
+
+   ```tsx
+   // Wait for element to appear
+   await page.getByText('Hello').waitFor();
+
+   // Wait for element to be visible
+   await page.locator('.element').waitFor({state: 'visible'});
+
+   // Wait for timeout (use sparingly)
+   await page.waitForTimeout(500);
+   ```
+
+10. **Test Tags**
+
+    Use test tags for filtering:
+
     ```tsx
-    describe('Story: Playground', () => {
-      it('should match snapshot', () => {
-        const {container} = render(<ComponentName {...Playground.args} />);
-        expect(container).toMatchSnapshot();
-      });
+    test.describe('ComponentName', {tag: '@ComponentName'}, () => {
+      // Tests
     });
     ```
 
@@ -331,62 +360,82 @@ describe('ComponentName', () => {
 
 Based on a component with multiple stories:
 
+**helpersPlaywright.tsx**:
+
 ```tsx
-import {describe, it, expect, jest} from '@jest/globals';
-import {render, fireEvent} from '@testing-library/react';
-import {SubmitButton} from './SubmitButton';
-import * as Stories from './__stories__/SubmitButton.stories';
+import {composeStories} from '@storybook/react';
 
-describe('SubmitButton', () => {
-  describe('Story: Playground', () => {
-    it('should render with default playground args', () => {
-      const {container} = render(<SubmitButton {...Stories.Playground.args} />);
-      expect(container).toBeDefined();
-    });
+import * as DefaultSubmitButtonStories from '../__stories__/SubmitButton.stories';
+
+export const SubmitButtonStories = composeStories(DefaultSubmitButtonStories);
+```
+
+**SubmitButton.visual.spec.tsx**:
+
+```tsx
+import React from 'react';
+
+import {test} from '~playwright/core';
+
+import {SubmitButtonStories} from './helpersPlaywright';
+
+test.describe('SubmitButton', {tag: '@SubmitButton'}, () => {
+  // Visual regression tests for each story
+  test('should render enabled state', async ({mount, expectScreenshot}) => {
+    await mount(<SubmitButtonStories.Enabled />);
+
+    await expectScreenshot();
   });
 
-  describe('Story: Enabled', () => {
-    it('should show ArrowUp icon when state is enabled', () => {
-      const {getByRole} = render(<SubmitButton {...Stories.Enabled.args} />);
-      const button = getByRole('button');
-      expect(button).toHaveAttribute('aria-label', 'Submit');
-    });
+  test('should render disabled state', async ({mount, expectScreenshot}) => {
+    await mount(<SubmitButtonStories.Disabled />);
 
-    it('should call onClick when clicked', () => {
-      const onClick = jest.fn();
-      const {getByRole} = render(<SubmitButton {...Stories.Enabled.args} onClick={onClick} />);
-      fireEvent.click(getByRole('button'));
-      expect(onClick).toHaveBeenCalledTimes(1);
-    });
+    await expectScreenshot();
   });
 
-  describe('Story: Disabled', () => {
-    it('should be disabled', () => {
-      const {getByRole} = render(<SubmitButton {...Stories.Disabled.args} />);
-      expect(getByRole('button')).toBeDisabled();
-    });
+  test('should render loading state', async ({mount, expectScreenshot}) => {
+    await mount(<SubmitButtonStories.Loading />);
 
-    it('should not call onClick when disabled', () => {
-      const onClick = jest.fn();
-      const {getByRole} = render(<SubmitButton {...Stories.Disabled.args} onClick={onClick} />);
-      fireEvent.click(getByRole('button'));
-      expect(onClick).not.toHaveBeenCalled();
-    });
+    await expectScreenshot();
   });
 
-  describe('Story: Loading', () => {
-    it('should show loading spinner', () => {
-      const {container} = render(<SubmitButton {...Stories.Loading.args} />);
-      expect(container.querySelector('.spinner')).toBeInTheDocument();
-    });
+  test('should render cancelable state', async ({mount, expectScreenshot}) => {
+    await mount(<SubmitButtonStories.Cancelable />);
+
+    await expectScreenshot();
   });
 
-  describe('Story: Cancelable', () => {
-    it('should show stop icon when cancelable', () => {
-      const {getByRole} = render(<SubmitButton {...Stories.Cancelable.args} />);
-      const button = getByRole('button');
-      expect(button).toHaveAttribute('aria-label', 'Cancel');
-    });
+  test('should render all sizes', async ({mount, expectScreenshot}) => {
+    await mount(<SubmitButtonStories.Size />);
+
+    await expectScreenshot();
+  });
+
+  // Interaction test
+  test('should handle button click', async ({mount, page}) => {
+    let clicked = false;
+
+    await mount(
+      <SubmitButtonStories.Enabled
+        onClick={() => {
+          clicked = true;
+        }}
+      />,
+    );
+
+    const button = page.getByRole('button');
+    await button.click();
+
+    // Additional assertions if needed
+    await page.waitForTimeout(100);
+  });
+
+  // Test disabled state prevents clicks
+  test('should not respond to clicks when disabled', async ({mount, page}) => {
+    await mount(<SubmitButtonStories.Disabled />);
+
+    const button = page.getByRole('button');
+    expect(await button.isDisabled()).toBeTruthy();
   });
 });
 ```
