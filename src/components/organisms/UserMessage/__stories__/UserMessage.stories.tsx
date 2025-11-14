@@ -64,7 +64,7 @@ export const Playground: StoryFn<UserMessageProps> = (args) => (
     </ContentWrapper>
 );
 Playground.args = {
-    data: 'Analyze the project and suggest a better solution to implement a feature-name',
+    content: 'Analyze the project and suggest a better solution to implement a feature-name',
     actions: buttons,
 };
 
@@ -74,7 +74,7 @@ export const ShowAvatar: StoryFn<UserMessageProps> = (args) => (
     </ContentWrapper>
 );
 ShowAvatar.args = {
-    data: 'Analyze the project and suggest a better solution to implement a feature-name',
+    content: 'Analyze the project and suggest a better solution to implement a feature-name',
     actions: buttons,
 };
 
@@ -84,6 +84,6 @@ export const ShowTimestamp: StoryFn<UserMessageProps> = (args) => (
     </ContentWrapper>
 );
 ShowTimestamp.args = {
-    data: 'Analyze the project and suggest a better solution to implement a feature-name',
+    content: 'Analyze the project and suggest a better solution to implement a feature-name',
     actions: buttons,
 };

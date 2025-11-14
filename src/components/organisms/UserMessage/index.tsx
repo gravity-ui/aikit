@@ -13,7 +13,7 @@ export type UserMessageProps = Pick<
     BaseMessageProps,
     'actions' | 'showActionsOnHover' | 'showTimestamp' | 'timestamp'
 > & {
-    data: string | React.ReactNode;
+    content: string | React.ReactNode;
     format?: 'plain' | 'markdown';
     showAvatar?: boolean;
     avatarUrl?: string;
@@ -25,7 +25,7 @@ export const UserMessage = (props: UserMessageProps) => {
     const {
         className,
         qa,
-        data,
+        content,
         actions,
         showActionsOnHover,
         showAvatar,
@@ -46,7 +46,11 @@ export const UserMessage = (props: UserMessageProps) => {
                 timestamp={timestamp}
             >
                 <MessageBalloon>
-                    {format === 'markdown' ? <MarkdownRenderer content={data as string} /> : data}
+                    {format === 'markdown' ? (
+                        <MarkdownRenderer content={content as string} />
+                    ) : (
+                        content
+                    )}
                 </MessageBalloon>
             </BaseMessage>
         </div>
