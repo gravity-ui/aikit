@@ -6,10 +6,7 @@ import {AssistantMessage, type AssistantMessageProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import type {
-    AssistantMessage as AssistantMessageType,
-    BaseMessagePart,
-} from '../../../../types/messages';
+import type {TAssistantMessage, TBaseMessagePart} from '../../../../types/messages';
 import {
     type MessagePartComponentProps,
     type MessageRendererRegistry,
@@ -77,13 +74,13 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-const simpleMessage: AssistantMessageType = {
+const simpleMessage: TAssistantMessage = {
     id: '1',
     role: 'assistant',
     content: 'Hello! How can I help you today?',
 };
 
-const multiPartMessage: AssistantMessageType = {
+const multiPartMessage: TAssistantMessage = {
     id: '4',
     role: 'assistant',
     content: [
@@ -155,7 +152,7 @@ interface CustomMessageData {
     description: string;
 }
 
-type CustomMessagePart = BaseMessagePart<CustomMessageData> & {
+type CustomMessagePart = TBaseMessagePart<CustomMessageData> & {
     type: 'custom';
 };
 
@@ -183,7 +180,7 @@ export const WithCustomRenderer: StoryObj<AssistantMessageProps> = {
             component: CustomMessageView,
         });
 
-        const customMessage: AssistantMessageType = {
+        const customMessage: TAssistantMessage = {
             id: '5',
             role: 'assistant',
             timestamp: '2024-01-01T00:00:04Z',
