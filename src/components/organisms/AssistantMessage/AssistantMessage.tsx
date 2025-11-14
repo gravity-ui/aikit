@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 
-import type {AssistantMessage as AssistantMessageType, MessagePart} from '../../../types/messages';
+import type {TAssistantMessage, TMessagePart} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {
     type MessageRendererRegistry,
@@ -15,11 +15,14 @@ import {defaultMessageRendererRegistry} from './defaultMessageTypeRegistry';
 
 import './AssistantMessage.scss';
 
-export type AssistantMessageProps = Pick<
+type BaseMessagePick = Pick<
     BaseMessageProps,
     'actions' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp'
-> &
-    Pick<AssistantMessageType, 'id' | 'content'> & {
+>;
+type AssistantMessagePick = Pick<TAssistantMessage, 'id' | 'content'>;
+
+export type AssistantMessageProps = BaseMessagePick &
+    AssistantMessagePick & {
         messageRendererRegistry?: MessageRendererRegistry;
         className?: string;
         qa?: string;
@@ -53,7 +56,7 @@ export function AssistantMessage({
         return null;
     }
 
-    const renderPart = (part: MessagePart, partIndex: number) => {
+    const renderPart = (part: TMessagePart, partIndex: number) => {
         const PartComponent = getMessageRenderer(registry, part.type);
 
         if (!PartComponent) {

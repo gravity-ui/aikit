@@ -18,7 +18,7 @@ Component for rendering assistant messages with support for multiple message par
 import {AssistantMessage} from '@/components/organisms/AssistantMessage';
 
 // Simple text message
-<AssistantMessage content="Hello! How can I help you?" id="1" timestamp="2024-01-01T00:00:00Z" />;
+<AssistantMessage content="Hello! How can I help you?" />;
 
 // Message with text part
 <AssistantMessage
@@ -28,8 +28,6 @@ import {AssistantMessage} from '@/components/organisms/AssistantMessage';
       text: 'This is a **markdown** message.',
     },
   }}
-  id="2"
-  timestamp="2024-01-01T00:00:01Z"
 />;
 
 // Message with multiple parts
@@ -49,8 +47,6 @@ import {AssistantMessage} from '@/components/organisms/AssistantMessage';
       },
     },
   ]}
-  id="3"
-  timestamp="2024-01-01T00:00:02Z"
 />;
 
 // With actions
@@ -59,14 +55,7 @@ const actions = [
   {type: 'like', onClick: () => console.log('Like')},
 ];
 
-<AssistantMessage
-  content="Hello!"
-  actions={actions}
-  id="4"
-  timestamp="2024-01-01T00:00:03Z"
-  showActionsOnHover
-  showTimestamp
-/>;
+<AssistantMessage content="Hello!" actions={actions} showActionsOnHover />;
 
 // With custom renderer registry
 import {createMessageRendererRegistry, registerMessageRenderer} from '@/utils/messageTypeRegistry';
@@ -76,7 +65,7 @@ registerMessageRenderer(customRegistry, 'custom', {
   component: ({part}) => <div>Custom: {part.data}</div>,
 });
 
-<AssistantMessage content="Hello!" messageRendererRegistry={customRegistry} id="5" />;
+<AssistantMessage content="Hello!" messageRendererRegistry={customRegistry} />;
 ```
 
 ## Props
@@ -183,6 +172,5 @@ registerMessageRenderer<CustomMessagePart>(registry, 'custom', {
     },
   }}
   messageRendererRegistry={registry}
-  id="custom-1"
 />;
 ```

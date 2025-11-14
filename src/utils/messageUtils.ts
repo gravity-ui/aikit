@@ -1,42 +1,42 @@
-import {v4 as uuidv4} from 'uuid';
+import type {
+    TAssistantMessage,
+    TMessage,
+    TMessageMetadata,
+    TMessagePart,
+    TUserMessage,
+} from '../types';
 
-/**
- * Message utilities
- */
-
-import type {BaseMessageType} from '../types';
-
-/**
- * Generate unique ID for message
- * @returns {string} Unique message identifier
- */
-export function generateMessageId(): string {
-    return uuidv4();
+export function isUserMessage<Metadata = TMessageMetadata>(
+    message: TMessage<Metadata>,
+): message is TUserMessage<Metadata> {
+    return message.role === 'user';
 }
 
-/**
- * Check if message is from user
- * @param {BaseMessageType} message - Message to check
- * @returns {boolean} True if message is from user
- */
-export function isUserMessage(message: BaseMessageType): boolean {
-    return message.author === 'user';
+export function isAssistantMessage<Metadata = TMessageMetadata>(
+    message: TMessage<Metadata>,
+): message is TAssistantMessage<Metadata> {
+    return message.role === 'assistant';
 }
 
-/**
- * Check if message is from assistant
- * @param {BaseMessage} message - Message to check
- * @returns {boolean} True if message is from assistant
- */
-export function isAssistantMessage(message: BaseMessageType): boolean {
-    return message.author === 'assistant';
-}
+export function normalizeContent(content: TAssistantMessage['content']): TMessagePart[] {
+    if (!content) {
+        return [];
+    }
 
-/**
- * Get last message from list
- * @param {BaseMessageType[]} messages - Array of messages
- * @returns {BaseMessageType | null} Last message or null if array is empty
- */
-export function getLastMessage(messages: BaseMessageType[]): BaseMessageType | null {
-    return messages.length > 0 ? messages[messages.length - 1] : null;
+    if (typeof content === 'string') {
+        return [
+            {
+                type: 'text',
+                data: {
+                    text: content,
+                },
+            },
+        ];
+    }
+
+    if (Array.isArray(content)) {
+        return content;
+    }
+
+    return [content];
 }

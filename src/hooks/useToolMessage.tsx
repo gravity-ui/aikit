@@ -79,10 +79,12 @@ function getDefaultInitialExpanded(
     return status === 'waitingConfirmation' || status === 'waitingSubmission';
 }
 
+const defaultHeaderActions: Action[] = [];
+
 export function useToolMessage(options: ToolMessageProps) {
     const {
         footerActions,
-        headerActions = [],
+        headerActions = defaultHeaderActions,
         bodyContent,
         status,
         footerContent,

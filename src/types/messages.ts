@@ -1,38 +1,33 @@
-/**
- * Base types for chat messages
- */
+import {BaseMessageProps} from 'src/components';
+
+import {ToolMessageProps} from './tool';
+
+export type TMessageMetadata = Record<string, unknown>;
 
 export type TSubmitData = {
     content: string;
     attachments?: File[];
-    metadata?: Record<string, unknown>;
+    metadata?: TMessageMetadata;
 };
 
-// Message states
-export type MessageState = 'initial' | 'loading' | 'success' | 'error' | 'streaming';
+export type TMessageStatus = 'sending' | 'complete' | 'error' | 'streaming';
+export type TMessageRole = 'user' | 'assistant' | 'system';
 
-// Base message with common fields
-export type BaseMessageType<TData = unknown> = {
-    id: string;
+export type TBaseMessagePart<Data = unknown> = {
+    id?: string;
     type: string;
-    author: 'user' | 'assistant' | string;
-    timestamp: string;
-    state?: MessageState;
-    data: TData;
-    metadata?: Record<string, unknown>;
+    data: Data;
 };
 
-// Simple text message
-export type SimpleMessageData = {
-    formattedText: string;
+export type TextMessagePartData = {
+    text: string;
 };
 
-export type SimpleMessageType = BaseMessageType<SimpleMessageData> & {
-    type: 'simple';
+export type TextMessagePart = TBaseMessagePart<TextMessagePartData> & {
+    type: 'text';
 };
 
-// Thinking message
-export type ThinkingMessageData = {
+export type ThinkingMessagePartData = {
     title?: string;
     content: string;
     steps?: Array<{
@@ -42,25 +37,44 @@ export type ThinkingMessageData = {
     }>;
 };
 
-export type ThinkingMessageType = BaseMessageType<ThinkingMessageData> & {
+export type ThinkingMessagePart = TBaseMessagePart<ThinkingMessagePartData> & {
     type: 'thinking';
 };
 
-// Tool message
-export type ToolMessageData = {
-    toolName: string;
-    toolStatus: 'submitted' | 'streaming' | 'ready' | 'error' | 'submitting' | 'confirming';
-    content?: string;
-    input?: Record<string, unknown>;
-    output?: Record<string, unknown>;
-    onApprove?: () => void | Promise<void>;
-    onReject?: () => void | Promise<void>;
-    onCancel?: () => void | Promise<void>;
-};
+export type ToolMessagePartData = ToolMessageProps;
 
-export type ToolMessageType = BaseMessageType<ToolMessageData> & {
+export type ToolMessagePart = TBaseMessagePart<ToolMessagePartData> & {
     type: 'tool';
 };
 
-// Union type of all messages
-export type MessageType = SimpleMessageType | ThinkingMessageType | ToolMessageType;
+export type TMessagePart =
+    | TextMessagePart
+    | ThinkingMessagePart
+    | ToolMessagePart
+    | TBaseMessagePart;
+
+export type TBaseMessage<Metadata = TMessageMetadata> = Pick<
+    BaseMessageProps,
+    'actions' | 'timestamp'
+> & {
+    id?: string;
+    status?: TMessageStatus;
+    error?: unknown;
+    metadata?: Metadata;
+};
+
+export type TUserMessage<Metadata = TMessageMetadata> = TBaseMessage<Metadata> & {
+    role: 'user';
+    content: string;
+    format?: 'plain' | 'markdown';
+    avatarUrl?: string;
+};
+
+export type TAssistantMessage<Metadata = TMessageMetadata> = TBaseMessage<Metadata> & {
+    role: 'assistant';
+    content: string | TMessagePart | TMessagePart[];
+};
+
+export type TMessage<Metadata = TMessageMetadata> =
+    | TUserMessage<Metadata>
+    | TAssistantMessage<Metadata>;
