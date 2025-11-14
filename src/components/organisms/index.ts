@@ -1,4 +1,5 @@
 // Export all organisms
+export * from './AssistantMessage';
 export * from './Header';
 export * from './UserMessage';
 export * from './ThinkingMessage';
