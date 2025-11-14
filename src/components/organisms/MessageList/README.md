@@ -105,105 +105,12 @@ const chartMessage: TAssistantMessage = {
 
 ## Props
 
-| Prop                      | Type                      | Required | Default | Description                      |
-| ------------------------- | ------------------------- | -------- | ------- | -------------------------------- |
-| `messages`                | `TMessage[]`              | ✓        | -       | Array of messages to render      |
-| `messageRendererRegistry` | `MessageRendererRegistry` | -        | -       | Custom message renderer registry |
-| `showActionsOnHover`      | `boolean`                 | -        | -       | Show message actions on hover    |
-| `showTimestamp`           | `boolean`                 | -        | -       | Show message timestamp           |
-| `showAvatar`              | `boolean`                 | -        | -       | Show avatar for user messages    |
-| `className`               | `string`                  | -        | -       | Additional CSS class             |
-| `qa`                      | `string`                  | -        | -       | QA/test identifier               |
-
-## Message Types
-
-### TMessage
-
-`TMessage` is a union type that can be either `TUserMessage` or `TAssistantMessage`:
-
-```tsx
-type TMessage = TUserMessage | TAssistantMessage;
-```
-
-### TUserMessage
-
-User message with text content:
-
-```tsx
-type TUserMessage = {
-  id?: string;
-  role: 'user';
-  content: string;
-  format?: 'plain' | 'markdown';
-  avatarUrl?: string;
-  actions?: Array<{
-    type: BaseMessageAction | string;
-    onClick: () => void;
-    icon?: IconData;
-  }>;
-  timestamp?: string;
-  status?: 'sending' | 'complete' | 'error' | 'streaming';
-  error?: unknown;
-  metadata?: Record<string, unknown>;
-};
-```
-
-### TAssistantMessage
-
-Assistant message with flexible content:
-
-```tsx
-type TAssistantMessage = {
-  id?: string;
-  role: 'assistant';
-  content: string | TMessagePart | TMessagePart[];
-  actions?: Array<{
-    type: BaseMessageAction | string;
-    onClick: () => void;
-    icon?: IconData;
-  }>;
-  timestamp?: string;
-  status?: 'sending' | 'complete' | 'error' | 'streaming';
-  error?: unknown;
-  metadata?: Record<string, unknown>;
-};
-```
-
-### TMessagePart
-
-Message part can be one of the following types:
-
-- **TextMessagePart**: Text content with markdown support
-- **ThinkingMessagePart**: Thinking process with steps
-- **ToolMessagePart**: Tool execution result
-- **TBaseMessagePart**: Custom message part with any data
-
-```tsx
-type TextMessagePart = {
-  id?: string;
-  type: 'text';
-  data: {
-    text: string;
-  };
-};
-
-type ThinkingMessagePart = {
-  id?: string;
-  type: 'thinking';
-  data: {
-    title?: string;
-    content: string;
-    steps?: Array<{
-      id: string;
-      text: string;
-      status: 'pending' | 'running' | 'completed' | 'error';
-    }>;
-  };
-};
-
-type ToolMessagePart = {
-  id?: string;
-  type: 'tool';
-  data: ToolMessageProps;
-};
-```
+| Prop                      | Type                                                             | Required | Default | Description                      |
+| ------------------------- | ---------------------------------------------------------------- | -------- | ------- | -------------------------------- |
+| `messages`                | [TMessage[]](../../../types/messages.ts)                         | ✓        | -       | Array of messages to render      |
+| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -       | Custom message renderer registry |
+| `showActionsOnHover`      | `boolean`                                                        | -        | -       | Show message actions on hover    |
+| `showTimestamp`           | `boolean`                                                        | -        | -       | Show message timestamp           |
+| `showAvatar`              | `boolean`                                                        | -        | -       | Show avatar for user messages    |
+| `className`               | `string`                                                         | -        | -       | Additional CSS class             |
+| `qa`                      | `string`                                                         | -        | -       | QA/test identifier               |
