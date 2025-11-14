@@ -8,6 +8,7 @@ import {
 } from '@gravity-ui/icons';
 import {Icon, IconData} from '@gravity-ui/uikit';
 
+import type {BaseMessageProps} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms';
 import {ChatDate} from '../../atoms/ChatDate';
@@ -37,21 +38,6 @@ const BaseMessageActionIcons: Record<BaseMessageAction | string, IconData> = {
     [BaseMessageAction.Delete]: TrashBin,
 };
 
-export type BaseMessageProps = {
-    children: React.ReactNode;
-    variant: 'user' | 'assistant' | 'system';
-    actions?: Array<{
-        type: BaseMessageAction | string;
-        onClick: () => void;
-        icon?: IconData;
-    }>;
-    timestamp?: string;
-    showTimestamp?: boolean;
-    showActionsOnHover?: boolean;
-    className?: string;
-    qa?: string;
-};
-
 export const BaseMessage = (props: BaseMessageProps) => {
     const {
         className,
@@ -59,7 +45,7 @@ export const BaseMessage = (props: BaseMessageProps) => {
         showActionsOnHover,
         actions,
         children,
-        variant,
+        role: variant,
         showTimestamp,
         timestamp = '',
     } = props;
