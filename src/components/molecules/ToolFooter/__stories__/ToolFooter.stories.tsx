@@ -1,6 +1,7 @@
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
-import {ToolFooterAction, ToolFooterProps} from 'src/types';
+import {ToolFooterProps} from 'src/types';
+import {Action} from 'src/types/common';
 
 import {ToolFooter} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
@@ -39,23 +40,23 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-const rejectAction: ToolFooterAction = {
+const rejectAction: Action = {
     label: 'Reject',
     onClick: () => alert('Rejected'),
     view: 'outlined',
 };
-const acceptAction: ToolFooterAction = {
+const acceptAction: Action = {
     label: 'Accept',
     onClick: () => alert('Accepted'),
     view: 'action',
 };
-const cancelAction: ToolFooterAction = {
+const cancelAction: Action = {
     label: 'Cancel',
     onClick: () => alert('Cancelled'),
     view: 'outlined',
 };
 
-const defaultActions: ToolFooterAction[] = [rejectAction, acceptAction];
+const defaultActions: Action[] = [rejectAction, acceptAction];
 
 export const Playground: StoryFn<ToolFooterProps> = (args) => (
     <ContentWrapper width="430px">

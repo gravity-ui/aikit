@@ -12,10 +12,11 @@ Footer component for tool messages with action buttons and status message
 ## Usage
 
 ```tsx
-import {ToolFooter, type ToolFooterAction} from '@/components/molecules/ToolFooter';
+import {ToolFooter} from '@/components/molecules/ToolFooter';
+import type {Action} from '@/types/common';
 
 // Basic usage with multiple actions
-const actions: ToolFooterAction[] = [
+const actions: Action[] = [
     {label: 'Accept', onClick: () => console.log('Accepted'), view: 'action'},
     {label: 'Reject', onClick: () => console.log('Rejected'), view: 'outlined'},
 ];
@@ -34,16 +35,17 @@ const actions: ToolFooterAction[] = [
 
 ## Props
 
-| Prop         | Type                 | Required | Default | Description                           |
-| ------------ | -------------------- | -------- | ------- | ------------------------------------- |
-| `content`    | `React.ReactNode`    | -        | -       | Status message to display with loader |
-| `actions`    | `ToolFooterAction[]` | ✓        | -       | Array of action buttons to display    |
-| `showLoader` | `boolean`            | -        | `true`  | Whether to show loading indicator     |
+| Prop         | Type              | Required | Default | Description                           |
+| ------------ | ----------------- | -------- | ------- | ------------------------------------- |
+| `content`    | `React.ReactNode` | -        | -       | Status message to display with loader |
+| `actions`    | `Action[]`        | ✓        | -       | Array of action buttons to display    |
+| `showLoader` | `boolean`         | -        | `true`  | Whether to show loading indicator     |
 
-## ToolFooterAction
+## Action
 
-| Prop      | Type         | Required | Description                       |
-| --------- | ------------ | -------- | --------------------------------- |
-| `label`   | `string`     | ✓        | Button label text                 |
-| `onClick` | `() => void` | ✓        | Handler for button click          |
-| `view`    | `ButtonView` | ✓        | Button view style from Gravity UI |
+| Prop      | Type              | Required | Description                       |
+| --------- | ----------------- | -------- | --------------------------------- |
+| `label`   | `string`          | -        | Button label text                 |
+| `onClick` | `() => void`      | -        | Handler for button click          |
+| `view`    | `ButtonView`      | -        | Button view style from Gravity UI |
+| `icon`    | `React.ReactNode` | -        | Icon to display in button         |

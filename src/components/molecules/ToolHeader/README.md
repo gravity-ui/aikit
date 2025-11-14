@@ -13,11 +13,12 @@ Header component for tool messages with icon, name, actions, and status indicato
 ## Usage
 
 ```tsx
-import {ToolHeader, type ToolHeaderAction} from '@/components/molecules/ToolHeader';
+import {ToolHeader} from '@/components/molecules/ToolHeader';
+import type {Action} from '@/types/common';
 import {Icon} from '@gravity-ui/uikit';
 import {CircleInfo, Copy, TrashBin} from '@gravity-ui/icons';
 
-const actions: ToolHeaderAction[] = [
+const actions: Action[] = [
   {label: 'Copy', onClick: () => console.log('Copied'), icon: <Icon data={Copy} size={16} />},
   {
     label: 'Delete',
@@ -36,23 +37,24 @@ const actions: ToolHeaderAction[] = [
 
 ## Props
 
-| Prop        | Type                 | Required | Default | Description                        |
-| ----------- | -------------------- | -------- | ------- | ---------------------------------- |
-| `toolIcon`  | `React.ReactNode`    | -        | -       | Icon to display next to tool name  |
-| `toolName`  | `string`             | ✓        | -       | Name of the tool                   |
-| `content`   | `React.ReactNode`    | -        | -       | Additional information to display  |
-| `actions`   | `ToolHeaderAction[]` | -        | -       | Array of action buttons to display |
-| `status`    | `ToolStatus`         | -        | -       | Status indicator                   |
-| `className` | `string`             | -        | -       | Additional CSS class name          |
-| `qa`        | `string`             | -        | -       | Data QA attribute                  |
+| Prop        | Type              | Required | Default | Description                        |
+| ----------- | ----------------- | -------- | ------- | ---------------------------------- |
+| `toolIcon`  | `React.ReactNode` | -        | -       | Icon to display next to tool name  |
+| `toolName`  | `string`          | ✓        | -       | Name of the tool                   |
+| `content`   | `React.ReactNode` | -        | -       | Additional information to display  |
+| `actions`   | `Action[]`        | -        | -       | Array of action buttons to display |
+| `status`    | `ToolStatus`      | -        | -       | Status indicator                   |
+| `className` | `string`          | -        | -       | Additional CSS class name          |
+| `qa`        | `string`          | -        | -       | Data QA attribute                  |
 
-## ToolHeaderAction
+## Action
 
 | Prop      | Type              | Required | Description               |
 | --------- | ----------------- | -------- | ------------------------- |
-| `label`   | `string`          | ✓        | Button label for tooltip  |
-| `onClick` | `() => void`      | ✓        | Handler for button click  |
+| `label`   | `string`          | -        | Button label for tooltip  |
+| `onClick` | `() => void`      | -        | Handler for button click  |
 | `icon`    | `React.ReactNode` | -        | Icon to display in button |
+| `view`    | `ButtonView`      | -        | Button view style         |
 
 ## ToolStatus
 

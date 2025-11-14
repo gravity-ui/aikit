@@ -3,14 +3,15 @@ import {useCallback, useMemo, useState} from 'react';
 import {ChevronDown, ChevronUp} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 
-import type {ToolFooterAction, ToolHeaderAction, ToolMessageProps, ToolStatus} from '../types/tool';
+import type {Action} from '../types/common';
+import type {ToolMessageProps, ToolStatus} from '../types/tool';
 
 function getDefaultFooterActions(
     status: ToolStatus | undefined,
-    footerActions: ToolFooterAction[] | undefined,
+    footerActions: Action[] | undefined,
     onAccept?: () => void,
     onReject?: () => void,
-): ToolFooterAction[] {
+): Action[] {
     if (footerActions !== undefined) {
         return footerActions;
     }
@@ -99,7 +100,7 @@ export function useToolMessage(options: ToolMessageProps) {
         setIsExpanded((prev) => !prev);
     }, []);
 
-    const expandCollapseAction = useMemo((): ToolHeaderAction | null => {
+    const expandCollapseAction = useMemo((): Action | null => {
         if (!expandable) {
             return null;
         }
@@ -109,7 +110,7 @@ export function useToolMessage(options: ToolMessageProps) {
             onClick: toggleExpanded,
             icon: <Icon data={isExpanded ? ChevronUp : ChevronDown} size={16} />,
         };
-    }, [expandable, bodyContent, isExpanded, toggleExpanded]);
+    }, [expandable, isExpanded, toggleExpanded]);
 
     const finalHeaderActions = useMemo(() => {
         return expandCollapseAction ? [...headerActions, expandCollapseAction] : headerActions;

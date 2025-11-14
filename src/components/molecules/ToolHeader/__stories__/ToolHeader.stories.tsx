@@ -5,7 +5,8 @@ import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 import {ToolHeader} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
-import type {ToolHeaderAction, ToolHeaderProps} from '../../../../types/tool';
+import type {Action} from '../../../../types/common';
+import type {ToolHeaderProps} from '../../../../types/tool';
 
 import MDXDocs from './Docs.mdx';
 
@@ -40,13 +41,13 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-const copyAction: ToolHeaderAction = {
+const copyAction: Action = {
     label: 'Copy',
     onClick: () => alert('Copied'),
     icon: <Icon data={Copy} size={16} />,
 };
 
-const collapseAction: ToolHeaderAction = {
+const collapseAction: Action = {
     label: 'Collapse',
     onClick: () => alert('Collapsed'),
     icon: <Icon data={ChevronDown} size={16} />,
