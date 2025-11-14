@@ -1,4 +1,4 @@
-import type {ButtonView} from '@gravity-ui/uikit';
+import {Action} from './common';
 
 export type ToolStatus =
     | 'success'
@@ -7,24 +7,11 @@ export type ToolStatus =
     | 'waitingConfirmation'
     | 'waitingSubmission';
 
-export type ToolActionBase = {
-    label: string;
-    onClick?: () => void;
-};
-
-export type ToolHeaderAction = ToolActionBase & {
-    icon?: React.ReactNode;
-};
-
-export type ToolFooterAction = ToolActionBase & {
-    view: ButtonView;
-};
-
 export type ToolHeaderProps = {
     toolIcon?: React.ReactNode;
     toolName: string;
     content?: React.ReactNode;
-    actions?: ToolHeaderAction[];
+    actions?: Action[];
     status?: ToolStatus;
     className?: string;
     qa?: string;
@@ -32,7 +19,7 @@ export type ToolHeaderProps = {
 
 export type ToolFooterProps = {
     content?: React.ReactNode;
-    actions: ToolFooterAction[];
+    actions: Action[];
     showLoader?: boolean;
     className?: string;
     qa?: string;
@@ -41,8 +28,8 @@ export type ToolFooterProps = {
 export type ToolMessageProps = {
     toolName: string;
     toolIcon?: React.ReactNode;
-    footerActions?: ToolFooterAction[];
-    headerActions?: ToolHeaderAction[];
+    footerActions?: Action[];
+    headerActions?: Action[];
     bodyContent?: React.ReactNode;
     headerContent?: React.ReactNode;
     footerContent?: React.ReactNode;
