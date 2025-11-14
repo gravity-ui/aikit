@@ -1,0 +1,46 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}tabs';
+
+#{$block} {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--g-spacing-2);
+    overflow: scroll hidden;
+    white-space: nowrap;
+    padding: var(--g-spacing-1) 0;
+
+    scrollbar-width: thin;
+    transition: scrollbar-color 0.3s ease-in-out;
+    scrollbar-color: transparent transparent;
+
+    &:hover {
+        scrollbar-color: var(--g-color-base-generic-medium) transparent;
+    }
+
+    &::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        border-radius: 3px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+        background-color: var(--g-color-base-generic-medium);
+    }
+
+    &__tab {
+        flex-shrink: 0;
+        cursor: default;
+        overflow: hidden;
+    }
+}

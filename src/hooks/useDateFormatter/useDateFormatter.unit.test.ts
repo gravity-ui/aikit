@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import {getFormattedDate, getFormattedTime} from './useDateFormatter';
+import {getFormattedDate, getFormattedTime} from '.';
 
 describe('getFormattedDate', () => {
     const testDate = dayjs('2024-03-15T14:30:45');
