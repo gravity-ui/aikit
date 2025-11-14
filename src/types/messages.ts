@@ -44,16 +44,23 @@ export type TextMessagePart = TBaseMessagePart<TextMessagePartData> & {
     type: 'text';
 };
 
+/**
+ * Data structure for thinking/reasoning message content.
+ * Used to display AI model's internal reasoning process.
+ */
 export type ThinkingMessagePartData = {
+    /** Optional title for the thinking block */
     title?: string;
-    content: string;
-    steps?: Array<{
-        id: string;
-        text: string;
-        status: 'pending' | 'running' | 'completed' | 'error';
-    }>;
+    /** Content of the thinking process, can be a single string or array of strings */
+    content: string | string[];
+    /** Current status: 'thinking' for in-progress, 'thought' for completed */
+    status: 'thinking' | 'thought';
 };
 
+/**
+ * Message part representing AI thinking/reasoning state.
+ * Extends base message part with thinking-specific data.
+ */
 export type ThinkingMessagePart = TBaseMessagePart<ThinkingMessagePartData> & {
     type: 'thinking';
 };

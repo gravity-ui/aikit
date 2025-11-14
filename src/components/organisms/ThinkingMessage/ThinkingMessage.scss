@@ -1,0 +1,27 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}thinking-message';
+
+#{$block} {
+    display: flex;
+    flex-direction: column;
+    gap: var(--g-spacing-2);
+    padding: 4px 0 4px 16px;
+    border-left: 2px solid var(--g-color-line-generic);
+
+    &__buttons {
+        display: flex;
+        align-items: center;
+        gap: var(--g-spacing-2);
+    }
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--g-spacing-6);
+    }
+
+    &__content {
+        color: var(--g-color-text-complementary);
+    }
+}
