@@ -1,9 +1,10 @@
 import {Avatar} from '@gravity-ui/uikit';
 
+import type {BaseMessageProps} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 import {MessageBalloon} from '../../atoms/MessageBalloon';
-import {BaseMessage, BaseMessageProps} from '../../molecules/BaseMessage';
+import {BaseMessage} from '../../molecules/BaseMessage';
 
 import './UserMessage.scss';
 
@@ -39,7 +40,7 @@ export const UserMessage = (props: UserMessageProps) => {
         <div className={b(null, className)} data-qa={qa}>
             {showAvatar ? <Avatar imgUrl={avatarUrl} size="s" view="filled" /> : null}
             <BaseMessage
-                variant="user"
+                role="user"
                 actions={actions}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}

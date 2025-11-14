@@ -1,9 +1,10 @@
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
-import {BaseMessage, type BaseMessageProps} from '..';
+import {BaseMessage} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
+import type {BaseMessageProps} from '../../../../types/messages';
 
 import MDXDocs from './Docs.mdx';
 
@@ -71,24 +72,24 @@ export const Playground: StoryFn<BaseMessageProps> = (args) => (
 Playground.args = {
     children: 'My message',
     actions: buttons,
-    variant: 'assistant',
+    role: 'assistant',
 };
 
 export const Variant: StoryObj<BaseMessageProps> = {
     render: (args) => (
         <>
             <ShowcaseItem title="User">
-                <BaseMessage {...args} actions={buttons} variant="user">
+                <BaseMessage {...args} actions={buttons} role="user">
                     {'My message'}
                 </BaseMessage>
             </ShowcaseItem>
             <ShowcaseItem title="Assistant">
-                <BaseMessage {...args} actions={buttons} variant="assistant">
+                <BaseMessage {...args} actions={buttons} role="assistant">
                     {'My message'}
                 </BaseMessage>
             </ShowcaseItem>
             <ShowcaseItem title="System">
-                <BaseMessage {...args} actions={buttons} variant="system">
+                <BaseMessage {...args} actions={buttons} role="system">
                     {'My message'}
                 </BaseMessage>
             </ShowcaseItem>
@@ -98,7 +99,7 @@ export const Variant: StoryObj<BaseMessageProps> = {
 };
 export const ShowActionsOnHover: StoryFn<BaseMessageProps> = (args) => (
     <ContentWrapper>
-        <BaseMessage {...args} actions={buttons} variant="assistant" showActionsOnHover={true}>
+        <BaseMessage {...args} actions={buttons} role="assistant" showActionsOnHover={true}>
             {'My message'}
         </BaseMessage>
     </ContentWrapper>
@@ -111,7 +112,7 @@ export const ShowTimestamp: StoryObj<BaseMessageProps> = {
                 <BaseMessage
                     {...args}
                     actions={buttons}
-                    variant="user"
+                    role="user"
                     showTimestamp={true}
                     timestamp="1705312234567"
                 >
@@ -122,7 +123,7 @@ export const ShowTimestamp: StoryObj<BaseMessageProps> = {
                 <BaseMessage
                     {...args}
                     actions={buttons}
-                    variant="assistant"
+                    role="assistant"
                     showTimestamp={true}
                     timestamp="1705312234567"
                 >

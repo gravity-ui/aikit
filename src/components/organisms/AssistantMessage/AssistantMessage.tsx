@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 
-import type {TAssistantMessage, TMessagePart} from '../../../types/messages';
+import type {BaseMessageProps, TAssistantMessage, TMessagePart} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {
     type MessageRendererRegistry,
@@ -8,7 +8,6 @@ import {
     mergeMessageRendererRegistries,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
-import type {BaseMessageProps} from '../../molecules/BaseMessage';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
 import {defaultMessageRendererRegistry} from './defaultMessageTypeRegistry';
@@ -70,7 +69,7 @@ export function AssistantMessage({
 
     return (
         <BaseMessage
-            variant="assistant"
+            role="assistant"
             actions={actions}
             showActionsOnHover={showActionsOnHover}
             showTimestamp={showTimestamp}

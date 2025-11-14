@@ -1,6 +1,23 @@
-import {BaseMessageProps} from 'src/components';
+import type React from 'react';
+
+import type {IconData} from '@gravity-ui/uikit';
 
 import {ToolMessageProps} from './tool';
+
+export type BaseMessageProps = {
+    children: React.ReactNode;
+    role: TMessageRole;
+    actions?: Array<{
+        type: string;
+        onClick: () => void;
+        icon?: IconData;
+    }>;
+    timestamp?: string;
+    showTimestamp?: boolean;
+    showActionsOnHover?: boolean;
+    className?: string;
+    qa?: string;
+};
 
 export type TMessageMetadata = Record<string, unknown>;
 
