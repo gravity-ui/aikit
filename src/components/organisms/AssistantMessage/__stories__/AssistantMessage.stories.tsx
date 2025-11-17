@@ -113,8 +113,11 @@ const multiPartMessage: TAssistantMessage = {
 };
 
 const actions = [
+    // eslint-disable-next-line no-console
     {type: 'copy', onClick: () => console.log('Copy clicked')},
+    // eslint-disable-next-line no-console
     {type: 'like', onClick: () => console.log('Like clicked')},
+    // eslint-disable-next-line no-console
     {type: 'unlike', onClick: () => console.log('Unlike clicked')},
 ];
 
