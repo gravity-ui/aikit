@@ -2,7 +2,13 @@ import {useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import type {BaseMessageProps, TAssistantMessage, TMessagePart} from '../../../types/messages';
+import type {
+    BaseMessageProps,
+    TAssistantMessage,
+    TMessageMetadata,
+    TMessagePart,
+    TMessagePartUnion,
+} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {
     type MessageRendererRegistry,
@@ -20,10 +26,13 @@ type BaseMessagePick = Pick<
     BaseMessageProps,
     'actions' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp'
 >;
-type AssistantMessagePick = Pick<TAssistantMessage, 'id' | 'content'>;
+type AssistantMessagePick<TPart extends TMessagePart> = Pick<
+    TAssistantMessage<TMessageMetadata, TPart>,
+    'id' | 'content'
+>;
 
-export type AssistantMessageProps = BaseMessagePick &
-    AssistantMessagePick & {
+export type AssistantMessageProps<TPart extends TMessagePart = never> = BaseMessagePick &
+    AssistantMessagePick<TPart> & {
         messageRendererRegistry?: MessageRendererRegistry;
         transformOptions?: OptionsType;
         className?: string;
@@ -32,7 +41,7 @@ export type AssistantMessageProps = BaseMessagePick &
 
 const b = block('assistant-message');
 
-export function AssistantMessage({
+export function AssistantMessage<TPart extends TMessagePart = never>({
     content,
     actions,
     timestamp,
@@ -43,21 +52,23 @@ export function AssistantMessage({
     showTimestamp,
     className,
     qa,
-}: AssistantMessageProps) {
-    const registry = useMemo(() => {
+}: AssistantMessageProps<TPart>) {
+    const registry = useMemo<MessageRendererRegistry>(() => {
         const defaultRegistry = createDefaultMessageRegistry(transformOptions);
-        return messageRendererRegistry
-            ? mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry)
-            : defaultRegistry;
+        if (messageRendererRegistry) {
+            return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
+        }
+
+        return defaultRegistry;
     }, [messageRendererRegistry, transformOptions]);
 
-    const parts = normalizeContent(content);
+    const parts = normalizeContent<TPart>(content);
 
     if (parts.length === 0) {
         return null;
     }
 
-    const renderPart = (part: TMessagePart, partIndex: number) => {
+    const renderPart = (part: TMessagePartUnion<TPart>, partIndex: number) => {
         const PartComponent = getMessageRenderer(registry, part.type);
 
         if (!PartComponent) {

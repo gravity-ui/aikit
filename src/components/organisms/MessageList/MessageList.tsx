@@ -1,7 +1,7 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {ChatStatus} from '../../../types';
-import type {TMessage} from '../../../types/messages';
+import type {TMessage, TMessageMetadata, TMessagePart} from '../../../types/messages';
 import {isAssistantMessage, isUserMessage} from '../../../utils';
 import {block} from '../../../utils/cn';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
@@ -16,8 +16,8 @@ import './MessageList.scss';
 
 const b = block('message-list');
 
-export type MessageListProps = {
-    messages: TMessage[];
+export type MessageListProps<TPart extends TMessagePart = never> = {
+    messages: TMessage<TPart, TMessageMetadata>[];
     status?: ChatStatus;
     errorMessage?: AlertProps;
     onRetry?: () => void;
@@ -30,7 +30,7 @@ export type MessageListProps = {
     qa?: string;
 };
 
-export function MessageList({
+export function MessageList<TPart extends TMessagePart = never>({
     messages,
     messageRendererRegistry,
     transformOptions,
@@ -42,9 +42,9 @@ export function MessageList({
     status,
     errorMessage,
     onRetry,
-}: MessageListProps) {
-    const renderMessage = (message: TMessage, index: number) => {
-        if (isUserMessage(message)) {
+}: MessageListProps<TPart>) {
+    const renderMessage = (message: TMessage<TPart, TMessageMetadata>, index: number) => {
+        if (isUserMessage<TMessageMetadata, TPart>(message)) {
             return (
                 <UserMessage
                     key={message.id || `message-${index}`}
@@ -61,9 +61,9 @@ export function MessageList({
             );
         }
 
-        if (isAssistantMessage(message)) {
+        if (isAssistantMessage<TMessageMetadata, TPart>(message)) {
             return (
-                <AssistantMessage
+                <AssistantMessage<TPart>
                     key={message.id || `message-${index}`}
                     content={message.content}
                     actions={message.actions}

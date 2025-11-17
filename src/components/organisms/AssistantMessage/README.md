@@ -59,13 +59,16 @@ const actions = [
 
 // With custom renderer registry
 import {createMessageRendererRegistry, registerMessageRenderer} from '@/utils/messageTypeRegistry';
+import type {TMessagePart} from '@/types/messages';
+
+type CustomPart = TMessagePart<'custom', {value: string}>;
 
 const customRegistry = createMessageRendererRegistry();
-registerMessageRenderer(customRegistry, 'custom', {
-  component: ({part}) => <div>Custom: {part.data}</div>,
+registerMessageRenderer<CustomPart>(customRegistry, 'custom', {
+  component: ({part}) => <div>Custom: {part.data.value}</div>,
 });
 
-<AssistantMessage content="Hello!" messageRendererRegistry={customRegistry} />;
+<AssistantMessage<CustomPart> content="Hello!" messageRendererRegistry={customRegistry} />;
 ```
 
 ## Props
@@ -139,16 +142,14 @@ import {
   registerMessageRenderer,
   type MessagePartComponentProps,
 } from '@/utils/messageTypeRegistry';
-import type {BaseMessagePart} from '@/types/messages';
+import type {TMessagePart} from '@/types/messages';
 
 interface CustomData {
   title: string;
   description: string;
 }
 
-type CustomMessagePart = BaseMessagePart<CustomData> & {
-  type: 'custom';
-};
+type CustomMessagePart = TMessagePart<'custom', CustomData>;
 
 const CustomRenderer: React.FC<MessagePartComponentProps<CustomMessagePart>> = ({part}) => {
   return (
@@ -164,7 +165,7 @@ registerMessageRenderer<CustomMessagePart>(registry, 'custom', {
   component: CustomRenderer,
 });
 
-<AssistantMessage
+<AssistantMessage<CustomMessagePart>
   content={{
     type: 'custom',
     data: {

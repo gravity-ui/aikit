@@ -45,7 +45,7 @@ import {
   type MessageRendererRegistry,
   type MessagePartComponentProps,
 } from '@/utils/messageTypeRegistry';
-import type {TAssistantMessage, TBaseMessagePart} from '@/types/messages';
+import type {TAssistantMessage, TMessageMetadata, TMessagePart} from '@/types/messages';
 
 interface ChartMessagePartData {
   chartData: {
@@ -59,9 +59,7 @@ interface ChartMessagePartData {
   chartType: 'line' | 'bar' | 'pie';
 }
 
-type ChartMessagePart = TBaseMessagePart<ChartMessagePartData> & {
-  type: 'chart';
-};
+type ChartMessagePart = TMessagePart<'chart', ChartMessagePartData>;
 
 const ChartMessageView: React.FC<MessagePartComponentProps<ChartMessagePart>> = ({part}) => {
   const {chartData, chartType} = part.data;
@@ -77,7 +75,7 @@ registerMessageRenderer<ChartMessagePart>(customMessageRenderers, 'chart', {
   component: ChartMessageView,
 });
 
-const chartMessage: TAssistantMessage = {
+const chartMessage: TAssistantMessage<TMessageMetadata, ChartMessagePart> = {
   id: 'msg-chart-1',
   role: 'assistant',
   timestamp: '2024-01-01T00:00:00Z',
@@ -100,7 +98,10 @@ const chartMessage: TAssistantMessage = {
   },
 };
 
-<MessageList messages={[chartMessage]} messageRendererRegistry={customMessageRenderers} />;
+<MessageList<ChartMessagePart>
+  messages={[chartMessage]}
+  messageRendererRegistry={customMessageRenderers}
+/>;
 ```
 
 ## Props
