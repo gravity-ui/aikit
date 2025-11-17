@@ -1,10 +1,12 @@
-import type {TBaseMessagePart, TMessagePart} from '../types/messages';
+import type React from 'react';
 
-export type MessagePartComponentProps<TPart extends TBaseMessagePart = TMessagePart> = {
+import type {TMessagePart} from '../types/messages';
+
+export type MessagePartComponentProps<TPart extends TMessagePart = TMessagePart> = {
     part: TPart;
 };
 
-export type MessageRenderer<TPart extends TBaseMessagePart = TMessagePart> = {
+export type MessageRenderer<TPart extends TMessagePart = TMessagePart> = {
     component: React.ComponentType<MessagePartComponentProps<TPart>>;
 };
 
@@ -14,13 +16,14 @@ export function createMessageRendererRegistry(): MessageRendererRegistry {
     return {};
 }
 
-export function registerMessageRenderer<TPart extends TBaseMessagePart>(
+export function registerMessageRenderer<TPart extends TMessagePart>(
     registry: MessageRendererRegistry,
     partType: TPart['type'],
     renderer: MessageRenderer<TPart>,
 ): MessageRendererRegistry {
-    // eslint-disable-next-line no-param-reassign
-    registry[partType] = renderer as unknown as MessageRenderer;
+    Object.assign(registry, {
+        [partType]: renderer as unknown as MessageRenderer,
+    });
     return registry;
 }
 

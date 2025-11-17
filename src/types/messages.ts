@@ -30,9 +30,9 @@ export type TSubmitData = {
 export type TMessageStatus = 'sending' | 'complete' | 'error' | 'streaming';
 export type TMessageRole = 'user' | 'assistant' | 'system';
 
-export type TBaseMessagePart<Data = unknown> = {
+export type TMessagePart<Type extends string = string, Data = unknown> = {
     id?: string;
-    type: string;
+    type: Type;
     data: Data;
 };
 
@@ -40,9 +40,7 @@ export type TextMessagePartData = {
     text: string;
 };
 
-export type TextMessagePart = TBaseMessagePart<TextMessagePartData> & {
-    type: 'text';
-};
+export type TextMessagePart = TMessagePart<'text', TextMessagePartData>;
 
 /**
  * Data structure for thinking/reasoning message content.
@@ -61,21 +59,22 @@ export type ThinkingMessagePartData = {
  * Message part representing AI thinking/reasoning state.
  * Extends base message part with thinking-specific data.
  */
-export type ThinkingMessagePart = TBaseMessagePart<ThinkingMessagePartData> & {
-    type: 'thinking';
-};
+export type ThinkingMessagePart = TMessagePart<'thinking', ThinkingMessagePartData>;
 
 export type ToolMessagePartData = ToolMessageProps;
 
-export type ToolMessagePart = TBaseMessagePart<ToolMessagePartData> & {
-    type: 'tool';
-};
+export type ToolMessagePart = TMessagePart<'tool', ToolMessagePartData>;
 
-export type TMessagePart =
-    | TextMessagePart
-    | ThinkingMessagePart
-    | ToolMessagePart
-    | TBaseMessagePart;
+export type TDefaultMessagePart = TextMessagePart | ThinkingMessagePart | ToolMessagePart;
+
+export type TMessagePartUnion<TAdditionalPart extends TMessagePart = never> =
+    | TDefaultMessagePart
+    | TAdditionalPart;
+
+export type TAssistantMessageContent<TAdditionalPart extends TMessagePart = never> =
+    | string
+    | TMessagePartUnion<TAdditionalPart>
+    | TMessagePartUnion<TAdditionalPart>[];
 
 export type TBaseMessage<Metadata = TMessageMetadata> = Pick<
     BaseMessageProps,
@@ -94,11 +93,14 @@ export type TUserMessage<Metadata = TMessageMetadata> = TBaseMessage<Metadata> &
     avatarUrl?: string;
 };
 
-export type TAssistantMessage<Metadata = TMessageMetadata> = TBaseMessage<Metadata> & {
+export type TAssistantMessage<
+    Metadata = TMessageMetadata,
+    TAdditionalPart extends TMessagePart = never,
+> = TBaseMessage<Metadata> & {
     role: 'assistant';
-    content: string | TMessagePart | TMessagePart[];
+    content: TAssistantMessageContent<TAdditionalPart>;
 };
 
-export type TMessage<Metadata = TMessageMetadata> =
+export type TMessage<TAdditionalPart extends TMessagePart = never, Metadata = TMessageMetadata> =
     | TUserMessage<Metadata>
-    | TAssistantMessage<Metadata>;
+    | TAssistantMessage<Metadata, TAdditionalPart>;

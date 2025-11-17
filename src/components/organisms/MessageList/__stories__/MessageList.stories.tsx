@@ -6,7 +6,7 @@ import {MessageList, type MessageListProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import type {TAssistantMessage, TBaseMessagePart, TUserMessage} from '../../../../types/messages';
+import type {TAssistantMessage, TMessagePart, TUserMessage} from '../../../../types/messages';
 import {
     type MessagePartComponentProps,
     type MessageRendererRegistry,
@@ -180,9 +180,7 @@ interface ChartMessageData {
     chartType: 'line' | 'bar' | 'pie';
 }
 
-type ChartMessagePart = TBaseMessagePart<ChartMessageData> & {
-    type: 'chart';
-};
+type ChartMessagePart = TMessagePart<'chart', ChartMessageData>;
 
 const ChartMessageView: React.FC<MessagePartComponentProps<ChartMessagePart>> = ({part}) => {
     const {chartData, chartType} = part.data;
@@ -206,7 +204,7 @@ const ChartMessageView: React.FC<MessagePartComponentProps<ChartMessagePart>> = 
     );
 };
 
-export const WithCustomMessageType: StoryObj<MessageListProps> = {
+export const WithCustomMessageType: StoryObj<MessageListProps<ChartMessagePart>> = {
     render: (args) => {
         const customRegistry: MessageRendererRegistry = createMessageRendererRegistry();
         registerMessageRenderer<ChartMessagePart>(customRegistry, 'chart', {
@@ -216,7 +214,7 @@ export const WithCustomMessageType: StoryObj<MessageListProps> = {
         return (
             <ShowcaseItem title="With Custom Message Type">
                 <ContentWrapper width="480px">
-                    <MessageList
+                    <MessageList<ChartMessagePart>
                         {...args}
                         messages={[
                             {

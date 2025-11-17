@@ -7,7 +7,7 @@ import {AssistantMessage, type AssistantMessageProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import type {TAssistantMessage, TBaseMessagePart} from '../../../../types/messages';
+import type {TAssistantMessage, TMessageMetadata, TMessagePart} from '../../../../types/messages';
 import {
     type MessagePartComponentProps,
     type MessageRendererRegistry,
@@ -64,16 +64,6 @@ export default {
         },
     },
 } as Meta;
-
-type Story = StoryObj<typeof AssistantMessage>;
-
-const defaultDecorators = [
-    (Story) => (
-        <Showcase>
-            <Story />
-        </Showcase>
-    ),
-] satisfies Story['decorators'];
 
 const simpleMessage: TAssistantMessage = {
     id: '1',
@@ -148,7 +138,13 @@ export const WithToolCall: StoryObj<AssistantMessageProps> = {
             </ContentWrapper>
         </ShowcaseItem>
     ),
-    decorators: defaultDecorators,
+    decorators: [
+        (StoryComponent: StoryFn) => (
+            <Showcase>
+                <StoryComponent />
+            </Showcase>
+        ),
+    ],
 };
 
 interface CustomMessageData {
@@ -156,9 +152,7 @@ interface CustomMessageData {
     description: string;
 }
 
-type CustomMessagePart = TBaseMessagePart<CustomMessageData> & {
-    type: 'custom';
-};
+type CustomMessagePart = TMessagePart<'custom', CustomMessageData>;
 
 const CustomMessageView: React.FC<MessagePartComponentProps<CustomMessagePart>> = ({part}) => {
     const {title, description} = part.data;
@@ -177,14 +171,14 @@ const CustomMessageView: React.FC<MessagePartComponentProps<CustomMessagePart>> 
     );
 };
 
-export const WithCustomRenderer: StoryObj<AssistantMessageProps> = {
+export const WithCustomRenderer: StoryObj<AssistantMessageProps<CustomMessagePart>> = {
     render: (args) => {
         const customRegistry: MessageRendererRegistry = createMessageRendererRegistry();
         registerMessageRenderer<CustomMessagePart>(customRegistry, 'custom', {
             component: CustomMessageView,
         });
 
-        const customMessage: TAssistantMessage = {
+        const customMessage: TAssistantMessage<TMessageMetadata, CustomMessagePart> = {
             id: '5',
             role: 'assistant',
             timestamp: '2024-01-01T00:00:04Z',
@@ -209,7 +203,7 @@ export const WithCustomRenderer: StoryObj<AssistantMessageProps> = {
         return (
             <ShowcaseItem title="With Custom Renderer">
                 <ContentWrapper width="480px">
-                    <AssistantMessage
+                    <AssistantMessage<CustomMessagePart>
                         {...args}
                         content={customMessage.content}
                         actions={actions}
@@ -221,5 +215,11 @@ export const WithCustomRenderer: StoryObj<AssistantMessageProps> = {
             </ShowcaseItem>
         );
     },
-    decorators: defaultDecorators,
+    decorators: [
+        (StoryComponent: StoryFn) => (
+            <Showcase>
+                <StoryComponent />
+            </Showcase>
+        ),
+    ],
 };
