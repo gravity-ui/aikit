@@ -4,7 +4,7 @@ import {ThinkingMessage, type ThinkingMessageProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import type {ThinkingMessagePart} from '../../../../types/messages';
+import {ThinkingMessageData} from '../useThinkingMessage';
 
 import MDXDocs from './Docs.mdx';
 
@@ -58,8 +58,7 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-const thinkingData: ThinkingMessagePart = {
-    type: 'thinking',
+const thinkingData: ThinkingMessageData = {
     data: {
         content: [
             'Lore ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
@@ -69,8 +68,7 @@ const thinkingData: ThinkingMessagePart = {
     },
 };
 
-const thoughtData: ThinkingMessagePart = {
-    type: 'thinking',
+const thoughtData: ThinkingMessageData = {
     data: {
         content: [
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
@@ -127,7 +125,6 @@ export const SingleContent: StoryObj<ThinkingMessageProps> = {
         <ShowcaseItem title="Single Content String">
             <ContentWrapper width="600px">
                 <ThinkingMessage
-                    type="thinking"
                     data={{
                         content: 'Processing your request and analyzing possible solutions.',
                         status: 'thinking',

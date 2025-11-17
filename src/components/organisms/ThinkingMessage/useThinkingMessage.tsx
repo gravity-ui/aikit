@@ -5,7 +5,9 @@ import {BaseMessageAction} from '../../molecules/BaseMessage';
 
 import {i18n} from './i18n';
 
-export type UseThinkingMessageOptions = ThinkingMessagePart & {
+export type ThinkingMessageData = Omit<ThinkingMessagePart, 'type'>;
+
+export type UseThinkingMessageOptions = ThinkingMessageData & {
     defaultExpanded?: boolean;
     showStatusIndicator?: boolean;
 };

@@ -15,7 +15,6 @@ A message component that displays AI thinking process with collapsible content a
 import {ThinkingMessage} from '@/components/organisms/ThinkingMessage';
 
 <ThinkingMessage
-  type="thinking"
   data={{
     content: [
       'Analyzing your request and considering different approaches.',
@@ -33,7 +32,6 @@ import {ThinkingMessage} from '@/components/organisms/ThinkingMessage';
 
 ```tsx
 <ThinkingMessage
-  type="thinking"
   data={{
     content: 'Processing your request...',
     status: 'thinking',
@@ -45,7 +43,6 @@ import {ThinkingMessage} from '@/components/organisms/ThinkingMessage';
 
 | Prop                  | Type                  | Required | Default | Description                                             |
 | --------------------- | --------------------- | -------- | ------- | ------------------------------------------------------- |
-| `type`                | `'thinking'`          | ✓        | -       | Message type identifier                                 |
 | `data`                | `ThinkingMessageData` | ✓        | -       | The thinking message data containing content and status |
 | `defaultExpanded`     | `boolean`             | -        | `true`  | Initial expanded state                                  |
 | `showStatusIndicator` | `boolean`             | -        | `true`  | Whether to show loader when status is "thinking"        |
@@ -84,3 +81,31 @@ When `status` is `'thinking'` and `showStatusIndicator` is `true`, a loader anim
 ### Copy Action
 
 When `onCopyClick` is provided and status is `'thought'` (completed), a copy button appears allowing users to copy the thinking content to clipboard.
+
+## CSS Variables
+
+The component uses the following CSS variables for styling, which can be customized via inline styles or CSS:
+
+### Spacing
+
+| Variable        | Default Usage | Description                       |
+| --------------- | ------------- | --------------------------------- |
+| `--g-spacing-1` | `4px`         | Vertical padding (top and bottom) |
+| `--g-spacing-2` | `8px`         | Gap between buttons and content   |
+| `--g-spacing-4` | `16px`        | Left padding                      |
+| `--g-spacing-6` | `24px`        | Gap between content items         |
+
+### Colors
+
+| Variable                       | Description        |
+| ------------------------------ | ------------------ |
+| `--g-color-line-generic`       | Left border color  |
+| `--g-color-text-complementary` | Content text color |
+
+### Typography
+
+| Variable                      | Description         |
+| ----------------------------- | ------------------- |
+| `--g-text-body-1-font-size`   | Content font size   |
+| `--g-text-body-font-weight`   | Content font weight |
+| `--g-text-body-1-line-height` | Content line height |

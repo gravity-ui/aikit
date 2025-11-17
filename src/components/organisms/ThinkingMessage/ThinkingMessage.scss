@@ -6,7 +6,7 @@ $block: '.#{variables.$ns}thinking-message';
     display: flex;
     flex-direction: column;
     gap: var(--g-spacing-2);
-    padding: 4px 0 4px 16px;
+    padding: var(--g-spacing-1) 0 var(--g-spacing-1) var(--g-spacing-4);
     border-left: 2px solid var(--g-color-line-generic);
 
     &__buttons {

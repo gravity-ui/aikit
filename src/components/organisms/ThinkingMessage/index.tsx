@@ -3,12 +3,11 @@
 import {ChevronDown, ChevronUp, Copy} from '@gravity-ui/icons';
 import {Button, DOMProps, Icon, QAProps, Text} from '@gravity-ui/uikit';
 
-import type {ThinkingMessagePart} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms';
 import {Loader} from '../../atoms/Loader';
 
-import {useThinkingMessage} from './useThinkingMessage';
+import {ThinkingMessageData, useThinkingMessage} from './useThinkingMessage';
 
 import './ThinkingMessage.scss';
 
@@ -20,7 +19,7 @@ const b = block('thinking-message');
  */
 export type ThinkingMessageProps = DOMProps &
     QAProps &
-    ThinkingMessagePart & {
+    ThinkingMessageData & {
         /** Whether the thinking content should be expanded by default */
         defaultExpanded?: boolean;
         /** Whether to show the status indicator (loader) */
