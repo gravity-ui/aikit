@@ -5,9 +5,12 @@ import type {TMessage} from '../../../types/messages';
 import {isAssistantMessage, isUserMessage} from '../../../utils';
 import {block} from '../../../utils/cn';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
+import {AlertProps} from '../../atoms/Alert';
 import {Loader} from '../../atoms/Loader';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
+
+import {ErrorAlert} from './ErrorAlert';
 
 import './MessageList.scss';
 
@@ -16,6 +19,8 @@ const b = block('message-list');
 export type MessageListProps = {
     messages: TMessage[];
     status?: ChatStatus;
+    errorMessage?: AlertProps;
+    onRetry?: () => void;
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
     showActionsOnHover?: boolean;
@@ -35,6 +40,8 @@ export function MessageList({
     className,
     qa,
     status,
+    errorMessage,
+    onRetry,
 }: MessageListProps) {
     const renderMessage = (message: TMessage, index: number) => {
         if (isUserMessage(message)) {
@@ -79,6 +86,7 @@ export function MessageList({
                 {messages.map(renderMessage)}
             </div>
             {status === 'submitted' && <Loader />}
+            {status === 'error' && <ErrorAlert onRetry={onRetry} errorMessage={errorMessage} />}
         </div>
     );
 }

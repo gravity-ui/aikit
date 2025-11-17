@@ -13,4 +13,10 @@ $block: '.#{variables.$ns}message-list';
         flex-direction: column;
         gap: var(--g-spacing-4);
     }
+
+    &__retry-button {
+        display: flex;
+        align-items: center;
+        gap: var(--g-spacing-1);
+    }
 }

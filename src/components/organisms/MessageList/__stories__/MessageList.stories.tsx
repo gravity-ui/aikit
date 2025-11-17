@@ -97,6 +97,22 @@ export const WithSubmittedStatus: StoryObj<MessageListProps> = {
     ),
 };
 
+export const WithErrorMessage: StoryObj<MessageListProps> = {
+    render: (args) => (
+        <ShowcaseItem title="With Error Message">
+            <ContentWrapper width="480px">
+                <MessageList
+                    {...args}
+                    messages={[userMessage]}
+                    status="error"
+                    // eslint-disable-next-line no-console
+                    onRetry={() => console.log('retry')}
+                />
+            </ContentWrapper>
+        </ShowcaseItem>
+    ),
+};
+
 const toolIcon = <Icon data={Pencil} />;
 const toolHeaderContent = (
     <Text color="secondary" variant="body-1">
