@@ -28,4 +28,10 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with error message', async ({mount, expectScreenshot}) => {
+        await mount(<MessageListStories.WithErrorMessage />);
+
+        await expectScreenshot();
+    });
 });
