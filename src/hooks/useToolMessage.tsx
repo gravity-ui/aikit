@@ -3,6 +3,7 @@ import {useCallback, useMemo, useState} from 'react';
 import {ChevronDown, ChevronUp} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 
+import {i18n} from '../components/organisms/ToolMessage/i18n';
 import type {Action} from '../types/common';
 import type {ToolMessageProps, ToolStatus} from '../types/tool';
 
@@ -20,12 +21,12 @@ function getDefaultFooterActions(
         case 'waitingConfirmation':
             return [
                 {
-                    label: 'Reject',
+                    label: i18n('action-reject'),
                     onClick: onReject,
                     view: 'outlined',
                 },
                 {
-                    label: 'Accept',
+                    label: i18n('action-accept'),
                     onClick: onAccept,
                     view: 'action',
                 },
@@ -33,7 +34,7 @@ function getDefaultFooterActions(
         case 'waitingSubmission':
             return [
                 {
-                    label: 'Cancel',
+                    label: i18n('action-cancel'),
                     onClick: onReject,
                     view: 'outlined',
                 },
@@ -53,9 +54,9 @@ function getDefaultFooterMessage(
 
     switch (status) {
         case 'waitingConfirmation':
-            return 'Awaiting confirmation';
+            return i18n('status-waiting-confirmation');
         case 'waitingSubmission':
-            return 'Awaiting form submission';
+            return i18n('status-waiting-submission');
         default:
             return undefined;
     }
@@ -108,7 +109,7 @@ export function useToolMessage(options: ToolMessageProps) {
         }
 
         return {
-            label: isExpanded ? 'Collapse' : 'Expand',
+            label: isExpanded ? i18n('action-collapse') : i18n('action-expand'),
             onClick: toggleExpanded,
             icon: <Icon data={isExpanded ? ChevronUp : ChevronDown} size={16} />,
         };
