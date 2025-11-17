@@ -35,18 +35,19 @@ import {UserMessage} from '@/components/organisms/UserMessage';
 
 ## Props
 
-| Prop                 | Type                                                                              | Required | Default | Description                                |
-| -------------------- | --------------------------------------------------------------------------------- | -------- | ------- | ------------------------------------------ |
-| `data`               | `string \| React.ReactNode`                                                       | ✓        | -       | Message                                    |
-| `format`             | `plain \| markdown`                                                               | -        | `plain` | Type of data                               |
-| `timestamp`          | `string`                                                                          | -        | -       | Time of message                            |
-| `showTimestamp`      | `boolean`                                                                         | -        | false   | Should be rendered timestamp               |
-| `showAvatar`         | `boolean`                                                                         | -        | false   | Should be rendered Avatar of user          |
-| `avatarUrl`          | `string`                                                                          | -        | -       | Url of avatar                              |
-| `showActionsOnHover` | `boolean`                                                                         | -        | false   | Should actions be always shown or on hover |
-| `actions`            | `Array<{type: BaseMessageAction \| string;onClick: () => void;icon?: IconData;}>` | -        | -       | Buttons array                              |
-| `className`          | `string`                                                                          | -        | -       | Additional CSS class                       |
-| `qa`                 | `string`                                                                          | -        | -       | QA/test identifier                         |
+| Prop                 | Type                                                                              | Required | Default | Description                                                                                |
+| -------------------- | --------------------------------------------------------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
+| `data`               | `string \| React.ReactNode`                                                       | ✓        | -       | Message                                                                                    |
+| `format`             | `plain \| markdown`                                                               | -        | `plain` | Type of data                                                                               |
+| `timestamp`          | `string`                                                                          | -        | -       | Time of message                                                                            |
+| `showTimestamp`      | `boolean`                                                                         | -        | false   | Should be rendered timestamp                                                               |
+| `showAvatar`         | `boolean`                                                                         | -        | false   | Should be rendered Avatar of user                                                          |
+| `avatarUrl`          | `string`                                                                          | -        | -       | Url of avatar                                                                              |
+| `showActionsOnHover` | `boolean`                                                                         | -        | false   | Should actions be always shown or on hover                                                 |
+| `actions`            | `Array<{type: BaseMessageAction \| string;onClick: () => void;icon?: IconData;}>` | -        | -       | Buttons array                                                                              |
+| `transformOptions`   | `OptionsType`                                                                     | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
+| `className`          | `string`                                                                          | -        | -       | Additional CSS class                                                                       |
+| `qa`                 | `string`                                                                          | -        | -       | QA/test identifier                                                                         |
 
 ## Styling
 

@@ -1,3 +1,5 @@
+import type {OptionsType} from '@diplodoc/transform/lib/typings';
+
 import type {TMessage} from '../../../types/messages';
 import {isAssistantMessage, isUserMessage} from '../../../utils';
 import {block} from '../../../utils/cn';
@@ -12,6 +14,7 @@ const b = block('message-list');
 export type MessageListProps = {
     messages: TMessage[];
     messageRendererRegistry?: MessageRendererRegistry;
+    transformOptions?: OptionsType;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -22,6 +25,7 @@ export type MessageListProps = {
 export function MessageList({
     messages,
     messageRendererRegistry,
+    transformOptions,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -38,6 +42,7 @@ export function MessageList({
                     timestamp={message.timestamp}
                     format={message.format}
                     avatarUrl={message.avatarUrl}
+                    transformOptions={transformOptions}
                     showActionsOnHover={showActionsOnHover}
                     showTimestamp={showTimestamp}
                     showAvatar={showAvatar}
@@ -54,6 +59,7 @@ export function MessageList({
                     timestamp={message.timestamp}
                     id={message.id}
                     messageRendererRegistry={messageRendererRegistry}
+                    transformOptions={transformOptions}
                     showActionsOnHover={showActionsOnHover}
                     showTimestamp={showTimestamp}
                 />

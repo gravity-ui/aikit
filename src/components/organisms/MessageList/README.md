@@ -105,12 +105,13 @@ const chartMessage: TAssistantMessage = {
 
 ## Props
 
-| Prop                      | Type                                                             | Required | Default | Description                      |
-| ------------------------- | ---------------------------------------------------------------- | -------- | ------- | -------------------------------- |
-| `messages`                | [TMessage[]](../../../types/messages.ts)                         | ✓        | -       | Array of messages to render      |
-| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -       | Custom message renderer registry |
-| `showActionsOnHover`      | `boolean`                                                        | -        | -       | Show message actions on hover    |
-| `showTimestamp`           | `boolean`                                                        | -        | -       | Show message timestamp           |
-| `showAvatar`              | `boolean`                                                        | -        | -       | Show avatar for user messages    |
-| `className`               | `string`                                                         | -        | -       | Additional CSS class             |
-| `qa`                      | `string`                                                         | -        | -       | QA/test identifier               |
+| Prop                      | Type                                                             | Required | Default | Description                                                                                |
+| ------------------------- | ---------------------------------------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
+| `messages`                | [TMessage[]](../../../types/messages.ts)                         | ✓        | -       | Array of messages to render                                                                |
+| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -       | Custom message renderer registry                                                           |
+| `transformOptions`        | `OptionsType`                                                    | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
+| `showActionsOnHover`      | `boolean`                                                        | -        | -       | Show message actions on hover                                                              |
+| `showTimestamp`           | `boolean`                                                        | -        | -       | Show message timestamp                                                                     |
+| `showAvatar`              | `boolean`                                                        | -        | -       | Show avatar for user messages                                                              |
+| `className`               | `string`                                                         | -        | -       | Additional CSS class                                                                       |
+| `qa`                      | `string`                                                         | -        | -       | QA/test identifier                                                                         |

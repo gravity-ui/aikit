@@ -10,4 +10,13 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with transform options and custom plugin', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<MarkdownRendererStories.WithTransformOptions />);
+
+        await expectScreenshot();
+    });
 });
