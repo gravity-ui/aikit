@@ -834,7 +834,7 @@ This memory bank provides comprehensive guidelines for:
 
 - **Consistency**: Follow templates and patterns across all components
 - **Completeness**: Document all features, props, and styling options
-- **English Only**: All documentation must be in English
+- **English Only**: All documentation, jsDoc, comments must be in English
 - **Test-Story Alignment**: Tests should map directly to stories
 - **User-Focused**: Write documentation for component consumers, not just developers
 

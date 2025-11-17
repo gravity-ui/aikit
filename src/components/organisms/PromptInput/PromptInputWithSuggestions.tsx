@@ -41,7 +41,7 @@ export function PromptInputWithSuggestions(props: PromptInputWithSuggestionsProp
     const hasSuggestions = showSuggestions && suggestions && suggestions.length > 0;
 
     return (
-        <div className={className} data-qa={qa}>
+        <div className={b('suggestions-wrapper', className)} data-qa={qa}>
             {hasSuggestions && (
                 <div className={b('suggestions')}>
                     <Suggestions

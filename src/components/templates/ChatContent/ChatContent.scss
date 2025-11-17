@@ -1,0 +1,32 @@
+@use '../../../styles/variables';
+@use '../../../styles/functions' as *;
+
+$block: '.#{variables.$ns}chat-content';
+
+#{$block} {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--g-aikit-chat-content-background);
+
+    &__content {
+        overflow-y: auto;
+        display: flex;
+        padding: var(--g-aikit-chat-content-padding);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--g-spacing-2);
+        flex: 1 0 0;
+        align-self: stretch;
+    }
+
+    &__prompt-input {
+        display: flex;
+        padding: var(--g-aikit-layout-base-padding-m);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--g-spacing-1);
+        align-self: stretch;
+    }
+}

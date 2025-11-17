@@ -7,6 +7,9 @@
     --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-float));
     --g-aikit-color-bg-secondary: #f5f5f5;
 
+    /* === Layout === */
+    --g-aikit-layout-base-padding-m: 12px;
+
     /* === Messages === */
     --g-aikit-color-bg-message-user: #0077ff;
     --g-aikit-color-bg-message-assistant: #f0f0f0;
@@ -52,4 +55,9 @@
     --g-aikit-empty-container-background: var(--g-color-base-background);
     --g-aikit-empty-container-content-gap: 48px;
     --g-aikit-empty-container-padding: 48px 32px;
+
+    /* === Chat Content === */
+    --g-aikit-chat-content-background: var(--g-color-base-background);
+    --g-aikit-chat-content-padding: 0 var(--g-aikit-layout-base-padding-m) var(--g-spacing-4)
+        var(--g-aikit-layout-base-padding-m);
 }
