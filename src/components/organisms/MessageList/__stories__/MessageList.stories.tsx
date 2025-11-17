@@ -87,6 +87,16 @@ Playground.args = {
     messages: [userMessage, assistantMessage],
 };
 
+export const WithSubmittedStatus: StoryObj<MessageListProps> = {
+    render: (args) => (
+        <ShowcaseItem title="With Submitted Status">
+            <ContentWrapper width="480px">
+                <MessageList {...args} messages={[userMessage]} status="submitted" />
+            </ContentWrapper>
+        </ShowcaseItem>
+    ),
+};
+
 const toolIcon = <Icon data={Pencil} />;
 const toolHeaderContent = (
     <Text color="secondary" variant="body-1">

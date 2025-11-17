@@ -1,9 +1,11 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import {ChatStatus} from '../../../types';
 import type {TMessage} from '../../../types/messages';
 import {isAssistantMessage, isUserMessage} from '../../../utils';
 import {block} from '../../../utils/cn';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
+import {Loader} from '../../atoms/Loader';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
@@ -13,6 +15,7 @@ const b = block('message-list');
 
 export type MessageListProps = {
     messages: TMessage[];
+    status?: ChatStatus;
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
     showActionsOnHover?: boolean;
@@ -31,6 +34,7 @@ export function MessageList({
     showAvatar,
     className,
     qa,
+    status,
 }: MessageListProps) {
     const renderMessage = (message: TMessage, index: number) => {
         if (isUserMessage(message)) {
@@ -71,7 +75,10 @@ export function MessageList({
 
     return (
         <div className={b(null, className)} data-qa={qa}>
-            {messages.map(renderMessage)}
+            <div className={b('messages', className)} data-qa={qa}>
+                {messages.map(renderMessage)}
+            </div>
+            {status === 'submitted' && <Loader />}
         </div>
     );
 }

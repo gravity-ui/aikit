@@ -7,6 +7,8 @@ export type ChatType = {
     metadata?: Record<string, unknown>;
 };
 
+export type ChatStatus = 'submitted' | 'streaming' | 'ready' | 'error';
+
 /**
  * List item type for chat history that can be either a chat or a date header
  */
