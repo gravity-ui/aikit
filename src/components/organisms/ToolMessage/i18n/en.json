@@ -1,0 +1,10 @@
+{
+  "action-reject": "Reject",
+  "action-accept": "Accept",
+  "action-cancel": "Cancel",
+  "action-collapse": "Collapse",
+  "action-expand": "Expand",
+  "status-waiting-confirmation": "Awaiting confirmation",
+  "status-waiting-submission": "Awaiting form submission"
+}
+

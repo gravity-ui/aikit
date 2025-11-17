@@ -1,0 +1,10 @@
+{
+  "action-reject": "Отклонить",
+  "action-accept": "Принять",
+  "action-cancel": "Отменить",
+  "action-collapse": "Свернуть",
+  "action-expand": "Развернуть",
+  "status-waiting-confirmation": "Ожидание подтверждения",
+  "status-waiting-submission": "Ожидание отправки формы"
+}
+
