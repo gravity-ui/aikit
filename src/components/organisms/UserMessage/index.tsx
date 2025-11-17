@@ -1,3 +1,4 @@
+import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import {Avatar} from '@gravity-ui/uikit';
 
 import type {BaseMessageProps} from '../../../types/messages';
@@ -18,6 +19,7 @@ export type UserMessageProps = Pick<
     format?: 'plain' | 'markdown';
     showAvatar?: boolean;
     avatarUrl?: string;
+    transformOptions?: OptionsType;
     className?: string;
     qa?: string;
 };
@@ -34,6 +36,7 @@ export const UserMessage = (props: UserMessageProps) => {
         timestamp = '',
         showTimestamp,
         format = 'plain',
+        transformOptions,
     } = props;
 
     return (
@@ -48,7 +51,10 @@ export const UserMessage = (props: UserMessageProps) => {
             >
                 <MessageBalloon>
                     {format === 'markdown' ? (
-                        <MarkdownRenderer content={content as string} />
+                        <MarkdownRenderer
+                            content={content as string}
+                            transformOptions={transformOptions}
+                        />
                     ) : (
                         content
                     )}

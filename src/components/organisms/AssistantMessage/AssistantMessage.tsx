@@ -1,5 +1,7 @@
 import {useMemo} from 'react';
 
+import type {OptionsType} from '@diplodoc/transform/lib/typings';
+
 import type {BaseMessageProps, TAssistantMessage, TMessagePart} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {
@@ -10,7 +12,7 @@ import {
 import {normalizeContent} from '../../../utils/messageUtils';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
-import {defaultMessageRendererRegistry} from './defaultMessageTypeRegistry';
+import {createDefaultMessageRegistry} from './defaultMessageTypeRegistry';
 
 import './AssistantMessage.scss';
 
@@ -23,6 +25,7 @@ type AssistantMessagePick = Pick<TAssistantMessage, 'id' | 'content'>;
 export type AssistantMessageProps = BaseMessagePick &
     AssistantMessagePick & {
         messageRendererRegistry?: MessageRendererRegistry;
+        transformOptions?: OptionsType;
         className?: string;
         qa?: string;
     };
@@ -35,19 +38,18 @@ export function AssistantMessage({
     timestamp,
     id,
     messageRendererRegistry,
+    transformOptions,
     showActionsOnHover,
     showTimestamp,
     className,
     qa,
 }: AssistantMessageProps) {
     const registry = useMemo(() => {
+        const defaultRegistry = createDefaultMessageRegistry(transformOptions);
         return messageRendererRegistry
-            ? mergeMessageRendererRegistries(
-                  defaultMessageRendererRegistry,
-                  messageRendererRegistry,
-              )
-            : defaultMessageRendererRegistry;
-    }, [messageRendererRegistry]);
+            ? mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry)
+            : defaultRegistry;
+    }, [messageRendererRegistry, transformOptions]);
 
     const parts = normalizeContent(content);
 
