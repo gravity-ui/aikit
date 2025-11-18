@@ -104,15 +104,49 @@ const chartMessage: TAssistantMessage<ChartMessageContent, TMessageMetadata> = {
 />;
 ```
 
+### With Default Actions
+
+```tsx
+import {MessageList} from '@/components/organisms';
+import type {TChatMessage, TUserMessage, TAssistantMessage} from '@/types/messages';
+import {BaseMessageAction} from '@/components/molecules/BaseMessage';
+
+const userActions = [
+  {
+    type: BaseMessageAction.Edit,
+    onClick: (message: TUserMessage) => console.log('Edit message', message.id),
+  },
+  {
+    type: BaseMessageAction.Delete,
+    onClick: (message: TUserMessage) => console.log('Delete message', message.id),
+  },
+];
+
+const assistantActions = [
+  {
+    type: BaseMessageAction.Copy,
+    onClick: (message: TAssistantMessage) => console.log('Copy message', message.id),
+  },
+  {
+    type: BaseMessageAction.Like,
+    onClick: (message: TAssistantMessage) => console.log('Like message', message.id),
+  },
+];
+
+<MessageList messages={messages} userActions={userActions} assistantActions={assistantActions} />;
+```
+
 ## Props
 
-| Prop                      | Type                                                             | Required | Default | Description                                                                                |
-| ------------------------- | ---------------------------------------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
-| `messages`                | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -       | Array of messages to render                                                                |
-| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -       | Custom message renderer registry                                                           |
-| `transformOptions`        | `OptionsType`                                                    | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
-| `showActionsOnHover`      | `boolean`                                                        | -        | -       | Show message actions on hover                                                              |
-| `showTimestamp`           | `boolean`                                                        | -        | -       | Show message timestamp                                                                     |
-| `showAvatar`              | `boolean`                                                        | -        | -       | Show avatar for user messages                                                              |
-| `className`               | `string`                                                         | -        | -       | Additional CSS class                                                                       |
-| `qa`                      | `string`                                                         | -        | -       | QA/test identifier                                                                         |
+| Prop                      | Type                                                             | Required | Default | Description                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `messages`                | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -       | Array of messages to render                                                                                 |
+| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -       | Custom message renderer registry                                                                            |
+| `transformOptions`        | `OptionsType`                                                    | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                  |
+| `showActionsOnHover`      | `boolean`                                                        | -        | -       | Show message actions on hover                                                                               |
+| `showTimestamp`           | `boolean`                                                        | -        | -       | Show message timestamp                                                                                      |
+| `showAvatar`              | `boolean`                                                        | -        | -       | Show avatar for user messages                                                                               |
+| `userActions`             | `DefaultMessageAction<TUserMessage>[]`                           | -        | -       | Array of default actions for user messages. Each action's onClick receives the message as a parameter.      |
+| `assistantActions`        | `DefaultMessageAction<TAssistantMessage>[]`                      | -        | -       | Array of default actions for assistant messages. Each action's onClick receives the message as a parameter. |
+| `className`               | `string`                                                         | -        | -       | Additional CSS class                                                                                        |
+| `qa`                      | `string`                                                         | -        | -       | QA/test identifier                                                                                          |

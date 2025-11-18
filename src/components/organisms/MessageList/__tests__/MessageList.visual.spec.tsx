@@ -34,4 +34,13 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with default actions', async ({mount, expectScreenshot, page}) => {
+        await mount(<MessageListStories.WithDefaultActions />);
+
+        const userMessage = page.locator('[data-qa="message-list"]').first();
+        await userMessage.hover();
+
+        await expectScreenshot();
+    });
 });
