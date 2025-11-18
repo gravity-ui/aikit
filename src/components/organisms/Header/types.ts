@@ -23,6 +23,9 @@ export type HeaderProps = {
     handleClose?: () => void;
     additionalActions?: AdditionalActionsConfig[];
 
+    // Refs
+    historyButtonRef?: React.RefObject<HTMLElement>;
+
     // Folding state
     foldingState?: 'collapsed' | 'opened';
 

@@ -6,4 +6,3 @@ export * from './ThinkingMessage';
 export * from './ToolMessage';
 export * from './PromptInput';
 export * from './MessageList';
-export * from './ChatHistory';

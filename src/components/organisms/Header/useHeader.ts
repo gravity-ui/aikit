@@ -21,6 +21,7 @@ export function useHeader(props: HeaderProps): {
     additionalActions: ActionItem[];
     titlePosition: 'left' | 'center';
     className?: string;
+    historyButtonRef?: React.RefObject<HTMLElement>;
 } {
     const {
         icon,
@@ -35,6 +36,7 @@ export function useHeader(props: HeaderProps): {
         additionalActions = [],
         titlePosition = 'left',
         className,
+        historyButtonRef,
     } = props;
 
     // Build base actions
@@ -108,5 +110,6 @@ export function useHeader(props: HeaderProps): {
         additionalActions: additionalActionsList,
         titlePosition,
         className,
+        historyButtonRef,
     };
 }

@@ -43,8 +43,16 @@ const FOLDING_ICONS = {
  * @returns Header component
  */
 export function Header(props: HeaderProps) {
-    const {title, preview, icon, baseActions, additionalActions, titlePosition, className} =
-        useHeader(props);
+    const {
+        title,
+        preview,
+        icon,
+        baseActions,
+        additionalActions,
+        titlePosition,
+        className,
+        historyButtonRef,
+    } = useHeader(props);
 
     // Render base action
     const renderBaseAction = (action: ActionItem) => {
@@ -65,9 +73,13 @@ export function Header(props: HeaderProps) {
             tooltipKey = `action-tooltip-folding-${action.foldingState}`;
         }
 
+        // Determine ref for history button
+        const buttonRef = action.id === HeaderAction.History ? historyButtonRef : undefined;
+
         return (
             <ActionButton
                 key={action.id}
+                ref={buttonRef as React.Ref<HTMLButtonElement>}
                 tooltipTitle={i18n(tooltipKey as Parameters<typeof i18n>[0])}
                 size="m"
                 view="flat"

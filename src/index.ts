@@ -8,6 +8,7 @@ export * from './types';
 // === Atoms ===
 export * from './components/atoms/Loader';
 export * from './components/atoms/ContextIndicator';
+export * from './components/atoms/ContextItem';
 export * from './components/atoms/ToolIndicator';
 export * from './components/atoms/MessageBalloon';
 export * from './components/atoms/SubmitButton';
@@ -22,6 +23,7 @@ export * from './components/molecules/Tabs';
 export * from './components/molecules/Suggestions';
 export * from './components/molecules/InputContext';
 export * from './components/molecules/BaseMessage';
+export * from './components/molecules/PromptInputHeader';
 
 // === Organisms ===
 export * from './components/organisms/Header';
@@ -30,7 +32,6 @@ export * from './components/organisms/ThinkingMessage';
 export * from './components/organisms/ToolMessage';
 export * from './components/organisms/PromptInput';
 export * from './components/organisms/MessageList';
-export * from './components/organisms/ChatHistory';
 
 // === Templates ===
 export * from './components/templates/History';

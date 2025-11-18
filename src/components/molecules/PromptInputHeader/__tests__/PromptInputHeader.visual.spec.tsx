@@ -11,6 +11,30 @@ test.describe('PromptInputHeader', {tag: '@PromptInputHeader'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with context items', async ({mount, expectScreenshot}) => {
+        await mount(<PromptInputHeaderStories.WithContextItems />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with single context item', async ({mount, expectScreenshot}) => {
+        await mount(<PromptInputHeaderStories.WithSingleContextItem />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with many context items', async ({mount, expectScreenshot}) => {
+        await mount(<PromptInputHeaderStories.WithManyContextItems />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with context items and indicator', async ({mount, expectScreenshot}) => {
+        await mount(<PromptInputHeaderStories.WithContextItemsAndIndicator />);
+
+        await expectScreenshot();
+    });
+
     test('should render with context indicator', async ({mount, expectScreenshot}) => {
         await mount(<PromptInputHeaderStories.WithContextIndicator />);
 
