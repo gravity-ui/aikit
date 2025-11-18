@@ -5,10 +5,10 @@ Main chat content container with view switching between empty state and message 
 ## Features
 
 - **View Switching**: Seamlessly switches between 'empty' (EmptyContainer) and 'chat' (MessageList) states
-- **Persistent Input**: PromptInput is always visible regardless of the view state
-- **Flexible Configuration**: Accepts props for all child components (EmptyContainer, MessageList, PromptInput)
+- **Flexible Configuration**: Accepts props for child components (EmptyContainer, MessageList)
 - **Responsive Layout**: Automatically adjusts to available space with scrollable content area
-- **Clean Architecture**: Separates content display from input, following chat application patterns
+- **Clean Architecture**: Focused on content display, separating concerns from input and footer elements
+- **Simple Integration**: Easy to integrate into larger chat applications
 
 ## Usage
 
@@ -22,15 +22,10 @@ import {ChatContent} from '@gravity-ui/aikit';
     title: "Welcome to AI Chat",
     description: "Start a conversation or choose a suggestion below",
     suggestions: [
-      {id: '1', content: 'Tell me a joke'},
-      {id: '2', content: 'Explain quantum physics'},
+      {id: '1', title: 'Tell me a joke'},
+      {id: '2', title: 'Explain quantum physics'},
     ],
     onSuggestionClick: (content) => console.log(content),
-  }}
-  promptInputProps={{
-    onSend: async (data) => {
-      console.log('Sending:', data.content);
-    },
   }}
 />
 
@@ -55,32 +50,19 @@ import {ChatContent} from '@gravity-ui/aikit';
     showTimestamp: true,
     showAvatar: true,
   }}
-  promptInputProps={{
-    onSend: async (data) => {
-      console.log('Sending:', data.content);
-    },
-    disabled: false,
-  }}
 />
 
-// Empty state with PromptInput features
+// Empty state with custom image
 <ChatContent
   view="empty"
   emptyContainerProps={{
+    image: <CustomIcon />,
     title: "AI Assistant",
     description: "I'm here to help!",
-  }}
-  promptInputProps={{
-    view: "full",
-    onSend: async (data) => {
-      console.log('Sending:', data);
-    },
-    headerProps: {
-      showContextIndicator: true,
-    },
-    footerProps: {
-      showAttachment: true,
-      showSettings: true,
+    alignment: {
+      image: 'center',
+      title: 'center',
+      description: 'center',
     },
   }}
 />
@@ -93,7 +75,6 @@ import {ChatContent} from '@gravity-ui/aikit';
 | `view`                | `'empty' \| 'chat'`   | ✓        | -       | Display mode: 'empty' for EmptyContainer, 'chat' for MessageList |
 | `emptyContainerProps` | `EmptyContainerProps` | -        | -       | Props passed to EmptyContainer (used when view='empty')          |
 | `messageListProps`    | `MessageListProps`    | -        | -       | Props passed to MessageList (used when view='chat')              |
-| `promptInputProps`    | `PromptInputProps`    | -        | -       | Props passed to PromptInput (always visible)                     |
 | `className`           | `string`              | -        | -       | Additional CSS class                                             |
 | `qa`                  | `string`              | -        | -       | QA/test identifier                                               |
 
@@ -101,10 +82,11 @@ import {ChatContent} from '@gravity-ui/aikit';
 
 ### Empty View
 
-When `view="empty"`, the component displays:
+When `view="empty"`, the component displays EmptyContainer with:
 
-- EmptyContainer with welcome message, description, and optional suggestions
-- PromptInput at the bottom for user input
+- Welcome message and description
+- Optional custom image or icon
+- Optional suggestions for user to choose from
 
 This state is typically used:
 
@@ -114,10 +96,12 @@ This state is typically used:
 
 ### Chat View
 
-When `view="chat"`, the component displays:
+When `view="chat"`, the component displays MessageList with:
 
-- MessageList with conversation history
-- PromptInput at the bottom for user input
+- Conversation history
+- Message timestamps (optional)
+- User and assistant avatars (optional)
+- Message actions (optional)
 
 This state is used:
 
@@ -164,46 +148,20 @@ messageListProps={{
 
 See [MessageList documentation](../../organisms/MessageList/README.md) for full props.
 
-### PromptInput
-
-Configure the input area:
-
-```tsx
-promptInputProps={{
-  view: 'full',
-  onSend: async (data) => {...},
-  onCancel: async () => {...},
-  disabled: false,
-  isStreaming: false,
-  headerProps: {...},
-  bodyProps: {...},
-  footerProps: {...},
-  suggestionsProps: {...},
-}}
-```
-
-See [PromptInput documentation](../../organisms/PromptInput/README.md) for full props.
-
 ## Styling
 
 The component uses CSS variables for theming:
 
-| Variable                         | Description                                   |
-| -------------------------------- | --------------------------------------------- |
-| `--g-spacing-3`                  | Padding for prompt input area (default: 12px) |
-| `--g-spacing-4`                  | Padding for content area (default: 16px)      |
-| `--g-color-line-generic`         | Border color for prompt input separator       |
-| `--g-color-base-background`      | Background color for prompt input area        |
-| `--g-aikit-chat-content-padding` | Background color for all chat content         |
+| Variable                            | Description                            |
+| ----------------------------------- | -------------------------------------- |
+| `--g-spacing-2`                     | Gap between elements (default: 8px)    |
+| `--g-aikit-chat-content-background` | Background color for chat content area |
 
 ```css
-/* Example: Custom spacing and colors */
+/* Example: Custom styling */
 .custom-chat-content {
-  --g-spacing-3: 16px;
-  --g-spacing-4: 20px;
-  --g-color-line-generic: #e0e0e0;
-  --g-color-base-background: #f5f5f5;
-  --g-aikit-chat-content-paddin: #f5f500;
+  --g-spacing-2: 12px;
+  --g-aikit-chat-content-background: #f9f9f9;
 }
 ```
 
@@ -213,7 +171,6 @@ The component uses CSS variables for theming:
   className="custom-chat-content"
   view="chat"
   messageListProps={{...}}
-  promptInputProps={{...}}
 />
 ```
 
@@ -228,29 +185,38 @@ The component uses a flexbox layout:
 │         (scrollable)            │
 │                                 │
 │                                 │
-├─────────────────────────────────┤ ← Border separator
-│       PromptInput               │
-│       (fixed at bottom)         │
+│                                 │
+│                                 │
 └─────────────────────────────────┘
 ```
 
 - **Content Area**: Flexible height, scrollable vertically
-- **PromptInput**: Fixed at bottom, always visible
-- **Separator**: 1px border between content and input
+- **Full Width**: Stretches to fill parent container
+- **Overflow Handling**: Properly handles long conversations
 
 ## Implementation Details
 
 The component:
 
 - Uses conditional rendering to switch between EmptyContainer and MessageList
-- Maintains PromptInput visibility across all view states
 - Implements proper overflow handling for long conversations
 - Applies custom scrollbar styling for better UX
 - Passes through all child component props without modification
+- Designed to be used within larger chat container (like ChatContainer)
 
 ## Accessibility
 
 - Semantic HTML structure with proper flex layout
 - Scrollable content area with keyboard navigation support
-- All interactive elements (suggestions, input) are keyboard accessible
+- All interactive elements (suggestions, messages) are keyboard accessible
 - Child components maintain their own accessibility features
+
+## Integration
+
+ChatContent is designed to be used as part of a larger chat application. For a complete chat solution with header, footer, and history, use the [ChatContainer](../../pages/ChatContainer/README.md) component which includes:
+
+- Header with navigation and controls
+- ChatContent for message display
+- PromptInput for user input
+- Disclaimer for legal text
+- Chat history management

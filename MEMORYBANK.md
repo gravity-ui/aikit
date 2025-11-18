@@ -4,9 +4,74 @@ This document contains guidelines and patterns for developing components in the 
 
 ## Table of Contents
 
-1. [Storybook Files Creation](#storybook-files-creation)
-2. [Testing Guidelines](#testing-guidelines)
-3. [README Documentation](#readme-documentation)
+1. [Code Style and Language Requirements](#code-style-and-language-requirements)
+2. [Storybook Files Creation](#storybook-files-creation)
+3. [Testing Guidelines](#testing-guidelines)
+4. [README Documentation](#readme-documentation)
+
+---
+
+## Code Style and Language Requirements
+
+**CRITICAL: All code documentation, comments, and JSDoc must be written in English.**
+
+This includes:
+
+- **JSDoc comments**: All function, class, interface, and type documentation
+- **Inline comments**: All explanatory comments within the code
+- **TODO comments**: All task comments and notes
+- **Git commit messages**: All commit descriptions and messages
+- **Code review comments**: All discussions and feedback
+
+### Examples
+
+❌ **Incorrect** (Russian):
+
+```tsx
+/**
+ * Хук для управления состоянием компонента
+ * @param props - пропсы компонента
+ * @returns объект с состоянием
+ */
+function useMyHook(props: Props) {
+  // Обрабатываем клик
+  const handleClick = () => {
+    // Вызываем callback
+    props.onClick();
+  };
+
+  return {handleClick};
+}
+```
+
+✅ **Correct** (English):
+
+```tsx
+/**
+ * Hook for managing component state
+ * @param props - component props
+ * @returns object with state
+ */
+function useMyHook(props: Props) {
+  // Handle click event
+  const handleClick = () => {
+    // Call callback
+    props.onClick();
+  };
+
+  return {handleClick};
+}
+```
+
+### Why English?
+
+- **International Collaboration**: Enables developers worldwide to contribute
+- **Consistency**: Matches industry standards and open-source best practices
+- **Maintainability**: Future developers will understand the codebase
+- **Tooling**: Better IDE support and AI-assisted development
+- **Documentation**: Aligns with all user-facing documentation
+
+**Note**: UI text strings and user-facing messages should use i18n/localization and can be in multiple languages, but the code itself must use English.
 
 ---
 
@@ -249,6 +314,44 @@ test.describe('ComponentName', {tag: '@ComponentName'}, () => {
 ```
 
 **Important**: Always import `expect` from `~playwright/core`, not as a fixture parameter.
+
+### Running Tests
+
+**All Playwright tests MUST be run using Docker commands** to ensure consistency across different environments and to match the CI/CD pipeline behavior.
+
+**Available Commands**:
+
+1. **Run all tests in Docker**:
+
+   ```bash
+   npm run playwright:docker
+   ```
+
+2. **Run specific tests by tag**:
+
+   ```bash
+   npm run playwright:docker -- --grep "@ComponentName"
+   ```
+
+3. **Update visual snapshots in Docker**:
+
+   ```bash
+   npm run playwright:docker:update
+   ```
+
+4. **Update snapshots for specific tests**:
+   ```bash
+   npm run playwright:docker:update -- --grep "@ComponentName"
+   ```
+
+**Why Docker?**
+
+- Ensures pixel-perfect consistency in visual regression tests
+- Matches the exact environment used in CI/CD
+- Eliminates differences caused by fonts, rendering engines, and OS-specific behaviors
+- Required for updating snapshots that will be committed to the repository
+
+**Note**: Local Playwright commands (`npm run playwright`, `npm run playwright:update`) should NOT be used as they may produce different snapshots than CI/CD.
 
 ### Testing Rules Based on Stories
 

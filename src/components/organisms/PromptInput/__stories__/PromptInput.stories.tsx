@@ -6,6 +6,7 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {SwapArea} from '../../../../demo/SwapArea';
+import type {ChatStatus} from '../../../../types/chat';
 import type {TSubmitData} from '../../../../types/messages';
 import {ActionButton} from '../../../atoms/ActionButton';
 import {PromptInput} from '../PromptInput';
@@ -274,20 +275,20 @@ export const Disabled: Story = {
 
 export const Streaming: Story = {
     render: (args) => {
-        const [isStreaming, setIsStreaming] = useState(false);
+        const [status, setStatus] = useState<ChatStatus>('ready');
 
         const handleSendWithStreaming = async (data: TSubmitData) => {
             // eslint-disable-next-line no-console
             console.log('Sending:', data);
-            setIsStreaming(true);
+            setStatus('streaming');
             await new Promise((resolve) => setTimeout(resolve, 3000));
-            setIsStreaming(false);
+            setStatus('ready');
         };
 
         const handleCancel = async () => {
             // eslint-disable-next-line no-console
             console.log('Cancelling');
-            setIsStreaming(false);
+            setStatus('ready');
         };
 
         return (
@@ -296,7 +297,7 @@ export const Streaming: Story = {
                 view="full"
                 onSend={handleSendWithStreaming}
                 onCancel={handleCancel}
-                isStreaming={isStreaming}
+                status={status}
                 bodyProps={{
                     placeholder: 'Plan, code, build and test anything',
                 }}
@@ -313,20 +314,20 @@ export const Streaming: Story = {
 
 export const ComplexExample: Story = {
     render: (args) => {
-        const [isStreaming, setIsStreaming] = useState(false);
+        const [status, setStatus] = useState<ChatStatus>('ready');
 
         const handleSendComplex = async (data: TSubmitData) => {
             // eslint-disable-next-line no-console
             console.log('Sending:', data);
-            setIsStreaming(true);
+            setStatus('streaming');
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            setIsStreaming(false);
+            setStatus('ready');
         };
 
         const handleCancel = async () => {
             // eslint-disable-next-line no-console
             console.log('Cancelling');
-            setIsStreaming(false);
+            setStatus('ready');
         };
 
         return (
@@ -335,7 +336,7 @@ export const ComplexExample: Story = {
                 view="full"
                 onSend={handleSendComplex}
                 onCancel={handleCancel}
-                isStreaming={isStreaming}
+                status={status}
                 bodyProps={{
                     placeholder: 'Plan, code, build and test anything',
                 }}
@@ -358,7 +359,7 @@ export const ComplexExample: Story = {
                     onMicrophoneClick: () => console.log('Microphone'),
                 }}
                 suggestionsProps={{
-                    showSuggestions: !isStreaming,
+                    showSuggestions: status !== 'streaming',
                     suggestions: [{title: 'Yes', view: 'action'}, {title: 'No'}],
                 }}
             />

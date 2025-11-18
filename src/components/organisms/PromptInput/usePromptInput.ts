@@ -1,6 +1,6 @@
 import {useCallback, useState} from 'react';
 
-import {TSubmitData} from '../../../types';
+import {ChatStatus, TSubmitData} from '../../../types';
 
 /**
  * Hook props for managing PromptInput state
@@ -16,8 +16,8 @@ export type UsePromptInputProps = {
     maxLength?: number;
     /** Disabled state */
     disabled?: boolean;
-    /** Is streaming state */
-    isStreaming?: boolean;
+    /** Chat status to determine input behavior */
+    status?: ChatStatus;
 };
 
 /**
@@ -61,7 +61,7 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
         initialValue = '',
         maxLength,
         disabled = false,
-        isStreaming = false,
+        status = 'ready',
     } = props;
 
     const [value, setValue] = useState(initialValue);
@@ -71,16 +71,32 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     const trimmedValue = value.trim();
     const canSubmit = !disabled && !isSending && trimmedValue.length > 0;
 
-    // Determine submit button state
+    // Map ChatStatus to submit button state
+    // ChatStatus.ready → submitButtonState.enabled
+    // ChatStatus.error → submitButtonState.enabled
+    // ChatStatus.streaming → submitButtonState.cancelable
+    // ChatStatus.submitted → submitButtonState.loading
     let submitButtonState: 'enabled' | 'disabled' | 'loading' | 'cancelable' = 'disabled';
+
     if (disabled || !trimmedValue) {
         submitButtonState = 'disabled';
     } else if (isSending) {
         submitButtonState = 'loading';
-    } else if (isStreaming && onCancel) {
-        submitButtonState = 'cancelable';
     } else {
-        submitButtonState = 'enabled';
+        switch (status) {
+            case 'ready':
+            case 'error':
+                submitButtonState = 'enabled';
+                break;
+            case 'streaming':
+                submitButtonState = onCancel ? 'cancelable' : 'enabled';
+                break;
+            case 'submitted':
+                submitButtonState = 'loading';
+                break;
+            default:
+                submitButtonState = 'enabled';
+        }
     }
 
     // Input is disabled when loading

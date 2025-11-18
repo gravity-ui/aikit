@@ -1,0 +1,41 @@
+@use '../../../styles/variables';
+
+.#{variables.$ns}chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background-color: var(--g-color-base-background);
+    overflow: hidden;
+
+    &__header {
+        display: flex;
+        padding: var(--g-aikit-layout-base-padding-m);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--g-spacing-2);
+        align-self: stretch;
+    }
+
+    &__content {
+        min-height: 0; // Important for proper overflow behavior in child elements
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        align-self: stretch;
+
+        padding: 0 var(--g-aikit-layout-base-padding-m) var(--g-spacing-4)
+            var(--g-aikit-layout-base-padding-m);
+        gap: var(--g-spacing-2);
+        flex: 1 0 0;
+    }
+
+    &__footer {
+        display: flex;
+        padding: var(--g-aikit-layout-base-padding-m);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--g-spacing-1);
+        align-self: stretch;
+    }
+}

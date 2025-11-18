@@ -44,9 +44,9 @@
     --g-aikit-shimmer-gradient-size: 200%;
 
     /* === Chat History === */
-    --g-aikit-chat-history-width: 360px;
-    --g-aikit-chat-history-max-height: 560px;
-    --g-aikit-chat-history-item-height: 24px;
+    --g-aikit-history-width: 360px;
+    --g-aikit-history-max-height: 560px;
+    --g-aikit-history-item-height: 24px;
 
     /* === Prompt Input === */
     --g-aikit-prompt-input-panel-max-height: 500px;

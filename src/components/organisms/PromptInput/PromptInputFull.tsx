@@ -35,7 +35,12 @@ export type PromptInputFullProps = {
 export function PromptInputFull(props: PromptInputFullProps) {
     const {hookState, headerProps = {}, bodyProps = {}, footerProps = {}, className, qa} = props;
 
-    const {topContent, showContextIndicator = false, contextIndicatorProps} = headerProps;
+    const {
+        topContent,
+        contextItems = [],
+        showContextIndicator = false,
+        contextIndicatorProps,
+    } = headerProps;
 
     const {
         placeholder = 'Plan, code, build and test anything',
@@ -56,13 +61,14 @@ export function PromptInputFull(props: PromptInputFullProps) {
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
 
-    const shouldShowHeader = topContent || showContextIndicator;
+    const shouldShowHeader = topContent || contextItems.length > 0 || showContextIndicator;
     const shouldShowFooter = true;
 
     return (
         <div className={b({view: 'full'}, className)} data-qa={qa}>
             {shouldShowHeader && (
                 <PromptInputHeader
+                    contextItems={contextItems}
                     showContextIndicator={showContextIndicator}
                     contextIndicatorProps={contextIndicatorProps}
                 >

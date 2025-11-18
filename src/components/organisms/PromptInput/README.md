@@ -14,7 +14,7 @@ A flexible input component for chat interfaces with support for simple and full 
   - `Enter` to submit
   - `Shift+Enter` for new line
   - `Ctrl/Cmd+Enter` for new line
-- **Streaming Support**: Cancelable streaming state
+- **Status-based Behavior**: Adapts button state based on chat status (ready, streaming, submitted, error)
 - **Auto-growing Input**: Textarea automatically adjusts height
 
 ## Usage
@@ -112,22 +112,22 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop               | Type                                   | Required | Default    | Description                        |
-| ------------------ | -------------------------------------- | -------- | ---------- | ---------------------------------- |
-| `view`             | `'full' \| 'simple'`                   | -        | `'simple'` | View variant                       |
-| `onSend`           | `(data: TSubmitData) => Promise<void>` | ✓        | -          | Callback when message is sent      |
-| `onCancel`         | `() => Promise<void>`                  | -        | -          | Callback when sending is cancelled |
-| `disabled`         | `boolean`                              | -        | `false`    | Disabled state                     |
-| `isStreaming`      | `boolean`                              | -        | `false`    | Is streaming state                 |
-| `maxLength`        | `number`                               | -        | -          | Maximum length of input            |
-| `headerProps`      | `PromptInputHeaderConfig`              | -        | -          | Header-related props               |
-| `bodyProps`        | `PromptInputBodyConfig`                | -        | -          | Body/textarea-related props        |
-| `footerProps`      | `PromptInputFooterConfig`              | -        | -          | Footer-related props               |
-| `suggestionsProps` | `PromptInputSuggestionsConfig`         | -        | -          | Suggestions-related props          |
-| `topPanel`         | `PromptInputPanelConfig`               | -        | -          | Top panel configuration            |
-| `bottomPanel`      | `PromptInputPanelConfig`               | -        | -          | Bottom panel configuration         |
-| `className`        | `string`                               | -        | -          | Additional CSS class               |
-| `qa`               | `string`                               | -        | -          | QA/test identifier                 |
+| Prop               | Type                                   | Required | Default    | Description                                             |
+| ------------------ | -------------------------------------- | -------- | ---------- | ------------------------------------------------------- |
+| `view`             | `'full' \| 'simple'`                   | -        | `'simple'` | View variant                                            |
+| `onSend`           | `(data: TSubmitData) => Promise<void>` | ✓        | -          | Callback when message is sent                           |
+| `onCancel`         | `() => Promise<void>`                  | -        | -          | Callback when sending is cancelled                      |
+| `disabled`         | `boolean`                              | -        | `false`    | Disabled state                                          |
+| `status`           | `ChatStatus`                           | -        | `'ready'`  | Chat status determining input behavior and button state |
+| `maxLength`        | `number`                               | -        | -          | Maximum length of input                                 |
+| `headerProps`      | `PromptInputHeaderConfig`              | -        | -          | Header-related props                                    |
+| `bodyProps`        | `PromptInputBodyConfig`                | -        | -          | Body/textarea-related props                             |
+| `footerProps`      | `PromptInputFooterConfig`              | -        | -          | Footer-related props                                    |
+| `suggestionsProps` | `PromptInputSuggestionsConfig`         | -        | -          | Suggestions-related props                               |
+| `topPanel`         | `PromptInputPanelConfig`               | -        | -          | Top panel configuration                                 |
+| `bottomPanel`      | `PromptInputPanelConfig`               | -        | -          | Bottom panel configuration                              |
+| `className`        | `string`                               | -        | -          | Additional CSS class                                    |
+| `qa`               | `string`                               | -        | -          | QA/test identifier                                      |
 
 ### PromptInputPanelConfig
 
@@ -263,6 +263,19 @@ The component uses BEM naming convention:
 - `.g-aikit-prompt-input__panel_open` - Open panel state
 - `.g-aikit-prompt-input__suggestions` - Suggestions container
 
+## Status-based Button States
+
+The component maps `ChatStatus` values to submit button states:
+
+| ChatStatus    | Submit Button State | Description                                            |
+| ------------- | ------------------- | ------------------------------------------------------ |
+| `'ready'`     | `'enabled'`         | Ready to send message - shows send icon                |
+| `'error'`     | `'enabled'`         | Error state - user can retry sending - shows send icon |
+| `'streaming'` | `'cancelable'`      | Streaming response - shows stop icon, can cancel       |
+| `'submitted'` | `'loading'`         | Message submitted - shows loading indicator            |
+
+When input is empty or disabled, button state is always `'disabled'` regardless of `status`.
+
 ## Implementation Details
 
 The component uses the `usePromptInput` hook for state management. The hook:
@@ -272,6 +285,7 @@ The component uses the `usePromptInput` hook for state management. The hook:
 - Coordinates between header, body, and footer components
 - Provides submit and cancel callbacks
 - Manages attachments state
+- Maps `ChatStatus` to appropriate submit button state
 
 ### Animation System
 

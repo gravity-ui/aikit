@@ -9,24 +9,19 @@ $block: '.#{variables.$ns}chat-content';
     height: 100%;
     overflow: hidden;
     background: var(--g-aikit-chat-content-background);
+    overflow-y: auto;
+    align-items: flex-start;
+    gap: var(--g-spacing-2);
+    flex: 1 0 0;
+    align-self: stretch;
 
-    &__content {
-        overflow-y: auto;
+    &__message-list-container {
         display: flex;
-        padding: var(--g-aikit-chat-content-padding);
+        padding: var(--g-spacing-2) var(--g-spacing-2) var(--g-spacing-8) var(--g-spacing-2);
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--g-spacing-2);
-        flex: 1 0 0;
+        gap: var(--g-spacing-4);
         align-self: stretch;
-    }
-
-    &__prompt-input {
-        display: flex;
-        padding: var(--g-aikit-layout-base-padding-m);
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--g-spacing-1);
-        align-self: stretch;
+        flex: 1;
     }
 }

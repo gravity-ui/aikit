@@ -2,6 +2,7 @@
 export * from './ActionButton';
 export * from './Loader';
 export * from './ContextIndicator';
+export * from './ContextItem';
 export * from './ToolIndicator';
 export * from './MessageBalloon';
 export * from './SubmitButton';

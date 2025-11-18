@@ -1,1 +1,5 @@
-export {PromptInputHeader, type PromptInputHeaderProps} from './PromptInputHeader';
+export {
+    PromptInputHeader,
+    type PromptInputHeaderProps,
+    type ContextItemConfig,
+} from './PromptInputHeader';

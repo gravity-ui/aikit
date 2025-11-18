@@ -1,0 +1,10 @@
+{
+  "header-default-title": "AI Чат",
+  "empty-state-title": "Добро пожаловать в AI Чат",
+  "empty-state-description": "Начните разговор, введя сообщение ниже или выбрав подсказку.",
+  "empty-state-suggestions-title": "Попробуйте спросить:",
+  "empty-state-show-more": "Показать больше примеров",
+  "prompt-placeholder": "Введите ваше сообщение...",
+  "history-empty": "История чатов пока пуста",
+  "disclaimer-text": "ИИ может ошибаться. Проверяйте важную информацию."
+}

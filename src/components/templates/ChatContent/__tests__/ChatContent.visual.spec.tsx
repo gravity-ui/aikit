@@ -35,20 +35,14 @@ test.describe('ChatContent', {tag: '@ChatContent'}, () => {
         await expectScreenshot();
     });
 
-    test('should render with full prompt input', async ({mount, expectScreenshot}) => {
-        await mount(<ChatContentStories.WithFullPromptInput />);
+    test('should render with long messages', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContentStories.WithLongMessages />);
 
         await expectScreenshot();
     });
 
-    test('should render with streaming state', async ({mount, expectScreenshot}) => {
-        await mount(<ChatContentStories.WithStreamingState />);
-
-        await expectScreenshot();
-    });
-
-    test('should render with disabled input', async ({mount, expectScreenshot}) => {
-        await mount(<ChatContentStories.WithDisabledInput />);
+    test('should render with many messages', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContentStories.WithManyMessages />);
 
         await expectScreenshot();
     });
@@ -88,50 +82,14 @@ test.describe('ChatContent', {tag: '@ChatContent'}, () => {
         await expect(suggestionButton).toBeVisible();
         await suggestionButton.click();
 
-        // Check that user message appeared
+        // Check that view switched to chat state and user message appeared
         await expect(page.getByText('Explain React hooks')).toBeVisible();
     });
 
-    test('should show context indicator in full prompt input', async ({mount, page}) => {
-        await mount(<ChatContentStories.WithFullPromptInput />);
-
-        // Check for context indicator presence (take first found element)
-        const contextIndicator = page.locator('[class*="context-indicator"]').first();
-        await expect(contextIndicator).toBeVisible();
-    });
-
-    test('should show cancel button in streaming state', async ({mount, page}) => {
-        await mount(<ChatContentStories.WithStreamingState />);
-
-        // Enter text in the field to activate cancel button
-        const textarea = page.getByRole('textbox');
-        await textarea.fill('Test message');
-
-        // Check for cancel button presence in streaming state with text
-        // Button has class g-aikit-submit-button_cancelable_true
-        const cancelButton = page.locator('[class*="submit-button"][class*="cancelable"]');
-        await expect(cancelButton).toBeVisible();
-    });
-
-    test('should disable input when disabled prop is true', async ({mount, page}) => {
-        await mount(<ChatContentStories.WithDisabledInput />);
-
-        // Check that submit button is in disabled state
-        const submitButton = page.locator('[class*="submit-button"]');
-        await expect(submitButton).toBeVisible();
-
-        // Verify that button is disabled
-        await expect(submitButton).toBeDisabled();
-    });
-
-    test('should scroll long conversation content', async ({mount, page}) => {
+    test('should display long conversation with multiple messages', async ({mount, page}) => {
         await mount(<ChatContentStories.LongConversation />);
 
-        // Check for scrollable content presence
-        const contentArea = page.locator('[class*="chat-content__content"]');
-        await expect(contentArea).toBeVisible();
-
-        // Check that there are multiple messages (use specific class selector)
+        // Check that there are multiple messages
         const messages = page.locator('.g-aikit-base-message');
 
         // LongConversation should have 8 messages

@@ -89,6 +89,31 @@ import {Header, HeaderAction} from '@gravity-ui/aikit';
 />;
 ```
 
+### History button ref
+
+You can get a reference to the history button to anchor popups to it (e.g., `History`):
+
+```tsx
+import {useRef} from 'react';
+import {Header, HeaderAction} from '@gravity-ui/aikit';
+
+function MyComponent() {
+  const historyButtonRef = useRef<HTMLElement>(null);
+
+  return (
+    <>
+      <Header
+        title="Chat Header"
+        baseActions={[HeaderAction.History]}
+        handleHistoryToggle={() => console.log('Toggle history')}
+        historyButtonRef={historyButtonRef}
+      />
+      {/* Use historyButtonRef to anchor popup */}
+    </>
+  );
+}
+```
+
 ## Using useHeader hook
 
 The `useHeader` hook allows you to use the component logic to create your own view:
@@ -144,20 +169,21 @@ The component uses CSS variables for theming:
 
 ### HeaderProps
 
-| Prop                  | Type                                       | Description                         |
-| --------------------- | ------------------------------------------ | ----------------------------------- |
-| `icon`                | `React.ReactNode`                          | Icon to the left of the title       |
-| `title`               | `string`                                   | Chat title                          |
-| `preview`             | `React.ReactNode`                          | Preview after the title             |
-| `baseActions`         | `HeaderAction[]`                           | Array of base actions               |
-| `handleNewChat`       | `() => void`                               | New chat handler                    |
-| `handleHistoryToggle` | `() => void`                               | History toggle handler              |
-| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | Folding handler                     |
-| `handleClose`         | `() => void`                               | Close handler                       |
-| `additionalActions`   | `AdditionalActionsConfig[]`                | Array of additional actions         |
-| `foldingState`        | `'collapsed' \| 'opened'`                  | Folding state (default: `'opened'`) |
-| `titlePosition`       | `'left' \| 'center'`                       | Title position (default: `'left'`)  |
-| `className`           | `string`                                   | Additional CSS class                |
+| Prop                  | Type                                       | Description                                    |
+| --------------------- | ------------------------------------------ | ---------------------------------------------- |
+| `icon`                | `React.ReactNode`                          | Icon to the left of the title                  |
+| `title`               | `string`                                   | Chat title                                     |
+| `preview`             | `React.ReactNode`                          | Preview after the title                        |
+| `baseActions`         | `HeaderAction[]`                           | Array of base actions                          |
+| `handleNewChat`       | `() => void`                               | New chat handler                               |
+| `handleHistoryToggle` | `() => void`                               | History toggle handler                         |
+| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | Folding handler                                |
+| `handleClose`         | `() => void`                               | Close handler                                  |
+| `additionalActions`   | `AdditionalActionsConfig[]`                | Array of additional actions                    |
+| `historyButtonRef`    | `React.RefObject<HTMLElement>`             | Ref for history button (used to anchor popups) |
+| `foldingState`        | `'collapsed' \| 'opened'`                  | Folding state (default: `'opened'`)            |
+| `titlePosition`       | `'left' \| 'center'`                       | Title position (default: `'left'`)             |
+| `className`           | `string`                                   | Additional CSS class                           |
 
 ### HeaderAction
 

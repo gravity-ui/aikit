@@ -8,7 +8,6 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 import {ChatContent} from '..';
 import {BaseMessageAction} from '../../../../components/molecules/BaseMessage';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import {SwapArea} from '../../../../demo/SwapArea';
 import {TChatMessage} from '../../../../types/messages';
 
 import MDXDocs from './Docs.mdx';
@@ -120,17 +119,6 @@ export const Playground: Story = {
                 console.log('Suggestion clicked:', content, id);
             },
         },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-            bodyProps: {
-                placeholder: 'Type your message...',
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
-        },
     },
     decorators: defaultDecorators,
 };
@@ -142,17 +130,6 @@ export const EmptyState: Story = {
             title: 'Welcome to AI Assistant',
             description:
                 'I can help you with coding questions, explain concepts, and assist with your development tasks.',
-        },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-            bodyProps: {
-                placeholder: 'Ask me anything...',
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
         },
     },
     decorators: defaultDecorators,
@@ -177,14 +154,6 @@ export const EmptyStateWithSuggestions: Story = {
                 console.log('Suggestion clicked:', content, id);
             },
         },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
-        },
     },
     decorators: defaultDecorators,
 };
@@ -196,17 +165,6 @@ export const ChatStateWithMessages: Story = {
             messages: sampleMessages,
             showTimestamp: true,
             showAvatar: false,
-        },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-            bodyProps: {
-                placeholder: 'Type your message...',
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
         },
     },
     decorators: defaultDecorators,
@@ -221,100 +179,60 @@ export const ChatStateWithActionsOnHover: Story = {
             showActionsOnHover: true,
             showAvatar: true,
         },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithLongMessages: Story = {
+    args: {
+        view: 'chat',
+        messageListProps: {
+            messages: sampleMessages,
+            showTimestamp: true,
         },
     },
     decorators: defaultDecorators,
 };
 
-export const WithFullPromptInput: Story = {
+export const WithManyMessages: Story = {
     args: {
         view: 'chat',
         messageListProps: {
-            messages: sampleMessages.slice(0, 2),
-        },
-        promptInputProps: {
-            view: 'full',
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-            headerProps: {
-                showContextIndicator: true,
-                contextIndicatorProps: {
-                    type: 'number',
-                    usedContext: 3,
-                    maxContext: 10,
+            messages: [
+                ...sampleMessages,
+                {
+                    id: '5',
+                    role: 'user',
+                    content: 'Can you show me an example?',
+                    timestamp: '2024-01-01T12:02:00Z',
+                    actions: sampleActions,
                 },
-            },
-            footerProps: {
-                showSettings: true,
-                showAttachment: true,
-                onSettingsClick: () => console.log('Settings clicked'),
-                onAttachmentClick: () => console.log('Attachment clicked'),
-            },
-            bodyProps: {
-                placeholder: 'Type your message...',
-                minRows: 3,
-            },
-            topPanel: {
-                isOpen: true,
-                children: <SwapArea />,
-            },
-            bottomPanel: {
-                isOpen: true,
-                children: <SwapArea />,
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
-        },
-    },
-    decorators: defaultDecorators,
-};
+                {
+                    id: '6',
+                    role: 'assistant',
+                    content: `Here's a simple useState example:
 
-export const WithStreamingState: Story = {
-    args: {
-        view: 'chat',
-        messageListProps: {
-            messages: sampleMessages,
-        },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-            onCancel: async () => {
-                console.log('Cancelled');
-            },
-            isStreaming: true,
-            disabled: false,
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
-        },
-    },
-    decorators: defaultDecorators,
-};
+\`\`\`tsx
+import { useState } from 'react';
 
-export const WithDisabledInput: Story = {
-    args: {
-        view: 'chat',
-        messageListProps: {
-            messages: sampleMessages,
-        },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-            disabled: true,
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+\`\`\`
+
+This component maintains a count state and updates it when the button is clicked.`,
+                    timestamp: '2024-01-01T12:02:05Z',
+                    actions: sampleActions,
+                },
+            ],
+            showTimestamp: true,
         },
     },
     decorators: defaultDecorators,
@@ -325,15 +243,15 @@ export const Interactive: Story = {
         const [view, setView] = useState<'empty' | 'chat'>('empty');
         const [messages, setMessages] = useState<TChatMessage[]>([]);
 
-        const handleSend = async (data: {content: string}) => {
+        const handleSuggestionClick = (content: string) => {
             // Add user message
             const userMessage: TChatMessage = {
                 id: Date.now().toString(),
                 role: 'user',
-                content: data.content,
+                content,
                 timestamp: new Date().toISOString(),
             };
-            setMessages((prev) => [...prev, userMessage]);
+            setMessages([userMessage]);
             setView('chat');
 
             // Simulate assistant response
@@ -341,15 +259,11 @@ export const Interactive: Story = {
                 const assistantMessage: TChatMessage = {
                     id: (Date.now() + 1).toString(),
                     role: 'assistant',
-                    content: `I received your message: "${data.content}". How can I help you further?`,
+                    content: `I received your message: "${content}". How can I help you further?`,
                     timestamp: new Date().toISOString(),
                 };
                 setMessages((prev) => [...prev, assistantMessage]);
             }, 1000);
-        };
-
-        const handleSuggestionClick = (content: string) => {
-            handleSend({content});
         };
 
         return (
@@ -365,15 +279,6 @@ export const Interactive: Story = {
                 messageListProps={{
                     messages,
                     showTimestamp: true,
-                }}
-                promptInputProps={{
-                    onSend: handleSend,
-                    bodyProps: {
-                        placeholder: 'Type your message...',
-                    },
-                }}
-                disclaimerProps={{
-                    text: 'AI-generated, for reference only',
                 }}
             />
         );
@@ -451,14 +356,6 @@ function DataFetcher() {
             ],
             showTimestamp: true,
             showActionsOnHover: true,
-        },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
         },
     },
     decorators: defaultDecorators,

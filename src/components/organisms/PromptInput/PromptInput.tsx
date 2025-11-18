@@ -1,4 +1,4 @@
-import {TSubmitData} from '../../../types';
+import {ChatStatus, TSubmitData} from '../../../types';
 
 import {PromptInputFull} from './PromptInputFull';
 import {PromptInputSimple} from './PromptInputSimple';
@@ -27,8 +27,8 @@ export type PromptInputProps = {
     onCancel?: () => Promise<void>;
     /** Disabled state */
     disabled?: boolean;
-    /** Is streaming state */
-    isStreaming?: boolean;
+    /** Chat status to determine input behavior */
+    status?: ChatStatus;
     /** Maximum length of input */
     maxLength?: number;
     /** Header-related props */
@@ -62,7 +62,7 @@ export function PromptInput(props: PromptInputProps) {
         onSend,
         onCancel,
         disabled = false,
-        isStreaming = false,
+        status = 'ready',
         maxLength,
         headerProps,
         bodyProps,
@@ -78,7 +78,7 @@ export function PromptInput(props: PromptInputProps) {
         onSend,
         onCancel,
         disabled,
-        isStreaming,
+        status,
         maxLength,
     });
 

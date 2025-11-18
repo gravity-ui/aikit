@@ -4,11 +4,24 @@ $block: '.#{variables.$ns}prompt-input-header';
 
 #{$block} {
     display: flex;
-    align-items: flex-start;
-    gap: var(--g-spacing-1);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--g-spacing-2);
     align-self: stretch;
 
-    &__context {
+    &__context-items {
+        display: flex;
+        align-items: center;
+        gap: var(--g-spacing-1);
+        flex-wrap: wrap;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__context-indicator {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
         margin-left: auto;
     }
 }

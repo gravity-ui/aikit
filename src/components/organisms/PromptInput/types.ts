@@ -19,6 +19,8 @@ export type PromptInputPanelConfig = {
 export type PromptInputHeaderConfig = {
     /** Custom content for header area */
     topContent?: ReactNode;
+    /** Array of context items to display on the left */
+    contextItems?: PromptInputHeaderProps['contextItems'];
     /** Show context indicator in header */
     showContextIndicator?: boolean;
     /** Props for context indicator */
