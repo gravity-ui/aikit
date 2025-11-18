@@ -8,5 +8,6 @@ $block: '.#{variables.$ns}disclaimer';
         justify-content: center;
         align-items: center;
         gap: var(--g-aikit-disclaimer-gap);
+        align-self: stretch;
     }
 }

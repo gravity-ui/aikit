@@ -62,6 +62,11 @@ $block: '.#{variables.$ns}prompt-input';
         //   then element is removed from DOM after transition completes (300ms)
     }
 
+    &__suggestions-wrapper {
+        align-self: stretch;
+        flex: 1;
+    }
+
     &__suggestions {
         padding-bottom: var(--g-spacing-2);
     }

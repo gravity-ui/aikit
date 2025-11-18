@@ -227,7 +227,7 @@ export const ComponentNameStories = composeStories(DefaultComponentNameStories);
 ```tsx
 import React from 'react';
 
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {ComponentNameStories} from './helpersPlaywright';
 
@@ -247,6 +247,8 @@ test.describe('ComponentName', {tag: '@ComponentName'}, () => {
   // More tests for each story
 });
 ```
+
+**Important**: Always import `expect` from `~playwright/core`, not as a fixture parameter.
 
 ### Testing Rules Based on Stories
 
@@ -278,8 +280,8 @@ test.describe('ComponentName', {tag: '@ComponentName'}, () => {
      const button = page.getByRole('button', {name: 'Click me'});
      await button.click();
 
-     // Verify the result
-     await page.getByText('Clicked!').waitFor();
+     // Verify the result using explicit assertions
+     await expect(page.getByText('Clicked!')).toBeVisible();
    });
    ```
 
@@ -289,8 +291,11 @@ test.describe('ComponentName', {tag: '@ComponentName'}, () => {
    test('should show tooltip on hover', async ({mount, page, expectScreenshot}) => {
      await mount(<ComponentNameStories.WithTooltip />);
 
-     await page.locator('.element').hover();
-     await page.waitForTimeout(500); // Wait for tooltip to appear
+     const element = page.locator('.element');
+     await element.hover();
+
+     // Wait for tooltip to appear using explicit assertion
+     await expect(page.getByText('Tooltip text')).toBeVisible();
 
      await expectScreenshot();
    });
@@ -306,8 +311,8 @@ test.describe('ComponentName', {tag: '@ComponentName'}, () => {
 
      await page.getByRole('button').click();
 
-     // Wait for async operation to complete
-     await page.getByText('Loaded!').waitFor();
+     // Wait for async operation to complete using explicit assertion
+     await expect(page.getByText('Loaded!')).toBeVisible();
    });
    ```
 
@@ -333,18 +338,32 @@ test.describe('ComponentName', {tag: '@ComponentName'}, () => {
 
 9. **Waiting for Elements**
 
-   Use Playwright's built-in waiting mechanisms:
+   Use Playwright's explicit assertions instead of `waitFor()`:
 
    ```tsx
-   // Wait for element to appear
-   await page.getByText('Hello').waitFor();
+   // Prefer explicit assertions over waitFor()
+   await expect(page.getByText('Hello')).toBeVisible();
 
-   // Wait for element to be visible
-   await page.locator('.element').waitFor({state: 'visible'});
+   // Check element visibility
+   await expect(page.locator('.element')).toBeVisible();
 
-   // Wait for timeout (use sparingly)
+   // Check element state
+   await expect(page.getByRole('button')).toBeDisabled();
+   await expect(page.getByRole('button')).toBeEnabled();
+
+   // Check element count
+   await expect(page.locator('.item')).toHaveCount(5);
+
+   // Wait for timeout (use sparingly, only for animations or delays)
    await page.waitForTimeout(500);
    ```
+
+   **Why prefer `expect` over `waitFor()`:**
+   - More readable and explicit about what's being verified
+   - Better integration with Playwright's reporting system
+   - More informative error messages when assertions fail
+   - Follows Playwright best practices
+   - Playwright actions (click, fill, etc.) already auto-wait for elements
 
 10. **Test Tags**
 
@@ -375,7 +394,7 @@ export const SubmitButtonStories = composeStories(DefaultSubmitButtonStories);
 ```tsx
 import React from 'react';
 
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {SubmitButtonStories} from './helpersPlaywright';
 
@@ -435,7 +454,7 @@ test.describe('SubmitButton', {tag: '@SubmitButton'}, () => {
     await mount(<SubmitButtonStories.Disabled />);
 
     const button = page.getByRole('button');
-    expect(await button.isDisabled()).toBeTruthy();
+    await expect(button).toBeDisabled();
   });
 });
 ```
@@ -834,7 +853,7 @@ This memory bank provides comprehensive guidelines for:
 
 - **Consistency**: Follow templates and patterns across all components
 - **Completeness**: Document all features, props, and styling options
-- **English Only**: All documentation must be in English
+- **English Only**: All documentation, jsDoc, comments must be in English
 - **Test-Story Alignment**: Tests should map directly to stories
 - **User-Focused**: Write documentation for component consumers, not just developers
 

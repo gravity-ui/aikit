@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {EmptyContainerStories} from './helpersPlaywright';
 
@@ -60,10 +60,10 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
         await mount(<EmptyContainerStories.Playground />);
 
         // Check that all suggestion buttons are present
-        await page.getByText('Summarize recent activity').waitFor();
-        await page.getByText('Check code for vulnerabilities').waitFor();
-        await page.getByText('Explain project structure').waitFor();
-        await page.getByText('Generate documentation').waitFor();
+        await expect(page.getByText('Summarize recent activity')).toBeVisible();
+        await expect(page.getByText('Check code for vulnerabilities')).toBeVisible();
+        await expect(page.getByText('Explain project structure')).toBeVisible();
+        await expect(page.getByText('Generate documentation')).toBeVisible();
     });
 
     test('should render with left alignment', async ({mount, expectScreenshot}) => {
@@ -119,17 +119,14 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
 
         // Initially there should be 2 suggestions
         const initialSuggestions = page.locator('button').filter({hasText: /Summarize|Check/});
-        await initialSuggestions.first().waitFor();
+        await expect(initialSuggestions.first()).toBeVisible();
 
         // Click the "Show more" button
         const showMoreButton = page.getByRole('button', {name: /Show more examples/i});
-        await showMoreButton.waitFor();
+        await expect(showMoreButton).toBeVisible();
         await showMoreButton.click();
 
-        // Wait for additional suggestions to appear
-        await page.waitForTimeout(100);
-
         // Check that new suggestions have appeared
-        await page.getByText('Explain project structure').waitFor();
+        await expect(page.getByText('Explain project structure')).toBeVisible();
     });
 });
