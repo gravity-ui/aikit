@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {ChatContentStories} from './helpersPlaywright';
 
@@ -63,34 +63,33 @@ test.describe('ChatContent', {tag: '@ChatContent'}, () => {
         await mount(<ChatContentStories.EmptyStateWithSuggestions />);
 
         // Check for suggestions presence
-        await page.getByText('Explain React hooks').waitFor();
-        await page.getByText('How to use TypeScript with React?').waitFor();
+        await expect(page.getByText('Explain React hooks')).toBeVisible();
+        await expect(page.getByText('How to use TypeScript with React?')).toBeVisible();
     });
 
     test('should display messages in chat state', async ({mount, page}) => {
         await mount(<ChatContentStories.ChatStateWithMessages />);
 
         // Check for messages presence
-        await page.getByText('Hello! Can you help me with React?').waitFor();
-        await page.getByText('Of course! I would be happy to help you with React.').waitFor();
+        await expect(page.getByText('Hello! Can you help me with React?')).toBeVisible();
+        await expect(
+            page.getByText('Of course! I would be happy to help you with React.'),
+        ).toBeVisible();
     });
 
     test('should handle suggestion click in interactive story', async ({mount, page}) => {
         await mount(<ChatContentStories.Interactive />);
 
         // Initially should be in empty state
-        await page.getByText('Welcome to AI Chat').waitFor();
+        await expect(page.getByText('Welcome to AI Chat')).toBeVisible();
 
         // Click on suggestion
         const suggestionButton = page.getByText('Explain React hooks');
-        await suggestionButton.waitFor();
+        await expect(suggestionButton).toBeVisible();
         await suggestionButton.click();
 
-        // Wait for switch to chat state with messages
-        await page.waitForTimeout(100);
-
         // Check that user message appeared
-        await page.getByText('Explain React hooks').waitFor();
+        await expect(page.getByText('Explain React hooks')).toBeVisible();
     });
 
     test('should show context indicator in full prompt input', async ({mount, page}) => {
@@ -98,7 +97,7 @@ test.describe('ChatContent', {tag: '@ChatContent'}, () => {
 
         // Check for context indicator presence (take first found element)
         const contextIndicator = page.locator('[class*="context-indicator"]').first();
-        await contextIndicator.waitFor();
+        await expect(contextIndicator).toBeVisible();
     });
 
     test('should show cancel button in streaming state', async ({mount, page}) => {
@@ -111,7 +110,7 @@ test.describe('ChatContent', {tag: '@ChatContent'}, () => {
         // Check for cancel button presence in streaming state with text
         // Button has class g-aikit-submit-button_cancelable_true
         const cancelButton = page.locator('[class*="submit-button"][class*="cancelable"]');
-        await cancelButton.waitFor();
+        await expect(cancelButton).toBeVisible();
     });
 
     test('should disable input when disabled prop is true', async ({mount, page}) => {
@@ -119,13 +118,10 @@ test.describe('ChatContent', {tag: '@ChatContent'}, () => {
 
         // Check that submit button is in disabled state
         const submitButton = page.locator('[class*="submit-button"]');
-        await submitButton.waitFor();
+        await expect(submitButton).toBeVisible();
 
         // Verify that button is disabled
-        const isDisabled = await submitButton.isDisabled();
-        if (!isDisabled) {
-            throw new Error('Expected submit button to be disabled');
-        }
+        await expect(submitButton).toBeDisabled();
     });
 
     test('should scroll long conversation content', async ({mount, page}) => {
@@ -133,15 +129,12 @@ test.describe('ChatContent', {tag: '@ChatContent'}, () => {
 
         // Check for scrollable content presence
         const contentArea = page.locator('[class*="chat-content__content"]');
-        await contentArea.waitFor();
+        await expect(contentArea).toBeVisible();
 
-        // Check that there are multiple messages
-        const messages = page.locator('[class*="base-message"]');
-        const count = await messages.count();
+        // Check that there are multiple messages (use specific class selector)
+        const messages = page.locator('.g-aikit-base-message');
 
         // LongConversation should have 8 messages
-        if (count < 5) {
-            throw new Error(`Expected at least 5 messages, but got ${count}`);
-        }
+        await expect(messages).toHaveCount(8);
     });
 });

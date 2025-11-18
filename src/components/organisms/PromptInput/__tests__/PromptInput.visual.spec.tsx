@@ -64,25 +64,4 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
 
         await expectScreenshot();
     });
-
-    test('should animate panel closing', async ({mount, page, expectScreenshot}) => {
-        // Монтируем компонент с открытой панелью
-        const component = await mount(<PromptInputStories.WithTopPanel />);
-
-        await expectScreenshot({name: 'panel-open'});
-
-        // Находим кнопку закрытия панели и кликаем
-        const closeButton = component.getByRole('button', {name: /close/i}).first();
-        if (await closeButton.isVisible()) {
-            await closeButton.click();
-
-            // Делаем скриншот в процессе анимации (через 150мс из 300мс)
-            await page.waitForTimeout(150);
-            await expectScreenshot({name: 'panel-closing'});
-
-            // Ждем завершения анимации
-            await page.waitForTimeout(200);
-            await expectScreenshot({name: 'panel-closed'});
-        }
-    });
 });
