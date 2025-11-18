@@ -1,3 +1,5 @@
+import {useEffect, useState} from 'react';
+
 import {Pencil} from '@gravity-ui/icons';
 import {Icon, Text} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
@@ -255,6 +257,74 @@ export const WithCustomMessageType: StoryObj<MessageListProps<ChartMessageConten
                             },
                         ]}
                         messageRendererRegistry={customRegistry}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+const streamingText =
+    'React Hooks are functions that let you use state and other React features without writing a class. ' +
+    'The most commonly used hooks are:\n\n' +
+    '1. **useState** - for managing component state\n' +
+    '2. **useEffect** - for side effects like data fetching or subscriptions\n' +
+    '3. **useContext** - for consuming context values\n' +
+    '4. **useCallback** - for memoizing functions\n' +
+    '5. **useMemo** - for memoizing computed values\n\n' +
+    'Each hook serves a specific purpose and helps you write cleaner, more maintainable React code. ' +
+    'Would you like examples of how to use any of these hooks?';
+
+export const WithStreamingMessage: StoryObj<MessageListProps> = {
+    render: (args) => {
+        const [streamedText, setStreamedText] = useState('');
+        const [isStreaming, setIsStreaming] = useState(true);
+
+        useEffect(() => {
+            setStreamedText('');
+            setIsStreaming(true);
+            const resultText = streamingText.repeat(10);
+
+            let currentIndex = 0;
+            const interval = setInterval(() => {
+                if (currentIndex < resultText.length) {
+                    const nextChunk = resultText.slice(0, currentIndex + 1);
+                    setStreamedText(nextChunk);
+                    currentIndex += Math.floor(Math.random() * 4) + 3;
+                } else {
+                    setIsStreaming(false);
+                    clearInterval(interval);
+                }
+            }, 20);
+
+            return () => {
+                clearInterval(interval);
+            };
+        }, []);
+
+        const messages: Array<TUserMessage | TAssistantMessage> = [
+            {
+                id: 'user-1',
+                role: 'user',
+                timestamp: '2024-01-01T00:00:00Z',
+                content: 'Can you explain React Hooks to me?',
+            },
+            {
+                id: 'assistant-1',
+                role: 'assistant',
+                timestamp: '2024-01-01T00:00:01Z',
+                content: streamedText || ' ',
+            },
+        ];
+
+        return (
+            <ShowcaseItem title="With Streaming Message">
+                <ContentWrapper width="480px" height="200px">
+                    <MessageList
+                        {...args}
+                        messages={messages}
+                        status={isStreaming ? 'streaming' : 'ready'}
                     />
                 </ContentWrapper>
             </ShowcaseItem>
