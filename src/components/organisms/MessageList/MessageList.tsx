@@ -68,11 +68,13 @@ export function MessageList<TContent extends TMessageContent = never>({
         }
 
         if (isAssistantMessage<TMessageMetadata, TContent>(message)) {
+            const showActions = message.status === 'complete';
+
             return (
                 <AssistantMessage<TContent>
                     key={message.id || `message-${index}`}
                     content={message.content}
-                    actions={message.actions}
+                    actions={showActions ? message.actions : undefined}
                     timestamp={message.timestamp}
                     id={message.id}
                     messageRendererRegistry={messageRendererRegistry}
