@@ -15,6 +15,7 @@ import {
     createMessageRendererRegistry,
     registerMessageRenderer,
 } from '../../../../utils/messageTypeRegistry';
+import {BaseMessageAction} from '../../../molecules/BaseMessage';
 
 import MDXDocs from './Docs.mdx';
 
@@ -325,6 +326,87 @@ export const WithStreamingMessage: StoryObj<MessageListProps> = {
                         {...args}
                         messages={messages}
                         status={isStreaming ? 'streaming' : 'ready'}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithDefaultActions: StoryObj<MessageListProps> = {
+    render: (args) => {
+        const userActions = [
+            {
+                type: BaseMessageAction.Edit,
+                onClick: (message: TUserMessage) => {
+                    // eslint-disable-next-line no-console
+                    console.log('Edit user message:', message.id);
+                },
+            },
+            {
+                type: BaseMessageAction.Delete,
+                onClick: (message: TUserMessage) => {
+                    // eslint-disable-next-line no-console
+                    console.log('Delete user message:', message.id);
+                },
+            },
+        ];
+
+        const assistantActions = [
+            {
+                type: BaseMessageAction.Copy,
+                onClick: (message: TAssistantMessage) => {
+                    // eslint-disable-next-line no-console
+                    console.log('Copy assistant message:', message.id);
+                },
+            },
+            {
+                type: BaseMessageAction.Like,
+                onClick: (message: TAssistantMessage) => {
+                    // eslint-disable-next-line no-console
+                    console.log('Like assistant message:', message.id);
+                },
+            },
+        ];
+
+        return (
+            <ShowcaseItem title="With Default Actions">
+                <ContentWrapper width="480px">
+                    <MessageList
+                        {...args}
+                        messages={[
+                            {
+                                id: 'user-1',
+                                role: 'user',
+                                timestamp: '2024-01-01T00:00:00Z',
+                                content: 'Hello! This message has default actions.',
+                            },
+                            {
+                                id: 'assistant-1',
+                                role: 'assistant',
+                                timestamp: '2024-01-01T00:00:01Z',
+                                content: 'Hi! This message also has default actions.',
+                                status: 'complete',
+                            },
+                            {
+                                id: 'user-2',
+                                role: 'user',
+                                timestamp: '2024-01-01T00:00:02Z',
+                                content: 'This message has custom actions.',
+                                actions: [
+                                    {
+                                        type: 'custom',
+                                        onClick: () => {
+                                            // eslint-disable-next-line no-console
+                                            console.log('Custom action clicked');
+                                        },
+                                    },
+                                ],
+                            },
+                        ]}
+                        userActions={userActions}
+                        assistantActions={assistantActions}
                     />
                 </ContentWrapper>
             </ShowcaseItem>
