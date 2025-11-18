@@ -1,13 +1,10 @@
 # ContextItem
 
-A compact component that displays diff statistics showing the number of added and deleted lines.
+A label for rendering context
 
 ## Features
 
-- **Visual Indicators**: Displays added and deleted line counts side by side
-- **Sign Prefixes**: Automatically adds `+` for added lines and `-` for deleted lines (only when count > 0)
-- **Color Coding**: Green for additions, red for deletions
-- **Code Font**: Uses monospace font suitable for code contexts
+- Has a callback to remove a context
 
 ## Usage
 
