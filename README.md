@@ -41,10 +41,10 @@ npm install @gravity-ui/aikit
 
 ```typescript
 import { ChatContainer } from '@gravity-ui/aikit';
-import type { ChatType, MessageType } from '@gravity-ui/aikit';
+import type { ChatType, TChatMessage } from '@gravity-ui/aikit';
 
 function App() {
-    const [messages, setMessages] = useState<MessageType[]>([]);
+    const [messages, setMessages] = useState<TChatMessage[]>([]);
     const [chats, setChats] = useState<ChatType[]>([]);
     const [activeChat, setActiveChat] = useState<ChatType | null>(null);
 
@@ -53,8 +53,9 @@ function App() {
             chats={chats}
             activeChat={activeChat}
             messages={messages}
-            onSendMessage={async (content) => {
+            onSendMessage={async (data) => {
                 // Your sending logic
+                console.log('Message:', data.content);
             }}
             onSelectChat={setActiveChat}
             onCreateChat={() => {
@@ -76,45 +77,56 @@ The library is built on **Atomic Design** principles:
 
 Basic indivisible UI elements without business logic:
 
-- `Loader` — loading indicator
-- `ContextIndicator` — token context indicator
-- `ToolIndicator` — tool execution status
-- `MessageBalloon` — message wrapper
-- `SubmitButton` — submit button
-- `DiffStat` — change statistics
-- `Shimmer` — loading animation
+- `ActionButton` — button with integrated tooltip
+- `Alert` — alert messages with variants
+- `ChatDate` — date formatting with relative dates
+- `ContextIndicator` — token context usage indicator
+- `ContextItem` — context label with remove action
+- `DiffStat` — code change statistics display
+- `Disclaimer` — disclaimer text component
 - `InlineCitation` — text citations
-- `ChatDate` — date formatting
+- `Loader` — loading indicator
+- `MarkdownRenderer` — Yandex Flavored Markdown renderer
+- `MessageBalloon` — message wrapper
+- `Shimmer` — loading animation effect
+- `SubmitButton` — submit button with states
+- `ToolIndicator` — tool execution status indicator
 
 ### 🔸 Molecules
 
 Simple combinations of atoms:
 
-- `ButtonGroup` — button group
-- `Tabs` — navigation tabs
-- `Suggestions` — input suggestions
+- `BaseMessage` — base wrapper for all message types
+- `ButtonGroup` — button group with orientation support
 - `InputContext` — context management
-- `BaseMessage` — wrapper for all message types
+- `PromptInputBody` — textarea with auto-growing
+- `PromptInputFooter` — footer with action icons and submit button
+- `PromptInputHeader` — header with context items and indicator
+- `PromptInputPanel` — panel container for custom content
+- `Suggestions` — clickable suggestion buttons
+- `Tabs` — navigation tabs with delete functionality
+- `ToolFooter` — tool message footer with actions
+- `ToolHeader` — tool message header with icon and actions
 
 ### 🔶 Organisms
 
 Complex components with internal logic:
 
+- `AssistantMessage` — AI assistant message
 - `Header` — chat header
-- `Footer` — chat footer
-- `UserMessage` — user message
+- `MessageList` — message list
+- `PromptInput` — message input field
 - `ThinkingMessage` — AI thinking process
 - `ToolMessage` — tool execution
-- `PromptBox` — message input field
-- `MessageList` — message list
+- `UserMessage` — user message
 
 ### 📄 Templates
 
 Complete layouts:
 
-- `History` — chat history
-- `EmptyContainer` — empty state
 - `ChatContent` — main chat content
+- `EmptyContainer` — empty state
+- `History` — chat history
 
 ### 📱 Pages
 
@@ -136,6 +148,26 @@ The project uses Playwright Component Testing for visual regression testing.
 
 ### Run tests
 
+**Important**: All tests must be run via Docker to ensure consistent screenshots across different environments.
+
+```bash
+# Run all component tests in Docker (recommended)
+npm run playwright:docker
+
+# Update screenshot baselines in Docker
+npm run playwright:docker:update
+
+# Run specific test by grep pattern in Docker
+npm run playwright:docker -- --grep "@ComponentName"
+
+# Clear Docker cache if needed
+npm run playwright:docker:clear-cache
+```
+
+### Local testing (Linux only)
+
+If you're on Linux, you can run tests locally:
+
 ```bash
 # Install Playwright browsers (run once)
 npm run playwright:install
@@ -145,9 +177,6 @@ npm run playwright
 
 # Update screenshot baselines
 npm run playwright:update
-
-# Run tests via Docker (for non-Linux systems)
-npm run playwright:docker
 ```
 
 For detailed testing documentation, see [Playwright Guide](./playwright/README.md).
