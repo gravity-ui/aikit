@@ -9,7 +9,7 @@ import {ChatContent} from '..';
 import {BaseMessageAction} from '../../../../components/molecules/BaseMessage';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {SwapArea} from '../../../../demo/SwapArea';
-import {TMessage} from '../../../../types/messages';
+import {TChatMessage} from '../../../../types/messages';
 
 import MDXDocs from './Docs.mdx';
 
@@ -61,7 +61,7 @@ const sampleActions = [
 ];
 
 // Sample messages for stories
-const sampleMessages: TMessage[] = [
+const sampleMessages: TChatMessage[] = [
     {
         id: '1',
         role: 'user',
@@ -323,11 +323,11 @@ export const WithDisabledInput: Story = {
 export const Interactive: Story = {
     render: () => {
         const [view, setView] = useState<'empty' | 'chat'>('empty');
-        const [messages, setMessages] = useState<TMessage[]>([]);
+        const [messages, setMessages] = useState<TChatMessage[]>([]);
 
         const handleSend = async (data: {content: string}) => {
             // Add user message
-            const userMessage: TMessage = {
+            const userMessage: TChatMessage = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
@@ -338,7 +338,7 @@ export const Interactive: Story = {
 
             // Simulate assistant response
             setTimeout(() => {
-                const assistantMessage: TMessage = {
+                const assistantMessage: TChatMessage = {
                     id: (Date.now() + 1).toString(),
                     role: 'assistant',
                     content: `I received your message: "${data.content}". How can I help you further?`,

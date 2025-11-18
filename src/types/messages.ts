@@ -30,51 +30,43 @@ export type TSubmitData = {
 export type TMessageStatus = 'sending' | 'complete' | 'error' | 'streaming';
 export type TMessageRole = 'user' | 'assistant' | 'system';
 
-export type TMessagePart<Type extends string = string, Data = unknown> = {
+export type TMessageContent<Type extends string = string, Data = unknown> = {
     id?: string;
     type: Type;
     data: Data;
 };
 
-export type TextMessagePartData = {
+export type TextMessageContentData = {
     text: string;
 };
 
-export type TextMessagePart = TMessagePart<'text', TextMessagePartData>;
+export type TextMessageContent = TMessageContent<'text', TextMessageContentData>;
 
-/**
- * Data structure for thinking/reasoning message content.
- * Used to display AI model's internal reasoning process.
- */
-export type ThinkingMessagePartData = {
-    /** Optional title for the thinking block */
+export type ThinkingMessageContentData = {
     title?: string;
-    /** Content of the thinking process, can be a single string or array of strings */
     content: string | string[];
-    /** Current status: 'thinking' for in-progress, 'thought' for completed */
     status: 'thinking' | 'thought';
 };
 
-/**
- * Message part representing AI thinking/reasoning state.
- * Extends base message part with thinking-specific data.
- */
-export type ThinkingMessagePart = TMessagePart<'thinking', ThinkingMessagePartData>;
+export type ThinkingMessageContent = TMessageContent<'thinking', ThinkingMessageContentData>;
 
-export type ToolMessagePartData = ToolMessageProps;
+export type ToolMessageContentData = ToolMessageProps;
 
-export type ToolMessagePart = TMessagePart<'tool', ToolMessagePartData>;
+export type ToolMessageContent = TMessageContent<'tool', ToolMessageContentData>;
 
-export type TDefaultMessagePart = TextMessagePart | ThinkingMessagePart | ToolMessagePart;
+export type TDefaultMessageContent =
+    | TextMessageContent
+    | ThinkingMessageContent
+    | ToolMessageContent;
 
-export type TMessagePartUnion<TAdditionalPart extends TMessagePart = never> =
-    | TDefaultMessagePart
-    | TAdditionalPart;
+export type TMessageContentUnion<TCustomMessageContent extends TMessageContent = never> =
+    | TDefaultMessageContent
+    | TCustomMessageContent;
 
-export type TAssistantMessageContent<TAdditionalPart extends TMessagePart = never> =
+export type TAssistantMessageContent<TCustomMessageContent extends TMessageContent = never> =
     | string
-    | TMessagePartUnion<TAdditionalPart>
-    | TMessagePartUnion<TAdditionalPart>[];
+    | TMessageContentUnion<TCustomMessageContent>
+    | TMessageContentUnion<TCustomMessageContent>[];
 
 export type TBaseMessage<Metadata = TMessageMetadata> = Pick<
     BaseMessageProps,
@@ -94,13 +86,14 @@ export type TUserMessage<Metadata = TMessageMetadata> = TBaseMessage<Metadata> &
 };
 
 export type TAssistantMessage<
+    TCustomMessageContent extends TMessageContent = never,
     Metadata = TMessageMetadata,
-    TAdditionalPart extends TMessagePart = never,
 > = TBaseMessage<Metadata> & {
     role: 'assistant';
-    content: TAssistantMessageContent<TAdditionalPart>;
+    content: TAssistantMessageContent<TCustomMessageContent>;
 };
 
-export type TMessage<TAdditionalPart extends TMessagePart = never, Metadata = TMessageMetadata> =
-    | TUserMessage<Metadata>
-    | TAssistantMessage<Metadata, TAdditionalPart>;
+export type TChatMessage<
+    TCustomMessageContent extends TMessageContent = never,
+    Metadata = TMessageMetadata,
+> = TUserMessage<Metadata> | TAssistantMessage<TCustomMessageContent, Metadata>;

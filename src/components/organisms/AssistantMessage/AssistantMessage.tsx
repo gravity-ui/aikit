@@ -5,9 +5,9 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import type {
     BaseMessageProps,
     TAssistantMessage,
+    TMessageContent,
+    TMessageContentUnion,
     TMessageMetadata,
-    TMessagePart,
-    TMessagePartUnion,
 } from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {
@@ -26,13 +26,13 @@ type BaseMessagePick = Pick<
     BaseMessageProps,
     'actions' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp'
 >;
-type AssistantMessagePick<TPart extends TMessagePart> = Pick<
-    TAssistantMessage<TMessageMetadata, TPart>,
+type AssistantMessagePick<TContent extends TMessageContent> = Pick<
+    TAssistantMessage<TContent, TMessageMetadata>,
     'id' | 'content'
 >;
 
-export type AssistantMessageProps<TPart extends TMessagePart = never> = BaseMessagePick &
-    AssistantMessagePick<TPart> & {
+export type AssistantMessageProps<TContent extends TMessageContent = never> = BaseMessagePick &
+    AssistantMessagePick<TContent> & {
         messageRendererRegistry?: MessageRendererRegistry;
         transformOptions?: OptionsType;
         className?: string;
@@ -41,7 +41,7 @@ export type AssistantMessageProps<TPart extends TMessagePart = never> = BaseMess
 
 const b = block('assistant-message');
 
-export function AssistantMessage<TPart extends TMessagePart = never>({
+export function AssistantMessage<TContent extends TMessageContent = never>({
     content,
     actions,
     timestamp,
@@ -52,7 +52,7 @@ export function AssistantMessage<TPart extends TMessagePart = never>({
     showTimestamp,
     className,
     qa,
-}: AssistantMessageProps<TPart>) {
+}: AssistantMessageProps<TContent>) {
     const registry = useMemo<MessageRendererRegistry>(() => {
         const defaultRegistry = createDefaultMessageRegistry(transformOptions);
         if (messageRendererRegistry) {
@@ -62,13 +62,13 @@ export function AssistantMessage<TPart extends TMessagePart = never>({
         return defaultRegistry;
     }, [messageRendererRegistry, transformOptions]);
 
-    const parts = normalizeContent<TPart>(content);
+    const parts = normalizeContent<TContent>(content);
 
     if (parts.length === 0) {
         return null;
     }
 
-    const renderPart = (part: TMessagePartUnion<TPart>, partIndex: number) => {
+    const renderPart = (part: TMessageContentUnion<TContent>, partIndex: number) => {
         const PartComponent = getMessageRenderer(registry, part.type);
 
         if (!PartComponent) {

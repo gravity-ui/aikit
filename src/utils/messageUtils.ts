@@ -1,31 +1,31 @@
 import type {
     TAssistantMessage,
-    TMessage,
+    TChatMessage,
+    TMessageContent,
+    TMessageContentUnion,
     TMessageMetadata,
-    TMessagePart,
-    TMessagePartUnion,
     TUserMessage,
 } from '../types';
 
 export function isUserMessage<
     Metadata = TMessageMetadata,
-    TAdditionalPart extends TMessagePart = never,
->(message: TMessage<TAdditionalPart, Metadata>): message is TUserMessage<Metadata> {
+    TCustomMessageContent extends TMessageContent = never,
+>(message: TChatMessage<TCustomMessageContent, Metadata>): message is TUserMessage<Metadata> {
     return message.role === 'user';
 }
 
 export function isAssistantMessage<
     Metadata = TMessageMetadata,
-    TAdditionalPart extends TMessagePart = never,
+    TCustomMessageContent extends TMessageContent = never,
 >(
-    message: TMessage<TAdditionalPart, Metadata>,
-): message is TAssistantMessage<Metadata, TAdditionalPart> {
+    message: TChatMessage<TCustomMessageContent, Metadata>,
+): message is TAssistantMessage<TCustomMessageContent, Metadata> {
     return message.role === 'assistant';
 }
 
-export function normalizeContent<TAdditionalPart extends TMessagePart = never>(
-    content: TAssistantMessage<TMessageMetadata, TAdditionalPart>['content'],
-): TMessagePartUnion<TAdditionalPart>[] {
+export function normalizeContent<TCustomMessageContent extends TMessageContent = never>(
+    content: TAssistantMessage<TCustomMessageContent, TMessageMetadata>['content'],
+): TMessageContentUnion<TCustomMessageContent>[] {
     if (!content) {
         return [];
     }

@@ -7,9 +7,9 @@ import {AssistantMessage, type AssistantMessageProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import type {TAssistantMessage, TMessageMetadata, TMessagePart} from '../../../../types/messages';
+import type {TAssistantMessage, TMessageContent} from '../../../../types/messages';
 import {
-    type MessagePartComponentProps,
+    type MessageContentComponentProps,
     type MessageRendererRegistry,
     createMessageRendererRegistry,
     registerMessageRenderer,
@@ -152,9 +152,11 @@ interface CustomMessageData {
     description: string;
 }
 
-type CustomMessagePart = TMessagePart<'custom', CustomMessageData>;
+type CustomMessageContent = TMessageContent<'custom', CustomMessageData>;
 
-const CustomMessageView: React.FC<MessagePartComponentProps<CustomMessagePart>> = ({part}) => {
+const CustomMessageView: React.FC<MessageContentComponentProps<CustomMessageContent>> = ({
+    part,
+}) => {
     const {title, description} = part.data;
     return (
         <div
@@ -171,14 +173,14 @@ const CustomMessageView: React.FC<MessagePartComponentProps<CustomMessagePart>> 
     );
 };
 
-export const WithCustomRenderer: StoryObj<AssistantMessageProps<CustomMessagePart>> = {
+export const WithCustomRenderer: StoryObj<AssistantMessageProps<CustomMessageContent>> = {
     render: (args) => {
         const customRegistry: MessageRendererRegistry = createMessageRendererRegistry();
-        registerMessageRenderer<CustomMessagePart>(customRegistry, 'custom', {
+        registerMessageRenderer<CustomMessageContent>(customRegistry, 'custom', {
             component: CustomMessageView,
         });
 
-        const customMessage: TAssistantMessage<TMessageMetadata, CustomMessagePart> = {
+        const customMessage: TAssistantMessage<CustomMessageContent> = {
             id: '5',
             role: 'assistant',
             timestamp: '2024-01-01T00:00:04Z',
@@ -203,7 +205,7 @@ export const WithCustomRenderer: StoryObj<AssistantMessageProps<CustomMessagePar
         return (
             <ShowcaseItem title="With Custom Renderer">
                 <ContentWrapper width="480px">
-                    <AssistantMessage<CustomMessagePart>
+                    <AssistantMessage<CustomMessageContent>
                         {...args}
                         content={customMessage.content}
                         actions={actions}
