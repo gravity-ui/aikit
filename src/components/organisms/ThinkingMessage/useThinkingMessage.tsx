@@ -1,11 +1,11 @@
 import {useCallback, useMemo, useState} from 'react';
 
-import type {ThinkingMessagePart} from '../../../types/messages';
+import type {ThinkingMessageContent} from '../../../types/messages';
 import {BaseMessageAction} from '../../molecules/BaseMessage';
 
 import {i18n} from './i18n';
 
-export type ThinkingMessageData = Omit<ThinkingMessagePart, 'type'>;
+export type ThinkingMessageData = Omit<ThinkingMessageContent, 'type'>;
 
 export type UseThinkingMessageOptions = ThinkingMessageData & {
     defaultExpanded?: boolean;

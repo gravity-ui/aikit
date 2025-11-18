@@ -1,13 +1,13 @@
 import type React from 'react';
 
-import type {TMessagePart} from '../types/messages';
+import type {TMessageContent} from '../types/messages';
 
-export type MessagePartComponentProps<TPart extends TMessagePart = TMessagePart> = {
-    part: TPart;
+export type MessageContentComponentProps<TContent extends TMessageContent = TMessageContent> = {
+    part: TContent;
 };
 
-export type MessageRenderer<TPart extends TMessagePart = TMessagePart> = {
-    component: React.ComponentType<MessagePartComponentProps<TPart>>;
+export type MessageRenderer<TContent extends TMessageContent = TMessageContent> = {
+    component: React.ComponentType<MessageContentComponentProps<TContent>>;
 };
 
 export type MessageRendererRegistry = Record<string, MessageRenderer>;
@@ -16,22 +16,22 @@ export function createMessageRendererRegistry(): MessageRendererRegistry {
     return {};
 }
 
-export function registerMessageRenderer<TPart extends TMessagePart>(
+export function registerMessageRenderer<TContent extends TMessageContent>(
     registry: MessageRendererRegistry,
-    partType: TPart['type'],
-    renderer: MessageRenderer<TPart>,
+    contentType: TContent['type'],
+    renderer: MessageRenderer<TContent>,
 ): MessageRendererRegistry {
     Object.assign(registry, {
-        [partType]: renderer as unknown as MessageRenderer,
+        [contentType]: renderer as unknown as MessageRenderer,
     });
     return registry;
 }
 
 export function getMessageRenderer(
     registry: MessageRendererRegistry,
-    partType: string,
-): React.ComponentType<MessagePartComponentProps> | undefined {
-    return registry[partType]?.component;
+    contentType: string,
+): React.ComponentType<MessageContentComponentProps> | undefined {
+    return registry[contentType]?.component;
 }
 
 export function mergeMessageRendererRegistries(

@@ -59,32 +59,32 @@ const actions = [
 
 // With custom renderer registry
 import {createMessageRendererRegistry, registerMessageRenderer} from '@/utils/messageTypeRegistry';
-import type {TMessagePart} from '@/types/messages';
+import type {TMessageContent} from '@/types/messages';
 
-type CustomPart = TMessagePart<'custom', {value: string}>;
+type CustomContent = TMessageContent<'custom', {value: string}>;
 
 const customRegistry = createMessageRendererRegistry();
-registerMessageRenderer<CustomPart>(customRegistry, 'custom', {
+registerMessageRenderer<CustomContent>(customRegistry, 'custom', {
   component: ({part}) => <div>Custom: {part.data.value}</div>,
 });
 
-<AssistantMessage<CustomPart> content="Hello!" messageRendererRegistry={customRegistry} />;
+<AssistantMessage<CustomContent> content="Hello!" messageRendererRegistry={customRegistry} />;
 ```
 
 ## Props
 
-| Prop                      | Type                                     | Required | Default | Description                                                                                |
-| ------------------------- | ---------------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
-| `content`                 | `string \| MessagePart \| MessagePart[]` | ✓        | -       | Message content                                                                            |
-| `id`                      | `string`                                 | -        | -       | Message ID (used for generating part keys)                                                 |
-| `actions`                 | `Array<Action>`                          | -        | -       | Array of action buttons (copy, edit, like, etc.)                                           |
-| `timestamp`               | `string`                                 | -        | -       | Timestamp string                                                                           |
-| `messageRendererRegistry` | `MessageRendererRegistry`                | -        | -       | Custom message renderer registry (merged with default registry)                            |
-| `transformOptions`        | `OptionsType`                            | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
-| `showActionsOnHover`      | `boolean`                                | -        | -       | Show action buttons on hover                                                               |
-| `showTimestamp`           | `boolean`                                | -        | -       | Show timestamp in actions area                                                             |
-| `className`               | `string`                                 | -        | -       | Additional CSS class                                                                       |
-| `qa`                      | `string`                                 | -        | -       | QA/test identifier                                                                         |
+| Prop                      | Type                                           | Required | Default | Description                                                                                |
+| ------------------------- | ---------------------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
+| `content`                 | `string \| MessageContent \| MessageContent[]` | ✓        | -       | Message content                                                                            |
+| `id`                      | `string`                                       | -        | -       | Message ID (used for generating part keys)                                                 |
+| `actions`                 | `Array<Action>`                                | -        | -       | Array of action buttons (copy, edit, like, etc.)                                           |
+| `timestamp`               | `string`                                       | -        | -       | Timestamp string                                                                           |
+| `messageRendererRegistry` | `MessageRendererRegistry`                      | -        | -       | Custom message renderer registry (merged with default registry)                            |
+| `transformOptions`        | `OptionsType`                                  | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
+| `showActionsOnHover`      | `boolean`                                      | -        | -       | Show action buttons on hover                                                               |
+| `showTimestamp`           | `boolean`                                      | -        | -       | Show timestamp in actions area                                                             |
+| `className`               | `string`                                       | -        | -       | Additional CSS class                                                                       |
+| `qa`                      | `string`                                       | -        | -       | QA/test identifier                                                                         |
 
 ### Action Type
 
@@ -140,18 +140,18 @@ You can register custom message part renderers. Custom registries are merged wit
 import {
   createMessageRendererRegistry,
   registerMessageRenderer,
-  type MessagePartComponentProps,
+  type MessageContentComponentProps,
 } from '@/utils/messageTypeRegistry';
-import type {TMessagePart} from '@/types/messages';
+import type {TMessageContent} from '@/types/messages';
 
 interface CustomData {
   title: string;
   description: string;
 }
 
-type CustomMessagePart = TMessagePart<'custom', CustomData>;
+type CustomMessageContent = TMessageContent<'custom', CustomData>;
 
-const CustomRenderer: React.FC<MessagePartComponentProps<CustomMessagePart>> = ({part}) => {
+const CustomRenderer: React.FC<MessageContentComponentProps<CustomMessageContent>> = ({part}) => {
   return (
     <div>
       <h3>{part.data.title}</h3>
@@ -161,11 +161,11 @@ const CustomRenderer: React.FC<MessagePartComponentProps<CustomMessagePart>> = (
 };
 
 const registry = createMessageRendererRegistry();
-registerMessageRenderer<CustomMessagePart>(registry, 'custom', {
+registerMessageRenderer<CustomMessageContent>(registry, 'custom', {
   component: CustomRenderer,
 });
 
-<AssistantMessage<CustomMessagePart>
+<AssistantMessage<CustomMessageContent>
   content={{
     type: 'custom',
     data: {

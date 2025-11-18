@@ -15,9 +15,9 @@ Component for displaying a list of messages. Supports custom message renderers t
 
 ```tsx
 import {MessageList} from '@/components/organisms';
-import type {TMessage} from '@/types/messages';
+import type {TChatMessage} from '@/types/messages';
 
-const messages: TMessage[] = [
+const messages: TChatMessage[] = [
   {
     id: '1',
     role: 'user',
@@ -43,11 +43,11 @@ import {
   createMessageRendererRegistry,
   registerMessageRenderer,
   type MessageRendererRegistry,
-  type MessagePartComponentProps,
+  type MessageContentComponentProps,
 } from '@/utils/messageTypeRegistry';
-import type {TAssistantMessage, TMessageMetadata, TMessagePart} from '@/types/messages';
+import type {TAssistantMessage, TMessageMetadata, TMessageContent} from '@/types/messages';
 
-interface ChartMessagePartData {
+interface ChartMessageContentData {
   chartData: {
     labels: string[];
     datasets: Array<{
@@ -59,9 +59,9 @@ interface ChartMessagePartData {
   chartType: 'line' | 'bar' | 'pie';
 }
 
-type ChartMessagePart = TMessagePart<'chart', ChartMessagePartData>;
+type ChartMessageContent = TMessageContent<'chart', ChartMessageContentData>;
 
-const ChartMessageView: React.FC<MessagePartComponentProps<ChartMessagePart>> = ({part}) => {
+const ChartMessageView: React.FC<MessageContentComponentProps<ChartMessageContent>> = ({part}) => {
   const {chartData, chartType} = part.data;
   return (
     <div className="chart-message">
@@ -71,11 +71,11 @@ const ChartMessageView: React.FC<MessagePartComponentProps<ChartMessagePart>> = 
 };
 
 const customMessageRenderers: MessageRendererRegistry = createMessageRendererRegistry();
-registerMessageRenderer<ChartMessagePart>(customMessageRenderers, 'chart', {
+registerMessageRenderer<ChartMessageContent>(customMessageRenderers, 'chart', {
   component: ChartMessageView,
 });
 
-const chartMessage: TAssistantMessage<TMessageMetadata, ChartMessagePart> = {
+const chartMessage: TAssistantMessage<ChartMessageContent, TMessageMetadata> = {
   id: 'msg-chart-1',
   role: 'assistant',
   timestamp: '2024-01-01T00:00:00Z',
@@ -98,7 +98,7 @@ const chartMessage: TAssistantMessage<TMessageMetadata, ChartMessagePart> = {
   },
 };
 
-<MessageList<ChartMessagePart>
+<MessageList<ChartMessageContent>
   messages={[chartMessage]}
   messageRendererRegistry={customMessageRenderers}
 />;
@@ -108,7 +108,7 @@ const chartMessage: TAssistantMessage<TMessageMetadata, ChartMessagePart> = {
 
 | Prop                      | Type                                                             | Required | Default | Description                                                                                |
 | ------------------------- | ---------------------------------------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
-| `messages`                | [TMessage[]](../../../types/messages.ts)                         | ✓        | -       | Array of messages to render                                                                |
+| `messages`                | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -       | Array of messages to render                                                                |
 | `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -       | Custom message renderer registry                                                           |
 | `transformOptions`        | `OptionsType`                                                    | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
 | `showActionsOnHover`      | `boolean`                                                        | -        | -       | Show message actions on hover                                                              |

@@ -6,9 +6,9 @@ import {MessageList, type MessageListProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import type {TAssistantMessage, TMessagePart, TUserMessage} from '../../../../types/messages';
+import type {TAssistantMessage, TMessageContent, TUserMessage} from '../../../../types/messages';
 import {
-    type MessagePartComponentProps,
+    type MessageContentComponentProps,
     type MessageRendererRegistry,
     createMessageRendererRegistry,
     registerMessageRenderer,
@@ -180,9 +180,9 @@ interface ChartMessageData {
     chartType: 'line' | 'bar' | 'pie';
 }
 
-type ChartMessagePart = TMessagePart<'chart', ChartMessageData>;
+type ChartMessageContent = TMessageContent<'chart', ChartMessageData>;
 
-const ChartMessageView: React.FC<MessagePartComponentProps<ChartMessagePart>> = ({part}) => {
+const ChartMessageView: React.FC<MessageContentComponentProps<ChartMessageContent>> = ({part}) => {
     const {chartData, chartType} = part.data;
     return (
         <div
@@ -204,17 +204,17 @@ const ChartMessageView: React.FC<MessagePartComponentProps<ChartMessagePart>> = 
     );
 };
 
-export const WithCustomMessageType: StoryObj<MessageListProps<ChartMessagePart>> = {
+export const WithCustomMessageType: StoryObj<MessageListProps<ChartMessageContent>> = {
     render: (args) => {
         const customRegistry: MessageRendererRegistry = createMessageRendererRegistry();
-        registerMessageRenderer<ChartMessagePart>(customRegistry, 'chart', {
+        registerMessageRenderer<ChartMessageContent>(customRegistry, 'chart', {
             component: ChartMessageView,
         });
 
         return (
             <ShowcaseItem title="With Custom Message Type">
                 <ContentWrapper width="480px">
-                    <MessageList<ChartMessagePart>
+                    <MessageList<ChartMessageContent>
                         {...args}
                         messages={[
                             {

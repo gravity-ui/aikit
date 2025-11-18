@@ -1,6 +1,10 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import type {TextMessagePart, ThinkingMessagePart, ToolMessagePart} from '../../../types/messages';
+import type {
+    TextMessageContent,
+    ThinkingMessageContent,
+    ToolMessageContent,
+} from '../../../types/messages';
 import {
     type MessageRendererRegistry,
     createMessageRendererRegistry,
@@ -15,17 +19,17 @@ export function createDefaultMessageRegistry(
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
-    registerMessageRenderer<TextMessagePart>(registry, 'text', {
+    registerMessageRenderer<TextMessageContent>(registry, 'text', {
         component: ({part}) => (
             <MarkdownRenderer content={part.data.text} transformOptions={transformOptions} />
         ),
     });
 
-    registerMessageRenderer<ToolMessagePart>(registry, 'tool', {
+    registerMessageRenderer<ToolMessageContent>(registry, 'tool', {
         component: ({part}) => <ToolMessage {...part.data} />,
     });
 
-    registerMessageRenderer<ThinkingMessagePart>(registry, 'thinking', {
+    registerMessageRenderer<ThinkingMessageContent>(registry, 'thinking', {
         component: ({part}) => <ThinkingMessage data={part.data} />,
     });
 

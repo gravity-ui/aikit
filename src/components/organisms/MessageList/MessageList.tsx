@@ -1,7 +1,7 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {ChatStatus} from '../../../types';
-import type {TMessage, TMessageMetadata, TMessagePart} from '../../../types/messages';
+import type {TChatMessage, TMessageContent, TMessageMetadata} from '../../../types/messages';
 import {isAssistantMessage, isUserMessage} from '../../../utils';
 import {block} from '../../../utils/cn';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
@@ -16,8 +16,8 @@ import './MessageList.scss';
 
 const b = block('message-list');
 
-export type MessageListProps<TPart extends TMessagePart = never> = {
-    messages: TMessage<TPart, TMessageMetadata>[];
+export type MessageListProps<TContent extends TMessageContent = never> = {
+    messages: TChatMessage<TContent, TMessageMetadata>[];
     status?: ChatStatus;
     errorMessage?: AlertProps;
     onRetry?: () => void;
@@ -30,7 +30,7 @@ export type MessageListProps<TPart extends TMessagePart = never> = {
     qa?: string;
 };
 
-export function MessageList<TPart extends TMessagePart = never>({
+export function MessageList<TContent extends TMessageContent = never>({
     messages,
     messageRendererRegistry,
     transformOptions,
@@ -42,9 +42,9 @@ export function MessageList<TPart extends TMessagePart = never>({
     status,
     errorMessage,
     onRetry,
-}: MessageListProps<TPart>) {
-    const renderMessage = (message: TMessage<TPart, TMessageMetadata>, index: number) => {
-        if (isUserMessage<TMessageMetadata, TPart>(message)) {
+}: MessageListProps<TContent>) {
+    const renderMessage = (message: TChatMessage<TContent, TMessageMetadata>, index: number) => {
+        if (isUserMessage<TMessageMetadata, TContent>(message)) {
             return (
                 <UserMessage
                     key={message.id || `message-${index}`}
@@ -61,9 +61,9 @@ export function MessageList<TPart extends TMessagePart = never>({
             );
         }
 
-        if (isAssistantMessage<TMessageMetadata, TPart>(message)) {
+        if (isAssistantMessage<TMessageMetadata, TContent>(message)) {
             return (
-                <AssistantMessage<TPart>
+                <AssistantMessage<TContent>
                     key={message.id || `message-${index}`}
                     content={message.content}
                     actions={message.actions}
