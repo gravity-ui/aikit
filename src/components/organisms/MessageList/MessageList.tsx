@@ -1,5 +1,6 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import {useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
 import type {TChatMessage, TMessageContent, TMessageMetadata} from '../../../types/messages';
 import {isAssistantMessage, isUserMessage} from '../../../utils';
@@ -43,6 +44,11 @@ export function MessageList<TContent extends TMessageContent = never>({
     errorMessage,
     onRetry,
 }: MessageListProps<TContent>) {
+    const isStreaming = status === 'streaming';
+    const messagesCount = messages.length;
+
+    const {containerRef, endRef} = useSmartScroll<HTMLDivElement>(isStreaming, messagesCount);
+
     const renderMessage = (message: TChatMessage<TContent, TMessageMetadata>, index: number) => {
         if (isUserMessage<TMessageMetadata, TContent>(message)) {
             return (
@@ -81,12 +87,13 @@ export function MessageList<TContent extends TMessageContent = never>({
     };
 
     return (
-        <div className={b(null, className)} data-qa={qa}>
+        <div ref={containerRef} className={b(null, className)} data-qa={qa}>
             <div className={b('messages', className)} data-qa={qa}>
                 {messages.map(renderMessage)}
             </div>
             {status === 'submitted' && <Loader />}
             {status === 'error' && <ErrorAlert onRetry={onRetry} errorMessage={errorMessage} />}
+            <div ref={endRef} />
         </div>
     );
 }
