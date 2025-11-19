@@ -47,6 +47,6 @@ jobs:
       - name: Install Playwright Browsers
         run: npm run playwright:install
       - name: Unit Tests
-        run: npm run test
+        run: npm run test:unit
       - name: Integration Tests
         run: npm run playwright
