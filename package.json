@@ -1,12 +1,22 @@
 {
   "name": "@gravity-ui/aikit",
   "version": "0.1.0",
-  "description": "",
+  "description": "Gravity UI base kit for building ai assistant chats",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
+  ],
+  "engines": {
+    "node": ">= 20",
+    "npm": ">= 9",
+    "yarn": "Please use npm instead of yarn to install dependencies",
+    "pnpm": "Please use npm instead of pnpm to install dependencies"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.scss"
   ],
   "repository": {
     "type": "git",
@@ -27,7 +37,7 @@
     "lint:styles:fix": "stylelint **/*.scss --fix",
     "lint:prettier": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "lint:prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
-    "test": "npm run test:unit && npm run playwright",
+    "test": "npm run test:unit && playwright:install && npm run playwright",
     "build": "tsc",
     "start": "TS_NODE_PROJECT=.storybook/tsconfig.json storybook dev",
     "prepublishOnly": "npm run build",
