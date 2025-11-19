@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.0](https://github.com/gravity-ui/aikit/compare/v0.0.1...v0.1.0) (2025-11-19)
+
+
+### Features
+
+* **MessageList:** add default actions for user and assistant messages ([da79272](https://github.com/gravity-ui/aikit/commit/da79272d2ac86de91a1f2c41ce18af957f97e1bf))
+* **MessageList:** conditionally render actions based on message status ([b55cc9e](https://github.com/gravity-ui/aikit/commit/b55cc9e719f8de4b2fc1891e9aa0bd405f637f74))
+* **MessageList:** implement smart scrolling ([a70c0a1](https://github.com/gravity-ui/aikit/commit/a70c0a137b330d83b30382e2db1ca1f3b3225ec5))
+* **MessageList:** minor style improvements ([1f9fb7e](https://github.com/gravity-ui/aikit/commit/1f9fb7e5370893ee294cd5e735f6711aa84b9d68))
+
 ## 0.0.1 (2025-11-19)
 
 
