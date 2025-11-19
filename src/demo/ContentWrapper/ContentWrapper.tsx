@@ -4,14 +4,12 @@ import './ContentWrapper.scss';
 
 const b = cn('content-wrapper');
 
-type Props = React.PropsWithChildren<{
-    width?: string;
-    height?: string;
-}>;
+type Props = React.PropsWithChildren<React.CSSProperties>;
 
-export function ContentWrapper({children, width, height}: Props) {
+export function ContentWrapper(props: Props) {
+    const {children, ...style} = props;
     return (
-        <div className={b()} style={{width, height}}>
+        <div className={b()} style={style}>
             {children}
         </div>
     );

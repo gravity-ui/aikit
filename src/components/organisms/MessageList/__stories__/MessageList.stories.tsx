@@ -321,7 +321,7 @@ export const WithStreamingMessage: StoryObj<MessageListProps> = {
 
         return (
             <ShowcaseItem title="With Streaming Message">
-                <ContentWrapper width="480px" height="200px">
+                <ContentWrapper width="480px" height="200px" display="flex">
                     <MessageList
                         {...args}
                         messages={messages}

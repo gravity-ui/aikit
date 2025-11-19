@@ -11,9 +11,10 @@ const b = block('message-list');
 export type ErrorAlertProps = {
     onRetry?: () => void;
     errorMessage?: AlertProps;
+    className?: string;
 };
 
-export function ErrorAlert({onRetry, errorMessage}: ErrorAlertProps) {
+export function ErrorAlert({onRetry, errorMessage, className}: ErrorAlertProps) {
     return (
         <Alert
             text={i18n('default-error-text')}
@@ -31,6 +32,7 @@ export function ErrorAlert({onRetry, errorMessage}: ErrorAlertProps) {
                       }
                     : undefined
             }
+            className={className}
             {...errorMessage}
         />
     );
