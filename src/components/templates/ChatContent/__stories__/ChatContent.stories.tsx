@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 import {CircleInfo} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
@@ -8,7 +8,6 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 import {ChatContent} from '..';
 import {BaseMessageAction} from '../../../../components/molecules/BaseMessage';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import {ChatStatus} from '../../../../types';
 import {TChatMessage} from '../../../../types/messages';
 
 import MDXDocs from './Docs.mdx';
@@ -67,6 +66,7 @@ const sampleMessages: TChatMessage[] = [
         role: 'user',
         content: 'Hello! Can you help me with React?',
         timestamp: '2024-01-01T12:00:00Z',
+        status: 'complete',
         actions: sampleActions,
     },
     {
@@ -74,6 +74,7 @@ const sampleMessages: TChatMessage[] = [
         role: 'assistant',
         content: 'Of course! I would be happy to help you with React. What would you like to know?',
         timestamp: '2024-01-01T12:00:05Z',
+        status: 'complete',
         actions: sampleActions,
     },
     {
@@ -81,6 +82,7 @@ const sampleMessages: TChatMessage[] = [
         role: 'user',
         content: 'How do I use hooks?',
         timestamp: '2024-01-01T12:01:00Z',
+        status: 'complete',
         actions: sampleActions,
     },
     {
@@ -89,6 +91,7 @@ const sampleMessages: TChatMessage[] = [
         content:
             'React Hooks are functions that let you use state and other React features without writing a class. The most commonly used hooks are:\n\n1. **useState** - for managing component state\n2. **useEffect** - for side effects\n3. **useContext** - for consuming context\n\nWould you like examples of how to use any of these?',
         timestamp: '2024-01-01T12:01:10Z',
+        status: 'complete',
         actions: sampleActions,
     },
 ];
@@ -206,6 +209,7 @@ export const WithManyMessages: Story = {
                     role: 'user',
                     content: 'Can you show me an example?',
                     timestamp: '2024-01-01T12:02:00Z',
+                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -230,6 +234,7 @@ function Counter() {
 
 This component maintains a count state and updates it when the button is clicked.`,
                     timestamp: '2024-01-01T12:02:05Z',
+                    status: 'complete',
                     actions: sampleActions,
                 },
             ],
@@ -251,6 +256,7 @@ export const Interactive: Story = {
                 role: 'user',
                 content,
                 timestamp: new Date().toISOString(),
+                status: 'complete',
             };
             setMessages([userMessage]);
             setView('chat');
@@ -262,6 +268,7 @@ export const Interactive: Story = {
                     role: 'assistant',
                     content: `I received your message: "${content}". How can I help you further?`,
                     timestamp: new Date().toISOString(),
+                    status: 'complete',
                 };
                 setMessages((prev) => [...prev, assistantMessage]);
             }, 1000);
@@ -298,6 +305,7 @@ export const LongConversation: Story = {
                     role: 'user',
                     content: 'Can you show me an example?',
                     timestamp: '2024-01-01T12:02:00Z',
+                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -322,6 +330,7 @@ function Counter() {
 
 This component maintains a count state and updates it when the button is clicked.`,
                     timestamp: '2024-01-01T12:02:05Z',
+                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -329,6 +338,7 @@ This component maintains a count state and updates it when the button is clicked
                     role: 'user',
                     content: 'What about useEffect?',
                     timestamp: '2024-01-01T12:03:00Z',
+                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -352,142 +362,13 @@ function DataFetcher() {
 }
 \`\`\``,
                     timestamp: '2024-01-01T12:03:10Z',
+                    status: 'complete',
                     actions: sampleActions,
                 },
             ],
             showTimestamp: true,
             showActionsOnHover: true,
         },
-        promptInputProps: {
-            onSend: async (data) => {
-                console.log('Sending message:', data.content);
-            },
-        },
-        disclaimerProps: {
-            text: 'AI-generated, for reference only',
-        },
-    },
-    decorators: defaultDecorators,
-};
-
-const streamingResponseText =
-    'React Hooks are functions that let you use state and other React features without writing a class. ' +
-    'The most commonly used hooks are:\n\n' +
-    '1. **useState** - for managing component state\n' +
-    '2. **useEffect** - for side effects like data fetching or subscriptions\n' +
-    '3. **useContext** - for consuming context values\n' +
-    '4. **useCallback** - for memoizing functions\n' +
-    '5. **useMemo** - for memoizing computed values\n\n' +
-    'Each hook serves a specific purpose and helps you write cleaner, more maintainable React code. ' +
-    'Would you like examples of how to use any of these hooks?';
-
-export const WithStreamingFlow: Story = {
-    render: () => {
-        const [messages, setMessages] = useState<TChatMessage[]>([
-            {
-                id: '1',
-                role: 'user',
-                content: 'Hello! Can you help me with React?',
-                timestamp: '2024-01-01T12:00:00Z',
-            },
-            {
-                id: '2',
-                role: 'assistant',
-                content:
-                    'Of course! I would be happy to help you with React. What would you like to know?',
-                timestamp: '2024-01-01T12:00:05Z',
-            },
-        ]);
-        const [status, setStatus] = useState<ChatStatus>('ready');
-        const [streamedText, setStreamedText] = useState('');
-        const [isStreaming, setIsStreaming] = useState(false);
-
-        const handleSend = async (data: {content: string}) => {
-            const userMessage: TChatMessage = {
-                id: `user-${Date.now()}`,
-                role: 'user',
-                content: data.content,
-                timestamp: new Date().toISOString(),
-            };
-
-            setMessages((prev) => [...prev, userMessage]);
-            setStatus('submitted');
-            setStreamedText('');
-            setIsStreaming(false);
-
-            setTimeout(() => {
-                setStatus('streaming');
-                setIsStreaming(true);
-            }, 1000);
-        };
-
-        useEffect(() => {
-            if (!isStreaming) {
-                return undefined;
-            }
-
-            let currentIndex = 0;
-            const interval = setInterval(() => {
-                if (currentIndex < streamingResponseText.length) {
-                    const nextChunk = streamingResponseText.slice(0, currentIndex + 1);
-                    setStreamedText(nextChunk);
-                    currentIndex += Math.floor(Math.random() * 4) + 3;
-                } else {
-                    setIsStreaming(false);
-                    setStatus('ready');
-                    clearInterval(interval);
-                }
-            }, 20);
-
-            return () => {
-                clearInterval(interval);
-            };
-        }, [isStreaming]);
-
-        useEffect(() => {
-            if (!isStreaming) {
-                return;
-            }
-
-            setMessages((prev) => {
-                const lastMessage = prev[prev.length - 1];
-                if (
-                    lastMessage &&
-                    lastMessage.role === 'assistant' &&
-                    lastMessage.id?.startsWith('streaming-')
-                ) {
-                    return [
-                        ...prev.slice(0, -1),
-                        {
-                            ...lastMessage,
-                            content: streamedText || ' ',
-                        },
-                    ];
-                }
-                return [
-                    ...prev,
-                    {
-                        id: `streaming-${Date.now()}`,
-                        role: 'assistant',
-                        content: streamedText || ' ',
-                        timestamp: new Date().toISOString(),
-                    },
-                ];
-            });
-        }, [streamedText, isStreaming]);
-
-        return (
-            <ChatContent
-                view="chat"
-                messageListProps={{
-                    messages,
-                    status,
-                }}
-                promptInputProps={{
-                    onSend: handleSend,
-                }}
-            />
-        );
     },
     decorators: defaultDecorators,
 };

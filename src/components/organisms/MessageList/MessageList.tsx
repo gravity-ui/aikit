@@ -131,8 +131,14 @@ export function MessageList<TContent extends TMessageContent = never>({
             <div className={b('messages', className)} data-qa={qa}>
                 {messages.map(renderMessage)}
             </div>
-            {status === 'submitted' && <Loader />}
-            {status === 'error' && <ErrorAlert onRetry={onRetry} errorMessage={errorMessage} />}
+            {status === 'submitted' && <Loader className={b('loader')} />}
+            {status === 'error' && (
+                <ErrorAlert
+                    className={b('error-alert')}
+                    onRetry={onRetry}
+                    errorMessage={errorMessage}
+                />
+            )}
             <div ref={endRef} />
         </div>
     );

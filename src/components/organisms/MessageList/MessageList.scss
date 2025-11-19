@@ -6,8 +6,8 @@ $block: '.#{variables.$ns}message-list';
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--g-spacing-4);
     min-height: 0;
+    flex: 1;
     align-self: stretch;
     width: 100%;
 
@@ -21,5 +21,10 @@ $block: '.#{variables.$ns}message-list';
         display: flex;
         align-items: center;
         gap: var(--g-spacing-1);
+    }
+
+    &__loader,
+    &__error-alert {
+        margin-top: var(--g-spacing-4);
     }
 }
