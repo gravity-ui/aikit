@@ -4,6 +4,7 @@
     "declaration": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
+    "rootDir": "src",
     "outDir": "dist",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -14,5 +15,13 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.test.tsx"]
+  "exclude": [
+    "**/__tests__",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__stories__",
+    "**/*.stories.ts",
+    "**/*.stories.tsx",
+    "src/demo/**"
+  ]
 }

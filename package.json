@@ -3,8 +3,19 @@
   "version": "0.1.1",
   "description": "Gravity UI base kit for building ai assistant chats",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles": "./dist/styles/styles.scss",
+    "./themes/dark": "./dist/themes/dark.css",
+    "./themes/light": "./dist/themes/light.css",
+    "./themes/variables": "./dist/themes/variables.css",
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist"
   ],
@@ -38,7 +49,13 @@
     "lint:prettier": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "lint:prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "test": "npm run test:unit",
-    "build": "tsc",
+    "build": "npm run build:clean && npm run build:ts && npm run build:copy",
+    "build:clean": "rm -rf dist",
+    "build:ts": "tsc",
+    "build:copy": "npm run build:copy:styles && npm run build:copy:themes && npm run build:copy:i18n",
+    "build:copy:styles": "copyfiles -u 1 'src/**/*.scss' dist --exclude 'src/demo/**'",
+    "build:copy:themes": "copyfiles -u 1 'src/themes/**/*.css' dist",
+    "build:copy:i18n": "copyfiles -u 1 'src/**/i18n/*.json' dist",
     "start": "TS_NODE_PROJECT=.storybook/tsconfig.json storybook dev",
     "prepublishOnly": "npm run build",
     "test:unit": "jest --passWithNoTests",
@@ -74,6 +91,7 @@
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@types/uuid": "^11.0.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.57.0",
     "eslint-plugin-storybook": "^9.0.5",
     "husky": "^9.0.11",
