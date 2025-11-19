@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/gravity-ui/aikit/compare/v0.1.1...v0.1.2) (2025-11-19)
+
+
+### Bug Fixes
+
+* **build:** fix build package dependencies ([ea53950](https://github.com/gravity-ui/aikit/commit/ea53950296d8d2b525e8837f40e4f2a43a532c05))
+
 ## [0.1.1](https://github.com/gravity-ui/aikit/compare/v0.1.0...v0.1.1) (2025-11-19)
 
 
