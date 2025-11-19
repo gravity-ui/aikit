@@ -1,3 +1,5 @@
+import type {IconData} from '@gravity-ui/uikit';
+
 import type {
     TAssistantMessage,
     TChatMessage,
@@ -46,4 +48,30 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
     }
 
     return [content];
+}
+
+export type DefaultMessageAction<TMessage> = {
+    type: string;
+    onClick: (message: TMessage) => void;
+    icon?: IconData;
+};
+
+export function resolveMessageActions<
+    TMessage extends TChatMessage<TMessageContent, TMessageMetadata>,
+>(
+    message: TMessage,
+    defaultActions?: DefaultMessageAction<TMessage>[],
+): Array<{type: string; onClick: () => void; icon?: IconData}> | undefined {
+    if (message.actions) {
+        return message.actions;
+    }
+
+    if (defaultActions) {
+        return defaultActions.map((action) => ({
+            ...action,
+            onClick: () => action.onClick(message),
+        }));
+    }
+
+    return undefined;
 }
