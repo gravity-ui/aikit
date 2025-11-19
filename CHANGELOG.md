@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.1](https://github.com/gravity-ui/aikit/compare/v0.1.0...v0.1.1) (2025-11-19)
+
+
+### Bug Fixes
+
+* **scripts:** add playwright test to ci ([4fe82d7](https://github.com/gravity-ui/aikit/commit/4fe82d76b02dfc78ef366af585eed6172c9c57b9))
+* **scripts:** fix start playwright test on release ci ([1c5998b](https://github.com/gravity-ui/aikit/commit/1c5998b1e77ab40bbc2d3edf8eda0d8fb024c5e9))
+* **test:** fix test script ([24b1295](https://github.com/gravity-ui/aikit/commit/24b1295967d3dce4cdd2c2e7dabf1d806ad8d4fd))
+* **test:** fix test script ([30067df](https://github.com/gravity-ui/aikit/commit/30067df1136634791bd6b02ff2ad15bc76ffe862))
+
 ## [0.1.0](https://github.com/gravity-ui/aikit/compare/v0.0.1...v0.1.0) (2025-11-19)
 
 
