@@ -86,18 +86,31 @@ import {Suggestions} from '@/components/molecules/Suggestions';
     console.log('Clicked:', content, id);
   }}
 />
+
+// With text wrapping enabled
+<Suggestions
+  items={[
+    {id: '1', title: 'This is a very long suggestion text that will wrap to multiple lines'},
+    {id: '2', title: 'Another long text that demonstrates text wrapping behavior'},
+  ]}
+  wrapText={true}
+  onClick={(content, id) => {
+    console.log('Clicked:', content, id);
+  }}
+/>
 ```
 
 ## Props
 
-| Prop        | Type                                                      | Required | Default    | Description                                                    |
-| ----------- | --------------------------------------------------------- | -------- | ---------- | -------------------------------------------------------------- |
-| `items`     | `SuggestionsItem[]`                                       | Yes      | -          | Array of suggestion items to display                           |
-| `onClick`   | `(content: string, id?: string) => void \| Promise<void>` | Yes      | -          | Callback function called when a suggestion is clicked          |
-| `layout`    | `'grid' \| 'list'`                                        | No       | `'list'`   | Layout orientation: 'grid' for horizontal, 'list' for vertical |
-| `textAlign` | `'left' \| 'center' \| 'right'`                           | No       | `'center'` | Text alignment inside buttons                                  |
-| `className` | `string`                                                  | No       | -          | Additional CSS class                                           |
-| `qa`        | `string`                                                  | No       | -          | QA/test identifier                                             |
+| Prop        | Type                                                      | Required | Default  | Description                                                    |
+| ----------- | --------------------------------------------------------- | -------- | -------- | -------------------------------------------------------------- |
+| `items`     | `SuggestionsItem[]`                                       | Yes      | -        | Array of suggestion items to display                           |
+| `onClick`   | `(content: string, id?: string) => void \| Promise<void>` | Yes      | -        | Callback function called when a suggestion is clicked          |
+| `layout`    | `'grid' \| 'list'`                                        | No       | `'list'` | Layout orientation: 'grid' for horizontal, 'list' for vertical |
+| `textAlign` | `'left' \| 'center' \| 'right'`                           | No       | `'left'` | Text alignment inside buttons                                  |
+| `wrapText`  | `boolean`                                                 | No       | `false`  | Enable text wrapping inside buttons instead of ellipsis        |
+| `className` | `string`                                                  | No       | -        | Additional CSS class                                           |
+| `qa`        | `string`                                                  | No       | -        | QA/test identifier                                             |
 
 ### SuggestionsItem
 

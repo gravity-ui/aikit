@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {ThinkingMessage, type ThinkingMessageProps} from '..';

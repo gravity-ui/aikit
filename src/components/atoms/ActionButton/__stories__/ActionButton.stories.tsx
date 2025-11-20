@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {Copy, Pencil} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 import type {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';

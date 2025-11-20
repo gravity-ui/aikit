@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {ContextIndicator, type ContextIndicatorProps} from '..';

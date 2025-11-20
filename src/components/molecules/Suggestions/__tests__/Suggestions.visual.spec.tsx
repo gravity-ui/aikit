@@ -17,6 +17,15 @@ test.describe('Suggestions', {tag: '@Suggestions'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with wrap text list layout with container', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<SuggestionsStories.WrapTextListLayoutWithContainer />);
+
+        await expectScreenshot();
+    });
+
     test('should render with grid layout', async ({mount, expectScreenshot}) => {
         await mount(<SuggestionsStories.GridLayout />);
 

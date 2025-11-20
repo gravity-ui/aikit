@@ -31,6 +31,8 @@ export type SuggestionsProps = {
     layout?: 'grid' | 'list';
     /** Text alignment inside buttons: 'left', 'center', or 'right' */
     textAlign?: 'left' | 'center' | 'right';
+    /** Enable text wrapping inside buttons instead of ellipsis */
+    wrapText?: boolean;
     /** Additional CSS class */
     className?: string;
     /** QA/test identifier */
@@ -45,7 +47,15 @@ export type SuggestionsProps = {
  * @returns React component
  */
 export function Suggestions(props: SuggestionsProps) {
-    const {items, onClick, layout = 'list', textAlign = 'left', className, qa} = props;
+    const {
+        items,
+        onClick,
+        layout = 'list',
+        textAlign = 'left',
+        wrapText = false,
+        className,
+        qa,
+    } = props;
 
     const handleClick = (item: {id?: string; title: string}) => {
         onClick(item.title, item.id);
@@ -73,7 +83,7 @@ export function Suggestions(props: SuggestionsProps) {
                             <Icon data={ChevronLeft} size={16} />
                         </div>
                     )}
-                    <Text as="div" className={b('button-text')}>
+                    <Text as="div" className={b(wrapText ? 'button-text-wrap' : 'button-text')}>
                         {item.title}
                     </Text>
                     {item.icon === 'right' && (

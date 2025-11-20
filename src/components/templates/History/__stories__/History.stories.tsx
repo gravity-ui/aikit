@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 
 import {ClockArrowRotateLeft} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';

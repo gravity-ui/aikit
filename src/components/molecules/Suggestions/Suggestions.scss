@@ -62,6 +62,13 @@ $block: '.#{variables.$ns}suggestions';
         min-width: 0;
     }
 
+    &__button-text-wrap {
+        word-break: break-word;
+        white-space: normal;
+        min-width: 0;
+        text-align: left;
+    }
+
     &__button-icon {
         width: 16px;
         height: 16px;
