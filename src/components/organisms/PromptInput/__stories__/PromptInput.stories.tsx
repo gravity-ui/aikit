@@ -103,6 +103,28 @@ export const WithSuggestions: Story = {
     decorators: defaultDecorators,
 };
 
+export const WithSuggestionsAndTitle: Story = {
+    args: {
+        view: 'simple',
+        onSend: handleSend,
+        bodyProps: {
+            placeholder: 'Plan, code, build and test anything',
+        },
+        suggestionsProps: {
+            showSuggestions: true,
+            suggestTitle: 'Try these prompts:',
+            suggestions: [
+                {title: 'Write a Python function', view: 'action'},
+                {title: 'Explain this code'},
+                {title: 'Debug my code'},
+            ],
+            // eslint-disable-next-line no-console
+            onSuggestionClick: (suggestion) => console.log('Suggestion clicked:', suggestion),
+        },
+    },
+    decorators: defaultDecorators,
+};
+
 export const WithContextIndicator: Story = {
     args: {
         view: 'full',

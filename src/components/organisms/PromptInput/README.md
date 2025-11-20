@@ -102,6 +102,7 @@ import {PromptInput} from '@gravity-ui/aikit';
   onSend={handleSend}
   suggestionsProps={{
     showSuggestions: true,
+    suggestTitle: 'Try these prompts:',
     suggestions: [
       {title: 'Write a function', view: 'action'},
       {title: 'Explain this code'},
@@ -167,13 +168,14 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ### PromptInputSuggestionsConfig
 
-| Prop                   | Type                                     | Required | Default    | Description                      |
-| ---------------------- | ---------------------------------------- | -------- | ---------- | -------------------------------- |
-| `suggestions`          | `SuggestionsItem[]`                      | -        | -          | Submit suggestions array         |
-| `showSuggestions`      | `boolean`                                | -        | `false`    | Show submit suggestions          |
-| `suggestionsLayout`    | `'grid' \| 'list'`                       | -        | -          | Layout orientation               |
-| `suggestionsTextAlign` | `'left' \| 'center' \| 'right'`          | -        | `'center'` | Text alignment                   |
-| `onSuggestionClick`    | `(content: string, id?: string) => void` | -        | -          | Callback when suggestion clicked |
+| Prop                   | Type                                     | Required | Default    | Description                       |
+| ---------------------- | ---------------------------------------- | -------- | ---------- | --------------------------------- |
+| `suggestions`          | `SuggestionsItem[]`                      | -        | -          | Submit suggestions array          |
+| `showSuggestions`      | `boolean`                                | -        | `false`    | Show submit suggestions           |
+| `suggestTitle`         | `string`                                 | -        | -          | Title for the suggestions section |
+| `suggestionsLayout`    | `'grid' \| 'list'`                       | -        | -          | Layout orientation                |
+| `suggestionsTextAlign` | `'left' \| 'center' \| 'right'`          | -        | `'center'` | Text alignment                    |
+| `onSuggestionClick`    | `(content: string, id?: string) => void` | -        | -          | Callback when suggestion clicked  |
 
 ## Expandable Panels
 

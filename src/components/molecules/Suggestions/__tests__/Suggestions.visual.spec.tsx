@@ -100,4 +100,16 @@ test.describe('Suggestions', {tag: '@Suggestions'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with title', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithTitle />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with title and grid layout', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithTitleAndGridLayout />);
+
+        await expectScreenshot();
+    });
 });

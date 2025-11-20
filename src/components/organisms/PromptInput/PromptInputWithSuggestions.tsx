@@ -33,6 +33,7 @@ export function PromptInputWithSuggestions(props: PromptInputWithSuggestionsProp
     const {
         showSuggestions = false,
         suggestions,
+        suggestTitle,
         onSuggestionClick,
         suggestionsLayout,
         suggestionsTextAlign = 'center',
@@ -47,6 +48,7 @@ export function PromptInputWithSuggestions(props: PromptInputWithSuggestionsProp
                     <Suggestions
                         items={suggestions}
                         onClick={onSuggestionClick || (() => {})}
+                        title={suggestTitle}
                         layout={suggestionsLayout}
                         textAlign={suggestionsTextAlign}
                     />

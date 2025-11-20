@@ -23,6 +23,12 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with suggestions and title', async ({mount, expectScreenshot}) => {
+        await mount(<PromptInputStories.WithSuggestionsAndTitle />);
+
+        await expectScreenshot();
+    });
+
     test('should render with context indicator', async ({mount, expectScreenshot}) => {
         await mount(<PromptInputStories.WithContextIndicator />);
 

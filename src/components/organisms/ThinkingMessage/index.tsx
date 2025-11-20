@@ -62,8 +62,8 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
             </div>
             {isExpanded && (
                 <div className={b('container')}>
-                    {content.map((item) => (
-                        <Text className={b('content')} key={item}>
+                    {content.map((item, index) => (
+                        <Text className={b('content')} key={index}>
                             {item}
                         </Text>
                     ))}

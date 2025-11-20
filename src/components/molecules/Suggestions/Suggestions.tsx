@@ -27,6 +27,8 @@ export type SuggestionsProps = {
     items: SuggestionsItem[];
     /** Callback function called when a suggestion is clicked */
     onClick: (content: string, id?: string) => void | Promise<void>;
+    /** Title to display above suggestions */
+    title?: string;
     /** Layout orientation: 'grid' for horizontal, 'list' for vertical */
     layout?: 'grid' | 'list';
     /** Text alignment inside buttons: 'left', 'center', or 'right' */
@@ -50,6 +52,7 @@ export function Suggestions(props: SuggestionsProps) {
     const {
         items,
         onClick,
+        title,
         layout = 'list',
         textAlign = 'left',
         wrapText = false,
@@ -97,8 +100,17 @@ export function Suggestions(props: SuggestionsProps) {
     };
 
     return (
-        <div className={b({layout}, className)} data-qa={qa}>
-            {items.map((item, index) => renderButton(item, index))}
+        <div className={b('container', className)} data-qa={qa}>
+            {title && (
+                <div className={b('title')}>
+                    <Text variant="body-1" color="primary">
+                        {title}
+                    </Text>
+                </div>
+            )}
+            <div className={b({layout})}>
+                {items.map((item, index) => renderButton(item, index))}
+            </div>
         </div>
     );
 }

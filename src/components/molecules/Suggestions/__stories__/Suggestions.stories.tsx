@@ -24,6 +24,10 @@ export default {
             action: 'clicked',
             description: 'Callback function called when a suggestion is clicked',
         },
+        title: {
+            control: 'text',
+            description: 'Title to display above suggestions',
+        },
         layout: {
             control: 'select',
             options: ['grid', 'list'],
@@ -310,6 +314,43 @@ export const WithIconsInGridLayout: StoryFn<SuggestionsProps> = (args) => (
                 {id: '2', title: 'Home'},
                 {id: '3', title: 'Settings'},
                 {id: '4', title: 'Forward', icon: 'right'},
+            ]}
+            layout="grid"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithTitle: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            title="Try asking about:"
+            items={[
+                {id: '1', title: 'What is AI?'},
+                {id: '2', title: 'How does machine learning work?'},
+                {id: '3', title: 'What are neural networks?'},
+            ]}
+            layout="list"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithTitleAndGridLayout: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            title="Popular topics"
+            items={[
+                {id: '1', title: 'Getting started'},
+                {id: '2', title: 'Documentation'},
+                {id: '3', title: 'API Reference'},
+                {id: '4', title: 'Examples'},
             ]}
             layout="grid"
             onClick={() => {

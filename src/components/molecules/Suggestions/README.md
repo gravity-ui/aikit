@@ -6,6 +6,7 @@ A Suggestions component displays a group of clickable suggestion buttons arrange
 
 - **Flexible layout**: Display suggestions in grid (horizontal) or list (vertical) layout
 - **Item support**: Each suggestion can have an optional ID and required title
+- **Optional title**: Display a section title above suggestions
 - **Click handling**: Callback function receives both content and optional ID
 - **Text alignment**: Control text alignment inside buttons (left, center, right)
 - **Icon support**: Add ChevronLeft or ChevronRight icons to suggestion buttons
@@ -98,6 +99,18 @@ import {Suggestions} from '@/components/molecules/Suggestions';
     console.log('Clicked:', content, id);
   }}
 />
+
+// With section title
+<Suggestions
+  title="Try asking about:"
+  items={[
+    {id: '1', title: 'What is AI?'},
+    {id: '2', title: 'How does machine learning work?'},
+  ]}
+  onClick={(content, id) => {
+    console.log('Clicked:', content, id);
+  }}
+/>
 ```
 
 ## Props
@@ -106,6 +119,7 @@ import {Suggestions} from '@/components/molecules/Suggestions';
 | ----------- | --------------------------------------------------------- | -------- | -------- | -------------------------------------------------------------- |
 | `items`     | `SuggestionsItem[]`                                       | Yes      | -        | Array of suggestion items to display                           |
 | `onClick`   | `(content: string, id?: string) => void \| Promise<void>` | Yes      | -        | Callback function called when a suggestion is clicked          |
+| `title`     | `string`                                                  | No       | -        | Title to display above suggestions                             |
 | `layout`    | `'grid' \| 'list'`                                        | No       | `'list'` | Layout orientation: 'grid' for horizontal, 'list' for vertical |
 | `textAlign` | `'left' \| 'center' \| 'right'`                           | No       | `'left'` | Text alignment inside buttons                                  |
 | `wrapText`  | `boolean`                                                 | No       | `false`  | Enable text wrapping inside buttons instead of ellipsis        |
@@ -128,7 +142,7 @@ The component uses CSS variables for theming and integrates with ButtonGroup for
 ### CSS Variables
 
 ```css
---g-spacing-2 /* Gap size between suggestion buttons */
+--g-spacing-2 /* Gap size between suggestion buttons and title spacing */
 --g-border-radius-l /* Border radius for buttons on hover */
 --g-aikit-suggestions-box-shadow /* Box shadow for buttons on hover */
 ```
