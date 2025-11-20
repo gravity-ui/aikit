@@ -4,6 +4,16 @@
 $block: '.#{variables.$ns}suggestions';
 
 #{$block} {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--g-spacing-2);
+    }
+
+    &__title {
+        padding-bottom: 0;
+    }
+
     display: flex;
     align-items: flex-start;
     align-content: flex-start;
@@ -60,6 +70,13 @@ $block: '.#{variables.$ns}suggestions';
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 0;
+    }
+
+    &__button-text-wrap {
+        word-break: break-word;
+        white-space: normal;
+        min-width: 0;
+        text-align: left;
     }
 
     &__button-icon {

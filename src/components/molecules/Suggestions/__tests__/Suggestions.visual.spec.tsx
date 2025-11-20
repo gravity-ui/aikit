@@ -17,6 +17,15 @@ test.describe('Suggestions', {tag: '@Suggestions'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with wrap text list layout with container', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<SuggestionsStories.WrapTextListLayoutWithContainer />);
+
+        await expectScreenshot();
+    });
+
     test('should render with grid layout', async ({mount, expectScreenshot}) => {
         await mount(<SuggestionsStories.GridLayout />);
 
@@ -88,6 +97,18 @@ test.describe('Suggestions', {tag: '@Suggestions'}, () => {
 
     test('should render with icons in grid layout', async ({mount, expectScreenshot}) => {
         await mount(<SuggestionsStories.WithIconsInGridLayout />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with title', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithTitle />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with title and grid layout', async ({mount, expectScreenshot}) => {
+        await mount(<SuggestionsStories.WithTitleAndGridLayout />);
 
         await expectScreenshot();
     });

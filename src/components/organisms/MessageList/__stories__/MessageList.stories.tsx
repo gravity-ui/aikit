@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {Pencil} from '@gravity-ui/icons';
 import {Icon, Text} from '@gravity-ui/uikit';

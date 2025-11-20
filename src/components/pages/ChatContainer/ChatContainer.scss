@@ -5,8 +5,8 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    background-color: var(--g-color-base-background);
     overflow: hidden;
+    background: var(--g-aikit-chat-container-background);
 
     &__header {
         display: flex;
@@ -15,6 +15,7 @@
         align-items: flex-start;
         gap: var(--g-spacing-2);
         align-self: stretch;
+        background: var(--g-aikit-chat-container-header-background);
     }
 
     &__content {
@@ -23,6 +24,7 @@
         flex-direction: column;
         align-items: flex-start;
         align-self: stretch;
+        background: var(--g-aikit-chat-container-content-background);
 
         padding: 0 var(--g-aikit-layout-base-padding-m) var(--g-spacing-4)
             var(--g-aikit-layout-base-padding-m);
@@ -37,5 +39,6 @@
         align-items: flex-start;
         gap: var(--g-spacing-1);
         align-self: stretch;
+        background: var(--g-aikit-chat-container-footer-background);
     }
 }

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {Suggestions, SuggestionsProps} from '..';
@@ -22,6 +24,10 @@ export default {
             action: 'clicked',
             description: 'Callback function called when a suggestion is clicked',
         },
+        title: {
+            control: 'text',
+            description: 'Title to display above suggestions',
+        },
         layout: {
             control: 'select',
             options: ['grid', 'list'],
@@ -31,6 +37,10 @@ export default {
             control: 'select',
             options: ['left', 'center', 'right'],
             description: 'Text alignment inside buttons',
+        },
+        wrapText: {
+            control: 'boolean',
+            description: 'Enable text wrapping inside buttons instead of ellipsis',
         },
         className: {
             control: 'text',
@@ -87,6 +97,33 @@ export const ListLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
                 {id: '3', title: 'Looooooong suggestion for testing'},
             ]}
             layout="list"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WrapTextListLayoutWithContainer: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper width="400px">
+        <Suggestions
+            {...args}
+            items={[
+                {
+                    id: '1',
+                    title: 'This is a long suggestion designed exactly to 256 characters. It demonstrates handling of lengthy text fields for the UI.',
+                },
+                {
+                    id: '2',
+                    title: 'This is a long suggestion text generated to be exactly 256 characters long for testing component behavior. It fills up space with enough repetition and verbosity to ensure that you can clearly see where truncation or overflow might appear.',
+                },
+                {
+                    id: '3',
+                    title: 'Another extra long suggestion exactly 256 characters in length. Used to test how well the UI handles longer entries and maintains design consistency.',
+                },
+            ]}
+            layout="list"
+            wrapText={true}
             onClick={() => {
                 // onClick handler
             }}
@@ -277,6 +314,43 @@ export const WithIconsInGridLayout: StoryFn<SuggestionsProps> = (args) => (
                 {id: '2', title: 'Home'},
                 {id: '3', title: 'Settings'},
                 {id: '4', title: 'Forward', icon: 'right'},
+            ]}
+            layout="grid"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithTitle: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            title="Try asking about:"
+            items={[
+                {id: '1', title: 'What is AI?'},
+                {id: '2', title: 'How does machine learning work?'},
+                {id: '3', title: 'What are neural networks?'},
+            ]}
+            layout="list"
+            onClick={() => {
+                // onClick handler
+            }}
+        />
+    </ContentWrapper>
+);
+
+export const WithTitleAndGridLayout: StoryFn<SuggestionsProps> = (args) => (
+    <ContentWrapper>
+        <Suggestions
+            {...args}
+            title="Popular topics"
+            items={[
+                {id: '1', title: 'Getting started'},
+                {id: '2', title: 'Documentation'},
+                {id: '3', title: 'API Reference'},
+                {id: '4', title: 'Examples'},
             ]}
             layout="grid"
             onClick={() => {

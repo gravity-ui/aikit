@@ -60,4 +60,10 @@
     --g-aikit-chat-content-background: var(--g-color-base-background);
     --g-aikit-chat-content-padding: 0 var(--g-aikit-layout-base-padding-m) var(--g-spacing-4)
         var(--g-aikit-layout-base-padding-m);
+
+    /* === Chat Container === */
+    --g-aikit-chat-container-header-background: var(--g-color-base-background);
+    --g-aikit-chat-container-content-background: var(--g-color-base-background);
+    --g-aikit-chat-container-footer-background: var(--g-color-base-background);
+    --g-aikit-chat-container-background: var(--g-color-base-background);
 }

@@ -69,6 +69,8 @@ export type PromptInputSuggestionsConfig = {
     suggestions?: SuggestionsItem[];
     /** Show submit suggestions */
     showSuggestions?: boolean;
+    /** Title for the suggestions section */
+    suggestTitle?: string;
     /** Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical */
     suggestionsLayout?: SuggestionsProps['layout'];
     /** Text alignment inside suggestion buttons */

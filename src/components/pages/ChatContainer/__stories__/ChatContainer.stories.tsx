@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {useState} from 'react';
+import React, {useState} from 'react';
 
 import {Sparkles} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
