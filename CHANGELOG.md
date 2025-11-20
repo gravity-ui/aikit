@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.0](https://github.com/gravity-ui/aikit/compare/v0.1.2...v0.2.0) (2025-11-20)
+
+
+### Features
+
+* **ChatContainer:** add background to css variables ([20a4e0b](https://github.com/gravity-ui/aikit/commit/20a4e0b5bd170d4d19bacdb104831569916e4dd2))
+* **suggestion:** add title to suggestion ([a37d365](https://github.com/gravity-ui/aikit/commit/a37d3650407925fda911b54239c6f2f1d5d57dc6))
+* **suggestion:** add wrap mode for text ([1f2f8c9](https://github.com/gravity-ui/aikit/commit/1f2f8c9d53eec9cbf21c58f61aee3ee19b17a6d6))
+
 ## [0.1.2](https://github.com/gravity-ui/aikit/compare/v0.1.1...v0.1.2) (2025-11-19)
 
 
