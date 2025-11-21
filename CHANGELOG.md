@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/gravity-ui/aikit/compare/v0.2.1...v0.2.2) (2025-11-21)
+
+
+### Bug Fixes
+
+* **styled:** fix class name ([7fc795c](https://github.com/gravity-ui/aikit/commit/7fc795c65b2960667eebbb4b71f7bbed788df0fc))
+
 ## [0.2.1](https://github.com/gravity-ui/aikit/compare/v0.2.0...v0.2.1) (2025-11-21)
 
 
