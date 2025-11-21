@@ -32,11 +32,11 @@
         flex: 1 0 0;
     }
 
-    &__content--view-empty {
+    &__content_view_empty {
         background: var(--g-aikit-chat-container-content-empty-background);
     }
 
-    &__content--view-chat {
+    &__content_view_chat {
         background: var(--g-aikit-chat-container-content-chat-background);
     }
 
@@ -50,11 +50,11 @@
         background: var(--g-aikit-chat-container-footer-background);
     }
 
-    &__footer--view-empty {
+    &__footer_view_empty {
         background: var(--g-aikit-chat-container-footer-empty-background);
     }
 
-    &__footer--view-chat {
+    &__footer_view_chat {
         background: var(--g-aikit-chat-container-footer-chat-background);
     }
 }
