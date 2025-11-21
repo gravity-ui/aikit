@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/gravity-ui/aikit/compare/v0.2.0...v0.2.1) (2025-11-21)
+
+
+### Bug Fixes
+
+* **styles:** add some fix for styles ai chat and customizing ([bf9adb6](https://github.com/gravity-ui/aikit/commit/bf9adb6880fc2219af43255c3d3a8db500da945f))
+
 ## [0.2.0](https://github.com/gravity-ui/aikit/compare/v0.1.2...v0.2.0) (2025-11-20)
 
 
