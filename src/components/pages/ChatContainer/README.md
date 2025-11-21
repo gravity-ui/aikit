@@ -45,10 +45,80 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
     title: "Welcome to AI Assistant",
     description: "How can I help you today?",
     suggestions: [
-      {id: '1', content: 'Explain quantum computing', title: 'Science'},
-      {id: '2', content: 'Write a poem about nature', title: 'Creative'},
-      {id: '3', content: 'Help me debug my code', title: 'Programming'},
+      {id: '1', title: 'Explain quantum computing'},
+      {id: '2', title: 'Write a poem about nature'},
+      {id: '3', title: 'Help me debug my code'},
     ],
+  }}
+/>
+
+// With suggestions using custom button styling
+<ChatContainer
+  messages={[]}
+  onSendMessage={handleSendMessage}
+  welcomeConfig={{
+    title: "Welcome to AI Assistant",
+    suggestions: [
+      {
+        id: '1',
+        title: 'Explain quantum computing',
+        view: 'outlined',
+        icon: 'right',
+      },
+    ],
+  }}
+/>
+
+// With text wrapping enabled for long suggestions
+<ChatContainer
+  messages={[]}
+  onSendMessage={handleSendMessage}
+  welcomeConfig={{
+    title: "Welcome to AI Assistant",
+    suggestions: [
+      {id: '1', title: 'Can you explain quantum computing in simple terms with examples?'},
+      {id: '2', title: 'Write a creative poem about nature and seasons'},
+    ],
+    wrapText: true,
+  }}
+/>
+
+// With custom React elements for title and description
+<ChatContainer
+  messages={[]}
+  onSendMessage={handleSendMessage}
+  welcomeConfig={{
+    title: (
+      <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+        <YourCustomIcon />
+        <span>Welcome to AI Assistant</span>
+      </div>
+    ),
+    description: (
+      <div>
+        <p>Get started by selecting a suggestion below or typing your own message.</p>
+        <strong>Available 24/7</strong>
+      </div>
+    ),
+    suggestions: [{id: '1', title: 'Get started'}],
+  }}
+/>
+
+// With welcome screen and custom alignment
+<ChatContainer
+  messages={[]}
+  onSendMessage={handleSendMessage}
+  welcomeConfig={{
+    title: "Welcome to AI Assistant",
+    description: "How can I help you today?",
+    suggestions: [
+      {id: '1', title: 'Explain quantum computing'},
+    ],
+    alignment: {
+      image: 'center',
+      title: 'center',
+      description: 'center',
+    },
   }}
 />
 
@@ -106,6 +176,16 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
     searchable: true,
   }}
 />
+
+// With custom section classes
+<ChatContainer
+  messages={messages}
+  onSendMessage={handleSendMessage}
+  className="custom-chat"
+  headerClassName="custom-header"
+  contentClassName="custom-content"
+  footerClassName="custom-footer"
+/>
 ```
 
 ## Props
@@ -139,6 +219,9 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
 | `showNewChat`         | `boolean`                              | -        | `true`    | Show new chat button                                                  |
 | `showClose`           | `boolean`                              | -        | `false`   | Show close button                                                     |
 | `className`           | `string`                               | -        | -         | Additional CSS class                                                  |
+| `headerClassName`     | `string`                               | -        | -         | Additional CSS class for header section                               |
+| `contentClassName`    | `string`                               | -        | -         | Additional CSS class for content section                              |
+| `footerClassName`     | `string`                               | -        | -         | Additional CSS class for footer section                               |
 | `qa`                  | `string`                               | -        | -         | QA/test identifier                                                    |
 
 ## Types
@@ -150,17 +233,66 @@ Configuration for the welcome screen displayed when there are no messages:
 ```tsx
 interface WelcomeConfig {
   image?: React.ReactNode;
-  title?: string;
-  description?: string;
+  title?: string | React.ReactNode;
+  description?: string | React.ReactNode;
   suggestionTitle?: string;
-  suggestions?: Array<{
-    id: string;
-    content: string;
-    title?: string;
-    description?: string;
-  }>;
+  suggestions?: SuggestionsItem[];
+  alignment?: AlignmentConfig;
+  wrapText?: boolean;
   showMore?: () => void;
   showMoreText?: string;
+}
+```
+
+#### WelcomeConfig Properties
+
+- **`image`**: React element to display as welcome image/icon
+- **`title`**: Welcome screen title - can be a string or custom React element
+- **`description`**: Welcome screen description - can be a string or custom React element
+- **`suggestionTitle`**: Title text above the suggestions section
+- **`suggestions`**: Array of `SuggestionsItem` objects (see below)
+- **`alignment`**: Alignment configuration for image, title, and description (see Alignment section)
+- **`wrapText`**: Enable text wrapping inside suggestion buttons instead of ellipsis (default: `false`)
+- **`showMore`**: Callback function for "Show More" button
+- **`showMoreText`**: Custom text for the "Show More" button
+
+#### Suggestions Properties
+
+The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is clicked, its `title` value is sent as the message content.
+
+**SuggestionsItem Properties:**
+
+- **`title`** (required): The text displayed on the button and sent as message content
+- **`id`** (optional): Unique identifier for the suggestion
+- **`view`** (optional): Button styling - `'normal'`, `'action'`, `'outlined'`, `'flat'`, `'flat-secondary'`, `'outlined-info'`
+- **`icon`** (optional): Icon position - `'left'` displays ChevronLeft, `'right'` displays ChevronRight
+
+**Text Wrapping:**
+
+By default, long suggestion text is truncated with an ellipsis. Enable `wrapText: true` in `WelcomeConfig` to allow text to wrap to multiple lines within the button.
+
+**Examples:**
+
+```tsx
+// Simple suggestion
+{
+  id: '1',
+  title: 'Explain quantum computing',
+}
+
+// Suggestion with custom styling and icon
+{
+  id: '2',
+  title: 'Write a creative poem about nature',
+  view: 'outlined',
+  icon: 'right',
+}
+
+// Suggestion with different button view
+{
+  id: '3',
+  title: 'Help me debug my code',
+  view: 'flat-secondary',
 }
 ```
 
@@ -336,6 +468,70 @@ Override History component props (grouping, search, etc.):
 />
 ```
 
+## Welcome Screen Alignment
+
+The welcome screen supports custom alignment for the image, title, and description elements through the `alignment` property in `welcomeConfig`:
+
+```tsx
+<ChatContainer
+  messages={[]}
+  onSendMessage={handleSendMessage}
+  welcomeConfig={{
+    image: <MyIcon />,
+    title: 'Welcome!',
+    description: 'Get started with AI Chat',
+    // Center all elements
+    alignment: {
+      image: 'center',
+      title: 'center',
+      description: 'center',
+    },
+  }}
+/>
+```
+
+### Alignment Options
+
+Each element can be aligned independently:
+
+- **`image`**: Alignment for the welcome image/icon (`'left'` | `'center'` | `'right'`)
+- **`title`**: Alignment for the title text (`'left'` | `'center'` | `'right'`)
+- **`description`**: Alignment for the description text (`'left'` | `'center'` | `'right'`)
+
+Default alignment is `'left'` for all elements if not specified.
+
+### Alignment Examples
+
+```tsx
+// Left alignment (default)
+alignment: {
+  image: 'left',
+  title: 'left',
+  description: 'left',
+}
+
+// Centered layout (recommended for hero-style welcome screens)
+alignment: {
+  image: 'center',
+  title: 'center',
+  description: 'center',
+}
+
+// Right alignment
+alignment: {
+  image: 'right',
+  title: 'right',
+  description: 'right',
+}
+
+// Mixed alignment (centered image, left-aligned text)
+alignment: {
+  image: 'center',
+  title: 'left',
+  description: 'left',
+}
+```
+
 ## Internationalization
 
 The component supports i18n through the `i18nConfig` prop:
@@ -452,16 +648,39 @@ function App() {
 
 The component uses CSS variables for theming:
 
-| Variable                    | Description                             |
-| --------------------------- | --------------------------------------- |
-| `--g-color-base-background` | Background color of the chat container  |
-| `--g-color-line-generic`    | Border color between header and content |
+| Variable                                            | Description                                                      |
+| --------------------------------------------------- | ---------------------------------------------------------------- |
+| `--g-aikit-chat-container-background`               | Background color of the entire chat container                    |
+| `--g-aikit-chat-container-header-background`        | Background color of the header section                           |
+| `--g-aikit-chat-container-content-background`       | Background color of the content section (general)                |
+| `--g-aikit-chat-container-content-empty-background` | Background color of the content section in empty view            |
+| `--g-aikit-chat-container-content-chat-background`  | Background color of the content section in chat view             |
+| `--g-aikit-chat-container-footer-background`        | Background color of the footer section (general)                 |
+| `--g-aikit-chat-container-footer-empty-background`  | Background color of the footer section in empty view             |
+| `--g-aikit-chat-container-footer-chat-background`   | Background color of the footer section in chat view              |
+| `--g-aikit-layout-base-padding-m`                   | Padding for header, content, and footer sections (default: 12px) |
+| `--g-spacing-1`                                     | Gap between footer elements (default: 4px)                       |
+| `--g-spacing-2`                                     | Gap between header elements (default: 8px)                       |
+| `--g-spacing-4`                                     | Bottom padding for content section (default: 16px)               |
 
 ```css
 /* Example: Custom theme */
 .custom-chat {
-  --g-color-base-background: #ffffff;
-  --g-color-line-generic: #e0e0e0;
+  --g-aikit-chat-container-background: #ffffff;
+  --g-aikit-chat-container-header-background: #f5f5f5;
+  --g-aikit-chat-container-content-background: #fafafa;
+  --g-aikit-chat-container-footer-background: #f5f5f5;
+  --g-aikit-layout-base-padding-m: 16px;
+}
+```
+
+```css
+/* Example: Different backgrounds for empty and chat views */
+.custom-chat {
+  --g-aikit-chat-container-content-empty-background: #f9f9f9;
+  --g-aikit-chat-container-content-chat-background: #ffffff;
+  --g-aikit-chat-container-footer-empty-background: #f9f9f9;
+  --g-aikit-chat-container-footer-chat-background: #ffffff;
 }
 ```
 
@@ -470,7 +689,8 @@ The component uses CSS variables for theming:
 <ChatContainer
   className="custom-chat"
   style={{
-    '--g-color-base-background': '#ffffff',
+    '--g-aikit-chat-container-background': '#ffffff',
+    '--g-aikit-layout-base-padding-m': '16px',
   }}
 />
 ```

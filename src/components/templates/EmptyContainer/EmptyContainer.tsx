@@ -40,10 +40,10 @@ export interface AlignmentConfig {
 export interface EmptyContainerProps {
     /** Image or icon to display at the top */
     image?: React.ReactNode;
-    /** Title text for the welcome screen */
-    title?: string;
-    /** Description text explaining the functionality */
-    description?: string;
+    /** Title text or custom React element for the welcome screen */
+    title?: string | React.ReactNode;
+    /** Description text or custom React element explaining the functionality */
+    description?: string | React.ReactNode;
     /** Title for the suggestions section */
     suggestionTitle?: string;
     /** Array of suggestion items */
@@ -52,6 +52,8 @@ export interface EmptyContainerProps {
     onSuggestionClick?: (content: string, id?: string) => void;
     /** Alignment configuration for image, title, and description */
     alignment?: AlignmentConfig;
+    /** Enable text wrapping inside suggestion buttons instead of ellipsis */
+    wrapText?: boolean;
     /** Callback for showing more suggestions */
     showMore?: () => void;
     /** Custom text for the show more button */
@@ -78,6 +80,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
         suggestions = [],
         onSuggestionClick,
         alignment,
+        wrapText = false,
         showMore,
         showMoreText,
         className,
@@ -142,6 +145,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
                                         items={suggestions}
                                         onClick={onSuggestionClick}
                                         layout="grid"
+                                        wrapText={wrapText}
                                     />
                                 </div>
                                 {showMore && (

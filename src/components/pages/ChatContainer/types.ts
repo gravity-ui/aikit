@@ -2,10 +2,11 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
+import type {SuggestionsItem} from '../../molecules/Suggestions';
 import type {HeaderProps} from '../../organisms/Header';
 import type {PromptInputProps} from '../../organisms/PromptInput';
 import type {ChatContentProps} from '../../templates/ChatContent';
-import type {EmptyContainerProps} from '../../templates/EmptyContainer';
+import type {AlignmentConfig, EmptyContainerProps} from '../../templates/EmptyContainer';
 import type {HistoryProps} from '../../templates/History';
 
 /**
@@ -63,21 +64,18 @@ export interface ChatContainerI18nConfig {
 export interface WelcomeConfig {
     /** Image or icon to display */
     image?: React.ReactNode;
-    /** Title text */
-    title?: string;
-    /** Description text */
-    description?: string;
+    /** Title text or custom React element */
+    title?: string | React.ReactNode;
+    /** Description text or custom React element */
+    description?: string | React.ReactNode;
     /** Suggestions section title */
     suggestionTitle?: string;
-    /** Array of suggestions */
-    suggestions?: Array<{
-        /** Unique identifier for the suggestion */
-        id: string;
-        /** Suggestion text content that will be sent as message */
-        content: string;
-        /** Display title for the suggestion button (defaults to content if not provided) */
-        label?: string;
-    }>;
+    /** Array of suggestions (title will be used as message content) */
+    suggestions?: SuggestionsItem[];
+    /** Alignment configuration for image, title, and description */
+    alignment?: AlignmentConfig;
+    /** Enable text wrapping inside suggestion buttons instead of ellipsis */
+    wrapText?: boolean;
     /** Show more suggestions callback */
     showMore?: () => void;
     /** Show more button text */
@@ -162,6 +160,12 @@ export interface ChatContainerProps {
     // Styling
     /** Additional CSS class */
     className?: string;
+    /** Additional CSS class for header section */
+    headerClassName?: string;
+    /** Additional CSS class for content section */
+    contentClassName?: string;
+    /** Additional CSS class for footer section */
+    footerClassName?: string;
     /** QA/test identifier */
     qa?: string;
 }

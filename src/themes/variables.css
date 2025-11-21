@@ -66,4 +66,8 @@
     --g-aikit-chat-container-content-background: var(--g-color-base-background);
     --g-aikit-chat-container-footer-background: var(--g-color-base-background);
     --g-aikit-chat-container-background: var(--g-color-base-background);
+    --g-aikit-chat-container-content-empty-background: var(--g-color-base-background);
+    --g-aikit-chat-container-content-chat-background: var(--g-color-base-background);
+    --g-aikit-chat-container-footer-empty-background: var(--g-color-base-background);
+    --g-aikit-chat-container-footer-chat-background: var(--g-color-base-background);
 }
