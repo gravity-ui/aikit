@@ -32,6 +32,14 @@
         flex: 1 0 0;
     }
 
+    &__content--view-empty {
+        background: var(--g-aikit-chat-container-content-empty-background);
+    }
+
+    &__content--view-chat {
+        background: var(--g-aikit-chat-container-content-chat-background);
+    }
+
     &__footer {
         display: flex;
         padding: var(--g-aikit-layout-base-padding-m);
@@ -40,5 +48,13 @@
         gap: var(--g-spacing-1);
         align-self: stretch;
         background: var(--g-aikit-chat-container-footer-background);
+    }
+
+    &__footer--view-empty {
+        background: var(--g-aikit-chat-container-footer-empty-background);
+    }
+
+    &__footer--view-chat {
+        background: var(--g-aikit-chat-container-footer-chat-background);
     }
 }

@@ -43,6 +43,9 @@ export function ChatContainer(props: ChatContainerProps) {
         welcomeConfig,
         i18nConfig = {},
         className,
+        headerClassName,
+        contentClassName,
+        footerClassName,
         qa,
     } = props;
 
@@ -82,12 +85,6 @@ export function ChatContainer(props: ChatContainerProps) {
 
     // Build props for EmptyContainer
     const finalEmptyContainerProps = useMemo(() => {
-        // Map suggestions from WelcomeConfig to SuggestionsItem format
-        const defaultSuggestions = welcomeConfig?.suggestions?.map((s) => ({
-            id: s.id,
-            title: s.label || s.content, // Use label or content as button title
-        }));
-
         return {
             ...emptyContainerProps,
             image: welcomeConfig?.image,
@@ -101,19 +98,16 @@ export function ChatContainer(props: ChatContainerProps) {
                 welcomeConfig?.suggestionTitle ||
                 i18nConfig.emptyState?.suggestionsTitle ||
                 i18n('empty-state-suggestions-title'),
-            suggestions: defaultSuggestions,
+            suggestions: welcomeConfig?.suggestions,
+            alignment: welcomeConfig?.alignment,
+            wrapText: welcomeConfig?.wrapText,
             showMore: welcomeConfig?.showMore,
             showMoreText:
                 welcomeConfig?.showMoreText ||
                 i18nConfig.emptyState?.showMoreText ||
                 i18n('empty-state-show-more'),
             onSuggestionClick: async (clickedTitle: string) => {
-                // Find original suggestion by title to get content
-                const originalSuggestion = welcomeConfig?.suggestions?.find(
-                    (s) => (s.label || s.content) === clickedTitle,
-                );
-                const contentToSend = originalSuggestion?.content || clickedTitle;
-                await onSendMessage({content: contentToSend});
+                await onSendMessage({content: clickedTitle});
             },
         };
     }, [welcomeConfig, i18nConfig.emptyState, emptyContainerProps, onSendMessage]);
@@ -206,14 +200,14 @@ export function ChatContainer(props: ChatContainerProps) {
 
     return (
         <div className={b(null, className)} data-qa={qa}>
-            <div className={b('header')}>
+            <div className={b('header', headerClassName)}>
                 <Header {...finalHeaderProps} />
             </div>
-            <div className={b('content')}>
+            <div className={b('content', {view: hookState.chatContentView}, contentClassName)}>
                 <ChatContent {...finalContentProps} />
             </div>
             {showFooter && (
-                <div className={b('footer')}>
+                <div className={b('footer', {view: hookState.chatContentView}, footerClassName)}>
                     {finalPromptInputProps && <PromptInput {...finalPromptInputProps} />}
                     {disclaimerProps && <Disclaimer {...disclaimerProps} />}
                 </div>

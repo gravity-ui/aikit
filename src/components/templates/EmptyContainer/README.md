@@ -82,6 +82,36 @@ import {EmptyContainer} from '@gravity-ui/aikit';
   showMore={loadMoreSuggestions}
   showMoreText="Load more"
 />
+
+// With custom React elements for title and description
+<EmptyContainer
+  title={
+    <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+      <MyIcon />
+      <span>Welcome to AI Chat</span>
+    </div>
+  }
+  description={
+    <div>
+      <p>Get started with AI assistance</p>
+      <strong>Available 24/7</strong>
+    </div>
+  }
+  suggestions={suggestions}
+  onSuggestionClick={handleSuggestionClick}
+/>
+
+// With text wrapping for long suggestions
+<EmptyContainer
+  title="Welcome to AI Chat"
+  description="Get started with AI assistance"
+  suggestions={[
+    {title: 'Can you help me understand this complex topic in simple terms?'},
+    {title: 'Generate a detailed report based on the data provided'},
+  ]}
+  onSuggestionClick={handleSuggestionClick}
+  wrapText={true}
+/>
 ```
 
 ## Props
@@ -89,12 +119,13 @@ import {EmptyContainer} from '@gravity-ui/aikit';
 | Prop                | Type                                     | Required | Default | Description                                                        |
 | ------------------- | ---------------------------------------- | -------- | ------- | ------------------------------------------------------------------ |
 | `image`             | `ReactNode`                              | -        | -       | Image or icon to display at the top                                |
-| `title`             | `string`                                 | -        | -       | Title text for the welcome screen                                  |
-| `description`       | `string`                                 | -        | -       | Description text explaining the functionality                      |
+| `title`             | `string \| ReactNode`                    | -        | -       | Title text or custom React element for the welcome screen          |
+| `description`       | `string \| ReactNode`                    | -        | -       | Description text or custom React element                           |
 | `suggestionTitle`   | `string`                                 | -        | -       | Title for the suggestions section                                  |
 | `suggestions`       | `Suggestion[]`                           | -        | `[]`    | Array of suggestion items                                          |
 | `onSuggestionClick` | `(content: string, id?: string) => void` | -        | -       | Callback when a suggestion is clicked                              |
 | `alignment`         | `AlignmentConfig`                        | -        | -       | Alignment configuration for image, title, and description          |
+| `wrapText`          | `boolean`                                | -        | `false` | Enable text wrapping inside suggestion buttons instead of ellipsis |
 | `showMore`          | `() => void`                             | -        | -       | Callback for showing more suggestions (displays a button)          |
 | `showMoreText`      | `string`                                 | -        | -       | Custom text for the show more button (overrides i18n localization) |
 | `className`         | `string`                                 | -        | -       | Additional CSS class                                               |
