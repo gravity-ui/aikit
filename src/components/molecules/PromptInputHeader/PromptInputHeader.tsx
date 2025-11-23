@@ -17,7 +17,7 @@ export type ContextItemConfig = {
     /** Content to display in the context item */
     content: ReactNode;
     /** Callback when context item is removed */
-    onRemove: () => void;
+    onRemove?: () => void;
 };
 
 /**
