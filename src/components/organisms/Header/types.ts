@@ -31,6 +31,7 @@ export type HeaderProps = {
 
     // Display settings
     titlePosition?: 'left' | 'center'; // default: left
+    withIcon?: boolean; // default: true
 
     className?: string;
 };

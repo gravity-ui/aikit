@@ -17,6 +17,12 @@ test.describe('Header', {tag: '@Header'}, () => {
         await expectScreenshot();
     });
 
+    test('should render without icon', async ({mount, expectScreenshot}) => {
+        await mount(<HeaderStories.WithoutIcon />);
+
+        await expectScreenshot();
+    });
+
     test('should render with preview', async ({mount, expectScreenshot}) => {
         await mount(<HeaderStories.WithPreview />);
 

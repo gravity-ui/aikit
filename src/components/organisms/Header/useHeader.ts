@@ -20,6 +20,7 @@ export function useHeader(props: HeaderProps): {
     baseActions: ActionItem[];
     additionalActions: ActionItem[];
     titlePosition: 'left' | 'center';
+    withIcon: boolean;
     className?: string;
     historyButtonRef?: React.RefObject<HTMLElement>;
 } {
@@ -35,6 +36,7 @@ export function useHeader(props: HeaderProps): {
         foldingState = 'opened',
         additionalActions = [],
         titlePosition = 'left',
+        withIcon = true,
         className,
         historyButtonRef,
     } = props;
@@ -109,6 +111,7 @@ export function useHeader(props: HeaderProps): {
         baseActions: baseActionsList,
         additionalActions: additionalActionsList,
         titlePosition,
+        withIcon,
         className,
         historyButtonRef,
     };

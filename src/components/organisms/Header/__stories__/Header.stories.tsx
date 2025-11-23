@@ -105,6 +105,20 @@ export const WithIcon: StoryFn<HeaderProps> = (args) => {
     );
 };
 
+export const WithoutIcon: StoryFn<HeaderProps> = (args) => {
+    return (
+        <ContentWrapper width="480px">
+            <Header
+                withIcon={false}
+                title="Chat Header"
+                baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
+                {...mockHandlers}
+                {...args}
+            />
+        </ContentWrapper>
+    );
+};
+
 export const WithPreview: StoryFn<HeaderProps> = (args) => {
     return (
         <ContentWrapper width="480px">
