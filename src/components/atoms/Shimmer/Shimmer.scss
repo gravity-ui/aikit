@@ -18,7 +18,6 @@ $block: '.#{variables.$ns}shimmer';
         );
         mask-size: var(--g-aikit-shimmer-gradient-size) 100%;
         mask-clip: text;
-        mask-clip: text;
         animation: shimmer var(--g-aikit-shimmer-duration) infinite linear;
     }
 }
