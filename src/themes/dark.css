@@ -16,4 +16,7 @@
     --g-aikit-accent-color: #0077ff;
 
     --g-aikit-line-brand: var(--g-aikit-accent-color);
+
+    --g-aikit-shimmer-color-from: rgba(255, 255, 255, 0.35);
+    --g-aikit-shimmer-color-to: rgba(255, 255, 255, 0.85);
 }
