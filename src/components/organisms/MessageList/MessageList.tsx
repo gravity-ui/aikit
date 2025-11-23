@@ -1,6 +1,9 @@
+import {useEffect} from 'react';
+
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {useSmartScroll} from '../../../hooks';
+import {useScrollPreservation} from '../../../hooks/useScrollPreservation';
 import {ChatStatus} from '../../../types';
 import type {
     TAssistantMessage,
@@ -18,6 +21,7 @@ import {
 import {block} from '../../../utils/cn';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
+import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
@@ -44,6 +48,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     loaderStatuses?: ChatStatus[];
     className?: string;
     qa?: string;
+    hasPreviousMessages?: boolean;
+    onLoadPreviousMessages?: () => void;
 };
 
 export function MessageList<TContent extends TMessageContent = never>({
@@ -61,12 +67,24 @@ export function MessageList<TContent extends TMessageContent = never>({
     status,
     errorMessage,
     onRetry,
+    hasPreviousMessages = false,
+    onLoadPreviousMessages,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming';
     const messagesCount = messages.length;
     const showLoader = status && loaderStatuses.includes(status);
 
-    const {containerRef, endRef} = useSmartScroll<HTMLDivElement>(isStreaming, messagesCount);
+    const {containerRef, endRef, scrollToBottom} = useSmartScroll<HTMLDivElement>(
+        isStreaming,
+        messagesCount,
+    );
+
+    useEffect(() => {
+        scrollToBottom();
+    }, []);
+
+    // Preserve scroll position when older messages are loaded
+    useScrollPreservation(containerRef, messages.length);
 
     const renderMessage = (message: TChatMessage<TContent, TMessageMetadata>, index: number) => {
         if (isUserMessage<TMessageMetadata, TContent>(message)) {
@@ -114,6 +132,14 @@ export function MessageList<TContent extends TMessageContent = never>({
 
     return (
         <div ref={containerRef} className={b(null, className)} data-qa={qa}>
+            {hasPreviousMessages && (
+                <IntersectionContainer
+                    onIntersect={onLoadPreviousMessages}
+                    className={b('load-trigger')}
+                >
+                    <Loader view="loading" />
+                </IntersectionContainer>
+            )}
             <div className={b('messages', className)} data-qa={qa}>
                 {messages.map(renderMessage)}
             </div>

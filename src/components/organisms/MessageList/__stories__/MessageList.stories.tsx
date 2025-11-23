@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {Pencil} from '@gravity-ui/icons';
 import {Icon, Text} from '@gravity-ui/uikit';
@@ -407,6 +407,81 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
                         ]}
                         userActions={userActions}
                         assistantActions={assistantActions}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithPreviousMessages: StoryObj<MessageListProps> = {
+    render: (args) => {
+        const createMessage = (num: number): TUserMessage | TAssistantMessage => {
+            const isUser = num % 2 === 1;
+            return {
+                id: `msg-${num}`,
+                role: isUser ? ('user' as const) : ('assistant' as const),
+                timestamp: `2024-01-01T00:00:${String(num).padStart(2, '0')}Z`,
+                content: isUser ? `User message ${num}` : `Assistant response ${num}`,
+                ...(isUser ? {} : {status: 'complete' as const}),
+            };
+        };
+
+        const [messages, setMessages] = useState<Array<TUserMessage | TAssistantMessage>>(() =>
+            Array.from({length: 10}, (_, i) => createMessage(11 + i)),
+        );
+
+        const [hasMore, setHasMore] = useState(true);
+        const isLoadingRef = useRef(false);
+
+        const handleLoadPrevious = useCallback(() => {
+            if (isLoadingRef.current || !hasMore) {
+                return;
+            }
+
+            isLoadingRef.current = true;
+
+            setTimeout(() => {
+                setMessages((prev) => {
+                    const firstMessage = prev[0];
+                    if (!firstMessage?.id) {
+                        isLoadingRef.current = false;
+                        return prev;
+                    }
+
+                    const firstNum = parseInt(firstMessage.id.replace('msg-', ''), 10);
+                    const startNum = Math.max(1, firstNum - 5);
+                    const count = firstNum - startNum;
+
+                    if (count <= 0 || startNum >= firstNum) {
+                        setHasMore(false);
+                        isLoadingRef.current = false;
+                        return prev;
+                    }
+
+                    const newMessages = Array.from({length: count}, (_, i) =>
+                        createMessage(startNum + i),
+                    );
+
+                    if (startNum <= 1) {
+                        setHasMore(false);
+                    }
+
+                    isLoadingRef.current = false;
+                    return [...newMessages, ...prev];
+                });
+            }, 500);
+        }, [hasMore]);
+
+        return (
+            <ShowcaseItem title="With Previous Messages Loading">
+                <ContentWrapper width="480px" height="400px" display="flex">
+                    <MessageList
+                        {...args}
+                        messages={messages}
+                        hasPreviousMessages={hasMore}
+                        onLoadPreviousMessages={handleLoadPrevious}
                     />
                 </ContentWrapper>
             </ShowcaseItem>

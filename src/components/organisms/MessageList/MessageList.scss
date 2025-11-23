@@ -27,4 +27,10 @@ $block: '.#{variables.$ns}message-list';
     &__error-alert {
         margin-top: var(--g-spacing-4);
     }
+
+    &__load-trigger {
+        display: flex;
+        justify-content: center;
+        padding: var(--g-spacing-2);
+    }
 }
