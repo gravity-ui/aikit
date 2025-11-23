@@ -1,25 +1,11 @@
 import {useCallback, useMemo, useState} from 'react';
 
-import type {ThinkingMessageContent} from '../../../types/messages';
-import {BaseMessageAction} from '../../molecules/BaseMessage';
+import type {ThinkingMessageContentData} from '../../../types/messages';
 
 import {i18n} from './i18n';
 
-export type ThinkingMessageData = Omit<ThinkingMessageContent, 'type'>;
-
-export type UseThinkingMessageOptions = ThinkingMessageData & {
-    defaultExpanded?: boolean;
-    showStatusIndicator?: boolean;
-};
-
-export type ThinkingMessageAction = {
-    type: BaseMessageAction | string;
-    onClick: () => void;
-};
-
-export function useThinkingMessage(options: UseThinkingMessageOptions) {
-    const {defaultExpanded = true, showStatusIndicator = true, data} = options;
-    const {status, content} = data;
+export function useThinkingMessage(options: ThinkingMessageContentData) {
+    const {defaultExpanded = true, showStatusIndicator = true, status, content} = options;
 
     const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 

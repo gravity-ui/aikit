@@ -6,7 +6,7 @@ import {ThinkingMessage, type ThinkingMessageProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import {ThinkingMessageData} from '../useThinkingMessage';
+import type {ThinkingMessageContentData} from '../../../../types/messages';
 
 import MDXDocs from './Docs.mdx';
 
@@ -19,9 +19,14 @@ export default {
         },
     },
     argTypes: {
-        data: {
+        content: {
             control: 'object',
-            description: 'Thinking message data',
+            description: 'Thinking message content',
+        },
+        status: {
+            control: 'select',
+            options: ['thinking', 'thought'],
+            description: 'Thinking status',
         },
         defaultExpanded: {
             control: 'boolean',
@@ -60,25 +65,21 @@ const defaultDecorators = [
     ),
 ] satisfies Story['decorators'];
 
-const thinkingData: ThinkingMessageData = {
-    data: {
-        content: [
-            'Lore ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            'Lore ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        ],
-        status: 'thinking',
-    },
+const thinkingData: ThinkingMessageContentData = {
+    content: [
+        'Lore ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        'Lore ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    ],
+    status: 'thinking',
 };
 
-const thoughtData: ThinkingMessageData = {
-    data: {
-        content: [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        ],
-        status: 'thought',
-    },
+const thoughtData: ThinkingMessageContentData = {
+    content: [
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    ],
+    status: 'thought',
 };
 
 export const Playground: StoryFn<ThinkingMessageProps> = (args) => (
@@ -127,10 +128,8 @@ export const SingleContent: StoryObj<ThinkingMessageProps> = {
         <ShowcaseItem title="Single Content String">
             <ContentWrapper width="600px">
                 <ThinkingMessage
-                    data={{
-                        content: 'Processing your request and analyzing possible solutions.',
-                        status: 'thinking',
-                    }}
+                    content="Processing your request and analyzing possible solutions."
+                    status="thinking"
                     defaultExpanded={true}
                 />
             </ContentWrapper>

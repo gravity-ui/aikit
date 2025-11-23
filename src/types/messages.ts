@@ -46,6 +46,11 @@ export type ThinkingMessageContentData = {
     title?: string;
     content: string | string[];
     status: 'thinking' | 'thought';
+    defaultExpanded?: boolean;
+    showStatusIndicator?: boolean;
+    onCopyClick?: () => void;
+    className?: string;
+    qa?: string;
 };
 
 export type ThinkingMessageContent = TMessageContent<'thinking', ThinkingMessageContentData>;
