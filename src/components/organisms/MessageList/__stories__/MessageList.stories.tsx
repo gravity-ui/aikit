@@ -387,7 +387,6 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
                                 role: 'assistant',
                                 timestamp: '2024-01-01T00:00:01Z',
                                 content: 'Hi! This message also has default actions.',
-                                status: 'complete',
                             },
                             {
                                 id: 'user-2',
@@ -404,9 +403,16 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
                                     },
                                 ],
                             },
+                            {
+                                id: 'assistant-1',
+                                role: 'assistant',
+                                timestamp: '2024-01-01T00:00:01Z',
+                                content: 'On stream, the last message does not have actions.',
+                            },
                         ]}
                         userActions={userActions}
                         assistantActions={assistantActions}
+                        status="streaming"
                     />
                 </ContentWrapper>
             </ShowcaseItem>
@@ -424,7 +430,6 @@ export const WithPreviousMessages: StoryObj<MessageListProps> = {
                 role: isUser ? ('user' as const) : ('assistant' as const),
                 timestamp: `2024-01-01T00:00:${String(num).padStart(2, '0')}Z`,
                 content: isUser ? `User message ${num}` : `Assistant response ${num}`,
-                ...(isUser ? {} : {status: 'complete' as const}),
             };
         };
 

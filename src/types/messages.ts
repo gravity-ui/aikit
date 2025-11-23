@@ -27,7 +27,6 @@ export type TSubmitData = {
     metadata?: TMessageMetadata;
 };
 
-export type TMessageStatus = 'sending' | 'complete' | 'error' | 'streaming';
 export type TMessageRole = 'user' | 'assistant' | 'system';
 
 export type TMessageContent<Type extends string = string, Data = unknown> = {
@@ -78,7 +77,6 @@ export type TBaseMessage<Metadata = TMessageMetadata> = Pick<
     'actions' | 'timestamp'
 > & {
     id?: string;
-    status?: TMessageStatus;
     error?: unknown;
     metadata?: Metadata;
 };

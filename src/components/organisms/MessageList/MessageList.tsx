@@ -107,7 +107,8 @@ export function MessageList<TContent extends TMessageContent = never>({
         }
 
         if (isAssistantMessage<TMessageMetadata, TContent>(message)) {
-            const showActions = message.status === 'complete';
+            const isLastMessage = index === messages.length - 1;
+            const showActions = !(isLastMessage && isStreaming);
             const actions = showActions
                 ? resolveMessageActions(message, assistantActions)
                 : undefined;
