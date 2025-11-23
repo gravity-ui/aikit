@@ -42,6 +42,8 @@ export interface HistoryListProps extends QAProps, DOMProps {
     className?: string;
     /** Custom filter function for search */
     filterFunction?: ChatFilterFunction;
+    /** Loading state */
+    loading?: boolean;
     /** Callback when chat is clicked (for closing popup in parent) */
     onChatClick?: (chat: ChatType) => void;
 }
@@ -68,6 +70,7 @@ export function HistoryList(props: HistoryListProps) {
         qa,
         style,
         filterFunction = defaultChatFilter,
+        loading = false,
         onChatClick,
     } = props;
 
@@ -174,10 +177,11 @@ export function HistoryList(props: HistoryListProps) {
                     filterItem={wrappedFilterFunction}
                     filterPlaceholder={i18n('search-placeholder')}
                     filterClassName={b('filter')}
-                    emptyPlaceholder={emptyState}
+                    emptyPlaceholder={loading ? undefined : emptyState}
                     selectedItemIndex={selectedItemIndex}
                     itemsClassName={b('list')}
                     itemClassName={b('list-item')}
+                    loading={loading}
                 />
             </div>
 

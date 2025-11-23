@@ -35,6 +35,8 @@ export interface HistoryProps extends QAProps, DOMProps {
     className?: string;
     /** Custom filter function for search */
     filterFunction?: ChatFilterFunction;
+    /** Loading state */
+    loading?: boolean;
     /** Control popup open state */
     open?: boolean;
     /** Callback when popup open state changes */
@@ -65,6 +67,7 @@ export function History(props: HistoryProps) {
         qa,
         style,
         filterFunction,
+        loading = false,
         open = false,
         onOpenChange,
         anchorElement,
@@ -96,6 +99,7 @@ export function History(props: HistoryProps) {
                 qa={qa}
                 style={style}
                 filterFunction={filterFunction}
+                loading={loading}
                 onChatClick={handleChatClick}
             />
         </Popup>
