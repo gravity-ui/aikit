@@ -70,4 +70,10 @@ test.describe('History', {tag: '@History'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render loading state', async ({mount, expectScreenshot}) => {
+        await mount(<HistoryStories.Loading />);
+
+        await expectScreenshot();
+    });
 });

@@ -66,7 +66,6 @@ const sampleMessages: TChatMessage[] = [
         role: 'user',
         content: 'Hello! Can you help me with React?',
         timestamp: '2024-01-01T12:00:00Z',
-        status: 'complete',
         actions: sampleActions,
     },
     {
@@ -74,7 +73,6 @@ const sampleMessages: TChatMessage[] = [
         role: 'assistant',
         content: 'Of course! I would be happy to help you with React. What would you like to know?',
         timestamp: '2024-01-01T12:00:05Z',
-        status: 'complete',
         actions: sampleActions,
     },
     {
@@ -82,7 +80,6 @@ const sampleMessages: TChatMessage[] = [
         role: 'user',
         content: 'How do I use hooks?',
         timestamp: '2024-01-01T12:01:00Z',
-        status: 'complete',
         actions: sampleActions,
     },
     {
@@ -91,7 +88,6 @@ const sampleMessages: TChatMessage[] = [
         content:
             'React Hooks are functions that let you use state and other React features without writing a class. The most commonly used hooks are:\n\n1. **useState** - for managing component state\n2. **useEffect** - for side effects\n3. **useContext** - for consuming context\n\nWould you like examples of how to use any of these?',
         timestamp: '2024-01-01T12:01:10Z',
-        status: 'complete',
         actions: sampleActions,
     },
 ];
@@ -209,7 +205,6 @@ export const WithManyMessages: Story = {
                     role: 'user',
                     content: 'Can you show me an example?',
                     timestamp: '2024-01-01T12:02:00Z',
-                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -234,7 +229,6 @@ function Counter() {
 
 This component maintains a count state and updates it when the button is clicked.`,
                     timestamp: '2024-01-01T12:02:05Z',
-                    status: 'complete',
                     actions: sampleActions,
                 },
             ],
@@ -256,7 +250,6 @@ export const Interactive: Story = {
                 role: 'user',
                 content,
                 timestamp: new Date().toISOString(),
-                status: 'complete',
             };
             setMessages([userMessage]);
             setView('chat');
@@ -268,7 +261,6 @@ export const Interactive: Story = {
                     role: 'assistant',
                     content: `I received your message: "${content}". How can I help you further?`,
                     timestamp: new Date().toISOString(),
-                    status: 'complete',
                 };
                 setMessages((prev) => [...prev, assistantMessage]);
             }, 1000);
@@ -305,7 +297,6 @@ export const LongConversation: Story = {
                     role: 'user',
                     content: 'Can you show me an example?',
                     timestamp: '2024-01-01T12:02:00Z',
-                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -330,7 +321,6 @@ function Counter() {
 
 This component maintains a count state and updates it when the button is clicked.`,
                     timestamp: '2024-01-01T12:02:05Z',
-                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -338,7 +328,6 @@ This component maintains a count state and updates it when the button is clicked
                     role: 'user',
                     content: 'What about useEffect?',
                     timestamp: '2024-01-01T12:03:00Z',
-                    status: 'complete',
                     actions: sampleActions,
                 },
                 {
@@ -362,7 +351,6 @@ function DataFetcher() {
 }
 \`\`\``,
                     timestamp: '2024-01-01T12:03:10Z',
-                    status: 'complete',
                     actions: sampleActions,
                 },
             ],

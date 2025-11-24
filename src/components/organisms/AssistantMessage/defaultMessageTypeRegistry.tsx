@@ -30,7 +30,7 @@ export function createDefaultMessageRegistry(
     });
 
     registerMessageRenderer<ThinkingMessageContent>(registry, 'thinking', {
-        component: ({part}) => <ThinkingMessage data={part.data} />,
+        component: ({part}) => <ThinkingMessage {...part.data} />,
     });
 
     return registry;

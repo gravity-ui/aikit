@@ -3,11 +3,12 @@
 import {ChevronDown, ChevronUp, Copy} from '@gravity-ui/icons';
 import {Button, DOMProps, Icon, QAProps, Text} from '@gravity-ui/uikit';
 
+import type {ThinkingMessageContentData} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms';
 import {Loader} from '../../atoms/Loader';
 
-import {ThinkingMessageData, useThinkingMessage} from './useThinkingMessage';
+import {useThinkingMessage} from './useThinkingMessage';
 
 import './ThinkingMessage.scss';
 
@@ -17,16 +18,7 @@ const b = block('thinking-message');
  * Props for the ThinkingMessage component.
  * Combines DOM props, QA props, and thinking message data.
  */
-export type ThinkingMessageProps = DOMProps &
-    QAProps &
-    ThinkingMessageData & {
-        /** Whether the thinking content should be expanded by default */
-        defaultExpanded?: boolean;
-        /** Whether to show the status indicator (loader) */
-        showStatusIndicator?: boolean;
-        /** Callback fired when the copy button is clicked */
-        onCopyClick?: () => void;
-    };
+export type ThinkingMessageProps = DOMProps & QAProps & ThinkingMessageContentData;
 
 /**
  * ThinkingMessage component displays AI model's internal reasoning process.

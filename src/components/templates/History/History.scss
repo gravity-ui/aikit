@@ -87,4 +87,12 @@ $block: '.#{variables.$ns}history';
         text-align: center;
         flex: 1;
     }
+
+    &__loader-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: spacing(8) spacing(4);
+        flex: 1;
+    }
 }

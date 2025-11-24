@@ -50,6 +50,7 @@ export function Header(props: HeaderProps) {
         baseActions,
         additionalActions,
         titlePosition,
+        withIcon,
         className,
         historyButtonRef,
     } = useHeader(props);
@@ -112,10 +113,16 @@ export function Header(props: HeaderProps) {
     // Determine class for title positioning
     const titlePositionClass = b('title-container', {position: titlePosition});
 
+    const iconElement = icon ? (
+        <div className={b('icon')}>{icon}</div>
+    ) : (
+        <Icon data={Sparkles} size={16} />
+    );
+
     return (
         <div className={b('', className)}>
             {/* Left part: icon */}
-            {icon ? <div className={b('icon')}>{icon}</div> : <Icon data={Sparkles} size={16} />}
+            {withIcon && iconElement}
 
             {/* Center part: title with preview */}
             <div className={titlePositionClass}>

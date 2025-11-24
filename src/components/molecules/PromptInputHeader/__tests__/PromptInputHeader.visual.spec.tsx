@@ -52,4 +52,19 @@ test.describe('PromptInputHeader', {tag: '@PromptInputHeader'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with context items without remove button', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<PromptInputHeaderStories.WithContextItemsWithoutRemove />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with mixed context items', async ({mount, expectScreenshot}) => {
+        await mount(<PromptInputHeaderStories.WithMixedContextItems />);
+
+        await expectScreenshot();
+    });
 });

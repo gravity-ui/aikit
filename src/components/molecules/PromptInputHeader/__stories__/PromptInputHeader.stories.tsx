@@ -130,3 +130,25 @@ export const WithCustomContent: Story = {
     },
     decorators: defaultDecorators,
 };
+
+export const WithContextItemsWithoutRemove: Story = {
+    args: {
+        contextItems: [
+            {id: '1', content: 'file.tsx'},
+            {id: '2', content: 'component.tsx'},
+            {id: '3', content: 'utils.ts'},
+        ],
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithMixedContextItems: Story = {
+    args: {
+        contextItems: [
+            {id: '1', content: 'file.tsx', onRemove: () => {}},
+            {id: '2', content: 'component.tsx'},
+            {id: '3', content: 'utils.ts', onRemove: () => {}},
+        ],
+    },
+    decorators: defaultDecorators,
+};

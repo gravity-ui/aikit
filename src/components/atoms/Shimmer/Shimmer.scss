@@ -7,7 +7,8 @@ $block: '.#{variables.$ns}shimmer';
         position: relative;
         display: inline-block;
 
-        background: linear-gradient(
+        color: var(--g-aikit-text-primary, inherit);
+        mask-image: linear-gradient(
             90deg,
             var(--g-aikit-shimmer-color-from) 0%,
             var(--g-aikit-shimmer-color-from) 40%,
@@ -15,18 +16,17 @@ $block: '.#{variables.$ns}shimmer';
             var(--g-aikit-shimmer-color-from) 60%,
             var(--g-aikit-shimmer-color-from) 100%
         );
-        background-size: var(--g-aikit-shimmer-gradient-size) 100%;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        mask-size: var(--g-aikit-shimmer-gradient-size) 100%;
+        mask-clip: text;
         animation: shimmer var(--g-aikit-shimmer-duration) infinite linear;
     }
 }
 
 @keyframes shimmer {
     0% {
-        background-position: 200% 50%;
+        mask-position: 200% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        mask-position: 0% 50%;
     }
 }

@@ -10,4 +10,10 @@ test.describe('ContextItem', {tag: '@ContextItem'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render without remove button', async ({mount, expectScreenshot}) => {
+        await mount(<ContextItemStories.WithoutRemoveButton />);
+
+        await expectScreenshot();
+    });
 });

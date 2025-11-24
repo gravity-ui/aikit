@@ -42,3 +42,12 @@ Playground.args = {
     content: 'My context',
     onClick: () => {},
 };
+
+export const WithoutRemoveButton: StoryFn<ContextItemProps> = (args) => (
+    <ContentWrapper>
+        <ContextItem {...args} />
+    </ContentWrapper>
+);
+WithoutRemoveButton.args = {
+    content: 'My context without remove',
+};

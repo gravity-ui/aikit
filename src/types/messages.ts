@@ -27,7 +27,6 @@ export type TSubmitData = {
     metadata?: TMessageMetadata;
 };
 
-export type TMessageStatus = 'sending' | 'complete' | 'error' | 'streaming';
 export type TMessageRole = 'user' | 'assistant' | 'system';
 
 export type TMessageContent<Type extends string = string, Data = unknown> = {
@@ -46,6 +45,11 @@ export type ThinkingMessageContentData = {
     title?: string;
     content: string | string[];
     status: 'thinking' | 'thought';
+    defaultExpanded?: boolean;
+    showStatusIndicator?: boolean;
+    onCopyClick?: () => void;
+    className?: string;
+    qa?: string;
 };
 
 export type ThinkingMessageContent = TMessageContent<'thinking', ThinkingMessageContentData>;
@@ -73,7 +77,6 @@ export type TBaseMessage<Metadata = TMessageMetadata> = Pick<
     'actions' | 'timestamp'
 > & {
     id?: string;
-    status?: TMessageStatus;
     error?: unknown;
     metadata?: Metadata;
 };

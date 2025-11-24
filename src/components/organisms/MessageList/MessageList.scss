@@ -9,7 +9,6 @@ $block: '.#{variables.$ns}message-list';
     min-height: 0;
     flex: 1;
     align-self: stretch;
-    width: 100%;
 
     &__messages {
         display: flex;
@@ -26,5 +25,11 @@ $block: '.#{variables.$ns}message-list';
     &__loader,
     &__error-alert {
         margin-top: var(--g-spacing-4);
+    }
+
+    &__load-trigger {
+        display: flex;
+        justify-content: center;
+        padding: var(--g-spacing-2);
     }
 }

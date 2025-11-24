@@ -1,0 +1,7 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}intersection-container';
+
+#{$block} {
+    width: 100%;
+}

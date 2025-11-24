@@ -8,7 +8,7 @@ const b = block('context-item');
 
 type ContextItemProps = QAProps & {
     content: React.ReactNode;
-    onClick: () => void;
+    onClick?: () => void;
     className?: string;
 };
 
@@ -19,8 +19,7 @@ export const ContextItem = (props: ContextItemProps) => {
         <Label
             size="s"
             theme="clear"
-            onCloseClick={onClick}
-            type="close"
+            {...(onClick && {onCloseClick: onClick, type: 'close'})}
             className={b(null, className)}
             data-qa={qa}
         >

@@ -90,7 +90,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             role: 'user',
             content: 'What is quantum computing?',
             timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-            status: 'complete',
         },
         {
             id: '1-2',
@@ -98,14 +97,12 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 'Quantum computing is a revolutionary approach to computation that leverages the principles of quantum mechanics. Unlike classical computers that use bits (0 or 1), quantum computers use quantum bits or "qubits" that can exist in multiple states simultaneously through a phenomenon called superposition.\n\nKey concepts include:\n1. **Superposition**: Qubits can be in multiple states at once\n2. **Entanglement**: Qubits can be correlated in ways that classical bits cannot\n3. **Quantum Interference**: Used to amplify correct answers and cancel out wrong ones',
             timestamp: new Date(Date.now() - 1000 * 60 * 59).toISOString(),
-            status: 'complete',
         },
         {
             id: '1-3',
             role: 'user',
             content: 'Can you explain quantum entanglement in simple terms?',
             timestamp: new Date(Date.now() - 1000 * 60 * 58).toISOString(),
-            status: 'complete',
         },
         {
             id: '1-4',
@@ -113,7 +110,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 'Quantum entanglement is like having two magic coins that are mysteriously connected. When you flip one coin and it lands on heads, the other coin - no matter how far away - will instantly land on tails (or vice versa).\n\nIn quantum physics terms:\n- Two particles become "entangled" and share a quantum state\n- Measuring one particle instantly affects the other\n- This happens regardless of the distance between them\n- Einstein called it "spooky action at a distance"\n\nThis phenomenon is fundamental to quantum computing and quantum communication technologies.',
             timestamp: new Date(Date.now() - 1000 * 60 * 57).toISOString(),
-            status: 'complete',
         },
     ],
     '2': [
@@ -122,7 +118,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             role: 'user',
             content: 'Write a poem about autumn leaves',
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-            status: 'complete',
         },
         {
             id: '2-2',
@@ -130,14 +125,12 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 "Golden whispers fall from trees,\nDancing softly on the breeze,\nCrimsons, ambers, russet bright,\nPainting pathways with their light.\n\nNature's canvas, rich and warm,\nBefore the coming winter storm,\nEach leaf a story, each one told,\nOf seasons passing, growing old.",
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 + 60000).toISOString(),
-            status: 'complete',
         },
         {
             id: '2-3',
             role: 'user',
             content: 'That was beautiful! Can you write one about winter snow?',
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 + 120000).toISOString(),
-            status: 'complete',
         },
         {
             id: '2-4',
@@ -145,7 +138,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 "Snowflakes drift from silent skies,\nBlankets white before our eyes,\nCrystal diamonds, soft and pure,\nWinter's gentle signature.\n\nFrosted windows, frozen streams,\nLandscapes wrapped in silver dreams,\nQuiet peace in cold embrace,\nNature sleeps in gentle grace.",
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 + 180000).toISOString(),
-            status: 'complete',
         },
     ],
     '3': [
@@ -155,7 +147,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 "I have a bug in my async function. It's not waiting for the promise to resolve.",
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
-            status: 'complete',
         },
         {
             id: '3-2',
@@ -163,7 +154,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 "Let's debug this step by step. The most common issues with async/await are:\n\n1. **Missing await keyword**: Make sure you're using `await` before the promise\n2. **Function not marked as async**: The function must be declared with `async` keyword\n3. **Promise not being returned**: Ensure the function returns a promise\n\nCan you share your code? Here's a common pattern:\n\n```javascript\nasync function fetchData() {\n  const result = await fetch('/api/data');\n  const data = await result.json();\n  return data;\n}\n```",
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 60000).toISOString(),
-            status: 'complete',
         },
         {
             id: '3-3',
@@ -171,7 +161,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 'Oh! I forgot to mark the parent function as async. That was the issue. Thanks!',
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 120000).toISOString(),
-            status: 'complete',
         },
         {
             id: '3-4',
@@ -179,7 +168,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 "Great! That's a very common mistake. Remember: to use `await`, the containing function must be `async`. Also, if you're using `await` in a callback (like in `.map()` or `.forEach()`), make sure to make the callback function async too. Happy coding!",
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2 + 180000).toISOString(),
-            status: 'complete',
         },
     ],
     '4': [
@@ -188,7 +176,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             role: 'user',
             content: 'What are the latest developments in AI?',
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-            status: 'complete',
         },
         {
             id: '4-2',
@@ -196,7 +183,6 @@ const mockChatMessages: Record<string, TChatMessage[]> = {
             content:
                 'Recent AI developments include:\n\n**Large Language Models**\n- More efficient training methods\n- Better reasoning capabilities\n- Multimodal models (text, image, audio)\n\n**Computer Vision**\n- Improved object detection and segmentation\n- Real-time video analysis\n- 3D reconstruction from 2D images\n\n**AI Safety**\n- Constitutional AI and alignment research\n- Better interpretability tools\n- Red-teaming and safety testing\n\n**Edge AI**\n- Running models on mobile devices\n- Reduced latency for real-time applications\n- Privacy-preserving local inference',
             timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3 + 60000).toISOString(),
-            status: 'complete',
         },
     ],
 };
@@ -287,7 +273,6 @@ export const Playground: Story = {
                 role: 'user',
                 content: data.content,
                 timestamp: new Date().toISOString(),
-                status: 'complete',
                 actions: createMessageActions(Date.now().toString(), 'user'),
             };
 
@@ -303,7 +288,6 @@ export const Playground: Story = {
                 role: 'assistant',
                 content: `This is a mock response to: "${data.content}". In a real application, this would be a streamed response from an AI model.`,
                 timestamp: new Date().toISOString(),
-                status: 'complete',
                 actions: createMessageActions(assistantMessageId, 'assistant'),
             };
 
@@ -365,7 +349,6 @@ export const EmptyState: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -396,7 +379,6 @@ export const WithMessages: Story = {
                 id: userMessageId,
                 role: 'user',
                 content: data.content,
-                status: 'complete',
                 actions: createMessageActions(userMessageId, 'user'),
             };
             setMessages((prev) => [...prev, userMessage]);
@@ -429,7 +411,6 @@ export const WithStreaming: Story = {
                 id: userMessageId,
                 role: 'user',
                 content: data.content,
-                status: 'complete',
                 actions: createMessageActions(userMessageId, 'user'),
             };
             setMessages((prev) => [...prev, userMessage]);
@@ -448,7 +429,6 @@ export const WithStreaming: Story = {
                     id: assistantMessageId,
                     role: 'assistant',
                     content: '',
-                    status: 'streaming',
                     actions: createMessageActions(assistantMessageId, 'assistant'),
                 },
             ]);
@@ -458,14 +438,12 @@ export const WithStreaming: Story = {
             for (let i = 0; i < words.length; i++) {
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 const currentText = words.slice(0, i + 1).join(' ');
-                const isLast = i === words.length - 1;
                 setMessages((prev) =>
                     prev.map((msg) =>
                         msg.id === assistantMessageId
                             ? {
                                   ...msg,
                                   content: currentText,
-                                  status: isLast ? 'complete' : 'streaming',
                               }
                             : msg,
                     ),
@@ -516,7 +494,6 @@ export const WithHistory: Story = {
                 id: userMessageId,
                 role: 'user',
                 content: data.content,
-                status: 'complete',
                 actions: createMessageActions(userMessageId, 'user'),
             };
             setMessages((prev) => [...prev, userMessage]);
@@ -601,7 +578,6 @@ export const EmptyStateWithTextWrap: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -646,7 +622,6 @@ export const EmptyStateWithCustomElements: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -684,7 +659,6 @@ export const EmptyStateWithCenteredAlignment: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -728,7 +702,6 @@ export const WithI18nConfig: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -763,7 +736,6 @@ export const WithComponentPropsOverride: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -796,7 +768,6 @@ export const WithContextItems: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -849,7 +820,6 @@ export const WithContextItemsAndIndicator: Story = {
                 id: Date.now().toString(),
                 role: 'user',
                 content: data.content,
-                status: 'complete',
             };
             setMessages((prev) => [...prev, userMessage]);
         };
@@ -878,7 +848,7 @@ export const WithContextItemsAndIndicator: Story = {
  */
 export const LoadingState: Story = {
     args: {
-        messages: addActionsToMessages(mockMessages),
+        messages: addActionsToMessages(mockMessages.slice(0, -1)),
         status: 'submitted',
         showActionsOnHover: true,
     },
@@ -893,7 +863,7 @@ export const LoadingState: Story = {
  */
 export const ErrorState: Story = {
     args: {
-        messages: addActionsToMessages(mockMessages),
+        messages: addActionsToMessages(mockMessages.slice(0, -1)),
         status: 'error',
         error: new Error('Failed to send message. Please try again.'),
         showActionsOnHover: true,
@@ -907,7 +877,6 @@ export const ErrorState: Story = {
                 id: userMessageId,
                 role: 'user',
                 content: data.content,
-                status: 'complete',
                 actions: createMessageActions(userMessageId, 'user'),
             };
             setMessages((prev) => [...prev, userMessage]);
@@ -947,16 +916,23 @@ export const FullStreamingExample: Story = {
             'ready',
         );
         const [controller, setController] = useState<AbortController | null>(null);
+        const isProcessingRef = React.useRef(false);
 
         const handleSendMessage = async (data: TSubmitData) => {
+            if (isProcessingRef.current || status === 'streaming' || status === 'submitted') {
+                return;
+            }
+
+            isProcessingRef.current = true;
+
             // Add user message
-            const userMessageId = Date.now().toString();
+            const timestamp = Date.now();
+            const userMessageId = `user-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
             const userMessage: TChatMessage = {
                 id: userMessageId,
                 role: 'user',
                 content: data.content,
                 timestamp: new Date().toISOString(),
-                status: 'complete',
                 actions: createMessageActions(userMessageId, 'user'),
             };
             setMessages((prev) => [...prev, userMessage]);
@@ -976,7 +952,7 @@ export const FullStreamingExample: Story = {
                 // });
 
                 // Simulate streaming for demo
-                const assistantMessageId = (Date.now() + 1).toString();
+                const assistantMessageId = `assistant-${timestamp + 1}-${Math.random().toString(36).substr(2, 9)}`;
                 const fullResponse = `This is a detailed response to your question: "${data.content}"\n\nIn a production environment, this text would be streamed from an AI model in real-time. The streaming provides several benefits:\n\n1. **Better User Experience**: Users see the response as it's being generated\n2. **Lower Perceived Latency**: The wait feels shorter when content appears incrementally\n3. **Ability to Cancel**: Users can stop generation if they have enough information\n4. **Resource Efficiency**: Responses can be processed as they arrive\n\nThe implementation would use Server-Sent Events (SSE) or streaming fetch API to receive chunks of text from the backend, updating the message content in real-time.`;
 
                 // Wait a bit before starting streaming
@@ -993,7 +969,6 @@ export const FullStreamingExample: Story = {
                         role: 'assistant',
                         content: ' ',
                         timestamp: new Date().toISOString(),
-                        status: 'streaming',
                         actions: createMessageActions(assistantMessageId, 'assistant'),
                     },
                 ]);
@@ -1007,19 +982,23 @@ export const FullStreamingExample: Story = {
 
                     await new Promise((resolve) => setTimeout(resolve, 50));
                     const currentText = words.slice(0, i + 1).join(' ');
-                    const isLast = i === words.length - 1;
 
-                    setMessages((prev) =>
-                        prev.map((msg) =>
+                    setMessages((prev) => {
+                        const assistantMessageExists = prev.some(
+                            (msg) => msg.id === assistantMessageId,
+                        );
+                        if (!assistantMessageExists) {
+                            return prev;
+                        }
+                        return prev.map((msg) =>
                             msg.id === assistantMessageId
                                 ? {
                                       ...msg,
                                       content: currentText,
-                                      status: isLast ? 'complete' : 'streaming',
                                   }
                                 : msg,
-                        ),
-                    );
+                        );
+                    });
                 }
             } catch (error) {
                 if ((error as Error).name !== 'AbortError') {
@@ -1029,6 +1008,7 @@ export const FullStreamingExample: Story = {
             } finally {
                 setStatus('ready');
                 setController(null);
+                isProcessingRef.current = false;
             }
         };
 

@@ -357,3 +357,15 @@ export const NotForceOpen: Story = {
     render: (args) => <HistoryWithTrigger initialOpen={false} {...args} />,
     decorators: defaultDecorators,
 };
+
+export const Loading: Story = {
+    args: {
+        chats: [],
+        loading: true,
+        searchable: true,
+        groupBy: 'date',
+        showActions: true,
+    },
+    render: (args) => <HistoryWithTrigger {...args} />,
+    decorators: defaultDecorators,
+};

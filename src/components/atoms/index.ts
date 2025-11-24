@@ -7,6 +7,7 @@ export * from './ContextItem';
 export * from './DiffStat';
 export * from './Disclaimer';
 export * from './InlineCitation';
+export * from './IntersectionContainer';
 export * from './Loader';
 export * from './MarkdownRenderer';
 export * from './MessageBalloon';
