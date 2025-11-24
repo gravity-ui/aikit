@@ -848,7 +848,7 @@ export const WithContextItemsAndIndicator: Story = {
  */
 export const LoadingState: Story = {
     args: {
-        messages: addActionsToMessages(mockMessages),
+        messages: addActionsToMessages(mockMessages.slice(0, -1)),
         status: 'submitted',
         showActionsOnHover: true,
     },
@@ -863,7 +863,7 @@ export const LoadingState: Story = {
  */
 export const ErrorState: Story = {
     args: {
-        messages: addActionsToMessages(mockMessages),
+        messages: addActionsToMessages(mockMessages.slice(0, -1)),
         status: 'error',
         error: new Error('Failed to send message. Please try again.'),
         showActionsOnHover: true,
@@ -916,10 +916,18 @@ export const FullStreamingExample: Story = {
             'ready',
         );
         const [controller, setController] = useState<AbortController | null>(null);
+        const isProcessingRef = React.useRef(false);
 
         const handleSendMessage = async (data: TSubmitData) => {
+            if (isProcessingRef.current || status === 'streaming' || status === 'submitted') {
+                return;
+            }
+
+            isProcessingRef.current = true;
+
             // Add user message
-            const userMessageId = Date.now().toString();
+            const timestamp = Date.now();
+            const userMessageId = `user-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
             const userMessage: TChatMessage = {
                 id: userMessageId,
                 role: 'user',
@@ -944,7 +952,7 @@ export const FullStreamingExample: Story = {
                 // });
 
                 // Simulate streaming for demo
-                const assistantMessageId = (Date.now() + 1).toString();
+                const assistantMessageId = `assistant-${timestamp + 1}-${Math.random().toString(36).substr(2, 9)}`;
                 const fullResponse = `This is a detailed response to your question: "${data.content}"\n\nIn a production environment, this text would be streamed from an AI model in real-time. The streaming provides several benefits:\n\n1. **Better User Experience**: Users see the response as it's being generated\n2. **Lower Perceived Latency**: The wait feels shorter when content appears incrementally\n3. **Ability to Cancel**: Users can stop generation if they have enough information\n4. **Resource Efficiency**: Responses can be processed as they arrive\n\nThe implementation would use Server-Sent Events (SSE) or streaming fetch API to receive chunks of text from the backend, updating the message content in real-time.`;
 
                 // Wait a bit before starting streaming
@@ -975,16 +983,22 @@ export const FullStreamingExample: Story = {
                     await new Promise((resolve) => setTimeout(resolve, 50));
                     const currentText = words.slice(0, i + 1).join(' ');
 
-                    setMessages((prev) =>
-                        prev.map((msg) =>
+                    setMessages((prev) => {
+                        const assistantMessageExists = prev.some(
+                            (msg) => msg.id === assistantMessageId,
+                        );
+                        if (!assistantMessageExists) {
+                            return prev;
+                        }
+                        return prev.map((msg) =>
                             msg.id === assistantMessageId
                                 ? {
                                       ...msg,
                                       content: currentText,
                                   }
                                 : msg,
-                        ),
-                    );
+                        );
+                    });
                 }
             } catch (error) {
                 if ((error as Error).name !== 'AbortError') {
@@ -994,6 +1008,7 @@ export const FullStreamingExample: Story = {
             } finally {
                 setStatus('ready');
                 setController(null);
+                isProcessingRef.current = false;
             }
         };
 

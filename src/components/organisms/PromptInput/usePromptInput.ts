@@ -28,8 +28,6 @@ export type UsePromptInputReturn = {
     value: string;
     /** Set the input value */
     setValue: (value: string) => void;
-    /** Is currently sending */
-    isSending: boolean;
     /** Can submit the form */
     canSubmit: boolean;
     /** Submit button state */
@@ -65,11 +63,11 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     } = props;
 
     const [value, setValue] = useState(initialValue);
-    const [isSending, setIsSending] = useState(false);
     const [attachments, setAttachments] = useState<File[]>([]);
+    const isSubmitted = status === 'submitted';
 
     const trimmedValue = value.trim();
-    const canSubmit = !disabled && !isSending && trimmedValue.length > 0;
+    const canSubmit = !disabled && !isSubmitted && trimmedValue.length > 0;
 
     // Map ChatStatus to submit button state
     // ChatStatus.ready → submitButtonState.enabled
@@ -83,8 +81,6 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
         submitButtonState = 'disabled';
     } else if (!trimmedValue && (status === 'ready' || status === 'error')) {
         submitButtonState = 'disabled';
-    } else if (isSending) {
-        submitButtonState = 'loading';
     } else {
         switch (status) {
             case 'ready':
@@ -125,20 +121,14 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
             return;
         }
 
-        setIsSending(true);
+        const submitData: TSubmitData = {
+            content: trimmedValue,
+            ...(attachments.length > 0 && {attachments}),
+        };
 
-        try {
-            const submitData: TSubmitData = {
-                content: trimmedValue,
-                ...(attachments.length > 0 && {attachments}),
-            };
-
-            await onSend(submitData);
-            setValue('');
-            setAttachments([]);
-        } finally {
-            setIsSending(false);
-        }
+        onSend(submitData);
+        setValue('');
+        setAttachments([]);
     }, [submitButtonState, canSubmit, trimmedValue, attachments, onSend, onCancel]);
 
     const handleKeyDown = useCallback(
@@ -170,7 +160,6 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     return {
         value,
         setValue,
-        isSending,
         canSubmit,
         submitButtonState,
         isInputDisabled,
