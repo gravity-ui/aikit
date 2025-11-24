@@ -122,6 +122,22 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
   }}
 />
 
+// With vertical list layout for suggestions
+<ChatContainer
+  messages={[]}
+  onSendMessage={handleSendMessage}
+  welcomeConfig={{
+    title: "Welcome to AI Assistant",
+    description: "Choose an option below:",
+    suggestions: [
+      {id: '1', title: 'Explain quantum computing'},
+      {id: '2', title: 'Write a poem about nature'},
+      {id: '3', title: 'Help me debug my code'},
+    ],
+    layout: 'list',
+  }}
+/>
+
 // Full configuration with streaming and error handling
 <ChatContainer
   chats={chats}
@@ -157,6 +173,44 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
   messages={messages}
   onSendMessage={handleSendMessage}
   showActionsOnHover={true}
+/>
+
+// With default message actions and custom loader statuses
+<ChatContainer
+  messages={messages}
+  onSendMessage={handleSendMessage}
+  messageListConfig={{
+    userActions: [
+      {
+        type: 'copy',
+        onClick: (message) => handleCopy(message.content),
+        icon: CopyIcon,
+      },
+      {
+        type: 'edit',
+        onClick: (message) => handleEdit(message),
+        icon: EditIcon,
+      },
+    ],
+    assistantActions: [
+      {
+        type: 'copy',
+        onClick: (message) => handleCopy(message.content),
+        icon: CopyIcon,
+      },
+      {
+        type: 'like',
+        onClick: (message) => handleLike(message.id),
+        icon: LikeIcon,
+      },
+      {
+        type: 'unlike',
+        onClick: (message) => handleUnlike(message.id),
+        icon: UnlikeIcon,
+      },
+    ],
+    loaderStatuses: ['submitted', 'streaming'],
+  }}
 />
 
 // With component props overrides
@@ -208,6 +262,7 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
 | `showActionsOnHover`  | `boolean`                              | -        | `false`   | Show message actions (copy, like, edit) on hover                      |
 | `contextItems`        | `ContextItemConfig[]`                  | -        | `[]`      | Array of context items to display in prompt input header              |
 | `transformOptions`    | `OptionsType`                          | -        | -         | Transform options for markdown rendering                              |
+| `messageListConfig`   | `MessageListConfig`                    | -        | -         | Configuration for MessageList (actions, loader statuses)              |
 | `headerProps`         | `Partial<HeaderProps>`                 | -        | -         | Props override for Header component                                   |
 | `contentProps`        | `Partial<ChatContentProps>`            | -        | -         | Props override for ChatContent component                              |
 | `emptyContainerProps` | `Partial<EmptyContainerProps>`         | -        | -         | Props override for EmptyContainer                                     |
@@ -252,6 +307,7 @@ interface WelcomeConfig {
 - **`suggestionTitle`**: Title text above the suggestions section
 - **`suggestions`**: Array of `SuggestionsItem` objects (see below)
 - **`alignment`**: Alignment configuration for image, title, and description (see Alignment section)
+- **`layout`**: Layout orientation for suggestions - `'grid'` for horizontal (default), `'list'` for vertical
 - **`wrapText`**: Enable text wrapping inside suggestion buttons instead of ellipsis (default: `false`)
 - **`showMore`**: Callback function for "Show More" button
 - **`showMoreText`**: Custom text for the "Show More" button
@@ -294,6 +350,60 @@ By default, long suggestion text is truncated with an ellipsis. Enable `wrapText
   title: 'Help me debug my code',
   view: 'flat-secondary',
 }
+```
+
+### MessageListConfig
+
+Configuration for MessageList component behavior (actions and loader):
+
+```tsx
+interface MessageListConfig {
+  userActions?: DefaultMessageAction<TUserMessage>[];
+  assistantActions?: DefaultMessageAction<TAssistantMessage>[];
+  loaderStatuses?: ChatStatus[];
+}
+```
+
+#### MessageListConfig Properties
+
+- **`userActions`**: Array of default actions for user messages (optional)
+- **`assistantActions`**: Array of default actions for assistant messages (optional)
+- **`loaderStatuses`**: Array of chat statuses that should display the loader (default: `['submitted']`)
+
+**Example:**
+
+```tsx
+<ChatContainer
+  messages={messages}
+  onSendMessage={handleSendMessage}
+  messageListConfig={{
+    userActions: [
+      {
+        type: 'copy',
+        onClick: (message) => navigator.clipboard.writeText(message.content),
+        icon: CopyIcon,
+      },
+      {
+        type: 'edit',
+        onClick: (message) => handleEdit(message),
+        icon: EditIcon,
+      },
+    ],
+    assistantActions: [
+      {
+        type: 'copy',
+        onClick: (message) => navigator.clipboard.writeText(message.content),
+        icon: CopyIcon,
+      },
+      {
+        type: 'like',
+        onClick: (message) => handleLike(message.id),
+        icon: LikeIcon,
+      },
+    ],
+    loaderStatuses: ['submitted', 'streaming'],
+  }}
+/>
 ```
 
 ### ChatContainerI18nConfig
@@ -362,7 +472,11 @@ History is integrated through a popup anchored to the history button in the Head
 
 ## Message Actions
 
-Messages can have actions that appear on hover (when `showActionsOnHover` is enabled) or permanently. Actions must be provided in the `actions` field of each message:
+There are two ways to provide actions for messages:
+
+### 1. Per-Message Actions
+
+Actions can be provided in the `actions` field of each message. These actions appear on hover (when `showActionsOnHover` is enabled) or permanently:
 
 ```tsx
 const messages: TMessage[] = [
@@ -388,6 +502,75 @@ const messages: TMessage[] = [
 ];
 
 <ChatContainer messages={messages} onSendMessage={handleSendMessage} showActionsOnHover={true} />;
+```
+
+### 2. Default Actions (Recommended)
+
+Use `messageListConfig` prop with `userActions` and `assistantActions` to provide default actions for all messages of that role. This is cleaner and more maintainable than adding actions to each message individually:
+
+```tsx
+<ChatContainer
+  messages={messages}
+  onSendMessage={handleSendMessage}
+  messageListConfig={{
+    userActions: [
+      {
+        type: 'copy',
+        onClick: (message) => {
+          navigator.clipboard.writeText(message.content);
+        },
+        icon: CopyIcon,
+      },
+      {
+        type: 'edit',
+        onClick: (message) => {
+          handleEditMessage(message.id, message.content);
+        },
+        icon: EditIcon,
+      },
+    ],
+    assistantActions: [
+      {
+        type: 'copy',
+        onClick: (message) => {
+          navigator.clipboard.writeText(message.content);
+        },
+        icon: CopyIcon,
+      },
+      {
+        type: 'like',
+        onClick: (message) => {
+          handleRating(message.id, 'like');
+        },
+        icon: LikeIcon,
+      },
+      {
+        type: 'unlike',
+        onClick: (message) => {
+          handleRating(message.id, 'unlike');
+        },
+        icon: UnlikeIcon,
+      },
+    ],
+  }}
+/>
+```
+
+**How Default Actions Work:**
+
+- Default actions are applied to messages that don't have their own `actions` field
+- If a message has its own `actions` field, it takes precedence over default actions
+- The `onClick` callback receives the entire message object as parameter
+- You can access any message property (id, content, metadata, etc.) in the callback
+
+**DefaultMessageAction Type:**
+
+```tsx
+type DefaultMessageAction<TMessage> = {
+  type: string;
+  onClick: (message: TMessage) => void;
+  icon?: IconData;
+};
 ```
 
 ### Available Action Types

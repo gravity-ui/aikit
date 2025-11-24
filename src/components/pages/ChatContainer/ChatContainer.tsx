@@ -35,6 +35,7 @@ export function ChatContainer(props: ChatContainerProps) {
         showActionsOnHover = false,
         contextItems = [],
         transformOptions,
+        messageListConfig,
         headerProps = {},
         contentProps = {},
         emptyContainerProps = {},
@@ -100,6 +101,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 i18n('empty-state-suggestions-title'),
             suggestions: welcomeConfig?.suggestions,
             alignment: welcomeConfig?.alignment,
+            layout: welcomeConfig?.layout,
             wrapText: welcomeConfig?.wrapText,
             showMore: welcomeConfig?.showMore,
             showMoreText:
@@ -121,8 +123,11 @@ export function ChatContainer(props: ChatContainerProps) {
             onRetry,
             showActionsOnHover,
             transformOptions,
+            userActions: messageListConfig?.userActions,
+            assistantActions: messageListConfig?.assistantActions,
+            loaderStatuses: messageListConfig?.loaderStatuses,
         }),
-        [messages, status, error, onRetry, showActionsOnHover, transformOptions],
+        [messages, status, error, onRetry, showActionsOnHover, transformOptions, messageListConfig],
     );
 
     // Build props for PromptInput

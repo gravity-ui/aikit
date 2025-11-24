@@ -136,17 +136,38 @@ const assistantActions = [
 <MessageList messages={messages} userActions={userActions} assistantActions={assistantActions} />;
 ```
 
+### With Custom Loader Statuses
+
+By default, the loader is displayed when `status` is `'submitted'`. You can customize which statuses show the loader:
+
+```tsx
+import {MessageList} from '@/components/organisms';
+
+// Show loader for both 'submitted' and 'streaming' statuses
+<MessageList messages={messages} status="streaming" loaderStatuses={['submitted', 'streaming']} />;
+
+// Show loader only for 'ready' status (custom use case)
+<MessageList messages={messages} status="ready" loaderStatuses={['ready']} />;
+
+// Disable loader completely
+<MessageList messages={messages} status="submitted" loaderStatuses={[]} />;
+```
+
 ## Props
 
-| Prop                      | Type                                                             | Required | Default | Description                                                                                                 |
-| ------------------------- | ---------------------------------------------------------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
-| `messages`                | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -       | Array of messages to render                                                                                 |
-| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -       | Custom message renderer registry                                                                            |
-| `transformOptions`        | `OptionsType`                                                    | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                  |
-| `showActionsOnHover`      | `boolean`                                                        | -        | -       | Show message actions on hover                                                                               |
-| `showTimestamp`           | `boolean`                                                        | -        | -       | Show message timestamp                                                                                      |
-| `showAvatar`              | `boolean`                                                        | -        | -       | Show avatar for user messages                                                                               |
-| `userActions`             | `DefaultMessageAction<TUserMessage>[]`                           | -        | -       | Array of default actions for user messages. Each action's onClick receives the message as a parameter.      |
-| `assistantActions`        | `DefaultMessageAction<TAssistantMessage>[]`                      | -        | -       | Array of default actions for assistant messages. Each action's onClick receives the message as a parameter. |
-| `className`               | `string`                                                         | -        | -       | Additional CSS class                                                                                        |
-| `qa`                      | `string`                                                         | -        | -       | QA/test identifier                                                                                          |
+| Prop                      | Type                                                             | Required | Default         | Description                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------- |
+| `messages`                | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -               | Array of messages to render                                                                                 |
+| `status`                  | `ChatStatus`                                                     | -        | -               | Current chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'`                               |
+| `errorMessage`            | `AlertProps`                                                     | -        | -               | Error message to display when status is `'error'`                                                           |
+| `onRetry`                 | `() => void`                                                     | -        | -               | Callback when user clicks retry button in error state                                                       |
+| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -               | Custom message renderer registry                                                                            |
+| `transformOptions`        | `OptionsType`                                                    | -        | -               | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                  |
+| `showActionsOnHover`      | `boolean`                                                        | -        | -               | Show message actions on hover                                                                               |
+| `showTimestamp`           | `boolean`                                                        | -        | -               | Show message timestamp                                                                                      |
+| `showAvatar`              | `boolean`                                                        | -        | -               | Show avatar for user messages                                                                               |
+| `userActions`             | `DefaultMessageAction<TUserMessage>[]`                           | -        | -               | Array of default actions for user messages. Each action's onClick receives the message as a parameter.      |
+| `assistantActions`        | `DefaultMessageAction<TAssistantMessage>[]`                      | -        | -               | Array of default actions for assistant messages. Each action's onClick receives the message as a parameter. |
+| `loaderStatuses`          | `ChatStatus[]`                                                   | -        | `['submitted']` | Array of chat statuses that should display the loader                                                       |
+| `className`               | `string`                                                         | -        | -               | Additional CSS class                                                                                        |
+| `qa`                      | `string`                                                         | -        | -               | QA/test identifier                                                                                          |

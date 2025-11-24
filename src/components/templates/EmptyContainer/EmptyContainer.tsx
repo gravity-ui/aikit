@@ -52,6 +52,8 @@ export interface EmptyContainerProps {
     onSuggestionClick?: (content: string, id?: string) => void;
     /** Alignment configuration for image, title, and description */
     alignment?: AlignmentConfig;
+    /** Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical */
+    layout?: 'grid' | 'list';
     /** Enable text wrapping inside suggestion buttons instead of ellipsis */
     wrapText?: boolean;
     /** Callback for showing more suggestions */
@@ -80,6 +82,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
         suggestions = [],
         onSuggestionClick,
         alignment,
+        layout = 'grid',
         wrapText = false,
         showMore,
         showMoreText,
@@ -144,7 +147,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
                                     <Suggestions
                                         items={suggestions}
                                         onClick={onSuggestionClick}
-                                        layout="grid"
+                                        layout={layout}
                                         wrapText={wrapText}
                                     />
                                 </div>

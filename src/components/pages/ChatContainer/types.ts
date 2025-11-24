@@ -1,6 +1,16 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
+import type {
+    ChatStatus,
+    ChatType,
+    TAssistantMessage,
+    TChatMessage,
+    TMessageContent,
+    TMessageMetadata,
+    TSubmitData,
+    TUserMessage,
+} from '../../../types';
+import type {DefaultMessageAction} from '../../../utils';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {SuggestionsItem} from '../../molecules/Suggestions';
 import type {HeaderProps} from '../../organisms/Header';
@@ -74,12 +84,26 @@ export interface WelcomeConfig {
     suggestions?: SuggestionsItem[];
     /** Alignment configuration for image, title, and description */
     alignment?: AlignmentConfig;
+    /** Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical */
+    layout?: 'grid' | 'list';
     /** Enable text wrapping inside suggestion buttons instead of ellipsis */
     wrapText?: boolean;
     /** Show more suggestions callback */
     showMore?: () => void;
     /** Show more button text */
     showMoreText?: string;
+}
+
+/**
+ * MessageList configuration
+ */
+export interface MessageListConfig {
+    /** Default actions for user messages */
+    userActions?: DefaultMessageAction<TUserMessage<TMessageMetadata>>[];
+    /** Default actions for assistant messages */
+    assistantActions?: DefaultMessageAction<TAssistantMessage<TMessageContent, TMessageMetadata>>[];
+    /** Array of chat statuses that should display the loader */
+    loaderStatuses?: ChatStatus[];
 }
 
 /**
@@ -125,6 +149,10 @@ export interface ChatContainerProps {
     contextItems?: ContextItemConfig[];
     /** Transform options for markdown rendering */
     transformOptions?: OptionsType;
+
+    // Configuration
+    /** MessageList configuration for actions and loader behavior */
+    messageListConfig?: MessageListConfig;
 
     // Component props overrides
     /** Props override for Header component */
