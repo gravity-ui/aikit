@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0](https://github.com/gravity-ui/aikit/compare/v0.2.2...v0.3.0) (2025-11-24)
+
+
+### Features
+
+* **ContextItem:** make onRemove props optional ([d38dd45](https://github.com/gravity-ui/aikit/commit/d38dd45b6ff5366cd6cd409896f502cf16e2d0eb))
+* **header:** add 'withIcon' prop to control icon visibility ([2684923](https://github.com/gravity-ui/aikit/commit/26849231d8dcd7c6cbaee9e723aa662166a461f4))
+* **history:** add loading state to History ([346817b](https://github.com/gravity-ui/aikit/commit/346817ba319b6b3f2ac96a5c8499bac21db987e3))
+* **MessageList:** add pagination ([8c9d4d1](https://github.com/gravity-ui/aikit/commit/8c9d4d13883ffd98c67a1a71ac0cb7271df52e85))
+* **MessageList:** remove message status ([57b16e1](https://github.com/gravity-ui/aikit/commit/57b16e13bf15ac4ff8f52e880fbf02669342570e))
+* **PromptInput:** add initialValue prop ([742d539](https://github.com/gravity-ui/aikit/commit/742d5392bc5f8d97ae3ab6826be70852c1ba3e63))
+* **PromptInput:** remove isSending state and update canSubmit logic ([7f92245](https://github.com/gravity-ui/aikit/commit/7f922451775d9489fa9caf336cda6bf3a6c5ce74))
+
+
+### Bug Fixes
+
+* **ChatContainer:** fix props for inner components ([5d44a8a](https://github.com/gravity-ui/aikit/commit/5d44a8a83c20adbe86a2a74c5fc5f678ae02e0ea))
+* **HistoryList:** use castom loader ([86b7208](https://github.com/gravity-ui/aikit/commit/86b7208969012f1d1ee3df009f5c58ab172d96e9))
+* **MessageList:** add padding for scroll position ([ab5735d](https://github.com/gravity-ui/aikit/commit/ab5735d0bfee2f30bea99c4f5c080b762077ed8a))
+* **shimmer:** remove duplicate mask-clip property ([138fb52](https://github.com/gravity-ui/aikit/commit/138fb523af77dd97d8d2e5449a8632e9a5c89702))
+* **shimmer:** support dark theme ([bfff965](https://github.com/gravity-ui/aikit/commit/bfff965c72ca0e586d72996cde857c3c6ee6fe7f))
+
 ## [0.2.2](https://github.com/gravity-ui/aikit/compare/v0.2.1...v0.2.2) (2025-11-21)
 
 
