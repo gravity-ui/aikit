@@ -78,7 +78,10 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     // ChatStatus.submitted → submitButtonState.loading
     let submitButtonState: 'enabled' | 'disabled' | 'loading' | 'cancelable' = 'disabled';
 
-    if (disabled || !trimmedValue) {
+    // disabled by props or empty value and status is ready
+    if (disabled) {
+        submitButtonState = 'disabled';
+    } else if (!trimmedValue && (status === 'ready' || status === 'error')) {
         submitButtonState = 'disabled';
     } else if (isSending) {
         submitButtonState = 'loading';

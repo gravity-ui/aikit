@@ -39,10 +39,16 @@ const handleSend = async (data: TSubmitData) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 };
 
+const handleCancel = async () => {
+    // eslint-disable-next-line no-console
+    console.log('Cancelling');
+};
+
 export const Playground: Story = {
     args: {
         view: 'simple',
         onSend: handleSend,
+        onCancel: handleCancel,
         bodyProps: {
             placeholder: 'Plan, code, build and test anything',
         },

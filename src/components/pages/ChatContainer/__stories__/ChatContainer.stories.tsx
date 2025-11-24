@@ -277,7 +277,7 @@ export const Playground: Story = {
             addActionsToMessages(mockChatMessages[initialChat.id] || []),
         );
         const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
-            'ready',
+            args.status || 'ready',
         );
         const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
 
@@ -323,12 +323,17 @@ export const Playground: Story = {
             setMessages([]);
         };
 
+        const handleCancel = async () => {
+            setStatus('ready');
+        };
+
         return (
             <ChatContainer
                 {...args}
                 messages={messages}
                 activeChat={activeChat}
                 onSendMessage={handleSendMessage}
+                onCancel={handleCancel}
                 onSelectChat={handleSelectChat}
                 onCreateChat={handleCreateChat}
                 status={status}

@@ -40,6 +40,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     showAvatar?: boolean;
     userActions?: DefaultMessageAction<TUserMessage<TMessageMetadata>>[];
     assistantActions?: DefaultMessageAction<TAssistantMessage<TContent, TMessageMetadata>>[];
+    /** Array of chat statuses that should display the loader */
+    loaderStatuses?: ChatStatus[];
     className?: string;
     qa?: string;
 };
@@ -53,6 +55,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     showAvatar,
     userActions,
     assistantActions,
+    loaderStatuses = ['submitted'],
     className,
     qa,
     status,
@@ -61,6 +64,7 @@ export function MessageList<TContent extends TMessageContent = never>({
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming';
     const messagesCount = messages.length;
+    const showLoader = status && loaderStatuses.includes(status);
 
     const {containerRef, endRef} = useSmartScroll<HTMLDivElement>(isStreaming, messagesCount);
 
@@ -113,7 +117,7 @@ export function MessageList<TContent extends TMessageContent = never>({
             <div className={b('messages', className)} data-qa={qa}>
                 {messages.map(renderMessage)}
             </div>
-            {status === 'submitted' && <Loader className={b('loader')} />}
+            {showLoader && <Loader className={b('loader')} />}
             {status === 'error' && (
                 <ErrorAlert
                     className={b('error-alert')}

@@ -111,7 +111,7 @@ export const WrapTextListLayoutWithContainer: StoryFn<SuggestionsProps> = (args)
             items={[
                 {
                     id: '1',
-                    title: 'This is a long suggestion designed exactly to 256 characters. It demonstrates handling of lengthy text fields for the UI.',
+                    title: 'This is a short.',
                 },
                 {
                     id: '2',
