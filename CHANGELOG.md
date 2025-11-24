@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/gravity-ui/aikit/compare/v0.3.0...v0.3.1) (2025-11-24)
+
+
+### Bug Fixes
+
+* **ChatContainer:** change MessageListConfig to extend MessageListProps ([8842123](https://github.com/gravity-ui/aikit/commit/8842123c8cb9899cff179008c3dd36e45e583407))
+
 ## [0.3.0](https://github.com/gravity-ui/aikit/compare/v0.2.2...v0.3.0) (2025-11-24)
 
 
