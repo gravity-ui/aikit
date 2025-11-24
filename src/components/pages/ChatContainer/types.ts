@@ -1,16 +1,8 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import type {
-    ChatStatus,
-    ChatType,
-    TAssistantMessage,
-    TChatMessage,
-    TMessageContent,
-    TMessageMetadata,
-    TSubmitData,
-    TUserMessage,
-} from '../../../types';
-import type {DefaultMessageAction} from '../../../utils';
+import {MessageListProps} from 'src/components/organisms/MessageList';
+
+import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {SuggestionsItem} from '../../molecules/Suggestions';
 import type {HeaderProps} from '../../organisms/Header';
@@ -97,14 +89,10 @@ export interface WelcomeConfig {
 /**
  * MessageList configuration
  */
-export interface MessageListConfig {
-    /** Default actions for user messages */
-    userActions?: DefaultMessageAction<TUserMessage<TMessageMetadata>>[];
-    /** Default actions for assistant messages */
-    assistantActions?: DefaultMessageAction<TAssistantMessage<TMessageContent, TMessageMetadata>>[];
-    /** Array of chat statuses that should display the loader */
-    loaderStatuses?: ChatStatus[];
-}
+export type MessageListConfig = Omit<
+    MessageListProps,
+    'messages' | 'status' | 'errorMessage' | 'onRetry' | 'showActionsOnHover' | 'transformOptions'
+>;
 
 /**
  * Props for ChatContainer component

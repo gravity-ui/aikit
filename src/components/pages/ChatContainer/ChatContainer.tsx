@@ -117,15 +117,13 @@ export function ChatContainer(props: ChatContainerProps) {
     // Build props for MessageList
     const messageListProps = useMemo(
         () => ({
+            ...messageListConfig,
             messages,
             status,
             errorMessage: error ? {text: error.message} : undefined,
             onRetry,
             showActionsOnHover,
             transformOptions,
-            userActions: messageListConfig?.userActions,
-            assistantActions: messageListConfig?.assistantActions,
-            loaderStatuses: messageListConfig?.loaderStatuses,
         }),
         [messages, status, error, onRetry, showActionsOnHover, transformOptions, messageListConfig],
     );
