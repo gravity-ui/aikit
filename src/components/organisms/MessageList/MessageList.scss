@@ -9,7 +9,6 @@ $block: '.#{variables.$ns}message-list';
     min-height: 0;
     flex: 1;
     align-self: stretch;
-    width: 100%;
 
     &__messages {
         display: flex;

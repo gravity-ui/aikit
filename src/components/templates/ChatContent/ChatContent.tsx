@@ -44,7 +44,10 @@ export function ChatContent(props: ChatContentProps) {
                 ? emptyContainerProps && <EmptyContainer {...emptyContainerProps} />
                 : messageListProps && (
                       <div className={b('message-list-container')}>
-                          <MessageList {...messageListProps} />
+                          <MessageList
+                              {...messageListProps}
+                              className={b('message-list', messageListProps.className)}
+                          />
                       </div>
                   )}
         </div>

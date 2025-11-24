@@ -141,7 +141,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     <Loader view="loading" />
                 </IntersectionContainer>
             )}
-            <div className={b('messages', className)} data-qa={qa}>
+            <div className={b('messages')} data-qa={qa}>
                 {messages.map(renderMessage)}
             </div>
             {showLoader && <Loader className={b('loader')} />}
