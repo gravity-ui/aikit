@@ -25,6 +25,8 @@ export type PromptInputProps = {
     onSend: (data: TSubmitData) => Promise<void>;
     /** Callback when sending is cancelled */
     onCancel?: () => Promise<void>;
+    /** Initial value */
+    initialValue?: string;
     /** Disabled state */
     disabled?: boolean;
     /** Chat status to determine input behavior */
@@ -61,6 +63,7 @@ export function PromptInput(props: PromptInputProps) {
         view = 'simple',
         onSend,
         onCancel,
+        initialValue,
         disabled = false,
         status = 'ready',
         maxLength,
@@ -77,6 +80,7 @@ export function PromptInput(props: PromptInputProps) {
     const hookState = usePromptInput({
         onSend,
         onCancel,
+        initialValue,
         disabled,
         status,
         maxLength,
