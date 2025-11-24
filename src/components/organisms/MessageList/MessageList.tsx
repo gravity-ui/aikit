@@ -2,8 +2,7 @@ import {useEffect} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import {useSmartScroll} from '../../../hooks';
-import {useScrollPreservation} from '../../../hooks/useScrollPreservation';
+import {useScrollPreservation, useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
 import type {
     TAssistantMessage,
