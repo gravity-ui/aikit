@@ -5,6 +5,7 @@ import {Button, DOMProps, List, ListItemData, QAProps} from '@gravity-ui/uikit';
 import {ChatType, ListItemChatData} from '../../../types';
 import {ChatFilterFunction, defaultChatFilter, groupChatsByDate} from '../../../utils/chatUtils';
 import {block} from '../../../utils/cn';
+import {Loader} from '../../atoms/Loader';
 
 import {ChatItem} from './ChatItem';
 import {DateHeaderItem} from './DateHeaderItem';
@@ -167,25 +168,28 @@ export function HistoryList(props: HistoryListProps) {
 
     return (
         <div className={b('container', className)} data-qa={qa} style={style}>
-            {/* Chat List */}
             <div className={b('list-wrapper')}>
-                <List
-                    items={listItems}
-                    renderItem={renderItem}
-                    virtualized={false}
-                    filterable={searchable}
-                    filterItem={wrappedFilterFunction}
-                    filterPlaceholder={i18n('search-placeholder')}
-                    filterClassName={b('filter')}
-                    emptyPlaceholder={loading ? undefined : emptyState}
-                    selectedItemIndex={selectedItemIndex}
-                    itemsClassName={b('list')}
-                    itemClassName={b('list-item')}
-                    loading={loading}
-                />
+                {loading ? (
+                    <div className={b('loader-wrapper')}>
+                        <Loader view="loading" />
+                    </div>
+                ) : (
+                    <List
+                        items={listItems}
+                        renderItem={renderItem}
+                        virtualized={false}
+                        filterable={searchable}
+                        filterItem={wrappedFilterFunction}
+                        filterPlaceholder={i18n('search-placeholder')}
+                        filterClassName={b('filter')}
+                        emptyPlaceholder={emptyState}
+                        selectedItemIndex={selectedItemIndex}
+                        itemsClassName={b('list')}
+                        itemClassName={b('list-item')}
+                    />
+                )}
             </div>
 
-            {/* Load More Button */}
             {hasMore && onLoadMore && (
                 <Button view="flat-action" size="m" width="max" onClick={onLoadMore}>
                     {i18n('action-load-more')}
