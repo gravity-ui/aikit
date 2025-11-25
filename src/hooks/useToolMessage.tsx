@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 import {ChevronDown, ChevronUp} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
@@ -91,6 +91,7 @@ export function useToolMessage(options: ToolMessageProps) {
         footerContent,
         expandable = Boolean(bodyContent),
         initialExpanded,
+        autoCollapseOnSuccess,
         onAccept,
         onReject,
     } = options;
@@ -98,6 +99,12 @@ export function useToolMessage(options: ToolMessageProps) {
     const [isExpanded, setIsExpanded] = useState(
         getDefaultInitialExpanded(status, initialExpanded),
     );
+
+    useEffect(() => {
+        if (autoCollapseOnSuccess && status === 'success') {
+            setIsExpanded(false);
+        }
+    }, [autoCollapseOnSuccess, status]);
 
     const toggleExpanded = useCallback(() => {
         setIsExpanded((prev) => !prev);

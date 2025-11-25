@@ -23,27 +23,29 @@ import {Copy, Pencil} from '@gravity-ui/icons';
   toolIcon={<Icon data={Pencil} size={16} />}
   bodyContent={<div>Tool execution result</div>}
   status="success"
+  autoCollapseOnSuccess={true}
 />;
 ```
 
 ## Props
 
-| Prop              | Type              | Required | Default                                  | Description                                                                                  |
-| ----------------- | ----------------- | -------- | ---------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `toolName`        | `string`          | ✓        | -                                        | Name of the tool                                                                             |
-| `toolIcon`        | `React.ReactNode` | -        | -                                        | Icon to display next to tool name                                                            |
-| `headerActions`   | `Action[]`        | -        | `[]`                                     | Array of header action buttons                                                               |
-| `footerActions`   | `Action[]`        | -        | Generated based on status                | Array of footer action buttons (auto-generated if not provided)                              |
-| `bodyContent`     | `React.ReactNode` | -        | -                                        | Content to display in expandable body section                                                |
-| `headerContent`   | `React.ReactNode` | -        | -                                        | Additional content to display in header                                                      |
-| `footerContent`   | `React.ReactNode` | -        | Generated based on status                | Status message to display in footer (auto-generated if not provided)                         |
-| `status`          | `ToolStatus`      | -        | -                                        | Status indicator that affects footer actions and messages                                    |
-| `expandable`      | `boolean`         | -        | `Boolean(bodyContent)`                   | Whether the component can be expanded/collapsed                                              |
-| `initialExpanded` | `boolean`         | -        | `false` (or `true` for waiting statuses) | Initial expanded state. Defaults to `true` for `waitingConfirmation` and `waitingSubmission` |
-| `onAccept`        | `() => void`      | -        | -                                        | Handler for accept action (used with status presets)                                         |
-| `onReject`        | `() => void`      | -        | -                                        | Handler for reject action (used with status presets)                                         |
-| `className`       | `string`          | -        | -                                        | Additional CSS class name                                                                    |
-| `qa`              | `string`          | -        | -                                        | Data QA attribute                                                                            |
+| Prop                    | Type              | Required | Default                                  | Description                                                                                  |
+| ----------------------- | ----------------- | -------- | ---------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `toolName`              | `string`          | ✓        | -                                        | Name of the tool                                                                             |
+| `toolIcon`              | `React.ReactNode` | -        | -                                        | Icon to display next to tool name                                                            |
+| `headerActions`         | `Action[]`        | -        | `[]`                                     | Array of header action buttons                                                               |
+| `footerActions`         | `Action[]`        | -        | Generated based on status                | Array of footer action buttons (auto-generated if not provided)                              |
+| `bodyContent`           | `React.ReactNode` | -        | -                                        | Content to display in expandable body section                                                |
+| `headerContent`         | `React.ReactNode` | -        | -                                        | Additional content to display in header                                                      |
+| `footerContent`         | `React.ReactNode` | -        | Generated based on status                | Status message to display in footer (auto-generated if not provided)                         |
+| `status`                | `ToolStatus`      | -        | -                                        | Status indicator that affects footer actions and messages                                    |
+| `expandable`            | `boolean`         | -        | `Boolean(bodyContent)`                   | Whether the component can be expanded/collapsed                                              |
+| `initialExpanded`       | `boolean`         | -        | `false` (or `true` for waiting statuses) | Initial expanded state. Defaults to `true` for `waitingConfirmation` and `waitingSubmission` |
+| `autoCollapseOnSuccess` | `boolean`         | -        | `false`                                  | Automatically collapse the tool when status changes to `success`                             |
+| `onAccept`              | `() => void`      | -        | -                                        | Handler for accept action (used with status presets)                                         |
+| `onReject`              | `() => void`      | -        | -                                        | Handler for reject action (used with status presets)                                         |
+| `className`             | `string`          | -        | -                                        | Additional CSS class name                                                                    |
+| `qa`                    | `string`          | -        | -                                        | Data QA attribute                                                                            |
 
 ## Status-Based Behavior
 

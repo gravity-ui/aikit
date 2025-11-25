@@ -36,6 +36,7 @@ export type ToolMessageProps = {
     status?: ToolStatus;
     expandable?: boolean;
     initialExpanded?: boolean;
+    autoCollapseOnSuccess?: boolean;
     onAccept?: () => void;
     onReject?: () => void;
     className?: string;
