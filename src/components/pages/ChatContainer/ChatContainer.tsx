@@ -120,7 +120,8 @@ export function ChatContainer(props: ChatContainerProps) {
             ...messageListConfig,
             messages,
             status,
-            errorMessage: error ? {text: error.message} : undefined,
+            errorMessage:
+                messageListConfig?.errorMessage || (error ? {text: error.message} : undefined),
             onRetry,
             showActionsOnHover,
             transformOptions,
@@ -146,8 +147,21 @@ export function ChatContainer(props: ChatContainerProps) {
                     promptInputProps?.bodyProps?.placeholder ||
                     i18n('prompt-placeholder'),
             },
+            footerProps: {
+                ...promptInputProps?.footerProps,
+                submitButtonTooltipSend: i18nConfig.submitButton?.sendTooltip,
+                submitButtonTooltipCancel: i18nConfig.submitButton?.cancelTooltip,
+            },
         }),
-        [onSendMessage, onCancel, status, contextItems, i18nConfig.promptInput, promptInputProps],
+        [
+            onSendMessage,
+            onCancel,
+            status,
+            contextItems,
+            i18nConfig.promptInput,
+            i18nConfig.submitButton,
+            promptInputProps,
+        ],
     );
 
     // Build props for Disclaimer

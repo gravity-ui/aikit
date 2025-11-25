@@ -41,11 +41,11 @@ export interface EmptyContainerProps {
     /** Image or icon to display at the top */
     image?: React.ReactNode;
     /** Title text or custom React element for the welcome screen */
-    title?: string | React.ReactNode;
+    title?: React.ReactNode;
     /** Description text or custom React element explaining the functionality */
-    description?: string | React.ReactNode;
-    /** Title for the suggestions section */
-    suggestionTitle?: string;
+    description?: React.ReactNode;
+    /** Title for the suggestions section - can be string or custom React element */
+    suggestionTitle?: React.ReactNode;
     /** Array of suggestion items */
     suggestions?: Suggestion[];
     /** Callback when a suggestion is clicked */
@@ -138,9 +138,13 @@ export function EmptyContainer(props: EmptyContainerProps) {
                             <div className={b('suggestions-section')}>
                                 {suggestionTitle && (
                                     <div className={b('suggestions-title')}>
-                                        <Text variant="subheader-3" color="primary">
-                                            {suggestionTitle}
-                                        </Text>
+                                        {typeof suggestionTitle === 'string' ? (
+                                            <Text variant="subheader-3" color="primary">
+                                                {suggestionTitle}
+                                            </Text>
+                                        ) : (
+                                            suggestionTitle
+                                        )}
                                     </div>
                                 )}
                                 <div>

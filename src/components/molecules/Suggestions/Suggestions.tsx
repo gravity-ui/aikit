@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {ChevronLeft, ChevronRight} from '@gravity-ui/icons';
 import {ButtonButtonProps, Icon, Text} from '@gravity-ui/uikit';
 
@@ -27,8 +29,8 @@ export type SuggestionsProps = {
     items: SuggestionsItem[];
     /** Callback function called when a suggestion is clicked */
     onClick: (content: string, id?: string) => void | Promise<void>;
-    /** Title to display above suggestions */
-    title?: string;
+    /** Title to display above suggestions - can be string or custom React element */
+    title?: React.ReactNode;
     /** Layout orientation: 'grid' for horizontal, 'list' for vertical */
     layout?: 'grid' | 'list';
     /** Text alignment inside buttons: 'left', 'center', or 'right' */
@@ -103,9 +105,13 @@ export function Suggestions(props: SuggestionsProps) {
         <div className={b('container', className)} data-qa={qa}>
             {title && (
                 <div className={b('title')}>
-                    <Text variant="body-1" color="primary">
-                        {title}
-                    </Text>
+                    {typeof title === 'string' ? (
+                        <Text variant="body-1" color="primary">
+                            {title}
+                        </Text>
+                    ) : (
+                        title
+                    )}
                 </div>
             )}
             <div className={b({layout})}>

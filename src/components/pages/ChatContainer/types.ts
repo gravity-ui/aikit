@@ -41,9 +41,12 @@ export interface ChatContainerI18nConfig {
     promptInput?: {
         /** Placeholder text */
         placeholder?: string;
-        /** Send button tooltip */
+    };
+    /** Submit button tooltips */
+    submitButton?: {
+        /** Send button tooltip (enabled state) */
         sendTooltip?: string;
-        /** Cancel button tooltip */
+        /** Cancel button tooltip (cancelable state) */
         cancelTooltip?: string;
     };
     /** History texts */
@@ -67,11 +70,11 @@ export interface WelcomeConfig {
     /** Image or icon to display */
     image?: React.ReactNode;
     /** Title text or custom React element */
-    title?: string | React.ReactNode;
+    title?: React.ReactNode;
     /** Description text or custom React element */
-    description?: string | React.ReactNode;
-    /** Suggestions section title */
-    suggestionTitle?: string;
+    description?: React.ReactNode;
+    /** Suggestions section title - can be string or custom React element */
+    suggestionTitle?: React.ReactNode;
     /** Array of suggestions (title will be used as message content) */
     suggestions?: SuggestionsItem[];
     /** Alignment configuration for image, title, and description */
@@ -91,7 +94,7 @@ export interface WelcomeConfig {
  */
 export type MessageListConfig = Omit<
     MessageListProps,
-    'messages' | 'status' | 'errorMessage' | 'onRetry' | 'showActionsOnHover' | 'transformOptions'
+    'messages' | 'status' | 'onRetry' | 'showActionsOnHover' | 'transformOptions'
 >;
 
 /**
