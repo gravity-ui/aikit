@@ -32,6 +32,14 @@ export interface SubmitButtonProps {
      */
     size?: ButtonButtonProps['size'];
     /**
+     * Custom tooltip for enabled state
+     */
+    tooltipSend?: string;
+    /**
+     * Custom tooltip for cancelable state
+     */
+    tooltipCancel?: string;
+    /**
      * QA/test identifier
      */
     qa?: string;
@@ -48,7 +56,15 @@ export interface SubmitButtonProps {
  *
  * @returns Submit button component
  */
-export function SubmitButton({onClick, state, className, size = 'm', qa}: SubmitButtonProps) {
+export function SubmitButton({
+    onClick,
+    state,
+    className,
+    size = 'm',
+    tooltipSend,
+    tooltipCancel,
+    qa,
+}: SubmitButtonProps) {
     const isCancelable = state === 'cancelable';
     const isLoading = state === 'loading';
     const isDisabled = state === 'disabled';
@@ -61,6 +77,21 @@ export function SubmitButton({onClick, state, className, size = 'm', qa}: Submit
         return Promise.resolve();
     }, [state, onClick]);
 
+    // Get tooltip based on state
+    const getTooltipTitle = (): string | undefined => {
+        switch (state) {
+            case 'enabled':
+                return tooltipSend || i18n('tooltip-send');
+            case 'cancelable':
+                return tooltipCancel || i18n('tooltip-cancel');
+            case 'disabled':
+            case 'loading':
+                return undefined;
+            default:
+                return undefined;
+        }
+    };
+
     return (
         <ActionButton
             view="action"
@@ -70,7 +101,7 @@ export function SubmitButton({onClick, state, className, size = 'm', qa}: Submit
             onClick={handleClick}
             className={b({size, loading: isLoading, cancelable: isCancelable}, className)}
             qa={qa}
-            tooltipTitle={i18n('tooltip-send')}
+            tooltipTitle={getTooltipTitle()}
         >
             {isLoading ? (
                 <div className={b('loader')}>

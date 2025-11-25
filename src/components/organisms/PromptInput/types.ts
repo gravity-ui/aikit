@@ -59,6 +59,10 @@ export type PromptInputFooterConfig = {
     showMicrophone?: boolean;
     /** Microphone icon click handler */
     onMicrophoneClick?: () => void;
+    /** Custom tooltip for submit button in enabled state */
+    submitButtonTooltipSend?: string;
+    /** Custom tooltip for submit button in cancelable state */
+    submitButtonTooltipCancel?: string;
 };
 
 /**
@@ -69,8 +73,8 @@ export type PromptInputSuggestionsConfig = {
     suggestions?: SuggestionsItem[];
     /** Show submit suggestions */
     showSuggestions?: boolean;
-    /** Title for the suggestions section */
-    suggestTitle?: string;
+    /** Title for the suggestions section - can be string or custom React element */
+    suggestTitle?: string | ReactNode;
     /** Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical */
     suggestionsLayout?: SuggestionsProps['layout'];
     /** Text alignment inside suggestion buttons */

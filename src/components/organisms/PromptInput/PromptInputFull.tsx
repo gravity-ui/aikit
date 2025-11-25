@@ -57,6 +57,8 @@ export function PromptInputFull(props: PromptInputFullProps) {
         onAttachmentClick,
         showMicrophone = false,
         onMicrophoneClick,
+        submitButtonTooltipSend,
+        submitButtonTooltipCancel,
     } = footerProps;
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
@@ -91,6 +93,8 @@ export function PromptInputFull(props: PromptInputFullProps) {
                     submitButton={{
                         onClick: handleSubmit,
                         state: submitButtonState,
+                        tooltipSend: submitButtonTooltipSend,
+                        tooltipCancel: submitButtonTooltipCancel,
                     }}
                     showSettings={showSettings}
                     onSettingsClick={onSettingsClick}

@@ -15,7 +15,7 @@ export type UserMessageProps = Pick<
     BaseMessageProps,
     'actions' | 'showActionsOnHover' | 'showTimestamp' | 'timestamp'
 > & {
-    content: string | React.ReactNode;
+    content: React.ReactNode;
     format?: 'plain' | 'markdown';
     showAvatar?: boolean;
     avatarUrl?: string;

@@ -288,8 +288,8 @@ Configuration for the welcome screen displayed when there are no messages:
 ```tsx
 interface WelcomeConfig {
   image?: React.ReactNode;
-  title?: string | React.ReactNode;
-  description?: string | React.ReactNode;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
   suggestionTitle?: string;
   suggestions?: SuggestionsItem[];
   alignment?: AlignmentConfig;
