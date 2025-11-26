@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 
 import {ChevronDown, ChevronUp} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
@@ -6,6 +6,9 @@ import {Icon} from '@gravity-ui/uikit';
 import {i18n} from '../components/organisms/ToolMessage/i18n';
 import type {Action} from '../types/common';
 import type {ToolMessageProps, ToolStatus} from '../types/tool';
+
+import {useAutoCollapseOnCancelled} from './useAutoCollapseOnCancelled';
+import {useAutoCollapseOnSuccess} from './useAutoCollapseOnSuccess';
 
 function getDefaultFooterActions(
     status: ToolStatus | undefined,
@@ -92,6 +95,7 @@ export function useToolMessage(options: ToolMessageProps) {
         expandable = Boolean(bodyContent),
         initialExpanded,
         autoCollapseOnSuccess,
+        autoCollapseOnCancelled,
         onAccept,
         onReject,
     } = options;
@@ -100,11 +104,8 @@ export function useToolMessage(options: ToolMessageProps) {
         getDefaultInitialExpanded(status, initialExpanded),
     );
 
-    useEffect(() => {
-        if (autoCollapseOnSuccess && status === 'success') {
-            setIsExpanded(false);
-        }
-    }, [autoCollapseOnSuccess, status]);
+    useAutoCollapseOnSuccess({enabled: Boolean(autoCollapseOnSuccess), status, setIsExpanded});
+    useAutoCollapseOnCancelled({enabled: Boolean(autoCollapseOnCancelled), status, setIsExpanded});
 
     const toggleExpanded = useCallback(() => {
         setIsExpanded((prev) => !prev);

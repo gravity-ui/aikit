@@ -5,7 +5,8 @@ export type ToolStatus =
     | 'error'
     | 'loading'
     | 'waitingConfirmation'
-    | 'waitingSubmission';
+    | 'waitingSubmission'
+    | 'cancelled';
 
 export type ToolHeaderProps = {
     toolIcon?: React.ReactNode;
@@ -37,6 +38,7 @@ export type ToolMessageProps = {
     expandable?: boolean;
     initialExpanded?: boolean;
     autoCollapseOnSuccess?: boolean;
+    autoCollapseOnCancelled?: boolean;
     onAccept?: () => void;
     onReject?: () => void;
     className?: string;

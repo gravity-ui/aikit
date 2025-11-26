@@ -140,7 +140,7 @@ export const Loading: StoryObj<ToolMessageProps> = {
     render: () => (
         <ShowcaseItem title="Loading">
             <ContentWrapper width="430px">
-                <ToolMessage {...defaultArgs} status="loading" />
+                <ToolMessage {...defaultArgs} status="loading" initialExpanded={true} />
             </ContentWrapper>
         </ShowcaseItem>
     ),
