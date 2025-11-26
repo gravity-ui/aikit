@@ -28,4 +28,10 @@ test.describe('Alert', {tag: '@Alert'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render collapsible content', async ({mount, expectScreenshot}) => {
+        await mount(<AlertStories.CollapsibleWithLongContent />);
+
+        await expectScreenshot();
+    });
 });

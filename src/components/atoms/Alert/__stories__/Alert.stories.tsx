@@ -105,3 +105,40 @@ CustomIcon.args = {
     variant: 'default',
     button: {content: 'Retry', onClick: () => ({})},
 };
+
+export const CollapsibleWithLongContent: StoryFn<AlertProps> = (args) => (
+    <ContentWrapper width="430px">
+        <Alert
+            {...args}
+            text="Error occurred"
+            initialExpanded={true}
+            variant="error"
+            button={{content: 'Retry', onClick: () => ({})}}
+            content={
+                <div>
+                    <p>Full error log:</p>
+                    <pre
+                        style={{
+                            margin: 0,
+                            fontSize: '12px',
+                            maxHeight: '200px',
+                            overflow: 'auto',
+                        }}
+                    >
+                        {`[2024-01-15 10:23:45] ERROR: Connection failed
+[2024-01-15 10:23:45] DEBUG: Attempting to reconnect...
+[2024-01-15 10:23:46] ERROR: Reconnection failed
+[2024-01-15 10:23:46] DEBUG: Retrying in 5 seconds...
+[2024-01-15 10:23:51] ERROR: Connection timeout
+[2024-01-15 10:23:51] DEBUG: Stack trace:
+    at ConnectionManager.connect (connection.js:45)
+    at NetworkHandler.handleRequest (network.js:123)
+    at API.request (api.js:67)
+    at UserService.fetchData (user.js:23)
+    at Component.loadUser (component.js:10)`}
+                    </pre>
+                </div>
+            }
+        />
+    </ContentWrapper>
+);

@@ -1,6 +1,12 @@
-import {useMemo} from 'react';
+import {useMemo, useState} from 'react';
 
-import {CircleExclamationFill, CircleInfoFill, TriangleExclamationFill} from '@gravity-ui/icons';
+import {
+    ChevronDown,
+    ChevronUp,
+    CircleExclamationFill,
+    CircleInfoFill,
+    TriangleExclamationFill,
+} from '@gravity-ui/icons';
 import {Button, Icon, IconData, Text} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
@@ -17,6 +23,8 @@ export interface AlertProps {
         content: React.ReactNode;
         onClick: () => void;
     };
+    content?: React.ReactNode;
+    initialExpanded?: boolean;
     className?: string;
     qa?: string;
 }
@@ -27,7 +35,18 @@ const statusIcons: Record<string, IconData> = {
     error: CircleExclamationFill,
 };
 
-export function Alert({text, icon, button, variant = 'default', className, qa}: AlertProps) {
+export function Alert({
+    text,
+    icon,
+    button,
+    content,
+    initialExpanded = false,
+    variant = 'default',
+    className,
+    qa,
+}: AlertProps) {
+    const [isExpanded, setIsExpanded] = useState(initialExpanded);
+
     const statusIcon = useMemo(() => {
         if (icon) {
             return <div className={b('icon')}>{icon}</div>;
@@ -40,15 +59,39 @@ export function Alert({text, icon, button, variant = 'default', className, qa}: 
         return null;
     }, [icon, variant]);
 
+    const toggleExpanded = () => {
+        setIsExpanded((prev) => !prev);
+    };
+
     return (
         <div className={b(null, className)} data-qa={qa}>
-            {statusIcon}
-            <Text variant="body-1">{text}</Text>
-            {button ? (
-                <Button onClick={button.onClick} size="s" view="outlined" className={b('action')}>
-                    {button.content}
-                </Button>
-            ) : null}
+            <div className={b('header')}>
+                {statusIcon}
+                <Text variant="body-1" className={b('text')}>
+                    {text}
+                </Text>
+                {content && (
+                    <Button
+                        onClick={toggleExpanded}
+                        size="s"
+                        view="flat"
+                        className={b('collapse-button')}
+                    >
+                        <Icon data={isExpanded ? ChevronUp : ChevronDown} size={16} />
+                    </Button>
+                )}
+                {button ? (
+                    <Button
+                        onClick={button.onClick}
+                        size="s"
+                        view="outlined"
+                        className={b('action')}
+                    >
+                        {button.content}
+                    </Button>
+                ) : null}
+            </div>
+            {content && isExpanded && <div className={b('content')}>{content}</div>}
         </div>
     );
 }
