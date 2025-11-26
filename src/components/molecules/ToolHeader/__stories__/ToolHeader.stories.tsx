@@ -27,7 +27,7 @@ export default {
         },
         status: {
             control: 'select',
-            options: ['success', 'error', 'loading'],
+            options: ['success', 'error', 'loading', 'cancelled'],
             description: 'Status indicator',
         },
     },
@@ -104,6 +104,25 @@ export const Success: StoryObj<ToolHeaderProps> = {
                 }
                 actions={[collapseAction, copyAction]}
                 status="success"
+            />
+        </ContentWrapper>
+    ),
+    decorators: defaultDecorators,
+};
+
+export const Cancelled: StoryObj<ToolHeaderProps> = {
+    render: (args) => (
+        <ContentWrapper width="430px">
+            <ToolHeader
+                {...args}
+                toolIcon={<Icon data={Pencil} size={16} />}
+                toolName="Writing"
+                content={
+                    <Text color="secondary" variant="body-1">
+                        expectScreenshotFixture.ts
+                    </Text>
+                }
+                status="cancelled"
             />
         </ContentWrapper>
     ),
