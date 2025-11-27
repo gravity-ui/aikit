@@ -70,6 +70,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     onLoadPreviousMessages,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming';
+    const isSubmitted = status === 'submitted';
     const messagesCount = messages.length;
     const showLoader = status && loaderStatuses.includes(status);
 
@@ -107,7 +108,8 @@ export function MessageList<TContent extends TMessageContent = never>({
 
         if (isAssistantMessage<TMessageMetadata, TContent>(message)) {
             const isLastMessage = index === messages.length - 1;
-            const showActions = !(isLastMessage && isStreaming);
+            const isNotCompleted = isSubmitted || isStreaming;
+            const showActions = !(isLastMessage && isNotCompleted);
             const actions = showActions
                 ? resolveMessageActions(message, assistantActions)
                 : undefined;
