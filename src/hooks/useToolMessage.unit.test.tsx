@@ -81,4 +81,56 @@ describe('useToolMessage', () => {
 
         expect(result.current.isExpanded).toBe(true);
     });
+
+    it('should collapse when status changes to success with autoCollapseOnSuccess enabled', () => {
+        const {result, rerender} = renderHook((props: ToolMessageProps) => useToolMessage(props), {
+            initialProps: {
+                ...defaultProps,
+                bodyContent: <div>Content</div>,
+                status: 'loading',
+                autoCollapseOnSuccess: true,
+            },
+        });
+
+        act(() => {
+            result.current.toggleExpanded();
+        });
+
+        expect(result.current.isExpanded).toBe(true);
+
+        rerender({
+            ...defaultProps,
+            bodyContent: <div>Content</div>,
+            status: 'success',
+            autoCollapseOnSuccess: true,
+        });
+
+        expect(result.current.isExpanded).toBe(false);
+    });
+
+    it('should collapse when status changes to cancelled with autoCollapseOnCancelled enabled', () => {
+        const {result, rerender} = renderHook((props: ToolMessageProps) => useToolMessage(props), {
+            initialProps: {
+                ...defaultProps,
+                bodyContent: <div>Content</div>,
+                status: 'loading',
+                autoCollapseOnCancelled: true,
+            },
+        });
+
+        act(() => {
+            result.current.toggleExpanded();
+        });
+
+        expect(result.current.isExpanded).toBe(true);
+
+        rerender({
+            ...defaultProps,
+            bodyContent: <div>Content</div>,
+            status: 'cancelled',
+            autoCollapseOnCancelled: true,
+        });
+
+        expect(result.current.isExpanded).toBe(false);
+    });
 });

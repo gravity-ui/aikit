@@ -1,18 +1,19 @@
 import {Action} from './common';
 
-export type ToolStatus =
+export type TToolStatus =
     | 'success'
     | 'error'
     | 'loading'
     | 'waitingConfirmation'
-    | 'waitingSubmission';
+    | 'waitingSubmission'
+    | 'cancelled';
 
 export type ToolHeaderProps = {
     toolIcon?: React.ReactNode;
     toolName: string;
     content?: React.ReactNode;
     actions?: Action[];
-    status?: ToolStatus;
+    status?: TToolStatus;
     className?: string;
     qa?: string;
 };
@@ -33,9 +34,11 @@ export type ToolMessageProps = {
     bodyContent?: React.ReactNode;
     headerContent?: React.ReactNode;
     footerContent?: React.ReactNode;
-    status?: ToolStatus;
+    status?: TToolStatus;
     expandable?: boolean;
     initialExpanded?: boolean;
+    autoCollapseOnSuccess?: boolean;
+    autoCollapseOnCancelled?: boolean;
     onAccept?: () => void;
     onReject?: () => void;
     className?: string;

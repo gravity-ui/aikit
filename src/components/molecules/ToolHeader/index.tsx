@@ -1,27 +1,18 @@
 import {Text} from '@gravity-ui/uikit';
 
-import type {ToolHeaderProps, ToolStatus} from '../../../types/tool';
+import type {ToolHeaderProps} from '../../../types/tool';
 import {block} from '../../../utils/cn';
-import {ActionButton, ToolIndicator} from '../../atoms';
+import {ActionButton} from '../../atoms';
 import {ButtonGroup} from '../ButtonGroup';
+import {ToolStatus} from '../ToolStatus';
 
 import './ToolHeader.scss';
 
 const b = block('tool-header');
 
-function getIndicatorStatus(
-    status: ToolStatus | undefined,
-): 'success' | 'error' | 'loading' | undefined {
-    if (status === 'success' || status === 'error' || status === 'loading') {
-        return status;
-    }
-    return undefined;
-}
-
 export function ToolHeader(props: ToolHeaderProps) {
     const {toolIcon, toolName, content, actions, status, className, qa} = props;
     const hasActions = actions && actions.length > 0;
-    const indicatorStatus = getIndicatorStatus(status);
 
     return (
         <div className={b('', className)} data-qa={qa}>
@@ -46,7 +37,7 @@ export function ToolHeader(props: ToolHeaderProps) {
                         ))}
                     </ButtonGroup>
                 )}
-                {indicatorStatus && <ToolIndicator status={indicatorStatus} />}
+                <ToolStatus status={status} />
             </div>
         </div>
     );

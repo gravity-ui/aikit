@@ -5,10 +5,13 @@ import {Icon} from '@gravity-ui/uikit';
 
 import {i18n} from '../components/organisms/ToolMessage/i18n';
 import type {Action} from '../types/common';
-import type {ToolMessageProps, ToolStatus} from '../types/tool';
+import type {TToolStatus, ToolMessageProps} from '../types/tool';
+
+import {useAutoCollapseOnCancelled} from './useAutoCollapseOnCancelled';
+import {useAutoCollapseOnSuccess} from './useAutoCollapseOnSuccess';
 
 function getDefaultFooterActions(
-    status: ToolStatus | undefined,
+    status: TToolStatus | undefined,
     footerActions: Action[] | undefined,
     onAccept?: () => void,
     onReject?: () => void,
@@ -45,7 +48,7 @@ function getDefaultFooterActions(
 }
 
 function getDefaultFooterMessage(
-    status: ToolStatus | undefined,
+    status: TToolStatus | undefined,
     footerContent: React.ReactNode | undefined,
 ): React.ReactNode | undefined {
     if (footerContent) {
@@ -62,16 +65,16 @@ function getDefaultFooterMessage(
     }
 }
 
-function getShowLoader(status: ToolStatus | undefined): boolean {
+function getShowLoader(status: TToolStatus | undefined): boolean {
     return status === 'waitingConfirmation' || status === 'waitingSubmission';
 }
 
-function isWaitingTool(status: ToolStatus | undefined): boolean {
+function isWaitingTool(status: TToolStatus | undefined): boolean {
     return status === 'waitingConfirmation' || status === 'waitingSubmission';
 }
 
 function getDefaultInitialExpanded(
-    status: ToolStatus | undefined,
+    status: TToolStatus | undefined,
     initialExpanded: boolean | undefined,
 ): boolean {
     if (initialExpanded !== undefined) {
@@ -91,6 +94,8 @@ export function useToolMessage(options: ToolMessageProps) {
         footerContent,
         expandable = Boolean(bodyContent),
         initialExpanded,
+        autoCollapseOnSuccess,
+        autoCollapseOnCancelled,
         onAccept,
         onReject,
     } = options;
@@ -98,6 +103,9 @@ export function useToolMessage(options: ToolMessageProps) {
     const [isExpanded, setIsExpanded] = useState(
         getDefaultInitialExpanded(status, initialExpanded),
     );
+
+    useAutoCollapseOnSuccess({enabled: Boolean(autoCollapseOnSuccess), status, setIsExpanded});
+    useAutoCollapseOnCancelled({enabled: Boolean(autoCollapseOnCancelled), status, setIsExpanded});
 
     const toggleExpanded = useCallback(() => {
         setIsExpanded((prev) => !prev);

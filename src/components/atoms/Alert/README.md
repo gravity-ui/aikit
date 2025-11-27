@@ -6,6 +6,7 @@ An alert message with an indicator of alert's type opportunity to pass a button
 
 - **Variants**: Show different icons for context using default icons
 - **Retry button**: Opportunity to pass a callback for button
+- **Collapsible content**: Expandable/collapsible additional content with collapse button
 - **Customization**: Opportunity to pass a custom icon
 
 ## Usage
@@ -20,19 +21,33 @@ import {Alert} from '@/components/atoms/Alert';
 <Alert text="Alert" variant="error" />;
 
 // Action
-<Alert text="Alert" action={{text: 'Retry', onClick: '()=>({})'}} />;
+<Alert text="Alert" button={{content: 'Retry', onClick: () => {}}} />;
+
+// Collapsible content
+<Alert
+  text="Error occurred"
+  variant="error"
+  content={
+    <div>
+      <p>Error details:</p>
+      <pre>Error: Connection timeout</pre>
+    </div>
+  }
+/>;
 ```
 
 ## Props
 
-| Prop        | Type                                             | Required | Default     | Description          |
-| ----------- | ------------------------------------------------ | -------- | ----------- | -------------------- |
-| `text`      | `string`                                         | ✓        | -`          | Content of alert     |
-| `variant`   | `'default' \| 'error' \| 'warning' \| 'success'` | -        | `'default'` | View                 |
-| `icon`      | `ReactNode`                                      | -        | -           | Custom icon          |
-| `action`    | `{text: 'string', onClick: () => void}`          | -        | -           | Action button        |
-| `className` | `string`                                         | -        | -           | Additional CSS class |
-| `qa`        | `string`                                         | -        | -           | QA/test identifier   |
+| Prop              | Type                                          | Required | Default     | Description                                   |
+| ----------------- | --------------------------------------------- | -------- | ----------- | --------------------------------------------- |
+| `text`            | `string`                                      | ✓        | -           | Content of alert                              |
+| `variant`         | `'default' \| 'error' \| 'warning' \| 'info'` | -        | `'default'` | View                                          |
+| `icon`            | `ReactNode`                                   | -        | -           | Custom icon                                   |
+| `button`          | `{content: ReactNode, onClick: () => void}`   | -        | -           | Action button                                 |
+| `content`         | `ReactNode`                                   | -        | -           | Collapsible content displayed below the alert |
+| `initialExpanded` | `boolean`                                     | -        | `false`     | Initial state of collapsible content          |
+| `className`       | `string`                                      | -        | -           | Additional CSS class                          |
+| `qa`              | `string`                                      | -        | -           | QA/test identifier                            |
 
 ## Styling
 

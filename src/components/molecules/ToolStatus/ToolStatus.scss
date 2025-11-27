@@ -1,0 +1,6 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}tool-status';
+
+#{$block} {
+}

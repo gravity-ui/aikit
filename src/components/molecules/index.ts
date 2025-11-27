@@ -10,3 +10,4 @@ export * from './Suggestions';
 export * from './Tabs';
 export * from './ToolFooter';
 export * from './ToolHeader';
+export * from './ToolStatus';
