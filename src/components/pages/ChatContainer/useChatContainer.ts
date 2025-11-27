@@ -72,7 +72,7 @@ export function useChatContainer(props: ChatContainerProps) {
     const baseActions = useMemo(() => {
         const actions: HeaderAction[] = [];
 
-        if (showNewChat) {
+        if (showNewChat && chatContentView !== 'empty') {
             actions.push(HeaderAction.NewChat);
         }
 
@@ -85,7 +85,7 @@ export function useChatContainer(props: ChatContainerProps) {
         }
 
         return actions;
-    }, [showNewChat, showHistory, showClose]);
+    }, [showNewChat, showHistory, showClose, chatContentView]);
 
     return {
         // State

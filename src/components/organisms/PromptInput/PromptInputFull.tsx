@@ -95,6 +95,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                         state: submitButtonState,
                         tooltipSend: submitButtonTooltipSend,
                         tooltipCancel: submitButtonTooltipCancel,
+                        qa: 'submit-button-full',
                     }}
                     showSettings={showSettings}
                     onSettingsClick={onSettingsClick}

@@ -47,6 +47,7 @@ export function ChatContent(props: ChatContentProps) {
                           <MessageList
                               {...messageListProps}
                               className={b('message-list', messageListProps.className)}
+                              qa={`message-list${qa ? `-${qa}` : ''}`}
                           />
                       </div>
                   )}
