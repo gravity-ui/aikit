@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/gravity-ui/aikit/compare/v0.4.0...v0.4.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* **qa:** add lost qa attrs ([d8ced02](https://github.com/gravity-ui/aikit/commit/d8ced025931aff986a0e894bdfe93496686d8670))
+
 ## [0.4.0](https://github.com/gravity-ui/aikit/compare/v0.3.2...v0.4.0) (2025-11-27)
 
 
