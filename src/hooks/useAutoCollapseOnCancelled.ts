@@ -1,10 +1,10 @@
 import {useEffect} from 'react';
 
-import type {ToolStatus} from '../types/tool';
+import type {TToolStatus} from '../types/tool';
 
 export function useAutoCollapseOnCancelled(options: {
     enabled: boolean;
-    status: ToolStatus | undefined;
+    status: TToolStatus | undefined;
     setIsExpanded: (expanded: boolean) => void;
 }): void {
     const {enabled, status, setIsExpanded} = options;
