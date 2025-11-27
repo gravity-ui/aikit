@@ -313,7 +313,7 @@ export const Streaming: Story = {
             setStatus('ready');
         };
 
-        const handleCancel = async () => {
+        const customHandleCancel = async () => {
             // eslint-disable-next-line no-console
             console.log('Cancelling');
             setStatus('ready');
@@ -324,7 +324,7 @@ export const Streaming: Story = {
                 {...args}
                 view="full"
                 onSend={handleSendWithStreaming}
-                onCancel={handleCancel}
+                onCancel={customHandleCancel}
                 status={status}
                 bodyProps={{
                     placeholder: 'Plan, code, build and test anything',
@@ -352,7 +352,7 @@ export const ComplexExample: Story = {
             setStatus('ready');
         };
 
-        const handleCancel = async () => {
+        const customHandleCancel = async () => {
             // eslint-disable-next-line no-console
             console.log('Cancelling');
             setStatus('ready');
@@ -363,7 +363,7 @@ export const ComplexExample: Story = {
                 {...args}
                 view="full"
                 onSend={handleSendComplex}
-                onCancel={handleCancel}
+                onCancel={customHandleCancel}
                 status={status}
                 bodyProps={{
                     placeholder: 'Plan, code, build and test anything',

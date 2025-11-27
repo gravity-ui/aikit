@@ -69,6 +69,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                         state: submitButtonState,
                         tooltipSend: submitButtonTooltipSend,
                         tooltipCancel: submitButtonTooltipCancel,
+                        qa: 'submit-button-simple',
                     }}
                     showAttachment={showAttachment}
                     onAttachmentClick={onAttachmentClick}
