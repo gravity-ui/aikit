@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0](https://github.com/gravity-ui/aikit/compare/v0.3.2...v0.4.0) (2025-11-27)
+
+
+### Features
+
+* **Alert:** add collapsible content feature ([520eed7](https://github.com/gravity-ui/aikit/commit/520eed7ac4ff11dd96ce722b65645885f32e6190))
+* **ToolHeader:** add 'cancelled' tool message status ([3838879](https://github.com/gravity-ui/aikit/commit/3838879cbff582bf6a660ef4d198714ea11511e2))
+* **ToolMessage:** add autoCollapseOnCancelled prop ([4c35662](https://github.com/gravity-ui/aikit/commit/4c35662ccf9b1a222ac87a9226b8d7b2360593a3))
+* **ToolMessage:** add autoCollapseOnSuccess prop ([0f2349d](https://github.com/gravity-ui/aikit/commit/0f2349d0900366fa92300270fae1def693a5471b))
+
 ## [0.3.2](https://github.com/gravity-ui/aikit/compare/v0.3.1...v0.3.2) (2025-11-25)
 
 
