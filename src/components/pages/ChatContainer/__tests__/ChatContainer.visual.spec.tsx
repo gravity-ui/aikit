@@ -253,6 +253,31 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should hide title on empty chat', async ({mount, page, expectScreenshot}) => {
+        await mount(<ChatContainerStories.HiddenTitleOnEmpty />);
+
+        // Check that title is not visible in empty state
+        await expect(page.getByText('AI Chat Assistant')).not.toBeVisible();
+
+        // Take screenshot of empty state without title
+        await expectScreenshot();
+    });
+
+    test('should show title after sending message', async ({mount, page}) => {
+        await mount(<ChatContainerStories.HiddenTitleOnEmpty />);
+
+        // Initially title should be hidden
+        await expect(page.getByText('AI Chat Assistant')).not.toBeVisible();
+
+        // Send a message
+        const textarea = page.locator('textarea');
+        await textarea.fill('Test message');
+        await textarea.press('Enter');
+
+        // Title should now be visible
+        await expect(page.getByText('AI Chat Assistant')).toBeVisible();
+    });
+
     test('should handle full streaming example', async ({mount, page}) => {
         await mount(<ChatContainerStories.FullStreamingExample />);
 

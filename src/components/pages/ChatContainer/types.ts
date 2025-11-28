@@ -3,6 +3,7 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import {MessageListProps} from 'src/components/organisms/MessageList';
 
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
+import type {DisclaimerProps} from '../../atoms/Disclaimer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {SuggestionsItem} from '../../molecules/Suggestions';
 import type {HeaderProps} from '../../organisms/Header';
@@ -53,6 +54,8 @@ export interface ChatContainerI18nConfig {
     history?: {
         /** Empty state placeholder */
         emptyPlaceholder?: string;
+        /** Empty filtered state placeholder (when search returns no results) */
+        emptyFilteredPlaceholder?: string;
         /** Search placeholder */
         searchPlaceholder?: string;
     };
@@ -156,6 +159,8 @@ export interface ChatContainerProps {
     emptyContainerProps?: Partial<EmptyContainerProps>;
     /** Props override for PromptInput component */
     promptInputProps?: Partial<Omit<PromptInputProps, 'onSend' | 'onCancel'>>;
+    /** Props override for Disclaimer component */
+    disclaimerProps?: Partial<DisclaimerProps>;
     /** Props override for History component */
     historyProps?: Partial<
         Omit<
@@ -175,6 +180,8 @@ export interface ChatContainerProps {
     showNewChat?: boolean;
     /** Show close button */
     showClose?: boolean;
+    /** Hide header title when chat is empty */
+    hideTitleOnEmptyChat?: boolean;
 
     // Styling
     /** Additional CSS class */

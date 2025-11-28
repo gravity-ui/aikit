@@ -31,6 +31,8 @@ export interface HistoryProps extends QAProps, DOMProps {
     showActions?: boolean;
     /** Empty state placeholder */
     emptyPlaceholder?: React.ReactNode;
+    /** Empty filtered state placeholder (when search returns no results) */
+    emptyFilteredPlaceholder?: React.ReactNode;
     /** Additional CSS class */
     className?: string;
     /** Custom filter function for search */
@@ -63,6 +65,7 @@ export function History(props: HistoryProps) {
         groupBy = 'date',
         showActions = true,
         emptyPlaceholder,
+        emptyFilteredPlaceholder,
         className,
         qa,
         style,
@@ -95,6 +98,7 @@ export function History(props: HistoryProps) {
                 groupBy={groupBy}
                 showActions={showActions}
                 emptyPlaceholder={emptyPlaceholder}
+                emptyFilteredPlaceholder={emptyFilteredPlaceholder}
                 className={className}
                 qa={qa}
                 style={style}

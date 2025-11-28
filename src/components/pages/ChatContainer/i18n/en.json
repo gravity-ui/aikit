@@ -2,9 +2,9 @@
   "header-default-title": "AI Chat",
   "empty-state-title": "Welcome to AI Chat",
   "empty-state-description": "Start a conversation by typing a message below or selecting a suggestion.",
-  "empty-state-suggestions-title": "Try asking:",
   "empty-state-show-more": "Show more examples",
   "prompt-placeholder": "Type your message...",
   "history-empty": "No chat history yet",
+  "history-empty-filtered": "No chats match your search",
   "disclaimer-text": "AI can make mistakes. Check important info."
 }

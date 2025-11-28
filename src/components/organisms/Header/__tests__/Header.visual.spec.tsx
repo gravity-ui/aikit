@@ -29,6 +29,12 @@ test.describe('Header', {tag: '@Header'}, () => {
         await expectScreenshot();
     });
 
+    test('should render without title', async ({mount, expectScreenshot}) => {
+        await mount(<HeaderStories.WithoutTitle />);
+
+        await expectScreenshot();
+    });
+
     test('should render all title positions', async ({mount, expectScreenshot}) => {
         await mount(<HeaderStories.TitlePositions />);
 

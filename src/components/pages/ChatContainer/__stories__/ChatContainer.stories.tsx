@@ -724,6 +724,10 @@ export const WithComponentPropsOverride: Story = {
             view: 'full',
             maxLength: 2000,
         },
+        disclaimerProps: {
+            className: 'custom-disclaimer',
+            text: 'Custom disclaimer text with className override',
+        },
         historyProps: {
             groupBy: 'none',
         },
@@ -1039,6 +1043,67 @@ export const FullStreamingExample: Story = {
                 onSelectChat={handleSelectChat}
                 onCreateChat={handleCreateChat}
                 status={status}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+/**
+ * Hidden Title on Empty Chat
+ * Demonstrates the hideTitleOnEmptyChat prop which hides the header title
+ * and preview when the chat is empty (no messages)
+ */
+export const HiddenTitleOnEmpty: Story = {
+    render: (args) => {
+        const [messages, setMessages] = useState<TChatMessage[]>([]);
+        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
+            'ready',
+        );
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const timestamp = Date.now();
+            const userMessage: TChatMessage = {
+                id: `user-${timestamp}`,
+                role: 'user',
+                content: data.content,
+                timestamp: new Date().toISOString(),
+            };
+
+            setMessages((prev) => [...prev, userMessage]);
+            setStatus('submitted');
+
+            // Simulate response after a short delay
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const assistantMessage: TChatMessage = {
+                id: `assistant-${timestamp + 1}`,
+                role: 'assistant',
+                content: `This is a response to: "${data.content}"`,
+                timestamp: new Date().toISOString(),
+            };
+
+            setMessages((prev) => [...prev, assistantMessage]);
+            setStatus('ready');
+        };
+
+        return (
+            <ChatContainer
+                {...args}
+                messages={messages}
+                onSendMessage={handleSendMessage}
+                status={status}
+                hideTitleOnEmptyChat={true}
+                headerProps={{
+                    title: 'AI Chat Assistant',
+                    preview: <span>Beta</span>,
+                }}
+                welcomeConfig={{
+                    title: 'Welcome to AI Assistant',
+                    description:
+                        'Ask me anything to get started. The title will appear after you send your first message.',
+                    suggestions: mockSuggestions,
+                }}
             />
         );
     },

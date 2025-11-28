@@ -32,6 +32,7 @@ export type HeaderProps = {
     // Display settings
     titlePosition?: 'left' | 'center'; // default: left
     withIcon?: boolean; // default: true
+    showTitle?: boolean; // default: true - controls visibility of title and preview
 
     className?: string;
 };

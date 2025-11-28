@@ -70,7 +70,7 @@ export function Suggestions(props: SuggestionsProps) {
         return (
             <ActionButton
                 key={item.id || index}
-                tooltipTitle={item.title}
+                tooltipTitle={wrapText ? undefined : item.title}
                 size="m"
                 view={item.view || 'outlined'}
                 onClick={() => handleClick(item)}
