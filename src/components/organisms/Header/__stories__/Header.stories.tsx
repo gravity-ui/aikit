@@ -133,6 +133,21 @@ export const WithPreview: StoryFn<HeaderProps> = (args) => {
     );
 };
 
+export const WithoutTitle: StoryFn<HeaderProps> = (args) => {
+    return (
+        <ContentWrapper width="480px">
+            <Header
+                title="Chat Header"
+                preview={<div>Preview</div>}
+                showTitle={false}
+                baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
+                {...mockHandlers}
+                {...args}
+            />
+        </ContentWrapper>
+    );
+};
+
 export const TitlePositions: StoryObj<HeaderProps> = {
     render: (args) => {
         return (

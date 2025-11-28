@@ -40,9 +40,11 @@ export function ChatContainer(props: ChatContainerProps) {
         contentProps = {},
         emptyContainerProps = {},
         promptInputProps = {},
+        disclaimerProps = {},
         historyProps = {},
         welcomeConfig,
         i18nConfig = {},
+        hideTitleOnEmptyChat = false,
         className,
         headerClassName,
         contentClassName,
@@ -62,11 +64,28 @@ export function ChatContainer(props: ChatContainerProps) {
         [i18nConfig.header?.defaultTitle, headerProps.title, hookState.activeChat?.name],
     );
 
+    // Determine if chat is empty
+    const isChatEmpty = hookState.chatContentView === 'empty';
+
+    // Calculate showTitle based on hideTitleOnEmptyChat option
+    const showTitle = useMemo(() => {
+        // If explicit showTitle is provided in headerProps, use it
+        if (headerProps.showTitle !== undefined) {
+            return headerProps.showTitle;
+        }
+        // If hideTitleOnEmptyChat is enabled, show title only when chat has messages
+        if (hideTitleOnEmptyChat && isChatEmpty) {
+            return false;
+        }
+        return true;
+    }, [hideTitleOnEmptyChat, isChatEmpty, headerProps.showTitle]);
+
     // Build props for Header
     const finalHeaderProps = useMemo(
         () => ({
             ...headerProps,
             title: headerTitle,
+            showTitle,
             baseActions: hookState.baseActions,
             handleNewChat: hookState.handleNewChat,
             handleHistoryToggle: hookState.handleHistoryToggle,
@@ -75,6 +94,7 @@ export function ChatContainer(props: ChatContainerProps) {
         }),
         [
             headerTitle,
+            showTitle,
             hookState.baseActions,
             hookState.handleNewChat,
             hookState.handleHistoryToggle,
@@ -96,9 +116,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 i18nConfig.emptyState?.description ||
                 i18n('empty-state-description'),
             suggestionTitle:
-                welcomeConfig?.suggestionTitle ||
-                i18nConfig.emptyState?.suggestionsTitle ||
-                i18n('empty-state-suggestions-title'),
+                welcomeConfig?.suggestionTitle || i18nConfig.emptyState?.suggestionsTitle,
             suggestions: welcomeConfig?.suggestions,
             alignment: welcomeConfig?.alignment,
             layout: welcomeConfig?.layout,
@@ -165,13 +183,14 @@ export function ChatContainer(props: ChatContainerProps) {
     );
 
     // Build props for Disclaimer
-    const disclaimerProps = useMemo(() => {
+    const finalDisclaimerProps = useMemo(() => {
         const disclaimerText = i18nConfig.disclaimer?.text || i18n('disclaimer-text');
 
         return {
-            text: disclaimerText,
+            ...disclaimerProps,
+            text: disclaimerProps.text || disclaimerText,
         };
-    }, [i18nConfig.disclaimer]);
+    }, [i18nConfig.disclaimer, disclaimerProps]);
 
     // Build props for ChatContent
     const finalContentProps = useMemo(
@@ -199,6 +218,10 @@ export function ChatContainer(props: ChatContainerProps) {
                 i18nConfig.history?.emptyPlaceholder ||
                 historyProps.emptyPlaceholder ||
                 i18n('history-empty'),
+            emptyFilteredPlaceholder:
+                i18nConfig.history?.emptyFilteredPlaceholder ||
+                historyProps.emptyFilteredPlaceholder ||
+                i18n('history-empty-filtered'),
         }),
         [
             chats,
@@ -213,7 +236,7 @@ export function ChatContainer(props: ChatContainerProps) {
         ],
     );
 
-    const showFooter = finalPromptInputProps || disclaimerProps;
+    const showFooter = finalPromptInputProps || finalDisclaimerProps;
 
     return (
         <div className={b(null, className)} data-qa={qa}>
@@ -226,7 +249,7 @@ export function ChatContainer(props: ChatContainerProps) {
             {showFooter && (
                 <div className={b('footer', {view: hookState.chatContentView}, footerClassName)}>
                     {finalPromptInputProps && <PromptInput {...finalPromptInputProps} />}
-                    {disclaimerProps && <Disclaimer {...disclaimerProps} />}
+                    {finalDisclaimerProps && <Disclaimer {...finalDisclaimerProps} />}
                 </div>
             )}
             {/* History is integrated via popup anchored to button in Header */}

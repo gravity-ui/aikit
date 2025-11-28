@@ -225,6 +225,10 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
     view: 'full',
     maxLength: 1000,
   }}
+  disclaimerProps={{
+    className: 'custom-disclaimer',
+    text: 'Custom disclaimer text',
+  }}
   historyProps={{
     groupBy: 'date',
     searchable: true,
@@ -240,44 +244,56 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
   contentClassName="custom-content"
   footerClassName="custom-footer"
 />
+
+// Hide header title when chat is empty
+<ChatContainer
+  messages={messages}
+  onSendMessage={handleSendMessage}
+  hideTitleOnEmptyChat={true}
+  headerProps={{
+    title: "My Chat Assistant",
+  }}
+/>
 ```
 
 ## Props
 
-| Prop                  | Type                                   | Required | Default   | Description                                                           |
-| --------------------- | -------------------------------------- | -------- | --------- | --------------------------------------------------------------------- |
-| `messages`            | `TMessage[]`                           | -        | `[]`      | Array of messages in current chat                                     |
-| `onSendMessage`       | `(data: TSubmitData) => Promise<void>` | ✓        | -         | Callback when user sends a message                                    |
-| `chats`               | `ChatType[]`                           | -        | `[]`      | Array of chats for history                                            |
-| `activeChat`          | `ChatType \| null`                     | -        | `null`    | Currently active chat                                                 |
-| `onSelectChat`        | `(chat: ChatType) => void`             | -        | -         | Callback when user selects a chat from history                        |
-| `onCreateChat`        | `() => void`                           | -        | -         | Callback when user creates a new chat                                 |
-| `onDeleteChat`        | `(chat: ChatType) => void`             | -        | -         | Callback when user deletes a chat                                     |
-| `onDeleteAllChats`    | `() => Promise<void>`                  | -        | -         | Callback when user deletes all chats                                  |
-| `onClose`             | `() => void`                           | -        | -         | Callback when user closes the chat                                    |
-| `onCancel`            | `() => Promise<void>`                  | -        | -         | Callback when user cancels streaming                                  |
-| `status`              | `ChatStatus`                           | -        | `'ready'` | Chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'` |
-| `error`               | `Error \| null`                        | -        | `null`    | Error state                                                           |
-| `onRetry`             | `() => void`                           | -        | -         | Callback to retry after error                                         |
-| `showActionsOnHover`  | `boolean`                              | -        | `false`   | Show message actions (copy, like, edit) on hover                      |
-| `contextItems`        | `ContextItemConfig[]`                  | -        | `[]`      | Array of context items to display in prompt input header              |
-| `transformOptions`    | `OptionsType`                          | -        | -         | Transform options for markdown rendering                              |
-| `messageListConfig`   | `MessageListConfig`                    | -        | -         | Configuration for MessageList (actions, loader statuses)              |
-| `headerProps`         | `Partial<HeaderProps>`                 | -        | -         | Props override for Header component                                   |
-| `contentProps`        | `Partial<ChatContentProps>`            | -        | -         | Props override for ChatContent component                              |
-| `emptyContainerProps` | `Partial<EmptyContainerProps>`         | -        | -         | Props override for EmptyContainer                                     |
-| `promptInputProps`    | `Partial<PromptInputProps>`            | -        | -         | Props override for PromptInput component                              |
-| `historyProps`        | `Partial<HistoryProps>`                | -        | -         | Props override for History component                                  |
-| `welcomeConfig`       | `WelcomeConfig`                        | -        | -         | Welcome screen configuration for empty state                          |
-| `i18nConfig`          | `ChatContainerI18nConfig`              | -        | -         | I18n configuration for all text labels                                |
-| `showHistory`         | `boolean`                              | -        | `true`    | Show chat history feature                                             |
-| `showNewChat`         | `boolean`                              | -        | `true`    | Show new chat button                                                  |
-| `showClose`           | `boolean`                              | -        | `false`   | Show close button                                                     |
-| `className`           | `string`                               | -        | -         | Additional CSS class                                                  |
-| `headerClassName`     | `string`                               | -        | -         | Additional CSS class for header section                               |
-| `contentClassName`    | `string`                               | -        | -         | Additional CSS class for content section                              |
-| `footerClassName`     | `string`                               | -        | -         | Additional CSS class for footer section                               |
-| `qa`                  | `string`                               | -        | -         | QA/test identifier                                                    |
+| Prop                   | Type                                   | Required | Default   | Description                                                           |
+| ---------------------- | -------------------------------------- | -------- | --------- | --------------------------------------------------------------------- |
+| `messages`             | `TMessage[]`                           | -        | `[]`      | Array of messages in current chat                                     |
+| `onSendMessage`        | `(data: TSubmitData) => Promise<void>` | ✓        | -         | Callback when user sends a message                                    |
+| `chats`                | `ChatType[]`                           | -        | `[]`      | Array of chats for history                                            |
+| `activeChat`           | `ChatType \| null`                     | -        | `null`    | Currently active chat                                                 |
+| `onSelectChat`         | `(chat: ChatType) => void`             | -        | -         | Callback when user selects a chat from history                        |
+| `onCreateChat`         | `() => void`                           | -        | -         | Callback when user creates a new chat                                 |
+| `onDeleteChat`         | `(chat: ChatType) => void`             | -        | -         | Callback when user deletes a chat                                     |
+| `onDeleteAllChats`     | `() => Promise<void>`                  | -        | -         | Callback when user deletes all chats                                  |
+| `onClose`              | `() => void`                           | -        | -         | Callback when user closes the chat                                    |
+| `onCancel`             | `() => Promise<void>`                  | -        | -         | Callback when user cancels streaming                                  |
+| `status`               | `ChatStatus`                           | -        | `'ready'` | Chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'` |
+| `error`                | `Error \| null`                        | -        | `null`    | Error state                                                           |
+| `onRetry`              | `() => void`                           | -        | -         | Callback to retry after error                                         |
+| `showActionsOnHover`   | `boolean`                              | -        | `false`   | Show message actions (copy, like, edit) on hover                      |
+| `contextItems`         | `ContextItemConfig[]`                  | -        | `[]`      | Array of context items to display in prompt input header              |
+| `transformOptions`     | `OptionsType`                          | -        | -         | Transform options for markdown rendering                              |
+| `messageListConfig`    | `MessageListConfig`                    | -        | -         | Configuration for MessageList (actions, loader statuses)              |
+| `headerProps`          | `Partial<HeaderProps>`                 | -        | -         | Props override for Header component                                   |
+| `contentProps`         | `Partial<ChatContentProps>`            | -        | -         | Props override for ChatContent component                              |
+| `emptyContainerProps`  | `Partial<EmptyContainerProps>`         | -        | -         | Props override for EmptyContainer                                     |
+| `promptInputProps`     | `Partial<PromptInputProps>`            | -        | -         | Props override for PromptInput component                              |
+| `disclaimerProps`      | `Partial<DisclaimerProps>`             | -        | -         | Props override for Disclaimer component                               |
+| `historyProps`         | `Partial<HistoryProps>`                | -        | -         | Props override for History component                                  |
+| `welcomeConfig`        | `WelcomeConfig`                        | -        | -         | Welcome screen configuration for empty state                          |
+| `i18nConfig`           | `ChatContainerI18nConfig`              | -        | -         | I18n configuration for all text labels                                |
+| `showHistory`          | `boolean`                              | -        | `true`    | Show chat history feature                                             |
+| `showNewChat`          | `boolean`                              | -        | `true`    | Show new chat button                                                  |
+| `showClose`            | `boolean`                              | -        | `false`   | Show close button                                                     |
+| `hideTitleOnEmptyChat` | `boolean`                              | -        | `false`   | Hide header title and preview when chat is empty                      |
+| `className`            | `string`                               | -        | -         | Additional CSS class                                                  |
+| `headerClassName`      | `string`                               | -        | -         | Additional CSS class for header section                               |
+| `contentClassName`     | `string`                               | -        | -         | Additional CSS class for content section                              |
+| `footerClassName`      | `string`                               | -        | -         | Additional CSS class for footer section                               |
+| `qa`                   | `string`                               | -        | -         | QA/test identifier                                                    |
 
 ## Types
 
@@ -459,6 +475,33 @@ The component automatically determines which view to display:
 3. If `activeChat` is not set and `messages.length > 0`, the **Chat State** is shown
 
 This ensures that selecting a chat from history immediately switches to the chat view, allowing the parent component to load messages asynchronously.
+
+## Hiding Title on Empty Chat
+
+The `hideTitleOnEmptyChat` prop allows you to hide the header title and preview when the chat is in empty state (no messages). This is useful for creating a cleaner welcome screen where the title appears only after starting a conversation.
+
+**Example:**
+
+```tsx
+<ChatContainer
+  messages={messages}
+  onSendMessage={handleSendMessage}
+  hideTitleOnEmptyChat={true}
+  headerProps={{
+    title: 'AI Chat Assistant',
+    preview: <span>Beta</span>,
+  }}
+/>
+```
+
+**Behavior:**
+
+- When `hideTitleOnEmptyChat={false}` (default): Title and preview are always visible
+- When `hideTitleOnEmptyChat={true}`:
+  - Empty chat (no messages): Title and preview are hidden
+  - Chat with messages: Title and preview are visible
+
+**Note:** If you explicitly set `showTitle` in `headerProps`, it takes precedence over `hideTitleOnEmptyChat`.
 
 ## Chat History Integration
 

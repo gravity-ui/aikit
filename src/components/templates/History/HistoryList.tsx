@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 
 import {Button, DOMProps, List, ListItemData, QAProps} from '@gravity-ui/uikit';
 
@@ -39,6 +39,8 @@ export interface HistoryListProps extends QAProps, DOMProps {
     showActions?: boolean;
     /** Empty state placeholder */
     emptyPlaceholder?: React.ReactNode;
+    /** Empty filtered state placeholder (when search returns no results) */
+    emptyFilteredPlaceholder?: React.ReactNode;
     /** Additional CSS class */
     className?: string;
     /** Custom filter function for search */
@@ -67,6 +69,7 @@ export function HistoryList(props: HistoryListProps) {
         groupBy = 'date',
         showActions = true,
         emptyPlaceholder,
+        emptyFilteredPlaceholder,
         className,
         qa,
         style,
@@ -74,6 +77,7 @@ export function HistoryList(props: HistoryListProps) {
         loading = false,
         onChatClick,
     } = props;
+    const [filteredItemCount, setFilteredItemCount] = useState<number | null>(null);
 
     // Group chats if needed
     const groupedChats = useMemo(() => {
@@ -166,6 +170,16 @@ export function HistoryList(props: HistoryListProps) {
 
     const emptyState = emptyPlaceholder || <div className={b('empty')}>{i18n('empty-state')}</div>;
 
+    const emptyFilteredState = emptyFilteredPlaceholder || (
+        <div className={b('empty')}>{i18n('empty-filtered-state')}</div>
+    );
+
+    // Determine which empty placeholder to show
+    const finalEmptyPlaceholder =
+        filteredItemCount === null || filteredItemCount === listItems.length
+            ? emptyState
+            : emptyFilteredState;
+
     return (
         <div className={b('container', className)} data-qa={qa} style={style}>
             <div className={b('list-wrapper')}>
@@ -175,6 +189,7 @@ export function HistoryList(props: HistoryListProps) {
                     </div>
                 ) : (
                     <List
+                        size="m"
                         items={listItems}
                         renderItem={renderItem}
                         virtualized={false}
@@ -182,10 +197,11 @@ export function HistoryList(props: HistoryListProps) {
                         filterItem={wrappedFilterFunction}
                         filterPlaceholder={i18n('search-placeholder')}
                         filterClassName={b('filter')}
-                        emptyPlaceholder={emptyState}
+                        emptyPlaceholder={finalEmptyPlaceholder}
                         selectedItemIndex={selectedItemIndex}
                         itemsClassName={b('list')}
                         itemClassName={b('list-item')}
+                        onFilterEnd={(data) => setFilteredItemCount(data.items.length)}
                     />
                 )}
             </div>

@@ -114,6 +114,34 @@ function MyComponent() {
 }
 ```
 
+### Hiding title and preview
+
+You can control the visibility of the title and preview using the `showTitle` prop:
+
+```tsx
+import {Header, HeaderAction} from '@gravity-ui/aikit';
+
+// Hide title and preview
+<Header
+  title="Chat Header"
+  preview={<span>Preview</span>}
+  showTitle={false}
+  baseActions={[HeaderAction.NewChat, HeaderAction.Close]}
+  handleNewChat={() => console.log('New chat')}
+  handleClose={() => console.log('Close')}
+/>;
+
+// Show title and preview (default)
+<Header
+  title="Chat Header"
+  preview={<span>Preview</span>}
+  showTitle={true}
+  baseActions={[HeaderAction.NewChat, HeaderAction.Close]}
+  handleNewChat={() => console.log('New chat')}
+  handleClose={() => console.log('Close')}
+/>;
+```
+
 ## Using useHeader hook
 
 The `useHeader` hook allows you to use the component logic to create your own view:
@@ -183,6 +211,8 @@ The component uses CSS variables for theming:
 | `historyButtonRef`    | `React.RefObject<HTMLElement>`             | Ref for history button (used to anchor popups) |
 | `foldingState`        | `'collapsed' \| 'opened'`                  | Folding state (default: `'opened'`)            |
 | `titlePosition`       | `'left' \| 'center'`                       | Title position (default: `'left'`)             |
+| `withIcon`            | `boolean`                                  | Show icon (default: `true`)                    |
+| `showTitle`           | `boolean`                                  | Show title and preview (default: `true`)       |
 | `className`           | `string`                                   | Additional CSS class                           |
 
 ### HeaderAction

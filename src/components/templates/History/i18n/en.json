@@ -2,6 +2,7 @@
   "action-load-more": "Load earlier conversations",
   "search-placeholder": "Search your chats",
   "empty-state": "No chats found",
+  "empty-filtered-state": "No chats match your search",
   "tooltip-history": "Chat history",
   "tooltip-delete": "Delete"
 }

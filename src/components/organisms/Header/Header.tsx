@@ -51,6 +51,7 @@ export function Header(props: HeaderProps) {
         additionalActions,
         titlePosition,
         withIcon,
+        showTitle = true,
         className,
         historyButtonRef,
     } = useHeader(props);
@@ -125,14 +126,16 @@ export function Header(props: HeaderProps) {
             {withIcon && iconElement}
 
             {/* Center part: title with preview */}
-            <div className={titlePositionClass}>
-                {title && (
-                    <Text as="div" variant="subheader-2" className={b('title')}>
-                        {title}
-                    </Text>
-                )}
-                {preview && <div className={b('preview')}>{preview}</div>}
-            </div>
+            {showTitle && (
+                <div className={titlePositionClass}>
+                    {title && (
+                        <Text as="div" variant="subheader-2" className={b('title')}>
+                            {title}
+                        </Text>
+                    )}
+                    {preview && <div className={b('preview')}>{preview}</div>}
+                </div>
+            )}
 
             {/* Right part: additional and base actions */}
             <ButtonGroup>
