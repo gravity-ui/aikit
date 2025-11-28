@@ -228,6 +228,7 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
   disclaimerProps={{
     className: 'custom-disclaimer',
     text: 'Custom disclaimer text',
+    variant: 'caption-2',
   }}
   historyProps={{
     groupBy: 'date',

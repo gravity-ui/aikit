@@ -22,4 +22,10 @@ test.describe('Disclaimer', {tag: '@Disclaimer'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with caption variant', async ({mount, expectScreenshot}) => {
+        await mount(<DisclaimerStories.WithCaptionVariant />);
+
+        await expectScreenshot();
+    });
 });

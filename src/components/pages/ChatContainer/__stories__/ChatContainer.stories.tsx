@@ -726,7 +726,8 @@ export const WithComponentPropsOverride: Story = {
         },
         disclaimerProps: {
             className: 'custom-disclaimer',
-            text: 'Custom disclaimer text with className override',
+            text: 'Custom disclaimer text with className and variant override',
+            variant: 'caption-2',
         },
         historyProps: {
             groupBy: 'none',
