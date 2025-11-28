@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/gravity-ui/aikit/compare/v0.4.3...v0.4.4) (2025-11-28)
+
+
+### Bug Fixes
+
+* **Disclaimer:** add prop to text variant ([9d104f8](https://github.com/gravity-ui/aikit/commit/9d104f8786f6386ee732cab72cdfcca7b77fe303))
+
 ## [0.4.3](https://github.com/gravity-ui/aikit/compare/v0.4.2...v0.4.3) (2025-11-28)
 
 
