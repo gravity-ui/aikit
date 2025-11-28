@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/gravity-ui/aikit/compare/v0.4.1...v0.4.2) (2025-11-28)
+
+
+### Bug Fixes
+
+* **MessageList:** hide assistant actions on submitted status ([4365c8e](https://github.com/gravity-ui/aikit/commit/4365c8e8e42ca29dc2e3715f02212bcf92a5db90))
+
 ## [0.4.1](https://github.com/gravity-ui/aikit/compare/v0.4.0...v0.4.1) (2025-11-27)
 
 
