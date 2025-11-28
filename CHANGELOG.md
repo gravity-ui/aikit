@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/gravity-ui/aikit/compare/v0.4.2...v0.4.3) (2025-11-28)
+
+
+### Bug Fixes
+
+* **history and suggest:** some fix for history and suggest ([e9a850a](https://github.com/gravity-ui/aikit/commit/e9a850ab045d7f805e796fc95313c056a6adfe85))
+
 ## [0.4.2](https://github.com/gravity-ui/aikit/compare/v0.4.1...v0.4.2) (2025-11-28)
 
 
