@@ -8,3 +8,7 @@ $block: '.#{variables.$ns}user-message';
     gap: var(--g-spacing-1);
     align-items: flex-end;
 }
+
+#{$block}_format_plain {
+    white-space: pre-wrap;
+}

@@ -80,17 +80,17 @@ Playground.args = {
 export const Variant: StoryObj<BaseMessageProps> = {
     render: (args) => (
         <>
-            <ShowcaseItem title="User">
+            <ShowcaseItem title="User" width="300px">
                 <BaseMessage {...args} actions={buttons} role="user">
                     {'My message'}
                 </BaseMessage>
             </ShowcaseItem>
-            <ShowcaseItem title="Assistant">
+            <ShowcaseItem title="Assistant" width="300px">
                 <BaseMessage {...args} actions={buttons} role="assistant">
                     {'My message'}
                 </BaseMessage>
             </ShowcaseItem>
-            <ShowcaseItem title="System">
+            <ShowcaseItem title="System" width="300px">
                 <BaseMessage {...args} actions={buttons} role="system">
                     {'My message'}
                 </BaseMessage>
@@ -110,7 +110,7 @@ export const ShowActionsOnHover: StoryFn<BaseMessageProps> = (args) => (
 export const ShowTimestamp: StoryObj<BaseMessageProps> = {
     render: (args) => (
         <>
-            <ShowcaseItem title="User">
+            <ShowcaseItem title="User" width="350px">
                 <BaseMessage
                     {...args}
                     actions={buttons}
@@ -121,7 +121,7 @@ export const ShowTimestamp: StoryObj<BaseMessageProps> = {
                     {'My message'}
                 </BaseMessage>
             </ShowcaseItem>
-            <ShowcaseItem title="Assistant">
+            <ShowcaseItem title="Assistant" width="350px">
                 <BaseMessage
                     {...args}
                     actions={buttons}

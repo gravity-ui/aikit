@@ -3,3 +3,7 @@
 @import '@diplodoc/transform/dist/css/yfm.css';
 
 $block: '.#{variables.$ns}markdown-renderer';
+
+#{$block} {
+    max-width: 100%;
+}

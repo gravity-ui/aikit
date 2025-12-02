@@ -22,4 +22,14 @@ test.describe('UserMessage', {tag: '@UserMessage'}, () => {
 
         await expectScreenshot();
     });
+    test('should render with plain text with line breaks', async ({mount, expectScreenshot}) => {
+        await mount(<UserMessageStories.PlainTextWithLineBreaks />);
+
+        await expectScreenshot();
+    });
+    test('should render with markdown format', async ({mount, expectScreenshot}) => {
+        await mount(<UserMessageStories.MarkdownFormat />);
+
+        await expectScreenshot();
+    });
 });

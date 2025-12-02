@@ -9,7 +9,7 @@ $block: '.#{variables.$ns}base-message';
 
     &_variant_user {
         align-items: flex-end;
-        margin-left: var(--g-spacing-10);
+        max-width: 90%;
     }
 
     &_variant_system,
