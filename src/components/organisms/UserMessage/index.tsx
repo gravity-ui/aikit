@@ -2,7 +2,7 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import {Avatar} from '@gravity-ui/uikit';
 
 import type {BaseMessageProps} from '../../../types/messages';
-import {block} from '../../../utils/cn';
+import {block, modsClassName} from '../../../utils/cn';
 import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 import {MessageBalloon} from '../../atoms/MessageBalloon';
 import {BaseMessage} from '../../molecules/BaseMessage';
@@ -49,7 +49,7 @@ export const UserMessage = (props: UserMessageProps) => {
                 showTimestamp={showTimestamp}
                 timestamp={timestamp}
             >
-                <MessageBalloon>
+                <MessageBalloon className={modsClassName(b({format}))}>
                     {format === 'markdown' ? (
                         <MarkdownRenderer
                             content={content as string}

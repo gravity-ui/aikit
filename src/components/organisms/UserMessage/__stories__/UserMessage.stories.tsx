@@ -70,6 +70,44 @@ Playground.args = {
     actions: buttons,
 };
 
+export const MarkdownFormat: StoryFn<UserMessageProps> = (args) => (
+    <ContentWrapper width="480px">
+        <UserMessage {...args} format="markdown" />
+    </ContentWrapper>
+);
+MarkdownFormat.args = {
+    content: `
+Explain this code snippet: 
+
+\`\`\`
+CREATE TABLE log_counter (
+  id           INT PRIMARY KEY, -- topicpartition table name id
+  next_offset  BIGINT NOT NULL  -- next offset to assign
+);
+
+for i in NUM_PARTITIONS:
+  CREATE TABLE topicpartition%d (
+    id          BIGSERIAL PRIMARY KEY,
+    -- strictly increasing offset (indexed by UNIQUE)
+    c_offset    BIGINT UNIQUE NOT NULL,
+    payload     BYTEA NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+  INSERT INTO log_counter(id, next_offset) VALUES (%d, 1);
+
+CREATE TABLE consumer_offsets (
+  group_id     TEXT NOT NULL,     -- consumer group identifier
+  -- topic-partition id (matches log_counter.id / topicpartitionN)
+  topic_id     INT  NOT NULL,
+  -- next offset the consumer group should claim
+  next_offset  BIGINT NOT NULL DEFAULT 1,
+  PRIMARY KEY (group_id, topic_id)
+);
+\`\`\`
+    `,
+    actions: buttons,
+};
+
 export const ShowAvatar: StoryFn<UserMessageProps> = (args) => (
     <ContentWrapper>
         <UserMessage {...args} showAvatar={true} />
@@ -87,5 +125,25 @@ export const ShowTimestamp: StoryFn<UserMessageProps> = (args) => (
 );
 ShowTimestamp.args = {
     content: 'Analyze the project and suggest a better solution to implement a feature-name',
+    actions: buttons,
+};
+
+export const PlainTextWithLineBreaks: StoryFn<UserMessageProps> = (args) => (
+    <ContentWrapper width="480px">
+        <UserMessage {...args} format="plain" />
+    </ContentWrapper>
+);
+PlainTextWithLineBreaks.args = {
+    content: `Analyze this code:
+
+function calculateTotal(items) {
+    let total = 0;
+    for (let i = 0; i < items.length; i++) {
+        total += items[i].price;
+    }
+    return total;
+}
+
+Can it be improved?`,
     actions: buttons,
 };
