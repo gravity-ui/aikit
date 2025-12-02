@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/gravity-ui/aikit/compare/v0.4.5...v0.5.0) (2025-12-02)
+
+
+### Features
+
+* **PromptInputFooterConfig:** add submitButtonQa prop ([134511b](https://github.com/gravity-ui/aikit/commit/134511bc2bf239f1939f7ab7a49c368aed82f56a))
+
 ## [0.4.5](https://github.com/gravity-ui/aikit/compare/v0.4.4...v0.4.5) (2025-12-02)
 
 
