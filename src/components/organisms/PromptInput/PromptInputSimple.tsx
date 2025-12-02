@@ -47,6 +47,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
         onMicrophoneClick,
         submitButtonTooltipSend,
         submitButtonTooltipCancel,
+        submitButtonQa,
     } = footerProps;
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
@@ -69,7 +70,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                         state: submitButtonState,
                         tooltipSend: submitButtonTooltipSend,
                         tooltipCancel: submitButtonTooltipCancel,
-                        qa: 'submit-button-simple',
+                        qa: submitButtonQa || 'submit-button-simple',
                     }}
                     showAttachment={showAttachment}
                     onAttachmentClick={onAttachmentClick}

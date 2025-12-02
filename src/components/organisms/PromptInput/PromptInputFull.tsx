@@ -59,6 +59,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         onMicrophoneClick,
         submitButtonTooltipSend,
         submitButtonTooltipCancel,
+        submitButtonQa,
     } = footerProps;
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
@@ -95,7 +96,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                         state: submitButtonState,
                         tooltipSend: submitButtonTooltipSend,
                         tooltipCancel: submitButtonTooltipCancel,
-                        qa: 'submit-button-full',
+                        qa: submitButtonQa || 'submit-button-full',
                     }}
                     showSettings={showSettings}
                     onSettingsClick={onSettingsClick}
