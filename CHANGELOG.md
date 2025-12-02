@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.5](https://github.com/gravity-ui/aikit/compare/v0.4.4...v0.4.5) (2025-12-02)
+
+
+### Bug Fixes
+
+* **UserMessage:** correctly display messages that are wider than the chat ([bffc01d](https://github.com/gravity-ui/aikit/commit/bffc01d3ddac6c58f7c4a31bc993cbebf0dcecc1))
+
 ## [0.4.4](https://github.com/gravity-ui/aikit/compare/v0.4.3...v0.4.4) (2025-11-28)
 
 
