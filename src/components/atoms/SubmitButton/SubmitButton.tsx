@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
 
-import {ArrowUp, Stop} from '@gravity-ui/icons';
+import {ArrowUp, CircleStop} from '@gravity-ui/icons';
 import {ButtonButtonProps, Icon, Spin} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
@@ -40,6 +40,10 @@ export interface SubmitButtonProps {
      */
     tooltipCancel?: string;
     /**
+     * Custom cancelable text (if provided, will be shown in cancelable state)
+     */
+    cancelableText?: string;
+    /**
      * QA/test identifier
      */
     qa?: string;
@@ -63,12 +67,12 @@ export function SubmitButton({
     size = 'm',
     tooltipSend,
     tooltipCancel,
+    cancelableText,
     qa,
 }: SubmitButtonProps) {
     const isCancelable = state === 'cancelable';
     const isLoading = state === 'loading';
     const isDisabled = state === 'disabled';
-    const iconData = isCancelable ? Stop : ArrowUp;
     const handleClick = useCallback(async () => {
         if (['enabled', 'cancelable'].includes(state)) {
             return onClick();
@@ -92,6 +96,26 @@ export function SubmitButton({
         }
     };
 
+    const renderContent = () => {
+        if (isLoading) {
+            return (
+                <div className={b('loader')}>
+                    <Spin className={b('spinner')} size="xs" />
+                </div>
+            );
+        }
+
+        if (isCancelable) {
+            return cancelableText ? (
+                [<Icon key="icon" size={16} data={CircleStop} />, cancelableText]
+            ) : (
+                <Icon size={16} data={CircleStop} />
+            );
+        }
+
+        return <Icon size={16} data={ArrowUp} />;
+    };
+
     return (
         <ActionButton
             view="action"
@@ -103,13 +127,7 @@ export function SubmitButton({
             qa={qa}
             tooltipTitle={getTooltipTitle()}
         >
-            {isLoading ? (
-                <div className={b('loader')}>
-                    <Spin className={b('spinner')} size="xs" />
-                </div>
-            ) : (
-                <Icon size={16} data={iconData} />
-            )}
+            {renderContent()}
         </ActionButton>
     );
 }

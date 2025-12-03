@@ -104,6 +104,19 @@ export const Cancelable: StoryFn<SubmitButtonProps> = (args) => {
     );
 };
 
+export const CancelableWithText: StoryFn<SubmitButtonProps> = (args) => {
+    return (
+        <ContentWrapper>
+            <SubmitButton
+                {...args}
+                onClick={mockOnClick}
+                state="cancelable"
+                cancelableText="Stop"
+            />
+        </ContentWrapper>
+    );
+};
+
 export const Size: StoryObj<SubmitButtonProps> = {
     render: (args) => {
         return (

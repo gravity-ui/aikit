@@ -40,4 +40,10 @@ test.describe('SubmitButton', {tag: '@SubmitButton'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render cancelable state with text', async ({mount, expectScreenshot}) => {
+        await mount(<SubmitButtonStories.CancelableWithText />);
+
+        await expectScreenshot();
+    });
 });
