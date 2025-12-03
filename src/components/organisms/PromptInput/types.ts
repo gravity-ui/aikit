@@ -63,6 +63,8 @@ export type PromptInputFooterConfig = {
     submitButtonTooltipSend?: string;
     /** Custom tooltip for submit button in cancelable state */
     submitButtonTooltipCancel?: string;
+    /** Custom cancelable text (if provided, will be shown in cancelable state) */
+    submitButtonCancelableText?: string;
     /** QA/test identifier for submit button */
     submitButtonQa?: string;
 };

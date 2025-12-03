@@ -59,6 +59,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         onMicrophoneClick,
         submitButtonTooltipSend,
         submitButtonTooltipCancel,
+        submitButtonCancelableText,
         submitButtonQa,
     } = footerProps;
 
@@ -96,6 +97,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                         state: submitButtonState,
                         tooltipSend: submitButtonTooltipSend,
                         tooltipCancel: submitButtonTooltipCancel,
+                        cancelableText: submitButtonCancelableText,
                         qa: submitButtonQa || 'submit-button-full',
                     }}
                     showSettings={showSettings}
