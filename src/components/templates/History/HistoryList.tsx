@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 
-import {Button, DOMProps, List, ListItemData, QAProps} from '@gravity-ui/uikit';
+import {Button, DOMProps, InputControlSize, List, ListItemData, QAProps} from '@gravity-ui/uikit';
 
 import {ChatType, ListItemChatData} from '../../../types';
 import {ChatFilterFunction, defaultChatFilter, groupChatsByDate} from '../../../utils/chatUtils';
@@ -49,6 +49,8 @@ export interface HistoryListProps extends QAProps, DOMProps {
     loading?: boolean;
     /** Callback when chat is clicked (for closing popup in parent) */
     onChatClick?: (chat: ChatType) => void;
+    /** Size of the list */
+    size?: InputControlSize;
 }
 
 /**
@@ -76,6 +78,7 @@ export function HistoryList(props: HistoryListProps) {
         filterFunction = defaultChatFilter,
         loading = false,
         onChatClick,
+        size = 'm',
     } = props;
     const [filteredItemCount, setFilteredItemCount] = useState<number | null>(null);
 
@@ -189,7 +192,7 @@ export function HistoryList(props: HistoryListProps) {
                     </div>
                 ) : (
                     <List
-                        size="m"
+                        size={size}
                         items={listItems}
                         renderItem={renderItem}
                         virtualized={false}

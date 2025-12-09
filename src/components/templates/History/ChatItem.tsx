@@ -30,10 +30,17 @@ export function ChatItem({chat, showActions, onChatClick, onDeleteClick}: ChatIt
     const [isHovered, setIsHovered] = React.useState(false);
     const showDeleteButton = showActions && onDeleteClick && isHovered;
 
+    const handleItemKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            onChatClick(chat);
+        }
+    };
+
     return (
         <div
             className={b('chat-item')}
             onClick={() => onChatClick(chat)}
+            onKeyDown={handleItemKeyDown}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

@@ -8,17 +8,17 @@ $block: '.#{variables.$ns}history';
         display: flex;
         flex-direction: column;
         width: var(--g-aikit-history-width);
-        max-height: var(--g-aikit-history-max-height);
         background: var(--g-color-base-background);
     }
 
     &__list-wrapper {
         flex: 1;
-        overflow-y: auto;
     }
 
     &__list {
-        padding: 0 spacing(2) spacing(2) spacing(2);
+        padding: 0 spacing(2) 0 spacing(2);
+        overflow: auto;
+        max-height: var(--g-aikit-history-max-height);
     }
 
     &__list-item {
@@ -26,12 +26,9 @@ $block: '.#{variables.$ns}history';
     }
 
     &__filter {
-        display: flex;
-        padding: spacing(2) spacing(2) 0 spacing(2);
-        align-items: center;
-        gap: spacing(2);
-        align-self: stretch;
-        border-bottom: 1px solid var(--line-generic-color-line-generic);
+        padding: spacing(2);
+        border-bottom: 1px solid var(--g-color-line-generic);
+        margin-bottom: 0;
     }
 
     &__date-header {
