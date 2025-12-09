@@ -49,6 +49,12 @@ $block: '.#{variables.$ns}history';
         align-self: stretch;
         flex: 1;
         min-width: 0;
+
+        &_active {
+            #{$block}__delete-button {
+                display: block;
+            }
+        }
     }
 
     &__chat-content {
@@ -73,6 +79,7 @@ $block: '.#{variables.$ns}history';
 
     &__delete-button {
         margin-left: spacing(2);
+        display: none;
     }
 
     &__empty {

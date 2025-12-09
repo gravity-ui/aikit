@@ -17,7 +17,7 @@ const b = block('history');
 export interface ChatItemProps {
     chat: ChatType;
     showActions: boolean;
-    onChatClick: (chat: ChatType) => void;
+    isActive?: boolean;
     onDeleteClick?: (e: React.MouseEvent, chat: ChatType) => void;
 }
 
@@ -26,28 +26,13 @@ export interface ChatItemProps {
  *
  * @returns React element
  */
-export function ChatItem({chat, showActions, onChatClick, onDeleteClick}: ChatItemProps) {
-    const [isHovered, setIsHovered] = React.useState(false);
-    const showDeleteButton = showActions && onDeleteClick && isHovered;
-
-    const handleItemKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            onChatClick(chat);
-        }
-    };
-
+export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemProps) {
     return (
-        <div
-            className={b('chat-item')}
-            onClick={() => onChatClick(chat)}
-            onKeyDown={handleItemKeyDown}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
+        <div className={b('chat-item', {active: isActive})}>
             <div className={b('chat-content')}>
                 <Text variant="body-1">{chat.lastMessage || chat.name}</Text>
             </div>
-            {showDeleteButton && (
+            {showActions && onDeleteClick ? (
                 <ActionButton
                     view="flat"
                     size="s"
@@ -58,7 +43,7 @@ export function ChatItem({chat, showActions, onChatClick, onDeleteClick}: ChatIt
                 >
                     <Icon className={b('icon-button')} data={TrashBin} size={16} />
                 </ActionButton>
-            )}
+            ) : null}
         </div>
     );
 }

@@ -131,9 +131,17 @@ export function HistoryList(props: HistoryListProps) {
         return listItems.findIndex((item) => item.type === 'chat' && item.id === selectedChat?.id);
     }, [listItems, selectedChat]);
 
-    const handleChatClick = (chat: ChatType) => {
-        onSelectChat?.(chat);
-        onChatClick?.(chat);
+    const handleChatClick = (
+        chat: ListItemData<ListItemChatData>,
+        _: number,
+        fromKeyboard?: boolean,
+        event?: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>,
+    ) => {
+        if (fromKeyboard && (event?.target as HTMLButtonElement)?.type === 'button') {
+            return;
+        }
+        onSelectChat?.(chat as ChatType);
+        onChatClick?.(chat as ChatType);
     };
 
     const handleDeleteClick = (e: React.MouseEvent, chat: ChatType) => {
@@ -155,7 +163,7 @@ export function HistoryList(props: HistoryListProps) {
         };
     }, [filterFunction]);
 
-    const renderItem = (item: ListItemData<ListItemChatData>) => {
+    const renderItem = (item: ListItemData<ListItemChatData>, isActive: boolean) => {
         if (item.type === 'date-header') {
             return <DateHeaderItem key={`date-${item.date}`} date={item.date} />;
         }
@@ -165,8 +173,8 @@ export function HistoryList(props: HistoryListProps) {
                 key={item.id}
                 chat={item}
                 showActions={showActions}
-                onChatClick={handleChatClick}
                 onDeleteClick={onDeleteChat ? handleDeleteClick : undefined}
+                isActive={isActive}
             />
         );
     };
@@ -205,6 +213,7 @@ export function HistoryList(props: HistoryListProps) {
                         itemsClassName={b('list')}
                         itemClassName={b('list-item')}
                         onFilterEnd={(data) => setFilteredItemCount(data.items.length)}
+                        onItemClick={handleChatClick}
                     />
                 )}
             </div>
