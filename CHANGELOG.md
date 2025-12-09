@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1](https://github.com/gravity-ui/aikit/compare/v0.6.0...v0.6.1) (2025-12-09)
+
+
+### Bug Fixes
+
+* **History:** fix the search in a list ([2776db8](https://github.com/gravity-ui/aikit/commit/2776db8054de2ad8fc1694fb8fb856069c2fc3bf))
+* **History:** improve keyboard navigation ([76f86e3](https://github.com/gravity-ui/aikit/commit/76f86e3772a32819109a0e3493a3965502e2f650))
+
 ## [0.6.0](https://github.com/gravity-ui/aikit/compare/v0.5.0...v0.6.0) (2025-12-03)
 
 
