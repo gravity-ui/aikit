@@ -80,25 +80,26 @@ function MyComponent() {
 
 ## Props
 
-| Prop               | Type                      | Required | Default             | Description                           |
-| ------------------ | ------------------------- | -------- | ------------------- | ------------------------------------- |
-| `chats`            | `ChatType[]`              | ✓        | -                   | Array of chat items                   |
-| `anchorElement`    | `HTMLElement \| null`     | ✓        | -                   | Anchor element for the popup          |
-| `open`             | `boolean`                 | -        | `false`             | Control popup open state              |
-| `onOpenChange`     | `(open: boolean) => void` | -        | -                   | Callback when popup state changes     |
-| `selectedChat`     | `ChatType \| null`        | -        | -                   | Currently selected chat               |
-| `onSelectChat`     | `(chat) => void`          | -        | -                   | Callback when a chat is selected      |
-| `onDeleteChat`     | `(chat) => void`          | -        | -                   | Callback when a chat is deleted       |
-| `onLoadMore`       | `() => void`              | -        | -                   | Callback to load more chats           |
-| `hasMore`          | `boolean`                 | -        | `false`             | Whether there are more chats to load  |
-| `searchable`       | `boolean`                 | -        | `true`              | Enable search functionality           |
-| `groupBy`          | `'date' \| 'none'`        | -        | `'date'`            | Group chats by date or show flat list |
-| `showActions`      | `boolean`                 | -        | `true`              | Show action buttons (delete)          |
-| `emptyPlaceholder` | `React.ReactNode`         | -        | -                   | Custom empty state placeholder        |
-| `className`        | `string`                  | -        | -                   | Additional CSS class                  |
-| `qa`               | `string`                  | -        | -                   | QA/test identifier                    |
-| `style`            | `CSSProperties`           | -        | -                   | Inline styles                         |
-| `filterFunction`   | `ChatFilterFunction`      | -        | `defaultChatFilter` | Custom filter function for search     |
+| Prop               | Type                        | Required | Default             | Description                           |
+| ------------------ | --------------------------- | -------- | ------------------- | ------------------------------------- |
+| `chats`            | `ChatType[]`                | ✓        | -                   | Array of chat items                   |
+| `anchorElement`    | `HTMLElement \| null`       | ✓        | -                   | Anchor element for the popup          |
+| `open`             | `boolean`                   | -        | `false`             | Control popup open state              |
+| `onOpenChange`     | `(open: boolean) => void`   | -        | -                   | Callback when popup state changes     |
+| `selectedChat`     | `ChatType \| null`          | -        | -                   | Currently selected chat               |
+| `onSelectChat`     | `(chat) => void`            | -        | -                   | Callback when a chat is selected      |
+| `onDeleteChat`     | `(chat) => void`            | -        | -                   | Callback when a chat is deleted       |
+| `onLoadMore`       | `() => void`                | -        | -                   | Callback to load more chats           |
+| `hasMore`          | `boolean`                   | -        | `false`             | Whether there are more chats to load  |
+| `searchable`       | `boolean`                   | -        | `true`              | Enable search functionality           |
+| `groupBy`          | `'date' \| 'none'`          | -        | `'date'`            | Group chats by date or show flat list |
+| `showActions`      | `boolean`                   | -        | `true`              | Show action buttons (delete)          |
+| `emptyPlaceholder` | `React.ReactNode`           | -        | -                   | Custom empty state placeholder        |
+| `className`        | `string`                    | -        | -                   | Additional CSS class                  |
+| `qa`               | `string`                    | -        | -                   | QA/test identifier                    |
+| `style`            | `CSSProperties`             | -        | -                   | Inline styles                         |
+| `filterFunction`   | `ChatFilterFunction`        | -        | `defaultChatFilter` | Custom filter function for search     |
+| `size`             | `'s' \| 'm' \| 'l' \| 'xl'` | -        | `m`                 | Size of the list                      |
 
 ## Chat Type
 

@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 
-import {Button, DOMProps, List, ListItemData, QAProps} from '@gravity-ui/uikit';
+import {Button, DOMProps, InputControlSize, List, ListItemData, QAProps} from '@gravity-ui/uikit';
 
 import {ChatType, ListItemChatData} from '../../../types';
 import {ChatFilterFunction, defaultChatFilter, groupChatsByDate} from '../../../utils/chatUtils';
@@ -49,6 +49,8 @@ export interface HistoryListProps extends QAProps, DOMProps {
     loading?: boolean;
     /** Callback when chat is clicked (for closing popup in parent) */
     onChatClick?: (chat: ChatType) => void;
+    /** Size of the list */
+    size?: InputControlSize;
 }
 
 /**
@@ -76,6 +78,7 @@ export function HistoryList(props: HistoryListProps) {
         filterFunction = defaultChatFilter,
         loading = false,
         onChatClick,
+        size = 'm',
     } = props;
     const [filteredItemCount, setFilteredItemCount] = useState<number | null>(null);
 
@@ -128,9 +131,17 @@ export function HistoryList(props: HistoryListProps) {
         return listItems.findIndex((item) => item.type === 'chat' && item.id === selectedChat?.id);
     }, [listItems, selectedChat]);
 
-    const handleChatClick = (chat: ChatType) => {
-        onSelectChat?.(chat);
-        onChatClick?.(chat);
+    const handleChatClick = (
+        chat: ListItemData<ListItemChatData>,
+        _: number,
+        fromKeyboard?: boolean,
+        event?: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>,
+    ) => {
+        if (fromKeyboard && (event?.target as HTMLButtonElement)?.type === 'button') {
+            return;
+        }
+        onSelectChat?.(chat as ChatType);
+        onChatClick?.(chat as ChatType);
     };
 
     const handleDeleteClick = (e: React.MouseEvent, chat: ChatType) => {
@@ -152,7 +163,7 @@ export function HistoryList(props: HistoryListProps) {
         };
     }, [filterFunction]);
 
-    const renderItem = (item: ListItemData<ListItemChatData>) => {
+    const renderItem = (item: ListItemData<ListItemChatData>, isActive: boolean) => {
         if (item.type === 'date-header') {
             return <DateHeaderItem key={`date-${item.date}`} date={item.date} />;
         }
@@ -162,8 +173,8 @@ export function HistoryList(props: HistoryListProps) {
                 key={item.id}
                 chat={item}
                 showActions={showActions}
-                onChatClick={handleChatClick}
                 onDeleteClick={onDeleteChat ? handleDeleteClick : undefined}
+                isActive={isActive}
             />
         );
     };
@@ -189,7 +200,7 @@ export function HistoryList(props: HistoryListProps) {
                     </div>
                 ) : (
                     <List
-                        size="m"
+                        size={size}
                         items={listItems}
                         renderItem={renderItem}
                         virtualized={false}
@@ -202,6 +213,7 @@ export function HistoryList(props: HistoryListProps) {
                         itemsClassName={b('list')}
                         itemClassName={b('list-item')}
                         onFilterEnd={(data) => setFilteredItemCount(data.items.length)}
+                        onItemClick={handleChatClick}
                     />
                 )}
             </div>
