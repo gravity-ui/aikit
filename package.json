@@ -77,6 +77,10 @@
     "@gravity-ui/prettier-config": "^1.1.0",
     "@gravity-ui/stylelint-config": "^4.0.1",
     "@gravity-ui/tsconfig": "^1.0.0",
+    "@diplodoc/transform": "^4.63.3",
+    "@gravity-ui/i18n": "^1.8.0",
+    "@gravity-ui/icons": "^2.16.0",
+    "@gravity-ui/uikit": "^7.25.0",
     "@playwright/experimental-ct-react": "^1.56.1",
     "@playwright/test": "^1.56.1",
     "@storybook/addon-docs": "^9.0.5",
@@ -94,6 +98,7 @@
     "copyfiles": "^2.4.1",
     "eslint": "^8.57.0",
     "eslint-plugin-storybook": "^9.0.5",
+    "highlight.js": "^11.11.1",
     "husky": "^9.0.11",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.2.0",
@@ -114,7 +119,12 @@
   },
   "peerDependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "@diplodoc/transform": "^4.63.3",
+    "@gravity-ui/i18n": "^1.8.0",
+    "@gravity-ui/icons": "^2.16.0",
+    "@gravity-ui/uikit": "^7.25.0",
+    "highlight.js": "^11.11.1"
   },
   "nano-staged": {
     "*.{scss}": [
@@ -129,12 +139,7 @@
   },
   "dependencies": {
     "@bem-react/classname": "^1.7.0",
-    "@diplodoc/transform": "^4.63.3",
-    "@gravity-ui/i18n": "^1.8.0",
-    "@gravity-ui/icons": "^2.16.0",
-    "@gravity-ui/uikit": "^7.25.0",
     "dayjs": "^1.11.19",
-    "highlight.js": "^11.11.1",
     "react-window": "^2.2.1",
     "uuid": "^13.0.0"
   }
