@@ -73,7 +73,7 @@ export function resolveMessageActions<
     if (defaultActions) {
         return defaultActions.map(
             (action): BaseMessageActionConfig => ({
-                type: action.type,
+                actionType: action.type,
                 icon: action.icon,
                 label: action.label,
                 view: action.view,

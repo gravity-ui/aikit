@@ -1,14 +1,13 @@
-import {ButtonView} from '@gravity-ui/uikit';
+import {ButtonButtonProps} from '@gravity-ui/uikit';
 
 /**
  * Action configuration object with properties
  */
 export type ActionConfig = {
+    actionType?: string;
     label?: string;
-    onClick?: () => void;
-    view?: ButtonView;
     icon?: React.ReactNode;
-};
+} & ButtonButtonProps;
 
 /**
  * Action can be either:

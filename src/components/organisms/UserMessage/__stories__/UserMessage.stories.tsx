@@ -54,8 +54,8 @@ export default {
 } as Meta;
 
 const buttons = [
-    {type: 'copy', onClick: () => ({})},
-    {type: 'edit', onClick: () => ({})},
+    {actionType: 'copy', onClick: () => ({})},
+    {actionType: 'edit', onClick: () => ({})},
 ];
 
 export const Playground: StoryFn<UserMessageProps> = (args) => (

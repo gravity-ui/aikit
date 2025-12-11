@@ -34,27 +34,27 @@ const defaultDecorators = [
 
 const sampleActions = [
     {
-        type: BaseMessageActionType.Copy,
+        actionType: BaseMessageActionType.Copy,
         onClick: () => console.log('Copy clicked'),
     },
     {
-        type: BaseMessageActionType.Edit,
+        actionType: BaseMessageActionType.Edit,
         onClick: () => console.log('Edit clicked'),
     },
     {
-        type: BaseMessageActionType.Retry,
+        actionType: BaseMessageActionType.Retry,
         onClick: () => console.log('Retry clicked'),
     },
     {
-        type: BaseMessageActionType.Like,
+        actionType: BaseMessageActionType.Like,
         onClick: () => console.log('Like clicked'),
     },
     {
-        type: BaseMessageActionType.Unlike,
+        actionType: BaseMessageActionType.Unlike,
         onClick: () => console.log('Unlike clicked'),
     },
     {
-        type: BaseMessageActionType.Delete,
+        actionType: BaseMessageActionType.Delete,
         onClick: () => console.log('Delete clicked'),
     },
 ];

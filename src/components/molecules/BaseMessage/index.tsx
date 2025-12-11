@@ -80,16 +80,16 @@ export const BaseMessage = (props: BaseMessageProps) => {
                                 return <React.Fragment key={index}>{action}</React.Fragment>;
                             }
 
-                            const tooltipText = getTooltipText(action.type);
-                            const defaultIcon = action.type
-                                ? BaseMessageActionIcons[action.type]
+                            const tooltipText = getTooltipText(action.actionType);
+                            const defaultIcon = action.actionType
+                                ? BaseMessageActionIcons[action.actionType]
                                 : undefined;
 
                             // Determine tooltip title
                             let tooltipTitle: string | undefined;
                             if (action.label) {
                                 tooltipTitle = action.label;
-                            } else if (tooltipText && action.type !== 'custom') {
+                            } else if (tooltipText && action.actionType !== 'custom') {
                                 tooltipTitle = tooltipText;
                             }
 
@@ -102,14 +102,13 @@ export const BaseMessage = (props: BaseMessageProps) => {
                             } else if (action.label) {
                                 buttonContent = action.label;
                             } else {
-                                buttonContent = action.type;
+                                buttonContent = action.actionType;
                             }
-                            const {type: _type, ...actionWithoutType} = action;
 
                             return (
                                 <ActionButton
-                                    key={action.type || index}
-                                    {...actionWithoutType}
+                                    key={action.actionType || index}
+                                    {...action}
                                     tooltipTitle={tooltipTitle}
                                     view={action.view || 'flat-secondary'}
                                 >

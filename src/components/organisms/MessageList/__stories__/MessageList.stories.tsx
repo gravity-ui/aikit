@@ -338,14 +338,14 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
     render: (args) => {
         const userActions = [
             {
-                type: BaseMessageActionType.Edit,
+                actionType: BaseMessageActionType.Edit,
                 onClick: (message: TUserMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Edit user message:', message.id);
                 },
             },
             {
-                type: BaseMessageActionType.Delete,
+                actionType: BaseMessageActionType.Delete,
                 onClick: (message: TUserMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Delete user message:', message.id);
@@ -355,14 +355,14 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
 
         const assistantActions = [
             {
-                type: BaseMessageActionType.Copy,
+                actionType: BaseMessageActionType.Copy,
                 onClick: (message: TAssistantMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Copy assistant message:', message.id);
                 },
             },
             {
-                type: BaseMessageActionType.Like,
+                actionType: BaseMessageActionType.Like,
                 onClick: (message: TAssistantMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Like assistant message:', message.id);
@@ -395,7 +395,7 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
                                 content: 'This message has custom actions.',
                                 actions: [
                                     {
-                                        type: 'custom',
+                                        actionType: 'custom',
                                         onClick: () => {
                                             // eslint-disable-next-line no-console
                                             console.log('Custom action clicked');

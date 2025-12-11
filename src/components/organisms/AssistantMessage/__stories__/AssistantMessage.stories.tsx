@@ -106,11 +106,11 @@ const multiPartMessage: TAssistantMessage = {
 
 const actions = [
     // eslint-disable-next-line no-console
-    {type: 'copy', onClick: () => console.log('Copy clicked')},
+    {actionType: 'copy', onClick: () => console.log('Copy clicked')},
     // eslint-disable-next-line no-console
-    {type: 'like', onClick: () => console.log('Like clicked')},
+    {actionType: 'like', onClick: () => console.log('Like clicked')},
     // eslint-disable-next-line no-console
-    {type: 'unlike', onClick: () => console.log('Unlike clicked')},
+    {actionType: 'unlike', onClick: () => console.log('Unlike clicked')},
 ];
 
 export const Playground: StoryFn<AssistantMessageProps> = (args) => (

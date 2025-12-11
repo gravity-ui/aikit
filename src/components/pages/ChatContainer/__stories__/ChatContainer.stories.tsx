@@ -199,14 +199,14 @@ const mockMessages: TChatMessage[] = mockChatMessages['1'];
 const createMessageActions = (messageId: string, role: 'user' | 'assistant') => {
     const actions = [
         {
-            type: 'copy',
+            actionType: 'copy',
             onClick: () => console.log(`Copy message ${messageId}`),
         },
     ];
 
     if (role === 'user') {
         actions.push({
-            type: 'edit',
+            actionType: 'edit',
             onClick: () => console.log(`Edit message ${messageId}`),
         });
     }
@@ -214,11 +214,11 @@ const createMessageActions = (messageId: string, role: 'user' | 'assistant') => 
     if (role === 'assistant') {
         actions.push(
             {
-                type: 'like',
+                actionType: 'like',
                 onClick: () => console.log(`Like message ${messageId}`),
             },
             {
-                type: 'unlike',
+                actionType: 'unlike',
                 onClick: () => console.log(`Unlike message ${messageId}`),
             },
         );
@@ -1135,15 +1135,15 @@ const headerAdditionalActionsConfig = [
  */
 const customUserActions = [
     {
-        type: 'copy',
+        actionType: 'copy',
         onClick: () => console.log('Copy user message'),
     },
     {
-        type: 'edit',
+        actionType: 'edit',
         onClick: () => console.log('Edit user message'),
     },
     {
-        type: 'custom',
+        actionType: 'custom',
         icon: <Icon data={Star} size={16} />,
         label: 'Add to favorites',
         onClick: () => console.log('Add user message to favorites'),
@@ -1155,19 +1155,19 @@ const customUserActions = [
  */
 const customAssistantActions = [
     {
-        type: 'copy',
+        actionType: 'copy',
         onClick: () => console.log('Copy assistant message'),
     },
     {
-        type: 'like',
+        actionType: 'like',
         onClick: () => console.log('Like assistant message'),
     },
     {
-        type: 'unlike',
+        actionType: 'unlike',
         onClick: () => console.log('Unlike assistant message'),
     },
     {
-        type: 'custom',
+        actionType: 'custom',
         icon: <Icon data={Star} size={16} />,
         label: 'Add to favorites',
         onClick: () => console.log('Add assistant message to favorites'),

@@ -52,17 +52,17 @@ const defaultDecorators = [
 
 const buttons = [
     // eslint-disable-next-line no-console
-    {type: 'copy', onClick: () => console.log('copy')},
+    {actionType: 'copy', onClick: () => console.log('copy')},
     // eslint-disable-next-line no-console
-    {type: 'edit', onClick: () => console.log('edit')},
+    {actionType: 'edit', onClick: () => console.log('edit')},
     // eslint-disable-next-line no-console
-    {type: 'delete', onClick: () => console.log('delete')},
+    {actionType: 'delete', onClick: () => console.log('delete')},
     // eslint-disable-next-line no-console
-    {type: 'custom', onClick: () => console.log('custom')},
+    {actionType: 'custom', onClick: () => console.log('custom')},
     // eslint-disable-next-line no-console
-    {type: 'like', onClick: () => console.log('like')},
+    {actionType: 'like', onClick: () => console.log('like')},
     // eslint-disable-next-line no-console
-    {type: 'unlike', onClick: () => console.log('unlike')},
+    {actionType: 'unlike', onClick: () => console.log('unlike')},
 ];
 
 export const Playground: StoryFn<BaseMessageProps> = (args) => (
@@ -142,9 +142,9 @@ export const WithCustomAction: StoryFn<BaseMessageProps> = (args) => (
             {...args}
             actions={[
                 // eslint-disable-next-line no-console
-                {type: 'copy', onClick: () => console.log('copy')},
+                {actionType: 'copy', onClick: () => console.log('copy')},
                 // eslint-disable-next-line no-console
-                {type: 'edit', onClick: () => console.log('edit')},
+                {actionType: 'edit', onClick: () => console.log('edit')},
                 // Custom ReactNode action
                 <Button
                     key="custom"

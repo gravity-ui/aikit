@@ -3,10 +3,7 @@ import type React from 'react';
 import {ActionConfig} from './common';
 import {ToolMessageProps} from './tool';
 
-export type BaseMessageActionConfig = ActionConfig & {
-    /** Action type identifier (for internal mapping to icons) */
-    type?: string;
-};
+export type BaseMessageActionConfig = ActionConfig;
 
 /**
  * BaseMessage action can be either:
