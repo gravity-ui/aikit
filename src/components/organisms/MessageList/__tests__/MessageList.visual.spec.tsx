@@ -3,7 +3,7 @@ import React from 'react';
 import {expect, test} from '~playwright/core';
 
 import type {TAssistantMessage, TUserMessage} from '../../../../types/messages';
-import {BaseMessageAction} from '../../../molecules/BaseMessage';
+import {BaseMessageActionType} from '../../../molecules/BaseMessage';
 import {MessageList} from '../MessageList';
 
 import {MessageListStories} from './helpersPlaywright';
@@ -48,11 +48,11 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
     test.describe('actions visibility for assistant messages', () => {
         const assistantActions = [
             {
-                type: BaseMessageAction.Copy,
+                type: BaseMessageActionType.Copy,
                 onClick: () => {},
             },
             {
-                type: BaseMessageAction.Like,
+                type: BaseMessageActionType.Like,
                 onClick: () => {},
             },
         ];

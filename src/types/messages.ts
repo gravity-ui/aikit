@@ -1,17 +1,24 @@
 import type React from 'react';
 
-import type {IconData} from '@gravity-ui/uikit';
-
+import {ActionConfig} from './common';
 import {ToolMessageProps} from './tool';
+
+export type BaseMessageActionConfig = ActionConfig & {
+    /** Action type identifier (for internal mapping to icons) */
+    type?: string;
+};
+
+/**
+ * BaseMessage action can be either:
+ * - BaseMessageActionConfig object with properties (including type for default icons)
+ * - React.ReactNode for fully custom content
+ */
+export type BaseMessageAction = BaseMessageActionConfig | React.ReactNode;
 
 export type BaseMessageProps = {
     children: React.ReactNode;
     role: TMessageRole;
-    actions?: Array<{
-        type: string;
-        onClick: () => void;
-        icon?: IconData;
-    }>;
+    actions?: BaseMessageAction[];
     timestamp?: string;
     showTimestamp?: boolean;
     showActionsOnHover?: boolean;

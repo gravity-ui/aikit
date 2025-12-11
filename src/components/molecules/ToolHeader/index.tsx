@@ -1,6 +1,9 @@
+import React from 'react';
+
 import {Text} from '@gravity-ui/uikit';
 
 import type {ToolHeaderProps} from '../../../types/tool';
+import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms';
 import {ButtonGroup} from '../ButtonGroup';
@@ -24,17 +27,25 @@ export function ToolHeader(props: ToolHeaderProps) {
             <div className={b('right')}>
                 {hasActions && (
                     <ButtonGroup>
-                        {actions.map((action, index) => (
-                            <ActionButton
-                                tooltipTitle={action.label}
-                                view="flat-secondary"
-                                key={index}
-                                size="s"
-                                {...action}
-                            >
-                                {action.icon}
-                            </ActionButton>
-                        ))}
+                        {actions.map((action, index) => {
+                            // Check if action is a ReactNode (not an object with properties)
+                            if (!isActionConfig(action)) {
+                                return <React.Fragment key={index}>{action}</React.Fragment>;
+                            }
+
+                            // TypeScript now knows that action is ActionConfig
+                            return (
+                                <ActionButton
+                                    tooltipTitle={action.label}
+                                    view={action.view || 'flat-secondary'}
+                                    key={index}
+                                    size="s"
+                                    onClick={action.onClick}
+                                >
+                                    {action.icon}
+                                </ActionButton>
+                            );
+                        })}
                     </ButtonGroup>
                 )}
                 <ToolStatus status={status} />

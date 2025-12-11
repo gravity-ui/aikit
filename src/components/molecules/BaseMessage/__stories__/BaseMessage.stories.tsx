@@ -1,5 +1,4 @@
-import React from 'react';
-
+import {Button} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {BaseMessage} from '..';
@@ -136,3 +135,30 @@ export const ShowTimestamp: StoryObj<BaseMessageProps> = {
     ),
     decorators: defaultDecorators,
 };
+
+export const WithCustomAction: StoryFn<BaseMessageProps> = (args) => (
+    <ContentWrapper>
+        <BaseMessage
+            {...args}
+            actions={[
+                // eslint-disable-next-line no-console
+                {type: 'copy', onClick: () => console.log('copy')},
+                // eslint-disable-next-line no-console
+                {type: 'edit', onClick: () => console.log('edit')},
+                // Custom ReactNode action
+                <Button
+                    key="custom"
+                    view="outlined-info"
+                    size="s"
+                    // eslint-disable-next-line no-console
+                    onClick={() => console.log('custom')}
+                >
+                    Custom
+                </Button>,
+            ]}
+            role="assistant"
+        >
+            {'Message with custom action button'}
+        </BaseMessage>
+    </ContentWrapper>
+);

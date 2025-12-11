@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 import {ClockArrowRotateLeft} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
@@ -56,8 +56,16 @@ type HistoryWithTriggerProps = Omit<HistoryProps, 'open' | 'onOpenChange' | 'anc
 };
 
 function HistoryWithTrigger({initialOpen = true, ...props}: HistoryWithTriggerProps) {
-    const [open, setOpen] = useState(initialOpen);
+    const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
+    const setInitialOpen = useRef(false);
+
+    useEffect(() => {
+        if (initialOpen && !open && anchorRef.current && !setInitialOpen.current) {
+            setOpen(true);
+            setInitialOpen.current = true;
+        }
+    }, [initialOpen, open, anchorRef.current, setInitialOpen.current]);
 
     return (
         <div style={{paddingLeft: '400px'}}>

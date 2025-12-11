@@ -1,6 +1,9 @@
+import React from 'react';
+
 import {Button, Text} from '@gravity-ui/uikit';
 
 import type {ToolFooterProps} from '../../../types';
+import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
 import {Loader, Shimmer} from '../../atoms';
 import {ButtonGroup} from '../ButtonGroup';
@@ -21,11 +24,17 @@ export function ToolFooter({actions, content, showLoader = true, className, qa}:
                 )}
             </div>
             <ButtonGroup>
-                {actions.map((action, index) => (
-                    <Button view={action.view} key={index} onClick={action.onClick} size="s">
-                        {action.label}
-                    </Button>
-                ))}
+                {actions.map((action, index) => {
+                    if (!isActionConfig(action)) {
+                        return <React.Fragment key={index}>{action}</React.Fragment>;
+                    }
+
+                    return (
+                        <Button view={action.view} key={index} onClick={action.onClick} size="s">
+                            {action.label}
+                        </Button>
+                    );
+                })}
             </ButtonGroup>
         </div>
     );

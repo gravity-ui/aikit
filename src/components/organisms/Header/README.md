@@ -46,17 +46,26 @@ import {Bars} from '@gravity-ui/icons';
 
 ### With additional actions
 
+Additional actions follow the unified `Action` type and can include label, icon, onClick handler, and view style.
+
 ```tsx
 import {Header, HeaderAction} from '@gravity-ui/aikit';
+import {Icon} from '@gravity-ui/uikit';
+import {Gear} from '@gravity-ui/icons';
 
 <Header
   title="Chat Header"
   baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
   additionalActions={[
     {
-      children: 'Settings',
+      label: 'Settings',
       view: 'outlined',
       onClick: () => console.log('Settings'),
+    },
+    {
+      icon: <Icon data={Gear} size={16} />,
+      onClick: () => console.log('Settings icon'),
+      view: 'flat',
     },
   ]}
   handleNewChat={() => console.log('New chat')}
@@ -163,15 +172,20 @@ function CustomHeader(props) {
 }
 ```
 
-## Base actions
+## Actions
 
-Base actions order: `newChat` → `history` → `folding` → `close`
+### Base actions
 
-- `folding` - toggle between collapsed and opened states
+Base actions are predefined header actions with specific handlers and icons. They appear in the order: `newChat` → `history` → `folding` → `close`
 
-### Action Tooltips
+Available base actions:
 
-Each base action button has a tooltip that shows the action name. Tooltips are implemented using the `ActionTooltip` component from `@gravity-ui/uikit` and are internationalized to support multiple languages (English and Russian by default).
+- `HeaderAction.NewChat` - Opens new chat dialog
+- `HeaderAction.History` - Toggles chat history sidebar
+- `HeaderAction.Folding` - Toggles between collapsed and expanded states
+- `HeaderAction.Close` - Closes the chat
+
+Each base action button has a tooltip that shows the action name. Tooltips are internationalized to support multiple languages (English and Russian by default).
 
 Available tooltip keys in i18n:
 
@@ -180,6 +194,34 @@ Available tooltip keys in i18n:
 - `action-tooltip-folding-collapsed` - "Expand" / "Развернуть"
 - `action-tooltip-folding-opened` - "Collapse" / "Свернуть"
 - `action-tooltip-close` - "Close" / "Закрыть"
+
+### Additional actions
+
+Additional actions follow the unified `Action` type from `src/types/common.ts`. Each action can be:
+
+**Action Config Object:**
+
+- `label?: string` - Button label text (used as tooltip if provided)
+- `icon?: React.ReactNode` - Custom icon element
+- `onClick?: () => void` - Click handler
+- `view?: ButtonView` - Button view variant ('flat', 'outlined', 'normal', etc.)
+
+**Or React.ReactNode:**
+
+You can pass any React element directly for complete customization:
+
+```tsx
+<Header
+  additionalActions={[
+    {label: 'Settings', icon: <Icon data={Gear} />, onClick: handleSettings},
+    <Button key="custom" view="outlined" onClick={handleCustom}>
+      Custom Button
+    </Button>,
+  ]}
+/>
+```
+
+Additional actions appear before base actions in the header's action bar.
 
 ## Styling
 
@@ -197,23 +239,23 @@ The component uses CSS variables for theming:
 
 ### HeaderProps
 
-| Prop                  | Type                                       | Description                                    |
-| --------------------- | ------------------------------------------ | ---------------------------------------------- |
-| `icon`                | `React.ReactNode`                          | Icon to the left of the title                  |
-| `title`               | `string`                                   | Chat title                                     |
-| `preview`             | `React.ReactNode`                          | Preview after the title                        |
-| `baseActions`         | `HeaderAction[]`                           | Array of base actions                          |
-| `handleNewChat`       | `() => void`                               | New chat handler                               |
-| `handleHistoryToggle` | `() => void`                               | History toggle handler                         |
-| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | Folding handler                                |
-| `handleClose`         | `() => void`                               | Close handler                                  |
-| `additionalActions`   | `AdditionalActionsConfig[]`                | Array of additional actions                    |
-| `historyButtonRef`    | `React.RefObject<HTMLElement>`             | Ref for history button (used to anchor popups) |
-| `foldingState`        | `'collapsed' \| 'opened'`                  | Folding state (default: `'opened'`)            |
-| `titlePosition`       | `'left' \| 'center'`                       | Title position (default: `'left'`)             |
-| `withIcon`            | `boolean`                                  | Show icon (default: `true`)                    |
-| `showTitle`           | `boolean`                                  | Show title and preview (default: `true`)       |
-| `className`           | `string`                                   | Additional CSS class                           |
+| Prop                  | Type                                       | Required | Default    | Description                                       |
+| --------------------- | ------------------------------------------ | -------- | ---------- | ------------------------------------------------- |
+| `icon`                | `React.ReactNode`                          | -        | -          | Icon to the left of the title                     |
+| `title`               | `string`                                   | -        | -          | Chat title                                        |
+| `preview`             | `React.ReactNode`                          | -        | -          | Preview content after the title                   |
+| `baseActions`         | `HeaderAction[]`                           | -        | `[]`       | Array of predefined base actions                  |
+| `handleNewChat`       | `() => void`                               | -        | -          | Handler for new chat action                       |
+| `handleHistoryToggle` | `() => void`                               | -        | -          | Handler for history toggle action                 |
+| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                        |
+| `handleClose`         | `() => void`                               | -        | -          | Handler for close action                          |
+| `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type) |
+| `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)    |
+| `foldingState`        | `'collapsed' \| 'opened'`                  | -        | `'opened'` | Current folding state                             |
+| `titlePosition`       | `'left' \| 'center'`                       | -        | `'left'`   | Title alignment position                          |
+| `withIcon`            | `boolean`                                  | -        | `true`     | Whether to show icon area                         |
+| `showTitle`           | `boolean`                                  | -        | `true`     | Whether to show title and preview                 |
+| `className`           | `string`                                   | -        | -          | Additional CSS class                              |
 
 ### HeaderAction
 

@@ -1,6 +1,8 @@
-import type {IconData} from '@gravity-ui/uikit';
+import type {ButtonView} from '@gravity-ui/uikit';
 
 import type {
+    BaseMessageAction,
+    BaseMessageActionConfig,
     TAssistantMessage,
     TChatMessage,
     TMessageContent,
@@ -51,9 +53,11 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
 }
 
 export type DefaultMessageAction<TMessage> = {
-    type: string;
+    type?: string;
     onClick: (message: TMessage) => void;
-    icon?: IconData;
+    icon?: React.ReactNode;
+    label?: string;
+    view?: ButtonView;
 };
 
 export function resolveMessageActions<
@@ -61,16 +65,21 @@ export function resolveMessageActions<
 >(
     message: TMessage,
     defaultActions?: DefaultMessageAction<TMessage>[],
-): Array<{type: string; onClick: () => void; icon?: IconData}> | undefined {
+): BaseMessageAction[] | undefined {
     if (message.actions) {
         return message.actions;
     }
 
     if (defaultActions) {
-        return defaultActions.map((action) => ({
-            ...action,
-            onClick: () => action.onClick(message),
-        }));
+        return defaultActions.map(
+            (action): BaseMessageActionConfig => ({
+                type: action.type,
+                icon: action.icon,
+                label: action.label,
+                view: action.view,
+                onClick: () => action.onClick(message),
+            }),
+        );
     }
 
     return undefined;

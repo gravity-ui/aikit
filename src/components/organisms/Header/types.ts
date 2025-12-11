@@ -1,4 +1,4 @@
-import type {ButtonProps} from '@gravity-ui/uikit';
+import type {Action} from '../../../types/common';
 
 export enum HeaderAction {
     NewChat = 'newChat',
@@ -6,8 +6,6 @@ export enum HeaderAction {
     Folding = 'folding',
     Close = 'close',
 }
-
-export type AdditionalActionsConfig = ButtonProps | React.ReactNode;
 
 export type HeaderProps = {
     // Content
@@ -21,7 +19,7 @@ export type HeaderProps = {
     handleHistoryToggle?: () => void;
     handleFolding?: (value: 'collapsed' | 'opened') => void;
     handleClose?: () => void;
-    additionalActions?: AdditionalActionsConfig[];
+    additionalActions?: Action[];
 
     // Refs
     historyButtonRef?: React.RefObject<HTMLElement>;

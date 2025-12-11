@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {At, Envelope, Gear} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
