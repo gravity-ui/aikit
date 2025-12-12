@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.0](https://github.com/gravity-ui/aikit/compare/v0.6.1...v1.0.0) (2025-12-09)
+
+
+### ⚠️ Breaking Changes
+
+- Unification of project actions to one realization via ActionButton
+
+#### BaseMessage
+- change type name from BaseMessageAction to BaseMessageActionType
+- change prop name type (type of default action) to actionType
+
+#### Header
+- change `additionalActions` to base Action type
+
+
+### Bug Fixes
+
+* **dependance:** move extra dependencies to peerDependencies ([90d8e8d](https://github.com/gravity-ui/aikit/commit/90d8e8dd63dcacec8c2e176e3548c80ac3f39c4d))
+* **actions:** add extra button props to action ([3ea6f26](https://github.com/gravity-ui/aikit/commit/3ea6f267d83b6195f303c85e680e025ca4011361))
+
 ## [0.6.1](https://github.com/gravity-ui/aikit/compare/v0.6.0...v0.6.1) (2025-12-09)
 
 
