@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
-import React, {useState} from 'react';
+import {useState} from 'react';
 
 import {CircleInfo} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {ChatContent} from '..';
-import {BaseMessageAction} from '../../../../components/molecules/BaseMessage';
+import {BaseMessageActionType} from '../../../../components/molecules/BaseMessage';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {TChatMessage} from '../../../../types/messages';
 
@@ -34,27 +34,27 @@ const defaultDecorators = [
 
 const sampleActions = [
     {
-        type: BaseMessageAction.Copy,
+        type: BaseMessageActionType.Copy,
         onClick: () => console.log('Copy clicked'),
     },
     {
-        type: BaseMessageAction.Edit,
+        type: BaseMessageActionType.Edit,
         onClick: () => console.log('Edit clicked'),
     },
     {
-        type: BaseMessageAction.Retry,
+        type: BaseMessageActionType.Retry,
         onClick: () => console.log('Retry clicked'),
     },
     {
-        type: BaseMessageAction.Like,
+        type: BaseMessageActionType.Like,
         onClick: () => console.log('Like clicked'),
     },
     {
-        type: BaseMessageAction.Unlike,
+        type: BaseMessageActionType.Unlike,
         onClick: () => console.log('Unlike clicked'),
     },
     {
-        type: BaseMessageAction.Delete,
+        type: BaseMessageActionType.Delete,
         onClick: () => console.log('Delete clicked'),
     },
 ];

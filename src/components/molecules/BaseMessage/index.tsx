@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
     ArrowRotateLeft,
     Copy as CopyIcon,
@@ -9,6 +11,7 @@ import {
 import {Icon, IconData} from '@gravity-ui/uikit';
 
 import type {BaseMessageProps} from '../../../types/messages';
+import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms';
 import {ChatDate} from '../../atoms/ChatDate';
@@ -20,7 +23,7 @@ import './BaseMessage.scss';
 
 const b = block('base-message');
 
-export enum BaseMessageAction {
+export enum BaseMessageActionType {
     Copy = 'copy',
     Edit = 'edit',
     Retry = 'retry',
@@ -29,13 +32,13 @@ export enum BaseMessageAction {
     Delete = 'delete',
 }
 
-const BaseMessageActionIcons: Record<BaseMessageAction | string, IconData> = {
-    [BaseMessageAction.Copy]: CopyIcon,
-    [BaseMessageAction.Edit]: Pencil,
-    [BaseMessageAction.Retry]: ArrowRotateLeft,
-    [BaseMessageAction.Like]: ThumbsUp,
-    [BaseMessageAction.Unlike]: ThumbsDown,
-    [BaseMessageAction.Delete]: TrashBin,
+const BaseMessageActionIcons: Record<BaseMessageActionType | string, IconData> = {
+    [BaseMessageActionType.Copy]: CopyIcon,
+    [BaseMessageActionType.Edit]: Pencil,
+    [BaseMessageActionType.Retry]: ArrowRotateLeft,
+    [BaseMessageActionType.Like]: ThumbsUp,
+    [BaseMessageActionType.Unlike]: ThumbsDown,
+    [BaseMessageActionType.Delete]: TrashBin,
 };
 
 export const BaseMessage = (props: BaseMessageProps) => {
@@ -51,7 +54,10 @@ export const BaseMessage = (props: BaseMessageProps) => {
     } = props;
 
     // Get tooltip text for action
-    const getTooltipText = (actionType: BaseMessageAction | string): string => {
+    const getTooltipText = (actionType?: string): string => {
+        if (!actionType) {
+            return '';
+        }
         const tooltipKey = `action-tooltip-${actionType}`;
         // Check if tooltip exists in i18n, otherwise return empty string
         try {
@@ -69,30 +75,45 @@ export const BaseMessage = (props: BaseMessageProps) => {
                 <div className={b('actions', {reverse: variant !== 'user'})}>
                     {showTimestamp ? <ChatDate date={timestamp} format="HH:mm" showTime /> : null}
                     <ButtonGroup>
-                        {actions?.map((action) => {
+                        {actions?.map((action, index) => {
+                            if (!isActionConfig(action)) {
+                                return <React.Fragment key={index}>{action}</React.Fragment>;
+                            }
+
                             const tooltipText = getTooltipText(action.type);
+                            const defaultIcon = action.type
+                                ? BaseMessageActionIcons[action.type]
+                                : undefined;
+
+                            // Determine tooltip title
+                            let tooltipTitle: string | undefined;
+                            if (action.label) {
+                                tooltipTitle = action.label;
+                            } else if (tooltipText && action.type !== 'custom') {
+                                tooltipTitle = tooltipText;
+                            }
+
+                            // Determine button content
+                            let buttonContent: React.ReactNode;
+                            if (action.icon) {
+                                buttonContent = action.icon;
+                            } else if (defaultIcon) {
+                                buttonContent = <Icon size={16} data={defaultIcon} />;
+                            } else if (action.label) {
+                                buttonContent = action.label;
+                            } else {
+                                buttonContent = action.type;
+                            }
+                            const {type: _type, ...actionWithoutType} = action;
 
                             return (
                                 <ActionButton
-                                    key={action.type}
-                                    tooltipTitle={
-                                        tooltipText && action.type !== 'custom'
-                                            ? tooltipText
-                                            : undefined
-                                    }
-                                    view="flat-secondary"
-                                    onClick={action.onClick}
+                                    key={action.type || index}
+                                    {...actionWithoutType}
+                                    tooltipTitle={tooltipTitle}
+                                    view={action.view || 'flat-secondary'}
                                 >
-                                    {action.icon || BaseMessageActionIcons[action.type] ? (
-                                        <Icon
-                                            size={16}
-                                            data={
-                                                action.icon || BaseMessageActionIcons[action.type]
-                                            }
-                                        />
-                                    ) : (
-                                        action.type
-                                    )}
+                                    {buttonContent}
                                 </ActionButton>
                             );
                         })}

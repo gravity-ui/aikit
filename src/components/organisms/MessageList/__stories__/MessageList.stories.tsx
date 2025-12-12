@@ -15,7 +15,7 @@ import {
     createMessageRendererRegistry,
     registerMessageRenderer,
 } from '../../../../utils/messageTypeRegistry';
-import {BaseMessageAction} from '../../../molecules/BaseMessage';
+import {BaseMessageActionType} from '../../../molecules/BaseMessage';
 
 import MDXDocs from './Docs.mdx';
 
@@ -338,14 +338,14 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
     render: (args) => {
         const userActions = [
             {
-                type: BaseMessageAction.Edit,
+                type: BaseMessageActionType.Edit,
                 onClick: (message: TUserMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Edit user message:', message.id);
                 },
             },
             {
-                type: BaseMessageAction.Delete,
+                type: BaseMessageActionType.Delete,
                 onClick: (message: TUserMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Delete user message:', message.id);
@@ -355,14 +355,14 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
 
         const assistantActions = [
             {
-                type: BaseMessageAction.Copy,
+                type: BaseMessageActionType.Copy,
                 onClick: (message: TAssistantMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Copy assistant message:', message.id);
                 },
             },
             {
-                type: BaseMessageAction.Like,
+                type: BaseMessageActionType.Like,
                 onClick: (message: TAssistantMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Like assistant message:', message.id);

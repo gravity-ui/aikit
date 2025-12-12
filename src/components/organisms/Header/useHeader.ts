@@ -1,15 +1,13 @@
 import React, {useMemo} from 'react';
 
-import type {ButtonProps} from '@gravity-ui/uikit';
+import type {Action} from '../../../types/common';
 
 import {HeaderAction, type HeaderProps} from './types';
 
 export type ActionItem = {
     id: string;
     type: 'base' | 'additional';
-    content: React.ReactNode;
     onClick?: () => void;
-    buttonProps?: ButtonProps;
     foldingState?: 'collapsed' | 'opened';
 };
 
@@ -18,7 +16,7 @@ export function useHeader(props: HeaderProps): {
     preview: React.ReactNode | undefined;
     icon: React.ReactNode | undefined;
     baseActions: ActionItem[];
-    additionalActions: ActionItem[];
+    additionalActions: Action[];
     titlePosition: 'left' | 'center';
     withIcon: boolean;
     showTitle: boolean;
@@ -53,7 +51,6 @@ export function useHeader(props: HeaderProps): {
                     actions.push({
                         id: action,
                         type: 'base',
-                        content: null, // Will be rendered in component
                         onClick: () => {
                             const newState = foldingState === 'opened' ? 'collapsed' : 'opened';
                             handleFolding(newState);
@@ -75,7 +72,6 @@ export function useHeader(props: HeaderProps): {
                 actions.push({
                     id: action,
                     type: 'base',
-                    content: null, // Will be rendered in component
                     onClick: handler,
                 });
             }
@@ -84,34 +80,12 @@ export function useHeader(props: HeaderProps): {
         return actions;
     }, [baseActions, handleNewChat, handleHistoryToggle, handleClose, handleFolding, foldingState]);
 
-    // Build additional actions
-    const additionalActionsList = useMemo(() => {
-        return additionalActions.map((action, index) => {
-            if (React.isValidElement(action)) {
-                return {
-                    id: `additional-${index}`,
-                    type: 'additional' as const,
-                    content: action,
-                };
-            }
-
-            // If it's ButtonProps, create a button
-            const buttonProps = action as ButtonProps;
-            return {
-                id: buttonProps.qa || `additional-${index}`,
-                type: 'additional' as const,
-                content: null, // Will be rendered in component
-                buttonProps,
-            };
-        });
-    }, [additionalActions]);
-
     return {
         title,
         preview,
         icon,
         baseActions: baseActionsList,
-        additionalActions: additionalActionsList,
+        additionalActions,
         titlePosition,
         withIcon,
         showTitle,

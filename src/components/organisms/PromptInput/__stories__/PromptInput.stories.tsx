@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 
 import {Xmark} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';

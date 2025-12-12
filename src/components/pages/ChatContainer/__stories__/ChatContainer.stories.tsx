@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, {useState} from 'react';
 
-import {Sparkles} from '@gravity-ui/icons';
+import {Gear, Sparkles, Star} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
@@ -1104,6 +1104,168 @@ export const HiddenTitleOnEmpty: Story = {
                     description:
                         'Ask me anything to get started. The title will appear after you send your first message.',
                     suggestions: mockSuggestions,
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+/**
+ * Static additional actions for Header - extracted outside component
+ * to prevent creating new array on each render
+ */
+const headerAdditionalActionsConfig = [
+    {
+        icon: <Icon data={Gear} size={16} />,
+        label: 'Settings',
+        onClick: () => console.log('Settings clicked'),
+        view: 'flat' as const,
+    },
+    {
+        icon: <Icon data={Star} size={16} />,
+        label: 'Favorites',
+        onClick: () => console.log('Favorites clicked'),
+        view: 'flat' as const,
+    },
+];
+
+/**
+ * Static actions for user messages with custom "Add to favorites" action
+ */
+const customUserActions = [
+    {
+        type: 'copy',
+        onClick: () => console.log('Copy user message'),
+    },
+    {
+        type: 'edit',
+        onClick: () => console.log('Edit user message'),
+    },
+    {
+        type: 'custom',
+        icon: <Icon data={Star} size={16} />,
+        label: 'Add to favorites',
+        onClick: () => console.log('Add user message to favorites'),
+    },
+];
+
+/**
+ * Static actions for assistant messages with custom "Add to favorites" action
+ */
+const customAssistantActions = [
+    {
+        type: 'copy',
+        onClick: () => console.log('Copy assistant message'),
+    },
+    {
+        type: 'like',
+        onClick: () => console.log('Like assistant message'),
+    },
+    {
+        type: 'unlike',
+        onClick: () => console.log('Unlike assistant message'),
+    },
+    {
+        type: 'custom',
+        icon: <Icon data={Star} size={16} />,
+        label: 'Add to favorites',
+        onClick: () => console.log('Add assistant message to favorites'),
+    },
+];
+
+/**
+ * Add custom actions to messages based on role
+ * @param messages - Array of messages
+ * @returns Array of messages with custom actions added
+ */
+const addCustomActionsToMessages = (messages: TChatMessage[]): TChatMessage[] => {
+    return messages.map((msg) => ({
+        ...msg,
+        actions: msg.role === 'user' ? customUserActions : customAssistantActions,
+    }));
+};
+
+/**
+ * With Additional Actions
+ * Demonstrates passing additional actions to Header and custom actions to BaseMessage
+ */
+export const WithAdditionalActions: Story = {
+    args: {
+        messages: mockMessages,
+        chats: mockChats,
+        activeChat: mockChats[0],
+        showHistory: true,
+        showNewChat: true,
+        showActionsOnHover: true,
+    },
+    render: (args) => {
+        const initialChat = mockChats[0];
+        const [messages, setMessages] = useState<TChatMessage[]>(() =>
+            addCustomActionsToMessages(mockChatMessages[initialChat.id] || []),
+        );
+        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
+            'ready',
+        );
+        const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const timestamp = Date.now();
+            const userMessageId = `user-${timestamp}`;
+            const userMessage: TChatMessage = {
+                id: userMessageId,
+                role: 'user',
+                content: data.content,
+                timestamp: new Date().toISOString(),
+                actions: customUserActions,
+            };
+
+            setMessages((prev) => [...prev, userMessage]);
+            setStatus('streaming');
+
+            // Simulate response
+            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            const assistantMessageId = `assistant-${timestamp + 1}`;
+            const assistantMessage: TChatMessage = {
+                id: assistantMessageId,
+                role: 'assistant',
+                content: `Response to: "${data.content}". This message demonstrates custom actions including a "Add to favorites" button with a star icon.`,
+                timestamp: new Date().toISOString(),
+                actions: customAssistantActions,
+            };
+
+            setMessages((prev) => [...prev, assistantMessage]);
+            setStatus('ready');
+        };
+
+        const handleSelectChat = (chat: ChatType) => {
+            setActiveChat(chat);
+            const chatMessages = mockChatMessages[chat.id] || [];
+            setMessages(addCustomActionsToMessages(chatMessages));
+        };
+
+        const handleCreateChat = () => {
+            setActiveChat(null);
+            setMessages([]);
+        };
+
+        const handleCancel = async () => {
+            setStatus('ready');
+        };
+
+        return (
+            <ChatContainer
+                {...args}
+                messages={messages}
+                activeChat={activeChat}
+                onSendMessage={handleSendMessage}
+                onCancel={handleCancel}
+                onSelectChat={handleSelectChat}
+                onCreateChat={handleCreateChat}
+                status={status}
+                headerProps={{
+                    additionalActions: headerAdditionalActionsConfig,
                 }}
             />
         );

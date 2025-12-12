@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 
 import {
     ChevronsCollapseUpRight,
@@ -8,8 +8,11 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {Button, Icon, Text} from '@gravity-ui/uikit';
+import {Icon, Text} from '@gravity-ui/uikit';
 
+import {Action} from 'src/types';
+
+import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms';
 import {ButtonGroup} from '../../molecules';
@@ -56,61 +59,6 @@ export function Header(props: HeaderProps) {
         historyButtonRef,
     } = useHeader(props);
 
-    // Render base action
-    const renderBaseAction = (action: ActionItem) => {
-        let IconComponent = ACTION_ICONS[action.id as HeaderAction];
-
-        // Handle folding icon based on state
-        if (action.id === HeaderAction.Folding && action.foldingState) {
-            IconComponent = FOLDING_ICONS[action.foldingState];
-        }
-
-        if (!IconComponent) {
-            return null;
-        }
-
-        // Get tooltip text
-        let tooltipKey = `action-tooltip-${action.id}`;
-        if (action.id === HeaderAction.Folding && action.foldingState) {
-            tooltipKey = `action-tooltip-folding-${action.foldingState}`;
-        }
-
-        // Determine ref for history button
-        const buttonRef = action.id === HeaderAction.History ? historyButtonRef : undefined;
-
-        return (
-            <ActionButton
-                key={action.id}
-                ref={buttonRef as React.Ref<HTMLButtonElement>}
-                tooltipTitle={i18n(tooltipKey as Parameters<typeof i18n>[0])}
-                size="m"
-                view="flat"
-                onClick={action.onClick}
-                className={b('action-button')}
-                qa={`header-action-${action.id}`}
-            >
-                <Icon data={IconComponent} size={16} />
-            </ActionButton>
-        );
-    };
-
-    // Render additional action
-    const renderAdditionalAction = (action: (typeof additionalActions)[0], index: number) => {
-        if (action.content && React.isValidElement(action.content)) {
-            return (
-                <React.Fragment key={action.id || `additional-${index}`}>
-                    {action.content}
-                </React.Fragment>
-            );
-        }
-
-        if (action.buttonProps) {
-            return <Button key={action.id} {...action.buttonProps} />;
-        }
-
-        return null;
-    };
-
     // Determine class for title positioning
     const titlePositionClass = b('title-container', {position: titlePosition});
 
@@ -119,6 +67,62 @@ export function Header(props: HeaderProps) {
     ) : (
         <Icon data={Sparkles} size={16} />
     );
+
+    // Render base action
+    const renderBaseAction = useCallback(
+        (action: ActionItem, ref?: React.RefObject<HTMLElement>) => {
+            let IconComponent = ACTION_ICONS[action.id as HeaderAction];
+
+            // Handle folding icon based on state
+            if (action.id === HeaderAction.Folding && action.foldingState) {
+                IconComponent = FOLDING_ICONS[action.foldingState];
+            }
+
+            if (!IconComponent) {
+                return null;
+            }
+
+            // Get tooltip text
+            let tooltipKey = `action-tooltip-${action.id}`;
+            if (action.id === HeaderAction.Folding && action.foldingState) {
+                tooltipKey = `action-tooltip-folding-${action.foldingState}`;
+            }
+
+            // Determine ref for history button
+            const buttonRef = action.id === HeaderAction.History ? ref : undefined;
+
+            return (
+                <ActionButton
+                    key={action.id}
+                    ref={buttonRef as React.Ref<HTMLButtonElement>}
+                    tooltipTitle={i18n(tooltipKey as Parameters<typeof i18n>[0])}
+                    size="m"
+                    view="flat"
+                    onClick={action.onClick}
+                    className={b('action-button')}
+                    qa={`header-action-${action.id}`}
+                >
+                    <Icon data={IconComponent} size={16} />
+                </ActionButton>
+            );
+        },
+        [],
+    );
+
+    // Render additional action
+    const renderAdditionalAction = useCallback((action: Action, index: number) => {
+        const id = `additional-${index}`;
+
+        if (!isActionConfig(action)) {
+            return <React.Fragment key={id}>{action}</React.Fragment>;
+        }
+
+        return (
+            <ActionButton key={`${index}`} {...action} view={action.view || 'flat'} size="m">
+                {action.icon || action.label}
+            </ActionButton>
+        );
+    }, []);
 
     return (
         <div className={b('', className)}>
@@ -140,7 +144,7 @@ export function Header(props: HeaderProps) {
             {/* Right part: additional and base actions */}
             <ButtonGroup>
                 {additionalActions.map((action, index) => renderAdditionalAction(action, index))}
-                {baseActions.map((action) => renderBaseAction(action))}
+                {baseActions.map((action) => renderBaseAction(action, historyButtonRef))}
             </ButtonGroup>
         </div>
     );

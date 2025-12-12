@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 
 import {Gear} from '@gravity-ui/icons';
-import {Button, Icon} from '@gravity-ui/uikit';
+import {Icon} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
@@ -234,30 +234,70 @@ export const BaseActions: StoryObj<HeaderProps> = {
     decorators: defaultDecorators,
 };
 
+// Статический массив для additionalActions - вынесен за пределы компонента,
+// чтобы не создавать новый массив при каждом рендере
+const additionalActionsConfig = [
+    {
+        label: 'Action 1',
+        onClick: () => {
+            // eslint-disable-next-line no-console
+            console.log('Additional action 1');
+        },
+    },
+    {
+        icon: <Icon data={Gear} size={16} />,
+        onClick: () => {
+            // eslint-disable-next-line no-console
+            console.log('Settings clicked');
+        },
+        view: 'flat' as const,
+    },
+    // Custom ReactNode
+    <button
+        key="custom"
+        onClick={() => {
+            // eslint-disable-next-line no-console
+            console.log('Custom button');
+        }}
+        style={{padding: '6px 12px', cursor: 'pointer'}}
+    >
+        Custom
+    </button>,
+];
+
 export const AdditionalActions: StoryFn<HeaderProps> = (args) => {
     return (
         <ContentWrapper width="480px">
             <Header
                 title="With Additional Actions"
                 baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
-                additionalActions={[
-                    {
-                        children: 'Action 1',
-                        onClick: () => {
-                            // eslint-disable-next-line no-console
-                            console.log('Additional action 1');
-                        },
-                    },
-                    <Button key="settings" size="m" view="flat">
-                        <Icon data={Gear} size={16} />
-                    </Button>,
-                ]}
+                additionalActions={additionalActionsConfig}
                 {...mockHandlers}
                 {...args}
             />
         </ContentWrapper>
     );
 };
+
+// Статический массив для FullExample - вынесен за пределы компонента
+const fullExampleAdditionalActions = [
+    {
+        label: 'Settings',
+        view: 'outlined' as const,
+        onClick: () => {
+            // eslint-disable-next-line no-console
+            console.log('Settings clicked');
+        },
+    },
+    {
+        icon: <Icon data={Gear} size={16} />,
+        onClick: () => {
+            // eslint-disable-next-line no-console
+            console.log('Settings icon clicked');
+        },
+        view: 'flat' as const,
+    },
+];
 
 export const FullExample: StoryFn<HeaderProps> = (args) => {
     return (
@@ -267,20 +307,7 @@ export const FullExample: StoryFn<HeaderProps> = (args) => {
                 title="Chat Header"
                 preview={<div>Preview</div>}
                 baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
-                additionalActions={[
-                    {
-                        children: 'Settings',
-                        view: 'outlined',
-                        size: 'm',
-                        onClick: () => {
-                            // eslint-disable-next-line no-console
-                            console.log('Settings clicked');
-                        },
-                    },
-                    <Button key="settings" size="m" view="flat">
-                        <Icon data={Gear} size={16} />
-                    </Button>,
-                ]}
+                additionalActions={fullExampleAdditionalActions}
                 titlePosition="center"
                 {...mockHandlers}
                 {...args}
