@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/gravity-ui/aikit/compare/1.0.0...v1.0.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* **MessageList:** update scroll behaviour ([9d74619](https://github.com/gravity-ui/aikit/commit/9d74619272db182c955427e8c8ef4b306ddb788e))
+
 ## [1.0.0](https://github.com/gravity-ui/aikit/compare/v0.6.1...v1.0.0) (2025-12-09)
 
 
