@@ -1,43 +1,41 @@
-import {type RefObject, useCallback, useEffect, useRef, useState} from 'react';
+import {type RefObject, useCallback, useEffect, useRef} from 'react';
+
+import type {ChatStatus} from '../types';
 
 export interface UseSmartScrollReturn<T extends HTMLElement> {
     containerRef: RefObject<T>;
     endRef: RefObject<T>;
-    scrollToBottom: () => void;
+    scrollToBottom: (behavior?: ScrollBehavior) => void;
 }
 
 const SCROLL_THRESHOLD = 10;
 
-export function useSmartScroll<T extends HTMLElement>(
+export function useSmartScroll<T extends HTMLElement>({
     isStreaming = false,
-    messagesCount = 0,
-): UseSmartScrollReturn<T> {
+    messagesCount,
+    status,
+}: {
+    isStreaming?: boolean;
+    messagesCount: number;
+    status?: ChatStatus;
+}): UseSmartScrollReturn<T> {
     const containerRef = useRef<T>(null);
     const endRef = useRef<T>(null);
-    const [userScrolledUp, setUserScrolledUp] = useState(false);
-    const prevMessagesCount = useRef(messagesCount);
+    const userScrolledUpRef = useRef(false);
 
-    const checkIfUserScrolledUp = useCallback(() => {
-        const container = containerRef.current;
-        if (!container) return false;
-
-        const {scrollTop, scrollHeight, clientHeight} = container;
-        const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-
-        return distanceFromBottom > SCROLL_THRESHOLD;
+    const scrollToBottom = useCallback((behavior: ScrollBehavior = 'instant') => {
+        if (!userScrolledUpRef.current) {
+            const end = endRef.current;
+            if (end) {
+                end.scrollIntoView({behavior, block: 'end'});
+            }
+        }
     }, []);
 
-    const scrollToBottom = useCallback(
-        (behavior: ScrollBehavior = 'instant') => {
-            if (!userScrolledUp) {
-                const end = endRef.current;
-                if (end) {
-                    end.scrollIntoView({behavior, block: 'end'});
-                }
-            }
-        },
-        [userScrolledUp],
-    );
+    // Initial scroll to bottom
+    useEffect(() => {
+        scrollToBottom();
+    }, []);
 
     // Handle user scroll events
     useEffect(() => {
@@ -47,15 +45,22 @@ export function useSmartScroll<T extends HTMLElement>(
         }
 
         const handleScroll = () => {
-            const scrolledUp = checkIfUserScrolledUp();
-            setUserScrolledUp(scrolledUp);
+            if (!container) {
+                return;
+            }
+
+            const {scrollTop, scrollHeight, clientHeight} = container;
+            const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+
+            const scrolledUp = distanceFromBottom > SCROLL_THRESHOLD;
+            userScrolledUpRef.current = scrolledUp;
         };
 
         container.addEventListener('scroll', handleScroll, {passive: true});
         return () => {
             container.removeEventListener('scroll', handleScroll);
         };
-    }, [checkIfUserScrolledUp]);
+    }, []);
 
     // Handle DOM mutations during streaming
     useEffect(() => {
@@ -78,15 +83,18 @@ export function useSmartScroll<T extends HTMLElement>(
         return () => {
             observer.disconnect();
         };
-    }, [isStreaming, scrollToBottom]);
+    }, [isStreaming]);
 
-    // Handle new messages
+    // Handle status changes
     useEffect(() => {
-        if (messagesCount > prevMessagesCount.current) {
+        scrollToBottom('smooth');
+    }, [status]);
+
+    useEffect(() => {
+        if (messagesCount) {
             scrollToBottom('smooth');
         }
-        prevMessagesCount.current = messagesCount;
-    }, [messagesCount, scrollToBottom]);
+    }, [messagesCount]);
 
     return {
         containerRef,
