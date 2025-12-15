@@ -1,5 +1,3 @@
-import {useEffect} from 'react';
-
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {useScrollPreservation, useSmartScroll} from '../../../hooks';
@@ -71,17 +69,13 @@ export function MessageList<TContent extends TMessageContent = never>({
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming';
     const isSubmitted = status === 'submitted';
-    const messagesCount = messages.length;
     const showLoader = status && loaderStatuses.includes(status);
 
-    const {containerRef, endRef, scrollToBottom} = useSmartScroll<HTMLDivElement>(
-        isStreaming,
-        messagesCount,
-    );
-
-    useEffect(() => {
-        scrollToBottom();
-    }, []);
+    const {containerRef, endRef} = useSmartScroll<HTMLDivElement>({
+        isStreaming: isStreaming || isSubmitted,
+        messagesCount: messages.length,
+        status,
+    });
 
     // Preserve scroll position when older messages are loaded
     useScrollPreservation(containerRef, messages.length);
