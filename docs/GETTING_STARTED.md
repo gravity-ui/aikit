@@ -265,5 +265,4 @@ const handleSendMessage = async (content: string) => {
 ## Next Steps
 
 - Study the [full architecture](./ARCHITECTURE.md)
-- Check out [examples](../plan.md#примеры-использования)
-- Review the [API documentation](../plan.md)
+- Review the [project structure](./PROJECT_STRUCTURE.md)
