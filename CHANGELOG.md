@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/gravity-ui/aikit/compare/v1.0.1...v1.0.2) (2025-12-16)
+
+
+### Bug Fixes
+
+* remove broken link in docs ([4f1f90a](https://github.com/gravity-ui/aikit/commit/4f1f90a03fc10906f70784f7c59958e362eec51e))
+
 ## [1.0.1](https://github.com/gravity-ui/aikit/compare/1.0.0...v1.0.1) (2025-12-15)
 
 
