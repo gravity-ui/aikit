@@ -6,4 +6,5 @@ $block: '.#{variables.$ns}markdown-renderer';
 
 #{$block} {
     max-width: 100%;
+    color: var(--g-color-text-primary);
 }
