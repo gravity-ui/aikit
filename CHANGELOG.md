@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/gravity-ui/aikit/compare/v1.0.2...v1.1.0) (2025-12-17)
+
+
+### Features
+
+* **readme:** add ru translate readme ([e161d1d](https://github.com/gravity-ui/aikit/commit/e161d1d9de8c97a764266c1663ef37037a115ef8))
+
+
+### Bug Fixes
+
+* **MarkdownRenderer:** fix color for dark theme ([cac5118](https://github.com/gravity-ui/aikit/commit/cac5118933f6d4f6c0679fa20108e57765f060d1))
+
 ## [1.0.2](https://github.com/gravity-ui/aikit/compare/v1.0.1...v1.0.2) (2025-12-16)
 
 
