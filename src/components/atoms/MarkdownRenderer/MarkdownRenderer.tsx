@@ -1,10 +1,12 @@
-import {useMemo} from 'react';
+import {memo, useId, useMemo} from 'react';
 
-import transform from '@diplodoc/transform';
-import '@diplodoc/transform/dist/js/yfm';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
+import remend from 'remend';
 
 import {block} from '../../../utils/cn';
+import {parseMarkdownIntoBlocks} from '../../../utils/parse-blocks';
+
+import {MarkdownBlock} from './MarkdownBlock';
 
 import './MarkdownRenderer.scss';
 
@@ -15,33 +17,95 @@ export interface MarkdownRendererProps {
     className?: string;
     qa?: string;
     transformOptions?: OptionsType;
+    shouldParseIncompleteMarkdown?: boolean;
 }
 
-export function MarkdownRenderer({
+function MarkdownRendererComponent({
     content,
     className,
     qa,
     transformOptions,
+    shouldParseIncompleteMarkdown = false,
 }: MarkdownRendererProps) {
-    const html = useMemo(() => {
-        if (typeof content !== 'string') {
+    const generatedId = useId();
+
+    const processedContent = useMemo(() => {
+        if (typeof content !== 'string' || content === '') {
             return '';
         }
         try {
-            const result = transform(content, transformOptions);
-            return result.result.html;
-        } catch (error: unknown) {
-            // eslint-disable-next-line no-console
-            console.error('Error transforming markdown:', error);
+            return shouldParseIncompleteMarkdown ? remend(content.trim()) : content;
+        } catch {
             return '';
         }
-    }, [content, transformOptions]);
+    }, [content, shouldParseIncompleteMarkdown]);
+
+    const blocks = useMemo(() => {
+        if (!processedContent) {
+            return [];
+        }
+        try {
+            return parseMarkdownIntoBlocks(processedContent);
+        } catch {
+            return [];
+        }
+    }, [processedContent]);
 
     return (
-        <div
-            className={b(null, [className, 'yfm'])}
-            data-qa={qa}
-            dangerouslySetInnerHTML={{__html: html}}
-        />
+        <div className={b(null, [className, 'yfm'])} data-qa={qa}>
+            {blocks.map((blockContent, index) => (
+                <MarkdownBlock
+                    key={`${generatedId}-${index}`}
+                    block={blockContent}
+                    transformOptions={transformOptions}
+                />
+            ))}
+        </div>
     );
 }
+
+export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, nextProps) => {
+    if (prevProps.content !== nextProps.content) {
+        return false;
+    }
+
+    if (prevProps.shouldParseIncompleteMarkdown !== nextProps.shouldParseIncompleteMarkdown) {
+        return false;
+    }
+
+    if (prevProps.className !== nextProps.className) {
+        return false;
+    }
+
+    if (prevProps.qa !== nextProps.qa) {
+        return false;
+    }
+
+    const prevOptions = prevProps.transformOptions;
+    const nextOptions = nextProps.transformOptions;
+
+    if (prevOptions === nextOptions) {
+        return true;
+    }
+
+    if (!prevOptions || !nextOptions) {
+        return false;
+    }
+
+    const prevKeys = Object.keys(prevOptions);
+    const nextKeys = Object.keys(nextOptions);
+
+    if (prevKeys.length !== nextKeys.length) {
+        return false;
+    }
+
+    for (const key of prevKeys) {
+        if (prevOptions[key] !== nextOptions[key]) {
+            return false;
+        }
+    }
+
+    return true;
+});
+
+MarkdownRenderer.displayName = 'MarkdownRenderer';
