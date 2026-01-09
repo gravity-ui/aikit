@@ -35,6 +35,7 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
     AssistantMessagePick<TContent> & {
         messageRendererRegistry?: MessageRendererRegistry;
         transformOptions?: OptionsType;
+        shouldParseIncompleteMarkdown?: boolean;
         className?: string;
         qa?: string;
     };
@@ -48,19 +49,23 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
     id,
     messageRendererRegistry,
     transformOptions,
+    shouldParseIncompleteMarkdown,
     showActionsOnHover,
     showTimestamp,
     className,
     qa,
 }: AssistantMessageProps<TContent>) {
     const registry = useMemo<MessageRendererRegistry>(() => {
-        const defaultRegistry = createDefaultMessageRegistry(transformOptions);
+        const defaultRegistry = createDefaultMessageRegistry(
+            transformOptions,
+            shouldParseIncompleteMarkdown,
+        );
         if (messageRendererRegistry) {
             return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
         }
 
         return defaultRegistry;
-    }, [messageRendererRegistry, transformOptions]);
+    }, [messageRendererRegistry, transformOptions, shouldParseIncompleteMarkdown]);
 
     const parts = normalizeContent<TContent>(content);
 
