@@ -47,6 +47,18 @@ test.describe('ThinkingMessage', {tag: '@ThinkingMessage'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with enabled copy', async ({mount, expectScreenshot}) => {
+        await mount(<ThinkingMessageStories.WithEnabledCopy />);
+
+        await expectScreenshot();
+    });
+
+    test('should show copy only when thought', async ({mount, expectScreenshot}) => {
+        await mount(<ThinkingMessageStories.CopyOnlyWhenThought />);
+
+        await expectScreenshot();
+    });
+
     test('should render with custom style', async ({mount, expectScreenshot}) => {
         await mount(<ThinkingMessageStories.WithCustomStyle />);
 

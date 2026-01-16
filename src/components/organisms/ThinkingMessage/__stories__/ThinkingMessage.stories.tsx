@@ -48,7 +48,11 @@ export default {
         },
         onCopyClick: {
             action: 'copy clicked',
-            description: 'Copy button click handler',
+            description: 'Copy button click handler (custom logic)',
+        },
+        enabledCopy: {
+            control: 'boolean',
+            description: 'Enable default copy functionality',
         },
     },
 } as Meta;
@@ -164,15 +168,44 @@ export const WithoutLoader: StoryObj<ThinkingMessageProps> = {
 
 export const WithCopyAction: StoryObj<ThinkingMessageProps> = {
     render: () => (
-        <ShowcaseItem title="With Copy Action">
+        <ShowcaseItem title="With Copy Action (Custom Handler)">
             <ContentWrapper width="600px">
                 <ThinkingMessage
                     {...thoughtData}
                     defaultExpanded={true}
-                    onCopyClick={() => alert('Content copied to clipboard!')}
+                    onCopyClick={() => alert('Custom copy handler called!')}
                 />
             </ContentWrapper>
         </ShowcaseItem>
+    ),
+    decorators: defaultDecorators,
+};
+
+export const WithEnabledCopy: StoryObj<ThinkingMessageProps> = {
+    render: () => (
+        <ShowcaseItem title="With Enabled Copy (Default Logic)">
+            <ContentWrapper width="600px">
+                <ThinkingMessage {...thoughtData} defaultExpanded={true} enabledCopy={true} />
+            </ContentWrapper>
+        </ShowcaseItem>
+    ),
+    decorators: defaultDecorators,
+};
+
+export const CopyOnlyWhenThought: StoryObj<ThinkingMessageProps> = {
+    render: () => (
+        <>
+            <ShowcaseItem title="Thinking Status - No Copy Button">
+                <ContentWrapper width="600px">
+                    <ThinkingMessage {...thinkingData} defaultExpanded={true} enabledCopy={true} />
+                </ContentWrapper>
+            </ShowcaseItem>
+            <ShowcaseItem title="Thought Status - With Copy Button">
+                <ContentWrapper width="600px">
+                    <ThinkingMessage {...thoughtData} defaultExpanded={true} enabledCopy={true} />
+                </ContentWrapper>
+            </ShowcaseItem>
+        </>
     ),
     decorators: defaultDecorators,
 };
