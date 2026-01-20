@@ -35,6 +35,7 @@ export function ChatContainer(props: ChatContainerProps) {
         showActionsOnHover = false,
         contextItems = [],
         transformOptions,
+        shouldParseIncompleteMarkdown,
         messageListConfig,
         headerProps = {},
         contentProps = {},
@@ -143,8 +144,18 @@ export function ChatContainer(props: ChatContainerProps) {
             onRetry,
             showActionsOnHover,
             transformOptions,
+            shouldParseIncompleteMarkdown,
         }),
-        [messages, status, error, onRetry, showActionsOnHover, transformOptions, messageListConfig],
+        [
+            messages,
+            status,
+            error,
+            onRetry,
+            showActionsOnHover,
+            transformOptions,
+            shouldParseIncompleteMarkdown,
+            messageListConfig,
+        ],
     );
 
     // Build props for PromptInput

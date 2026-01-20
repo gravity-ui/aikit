@@ -143,6 +143,8 @@ export interface ChatContainerProps {
     contextItems?: ContextItemConfig[];
     /** Transform options for markdown rendering */
     transformOptions?: OptionsType;
+    /** Should parse incomplete markdown (e.g., during streaming) */
+    shouldParseIncompleteMarkdown?: boolean;
 
     // Configuration
     /** MessageList configuration for actions and loader behavior */

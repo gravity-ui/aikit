@@ -1,10 +1,11 @@
-import {useMemo} from 'react';
+import {memo} from 'react';
 
-import transform from '@diplodoc/transform';
-import '@diplodoc/transform/dist/js/yfm';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
+import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
+import {areOptionsEqual} from '../../../utils/markdownUtils';
 
 import './MarkdownRenderer.scss';
 
@@ -15,27 +16,18 @@ export interface MarkdownRendererProps {
     className?: string;
     qa?: string;
     transformOptions?: OptionsType;
+    shouldParseIncompleteMarkdown?: boolean;
 }
 
-export function MarkdownRenderer({
+function MarkdownRendererComponent({
     content,
     className,
     qa,
     transformOptions,
+    shouldParseIncompleteMarkdown = false,
 }: MarkdownRendererProps) {
-    const html = useMemo(() => {
-        if (typeof content !== 'string') {
-            return '';
-        }
-        try {
-            const result = transform(content, transformOptions);
-            return result.result.html;
-        } catch (error: unknown) {
-            // eslint-disable-next-line no-console
-            console.error('Error transforming markdown:', error);
-            return '';
-        }
-    }, [content, transformOptions]);
+    const closedContent = useRemend(content, shouldParseIncompleteMarkdown);
+    const html = useMarkdownTransform(closedContent, transformOptions);
 
     return (
         <div
@@ -45,3 +37,25 @@ export function MarkdownRenderer({
         />
     );
 }
+
+export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, nextProps) => {
+    if (prevProps.content !== nextProps.content) {
+        return false;
+    }
+
+    if (prevProps.shouldParseIncompleteMarkdown !== nextProps.shouldParseIncompleteMarkdown) {
+        return false;
+    }
+
+    if (prevProps.className !== nextProps.className) {
+        return false;
+    }
+
+    if (prevProps.qa !== nextProps.qa) {
+        return false;
+    }
+
+    return areOptionsEqual(prevProps.transformOptions, nextProps.transformOptions);
+});
+
+MarkdownRenderer.displayName = 'MarkdownRenderer';

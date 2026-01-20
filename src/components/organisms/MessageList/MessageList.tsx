@@ -36,6 +36,7 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     onRetry?: () => void;
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
+    shouldParseIncompleteMarkdown?: boolean;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -53,6 +54,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     messages,
     messageRendererRegistry,
     transformOptions,
+    shouldParseIncompleteMarkdown,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -93,6 +95,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     format={message.format}
                     avatarUrl={message.avatarUrl}
                     transformOptions={transformOptions}
+                    shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                     showActionsOnHover={showActionsOnHover}
                     showTimestamp={showTimestamp}
                     showAvatar={showAvatar}
@@ -117,6 +120,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     id={message.id}
                     messageRendererRegistry={messageRendererRegistry}
                     transformOptions={transformOptions}
+                    shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                     showActionsOnHover={showActionsOnHover}
                     showTimestamp={showTimestamp}
                 />
