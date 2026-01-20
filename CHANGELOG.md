@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/gravity-ui/aikit/compare/v1.1.0...v1.2.0) (2026-01-20)
+
+
+### Features
+
+* **MarkdownRenderer:** add blocks memoization and parsing incompled chunks ([b283ac8](https://github.com/gravity-ui/aikit/commit/b283ac8fb0483fbb49ac51877622f059333dae7d))
+
 ## [1.1.0](https://github.com/gravity-ui/aikit/compare/v1.0.2...v1.1.0) (2025-12-17)
 
 
