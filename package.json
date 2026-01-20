@@ -73,13 +73,13 @@
     "@babel/preset-typescript": "^7.28.5",
     "@commitlint/cli": "^19.0.3",
     "@commitlint/config-conventional": "^19.0.3",
+    "@diplodoc/transform": "^4.63.3",
     "@gravity-ui/eslint-config": "^3.1.1",
+    "@gravity-ui/i18n": "^1.8.0",
+    "@gravity-ui/icons": "^2.16.0",
     "@gravity-ui/prettier-config": "^1.1.0",
     "@gravity-ui/stylelint-config": "^4.0.1",
     "@gravity-ui/tsconfig": "^1.0.0",
-    "@diplodoc/transform": "^4.63.3",
-    "@gravity-ui/i18n": "^1.8.0",
-    "@gravity-ui/icons": "^2.16.0",
     "@gravity-ui/uikit": "^7.25.0",
     "@playwright/experimental-ct-react": "^1.56.1",
     "@playwright/test": "^1.56.1",
@@ -118,13 +118,13 @@
     "typescript": "^5.4.2"
   },
   "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0",
     "@diplodoc/transform": "^4.63.3",
     "@gravity-ui/i18n": "^1.8.0",
     "@gravity-ui/icons": "^2.16.0",
     "@gravity-ui/uikit": "^7.25.0",
-    "highlight.js": "^11.11.1"
+    "highlight.js": "^11.11.1",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "nano-staged": {
     "*.{scss}": [
@@ -140,7 +140,9 @@
   "dependencies": {
     "@bem-react/classname": "^1.7.0",
     "dayjs": "^1.11.19",
+    "marked": "^17.0.1",
     "react-window": "^2.2.1",
+    "remend": "^1.0.1",
     "uuid": "^13.0.0"
   }
 }

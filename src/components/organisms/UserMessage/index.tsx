@@ -20,6 +20,7 @@ export type UserMessageProps = Pick<
     showAvatar?: boolean;
     avatarUrl?: string;
     transformOptions?: OptionsType;
+    shouldParseIncompleteMarkdown?: boolean;
     className?: string;
     qa?: string;
 };
@@ -37,6 +38,7 @@ export const UserMessage = (props: UserMessageProps) => {
         showTimestamp,
         format = 'plain',
         transformOptions,
+        shouldParseIncompleteMarkdown,
     } = props;
 
     return (
@@ -54,6 +56,7 @@ export const UserMessage = (props: UserMessageProps) => {
                         <MarkdownRenderer
                             content={content as string}
                             transformOptions={transformOptions}
+                            shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                         />
                     ) : (
                         content

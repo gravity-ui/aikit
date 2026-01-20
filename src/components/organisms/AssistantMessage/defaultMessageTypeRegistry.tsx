@@ -16,12 +16,17 @@ import {ToolMessage} from '../ToolMessage';
 
 export function createDefaultMessageRegistry(
     transformOptions?: OptionsType,
+    shouldParseIncompleteMarkdown?: boolean,
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
     registerMessageRenderer<TextMessageContent>(registry, 'text', {
         component: ({part}) => (
-            <MarkdownRenderer content={part.data.text} transformOptions={transformOptions} />
+            <MarkdownRenderer
+                content={part.data.text}
+                transformOptions={transformOptions}
+                shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+            />
         ),
     });
 
