@@ -14,6 +14,7 @@
         align-self: stretch;
         gap: var(--g-aikit-empty-container-content-gap);
         padding: var(--g-aikit-empty-container-padding);
+        overflow-y: scroll;
     }
 
     &__welcome-section {
