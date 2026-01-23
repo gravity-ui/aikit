@@ -7,10 +7,8 @@ import {withLang} from './decorators/withLang';
 import {WithTheme} from './decorators/withTheme';
 import {themes} from './theme';
 
+import '@gravity-ui/uikit/styles/styles.css';
 import '../src/styles/styles.scss';
-import '../src/themes/variables.css';
-import '../src/themes/light.css';
-import '../src/themes/dark.css';
 
 const MOCK_DATE = new Date('2025-11-12T10:19:59.971Z');
 

@@ -11,6 +11,7 @@
       "default": "./dist/index.js"
     },
     "./styles": "./dist/styles/styles.scss",
+    "./themes/common": "./dist/themes/common.css",
     "./themes/dark": "./dist/themes/dark.css",
     "./themes/light": "./dist/themes/light.css",
     "./themes/variables": "./dist/themes/variables.css",
