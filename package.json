@@ -1,6 +1,6 @@
 {
   "name": "@gravity-ui/aikit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Gravity UI base kit for building ai assistant chats",
   "license": "MIT",
   "main": "./dist/index.js",

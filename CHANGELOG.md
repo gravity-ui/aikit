@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/gravity-ui/aikit/compare/v1.2.0...v1.2.1) (2026-01-23)
+
+
+### Bug Fixes
+
+* do not include uikit styles ([a7704dd](https://github.com/gravity-ui/aikit/commit/a7704dd717c95e9e3d589f713687c9170e7faaa4))
+* fix tests ([f8b1967](https://github.com/gravity-ui/aikit/commit/f8b19670f940d9d9690cfb42f36493fbd5cba909))
+
 ## [1.2.0](https://github.com/gravity-ui/aikit/compare/v1.1.0...v1.2.0) (2026-01-20)
 
 
