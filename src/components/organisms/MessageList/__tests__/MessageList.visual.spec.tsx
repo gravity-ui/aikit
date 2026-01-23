@@ -190,7 +190,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
             await expect(actionsContainer).not.toBeVisible();
         });
 
-        test('should not display actions for message with thinking and text content', async ({
+        test('should display actions for message with thinking and text content', async ({
             mount,
             page,
         }) => {
@@ -222,7 +222,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
             const actionsContainer = page.locator('.g-aikit-base-message__actions');
 
-            await expect(actionsContainer).not.toBeVisible();
+            await expect(actionsContainer).toBeVisible();
         });
     });
 });

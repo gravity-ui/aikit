@@ -148,6 +148,55 @@ export const WithToolCall: StoryObj<AssistantMessageProps> = {
     ],
 };
 
+const thinkingWithTextMessage: TAssistantMessage = {
+    id: '5',
+    role: 'assistant',
+    content: [
+        {
+            type: 'thinking',
+            data: {
+                title: 'Analyzing request',
+                content: [
+                    'Breaking down the task into steps',
+                    'Checking available context',
+                    'Planning the response structure',
+                ],
+                status: 'thought',
+                enabledCopy: true,
+            },
+        },
+        {
+            type: 'text',
+            data: {
+                text: "Based on my analysis, here's the answer to your question. The solution involves several key components that work together.",
+            },
+        },
+    ],
+};
+
+export const WithThinkingContent: StoryObj<AssistantMessageProps> = {
+    render: (args) => (
+        <ShowcaseItem title="With Thinking Content">
+            <ContentWrapper width="480px">
+                <AssistantMessage
+                    {...args}
+                    content={thinkingWithTextMessage.content}
+                    actions={actions}
+                    timestamp={thinkingWithTextMessage.timestamp}
+                    id={thinkingWithTextMessage.id}
+                />
+            </ContentWrapper>
+        </ShowcaseItem>
+    ),
+    decorators: [
+        (StoryComponent: StoryFn) => (
+            <Showcase>
+                <StoryComponent />
+            </Showcase>
+        ),
+    ],
+};
+
 interface CustomMessageData {
     title: string;
     description: string;

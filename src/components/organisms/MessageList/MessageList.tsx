@@ -11,9 +11,9 @@ import type {
 } from '../../../types/messages';
 import {
     type DefaultMessageAction,
+    hasOnlyThinkingContent,
     isAssistantMessage,
     isUserMessage,
-    normalizeContent,
     resolveMessageActions,
 } from '../../../utils';
 import {block} from '../../../utils/cn';
@@ -81,14 +81,6 @@ export function MessageList<TContent extends TMessageContent = never>({
     // Preserve scroll position when older messages are loaded
     useScrollPreservation(containerRef, messages.length);
 
-    // Check if message content contains thinking content
-    const hasThinkingContent = (
-        content: TAssistantMessage<TContent, TMessageMetadata>['content'],
-    ): boolean => {
-        const parts = normalizeContent(content);
-        return parts.some((part) => part.type === 'thinking');
-    };
-
     const renderMessage = (message: TChatMessage<TContent, TMessageMetadata>, index: number) => {
         if (isUserMessage<TMessageMetadata, TContent>(message)) {
             const actions = resolveMessageActions(message, userActions);
@@ -113,9 +105,10 @@ export function MessageList<TContent extends TMessageContent = never>({
             const isLastMessage = index === messages.length - 1;
             const isNotCompleted = isSubmitted || isStreaming;
             const showActions = !(isLastMessage && isNotCompleted);
-            // Don't show assistantActions for messages with thinking content
+            // Don't show assistantActions for messages with ONLY thinking content
+            // For mixed content (thinking + text), actions are shown and copy entire message
             const actions =
-                showActions && !hasThinkingContent(message.content)
+                showActions && !hasOnlyThinkingContent(message.content)
                     ? resolveMessageActions(message, assistantActions)
                     : undefined;
 

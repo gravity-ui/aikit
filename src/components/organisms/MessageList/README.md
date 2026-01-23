@@ -137,10 +137,13 @@ const assistantActions = [
 <MessageList messages={messages} userActions={userActions} assistantActions={assistantActions} />;
 ```
 
-**Note:** `assistantActions` will NOT be displayed for messages containing thinking content (type: 'thinking'). This allows ThinkingMessage to manage its own copy functionality through the `enabledCopy` or `onCopyClick` props.
+**Note:** `assistantActions` will NOT be displayed for messages containing **only** thinking content (type: 'thinking'). For messages with mixed content (thinking + text), `assistantActions` will be shown and the copy action will copy the entire message content. This allows:
+
+- ThinkingMessage copy button → copies only thinking text
+- Toolbar copy button → copies entire message (thinking + text)
 
 ```tsx
-// Example: assistantActions will be shown for text messages but not for thinking messages
+// Example: assistantActions behavior based on message content
 const messages = [
   {
     role: 'assistant',
@@ -152,6 +155,13 @@ const messages = [
       type: 'thinking',
       data: {content: 'Thinking...', status: 'thought'}, // assistantActions will NOT be shown
     },
+  },
+  {
+    role: 'assistant',
+    content: [
+      {type: 'thinking', data: {content: 'Thinking...', status: 'thought'}},
+      {type: 'text', data: {text: 'Answer'}},
+    ], // assistantActions WILL be shown (mixed content)
   },
 ];
 ```

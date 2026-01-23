@@ -1,19 +1,9 @@
 import {useCallback, useMemo, useState} from 'react';
 
 import type {ThinkingMessageContentData} from '../../../types/messages';
+import {copyToClipboard} from '../../../utils';
 
 import {i18n} from './i18n';
-
-/**
- * Formats thinking content for copying to clipboard.
- * Joins array items with double newline, or returns string as-is.
- */
-function getCopyText(content: string | string[]): string {
-    if (Array.isArray(content)) {
-        return content.join('\n\n');
-    }
-    return content;
-}
 
 export function useThinkingMessage(options: ThinkingMessageContentData) {
     const {
@@ -45,8 +35,7 @@ export function useThinkingMessage(options: ThinkingMessageContentData) {
             onCopyClick();
         } else if (enabledCopy) {
             // Priority 2: Use default copy logic
-            const text = getCopyText(content);
-            navigator.clipboard.writeText(text);
+            copyToClipboard(content);
         }
     }, [onCopyClick, enabledCopy, content]);
 

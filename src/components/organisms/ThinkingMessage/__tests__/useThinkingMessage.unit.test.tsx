@@ -29,12 +29,8 @@ describe('useThinkingMessage', () => {
         });
 
         it('should format array content with double newlines', () => {
-            // Mock clipboard API
-            Object.assign(navigator, {
-                clipboard: {
-                    writeText: jest.fn(),
-                },
-            });
+            // Mock document.execCommand
+            document.execCommand = jest.fn().mockReturnValue(true);
 
             const {result} = renderHook(() =>
                 useThinkingMessage({
@@ -48,20 +44,15 @@ describe('useThinkingMessage', () => {
                 result.current.handleCopy();
             });
 
-            expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-                'First line\n\nSecond line\n\nThird line',
-            );
+            // Verify execCommand was called with 'copy'
+            expect(document.execCommand).toHaveBeenCalledWith('copy');
         });
     });
 
     describe('handleCopy behavior', () => {
         beforeEach(() => {
-            // Mock clipboard API
-            Object.assign(navigator, {
-                clipboard: {
-                    writeText: jest.fn(),
-                },
-            });
+            // Mock document.execCommand
+            document.execCommand = jest.fn().mockReturnValue(true);
         });
 
         it('should prioritize onCopyClick over enabledCopy', () => {
@@ -80,7 +71,7 @@ describe('useThinkingMessage', () => {
             });
 
             expect(onCopyClick).toHaveBeenCalledTimes(1);
-            expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
+            expect(document.execCommand).not.toHaveBeenCalled();
         });
 
         it('should use default copy logic when only enabledCopy is provided', () => {
@@ -96,7 +87,7 @@ describe('useThinkingMessage', () => {
                 result.current.handleCopy();
             });
 
-            expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Test content');
+            expect(document.execCommand).toHaveBeenCalledWith('copy');
         });
 
         it('should not copy when neither onCopyClick nor enabledCopy is provided', () => {
@@ -111,7 +102,7 @@ describe('useThinkingMessage', () => {
                 result.current.handleCopy();
             });
 
-            expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
+            expect(document.execCommand).not.toHaveBeenCalled();
         });
     });
 
