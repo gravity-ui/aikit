@@ -22,4 +22,10 @@ test.describe('AssistantMessage', {tag: '@AssistantMessage'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with thinking content', async ({mount, expectScreenshot}) => {
+        await mount(<AssistantMessageStories.WithThinkingContent />);
+
+        await expectScreenshot();
+    });
 });

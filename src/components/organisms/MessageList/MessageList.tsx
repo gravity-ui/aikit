@@ -11,6 +11,7 @@ import type {
 } from '../../../types/messages';
 import {
     type DefaultMessageAction,
+    hasOnlyThinkingContent,
     isAssistantMessage,
     isUserMessage,
     resolveMessageActions,
@@ -107,9 +108,12 @@ export function MessageList<TContent extends TMessageContent = never>({
             const isLastMessage = index === messages.length - 1;
             const isNotCompleted = isSubmitted || isStreaming;
             const showActions = !(isLastMessage && isNotCompleted);
-            const actions = showActions
-                ? resolveMessageActions(message, assistantActions)
-                : undefined;
+            // Don't show assistantActions for messages with ONLY thinking content
+            // For mixed content (thinking + text), actions are shown and copy entire message
+            const actions =
+                showActions && !hasOnlyThinkingContent(message.content)
+                    ? resolveMessageActions(message, assistantActions)
+                    : undefined;
 
             return (
                 <AssistantMessage<TContent>

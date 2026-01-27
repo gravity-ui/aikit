@@ -29,11 +29,17 @@ export type ThinkingMessageProps = DOMProps & QAProps & ThinkingMessageContentDa
  * @returns Rendered thinking message component
  */
 export const ThinkingMessage = (props: ThinkingMessageProps) => {
-    const {className, qa, style, onCopyClick, ...data} = props;
+    const {className, qa, style, ...data} = props;
 
-    const {isExpanded, toggleExpanded, buttonTitle, content, showLoader} = useThinkingMessage({
-        ...data,
-    });
+    const {
+        isExpanded,
+        toggleExpanded,
+        buttonTitle,
+        content,
+        showLoader,
+        handleCopy,
+        showCopyButton,
+    } = useThinkingMessage(data);
 
     return (
         <div className={b(null, className)} data-qa={qa} style={style}>
@@ -45,8 +51,8 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
                 {showLoader ? (
                     <Loader view="loading" size="xs" />
                 ) : (
-                    onCopyClick && (
-                        <ActionButton size="s" onClick={onCopyClick}>
+                    showCopyButton && (
+                        <ActionButton size="s" onClick={handleCopy}>
                             <Icon data={Copy} size={16} />
                         </ActionButton>
                     )

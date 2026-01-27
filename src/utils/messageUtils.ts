@@ -52,6 +52,21 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
     return [content];
 }
 
+/**
+ * Check if message content contains ONLY thinking content (no other content types).
+ * @param content - Message content to check
+ * @returns true if content contains only thinking parts and nothing else
+ */
+export function hasOnlyThinkingContent<TCustomMessageContent extends TMessageContent = never>(
+    content: TAssistantMessage<TCustomMessageContent, TMessageMetadata>['content'],
+): boolean {
+    const parts = normalizeContent(content);
+    if (parts.length === 0) {
+        return false;
+    }
+    return parts.every((part) => part.type === 'thinking');
+}
+
 export type DefaultMessageAction<TMessage> = {
     type?: string;
     onClick: (message: TMessage) => void;

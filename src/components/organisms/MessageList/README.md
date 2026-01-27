@@ -8,6 +8,7 @@ Component for displaying a list of messages. Supports custom message renderers t
 - **Type Support**: Supports user messages and assistant messages with various content types
 - **Extensible**: Supports custom message renderers through MessageRendererRegistry
 - **Customizable**: Supports custom className, QA attributes, and display options
+- **Smart Action Filtering**: Automatically excludes assistantActions for thinking messages
 
 ## Usage
 
@@ -134,6 +135,35 @@ const assistantActions = [
 ];
 
 <MessageList messages={messages} userActions={userActions} assistantActions={assistantActions} />;
+```
+
+**Note:** `assistantActions` will NOT be displayed for messages containing **only** thinking content (type: 'thinking'). For messages with mixed content (thinking + text), `assistantActions` will be shown and the copy action will copy the entire message content. This allows:
+
+- ThinkingMessage copy button → copies only thinking text
+- Toolbar copy button → copies entire message (thinking + text)
+
+```tsx
+// Example: assistantActions behavior based on message content
+const messages = [
+  {
+    role: 'assistant',
+    content: 'Regular text message', // assistantActions WILL be shown
+  },
+  {
+    role: 'assistant',
+    content: {
+      type: 'thinking',
+      data: {content: 'Thinking...', status: 'thought'}, // assistantActions will NOT be shown
+    },
+  },
+  {
+    role: 'assistant',
+    content: [
+      {type: 'thinking', data: {content: 'Thinking...', status: 'thought'}},
+      {type: 'text', data: {text: 'Answer'}},
+    ], // assistantActions WILL be shown (mixed content)
+  },
+];
 ```
 
 ### With Custom Loader Statuses

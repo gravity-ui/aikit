@@ -52,6 +52,7 @@ export type ThinkingMessageContentData = {
     defaultExpanded?: boolean;
     showStatusIndicator?: boolean;
     onCopyClick?: () => void;
+    enabledCopy?: boolean;
     className?: string;
     qa?: string;
 };

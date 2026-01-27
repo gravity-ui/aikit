@@ -160,5 +160,69 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
             await expect(actionsContainer).toBeVisible();
         });
+
+        test('should not display actions for message with thinking content', async ({
+            mount,
+            page,
+        }) => {
+            const thinkingMessage: TAssistantMessage = {
+                id: '1',
+                role: 'assistant',
+                content: [
+                    {
+                        type: 'thinking',
+                        data: {
+                            title: 'Thinking',
+                            content: 'AI is thinking about the answer...',
+                            status: 'thought',
+                        },
+                    },
+                ],
+                timestamp: '2024-01-01T00:00:01Z',
+            };
+
+            await mount(
+                <MessageList messages={[thinkingMessage]} assistantActions={assistantActions} />,
+            );
+
+            const actionsContainer = page.locator('.g-aikit-base-message__actions');
+
+            await expect(actionsContainer).not.toBeVisible();
+        });
+
+        test('should display actions for message with thinking and text content', async ({
+            mount,
+            page,
+        }) => {
+            const mixedMessage: TAssistantMessage = {
+                id: '1',
+                role: 'assistant',
+                content: [
+                    {
+                        type: 'thinking',
+                        data: {
+                            title: 'Thinking',
+                            content: 'AI is thinking...',
+                            status: 'thought',
+                        },
+                    },
+                    {
+                        type: 'text',
+                        data: {
+                            text: 'Here is my answer',
+                        },
+                    },
+                ],
+                timestamp: '2024-01-01T00:00:01Z',
+            };
+
+            await mount(
+                <MessageList messages={[mixedMessage]} assistantActions={assistantActions} />,
+            );
+
+            const actionsContainer = page.locator('.g-aikit-base-message__actions');
+
+            await expect(actionsContainer).toBeVisible();
+        });
     });
 });
