@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/gravity-ui/aikit/compare/v1.2.1...v1.3.0) (2026-01-27)
+
+
+### Features
+
+* **ThinkingMessage:** add default copy logic and hide duplicate assistant actions ([3cff655](https://github.com/gravity-ui/aikit/commit/3cff655a5d86b187ff1a58d723e4b891738b058d))
+
 ## [1.2.1](https://github.com/gravity-ui/aikit/compare/v1.2.0...v1.2.1) (2026-01-23)
 
 
