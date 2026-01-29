@@ -22,6 +22,10 @@ $block: '.#{variables.$ns}prompt-input';
         gap: var(--g-spacing-2);
     }
 
+    &_view_full &__textarea {
+        padding-top: 0;
+    }
+
     &__content {
         display: flex;
         align-items: flex-end;

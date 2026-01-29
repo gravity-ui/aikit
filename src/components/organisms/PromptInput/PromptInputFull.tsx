@@ -88,6 +88,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                 autoFocus={autoFocus}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
+                inputClassName={b('textarea')}
             />
 
             {shouldShowFooter && (
