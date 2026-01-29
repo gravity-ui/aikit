@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/gravity-ui/aikit/compare/v1.3.0...v1.3.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* **PromptInput:** remove padding from textarea for fullview ([526efcc](https://github.com/gravity-ui/aikit/commit/526efcca5dfcb650508af1b27d156b3139920cc5))
+* **ToolMessage:** change data-qa attribute to qa ([4e07493](https://github.com/gravity-ui/aikit/commit/4e07493d3526089a8d995c0fde3b5502ed53711d))
+
 ## [1.3.0](https://github.com/gravity-ui/aikit/compare/v1.2.1...v1.3.0) (2026-01-27)
 
 
