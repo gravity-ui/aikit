@@ -16,7 +16,7 @@ export function ToolMessage(props: ToolMessageProps) {
         useToolMessage(props);
 
     return (
-        <Card className={b({waiting: isWaiting}, className)} data-qa={qa}>
+        <Card className={b({waiting: isWaiting}, className)} qa={qa}>
             <div className={b('container')}>
                 <ToolHeader
                     toolName={toolName}
