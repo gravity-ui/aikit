@@ -34,6 +34,8 @@ export type PromptInputBodyProps = {
     children?: ReactNode;
     /** Additional CSS class */
     className?: string;
+    /** Additional CSS class for input element */
+    inputClassName?: string;
     /** QA/test identifier */
     qa?: string;
 };
@@ -59,6 +61,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
             onKeyDown,
             children,
             className,
+            inputClassName,
             qa,
         } = props;
 
@@ -88,7 +91,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
                     view="clear"
                     className={b('textarea')}
                     controlProps={{
-                        className: b('textarea-control'),
+                        className: b('textarea-control', inputClassName),
                         maxLength,
                     }}
                 />
