@@ -16,9 +16,11 @@ export function useChatContainer(props: ChatContainerProps) {
         activeChat,
         onCreateChat,
         onClose,
+        onFold,
         onSelectChat,
         showHistory = true,
         showNewChat = true,
+        showFolding = false,
         showClose = false,
     } = props;
 
@@ -46,6 +48,13 @@ export function useChatContainer(props: ChatContainerProps) {
     const handleHistoryToggle = useCallback(() => {
         setIsHistoryOpen((prev) => !prev);
     }, []);
+
+    const handleFolding = useCallback(
+        (value: 'collapsed' | 'opened') => {
+            onFold?.(value);
+        },
+        [onFold],
+    );
 
     // Handler for closing
     const handleClose = useCallback(() => {
@@ -80,12 +89,16 @@ export function useChatContainer(props: ChatContainerProps) {
             actions.push(HeaderAction.History);
         }
 
+        if (showFolding) {
+            actions.push(HeaderAction.Folding);
+        }
+
         if (showClose) {
             actions.push(HeaderAction.Close);
         }
 
         return actions;
-    }, [showNewChat, showHistory, showClose, chatContentView]);
+    }, [showNewChat, showHistory, showFolding, showClose, chatContentView]);
 
     return {
         // State
@@ -99,6 +112,7 @@ export function useChatContainer(props: ChatContainerProps) {
         // Handlers
         handleNewChat,
         handleHistoryToggle,
+        handleFolding,
         handleClose,
         handleSelectChat,
         handleHistoryOpenChange,

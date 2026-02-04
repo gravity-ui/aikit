@@ -248,6 +248,7 @@ export const Playground: Story = {
         chats: mockChats,
         showHistory: true,
         showNewChat: true,
+        showFolding: false,
         showClose: false,
         welcomeConfig: {
             title: 'Welcome to AI Chat',
@@ -266,6 +267,8 @@ export const Playground: Story = {
             args.status || 'ready',
         );
         const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
+
+        const [foldingState, setFoldingState] = useState<'collapsed' | 'opened'>('opened');
 
         const handleSendMessage = async (data: TSubmitData) => {
             const userMessage: TChatMessage = {
@@ -314,12 +317,16 @@ export const Playground: Story = {
         return (
             <ChatContainer
                 {...args}
+                headerProps={{
+                    foldingState,
+                }}
                 messages={messages}
                 activeChat={activeChat}
                 onSendMessage={handleSendMessage}
                 onCancel={handleCancel}
                 onSelectChat={handleSelectChat}
                 onCreateChat={handleCreateChat}
+                onFold={setFoldingState}
                 status={status}
             />
         );
