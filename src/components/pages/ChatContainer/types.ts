@@ -123,6 +123,8 @@ export interface ChatContainerProps {
     onDeleteChat?: (chat: ChatType) => void;
     /** Callback when user deletes all chats */
     onDeleteAllChats?: () => Promise<void>;
+    /** Callback when user folds or unfolds the chat */
+    onFold?: (value: 'collapsed' | 'opened') => void;
     /** Callback when user closes the chat */
     onClose?: () => void;
     /** Callback when user cancels streaming */
@@ -153,7 +155,7 @@ export interface ChatContainerProps {
     // Component props overrides
     /** Props override for Header component */
     headerProps?: Partial<
-        Omit<HeaderProps, 'handleNewChat' | 'handleHistoryToggle' | 'handleClose'>
+        Omit<HeaderProps, 'handleNewChat' | 'handleHistoryToggle' | 'handleFolding' | 'handleClose'>
     >;
     /** Props override for ChatContent component */
     contentProps?: Partial<Omit<ChatContentProps, 'view' | 'messageListProps'>>;
@@ -180,6 +182,8 @@ export interface ChatContainerProps {
     showHistory?: boolean;
     /** Show new chat button */
     showNewChat?: boolean;
+    /** Show folding button */
+    showFolding?: boolean;
     /** Show close button */
     showClose?: boolean;
     /** Hide header title when chat is empty */
