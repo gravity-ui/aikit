@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.2](https://github.com/gravity-ui/aikit/compare/v1.3.1...v1.3.2) (2026-02-04)
+
+
+### Bug Fixes
+
+* add newline to notices ([1fa3a4c](https://github.com/gravity-ui/aikit/commit/1fa3a4c39871c20a07ebb3b011766056ac2d2849))
+* **ChatContainer:** add folding logic ([a5dac44](https://github.com/gravity-ui/aikit/commit/a5dac4488abfaea75027f1387c769427e2c347a0))
+* small fix to legal files ([e41a3ce](https://github.com/gravity-ui/aikit/commit/e41a3ce7b7e2e91e9dad5c37b9dd80a278da1185))
+
 ## [1.3.1](https://github.com/gravity-ui/aikit/compare/v1.3.0...v1.3.1) (2026-01-29)
 
 
