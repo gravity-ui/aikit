@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/gravity-ui/aikit/compare/v1.3.3...v1.3.4) (2026-02-05)
+
+
+### Bug Fixes
+
+* **PromptInput:** resolve show suggest title without options while streaming ([588f87d](https://github.com/gravity-ui/aikit/commit/588f87dbc8ec12f3fd1e0bc987ef29018ff81061))
+
 ## [1.3.3](https://github.com/gravity-ui/aikit/compare/v1.3.2...v1.3.3) (2026-02-05)
 
 
