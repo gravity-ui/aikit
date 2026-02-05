@@ -109,15 +109,19 @@ export function ChatContainer(props: ChatContainerProps) {
 
     // Build props for EmptyContainer
     const finalEmptyContainerProps = useMemo(() => {
+        const {showDefaultTitle = true, showDefaultDescription = true} = welcomeConfig || {};
+
         return {
             ...emptyContainerProps,
             image: welcomeConfig?.image,
             title:
-                welcomeConfig?.title || i18nConfig.emptyState?.title || i18n('empty-state-title'),
+                welcomeConfig?.title ||
+                i18nConfig.emptyState?.title ||
+                (showDefaultTitle ? i18n('empty-state-title') : undefined),
             description:
                 welcomeConfig?.description ||
                 i18nConfig.emptyState?.description ||
-                i18n('empty-state-description'),
+                (showDefaultDescription ? i18n('empty-state-description') : undefined),
             suggestionTitle:
                 welcomeConfig?.suggestionTitle || i18nConfig.emptyState?.suggestionsTitle,
             suggestions: welcomeConfig?.suggestions,

@@ -346,6 +346,8 @@ export const EmptyState: Story = {
             description: 'Start a conversation by typing a message or selecting a suggestion.',
             suggestionTitle: 'Try asking:',
             suggestions: mockSuggestions,
+            showDefaultTitle: false,
+            showDefaultDescription: false,
         },
     },
     render: (args) => {

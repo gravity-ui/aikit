@@ -315,6 +315,8 @@ interface WelcomeConfig {
   suggestions?: SuggestionsItem[];
   alignment?: AlignmentConfig;
   wrapText?: boolean;
+  showDefaultTitle?: boolean;
+  showDefaultDescription?: boolean;
   showMore?: () => void;
   showMoreText?: string;
 }
@@ -330,6 +332,8 @@ interface WelcomeConfig {
 - **`alignment`**: Alignment configuration for image, title, and description (see Alignment section)
 - **`layout`**: Layout orientation for suggestions - `'grid'` for horizontal (default), `'list'` for vertical
 - **`wrapText`**: Enable text wrapping inside suggestion buttons instead of ellipsis (default: `false`)
+- **`showDefaultTitle`**: Enable default title when neither `title` nor `i18nConfig.emptyState.title` are provided (default: `true`)
+- **`showDefaultDescription`**: Enable default description when neither `description` nor `i18nConfig.emptyState.description` are provided (default: `true`)
 - **`showMore`**: Callback function for "Show More" button
 - **`showMoreText`**: Custom text for the "Show More" button
 
