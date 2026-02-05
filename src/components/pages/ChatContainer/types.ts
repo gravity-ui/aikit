@@ -86,6 +86,10 @@ export interface WelcomeConfig {
     layout?: 'grid' | 'list';
     /** Enable text wrapping inside suggestion buttons instead of ellipsis */
     wrapText?: boolean;
+    /** Show default title when neither title nor i18nConfig.emptyState.title are provided */
+    showDefaultTitle?: boolean;
+    /** Show default description when neither description nor i18nConfig.emptyState.description are provided */
+    showDefaultDescription?: boolean;
     /** Show more suggestions callback */
     showMore?: () => void;
     /** Show more button text */
