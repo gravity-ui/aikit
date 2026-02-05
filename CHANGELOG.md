@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/gravity-ui/aikit/compare/v1.3.2...v1.3.3) (2026-02-05)
+
+
+### Bug Fixes
+
+* **ChatContainer:** add option to hide empty state title and/or description ([0c8fa87](https://github.com/gravity-ui/aikit/commit/0c8fa872c27320e97298cda2e360ca7394f16420))
+
 ## [1.3.2](https://github.com/gravity-ui/aikit/compare/v1.3.1...v1.3.2) (2026-02-04)
 
 
