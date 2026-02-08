@@ -1,0 +1,10 @@
+{
+    "extends": "@gravity-ui/tsconfig/tsconfig",
+    "compilerOptions": {
+        "declaration": true,
+        "resolveJsonModule": true,
+        "rootDir": ".",
+        "module": "esnext",
+        "importHelpers": true,
+    }
+}

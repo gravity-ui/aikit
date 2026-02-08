@@ -15,7 +15,12 @@
     "./themes/dark": "./dist/themes/dark.css",
     "./themes/light": "./dist/themes/light.css",
     "./themes/variables": "./dist/themes/variables.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./server/openai": {
+      "import": "./dist/server/esm/openai/index.js",
+      "types": "./dist/server/esm/openai/index.d.ts",
+      "require": "./dist/server/cjs/openai/index.js"
+    }
   },
   "files": [
     "dist"
@@ -50,13 +55,14 @@
     "lint:prettier": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "lint:prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "test": "npm run test:unit",
-    "build": "npm run build:clean && npm run build:ts && npm run build:copy",
+    "build": "npm run build:clean && npm run build:ts && npm run build:copy && npm run build:server",
     "build:clean": "rm -rf dist",
     "build:ts": "tsc",
     "build:copy": "npm run build:copy:styles && npm run build:copy:themes && npm run build:copy:i18n",
     "build:copy:styles": "copyfiles -u 1 'src/**/*.scss' dist --exclude 'src/demo/**'",
     "build:copy:themes": "copyfiles -u 1 'src/themes/**/*.css' dist",
     "build:copy:i18n": "copyfiles -u 1 'src/**/i18n/*.json' dist",
+    "build:server": "tsc -p src/server/tsconfig.esm.json && tsc -p src/server/tsconfig.cjs.json",
     "start": "TS_NODE_PROJECT=.storybook/tsconfig.json storybook dev",
     "prepublishOnly": "npm run build",
     "test:unit": "jest --passWithNoTests",
@@ -142,6 +148,7 @@
     "@bem-react/classname": "^1.7.0",
     "dayjs": "^1.11.19",
     "marked": "^17.0.1",
+    "openai": "^6.18.0",
     "react-window": "^2.2.1",
     "remend": "^1.0.1",
     "uuid": "^13.0.0"

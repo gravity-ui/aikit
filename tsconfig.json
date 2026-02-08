@@ -15,5 +15,11 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.test.tsx", "src/demo/**"]
+  "exclude": [
+    "**/__tests__", 
+    "**/*.test.ts", 
+    "**/*.test.tsx", 
+    "src/demo/**",
+    "src/server/**"
+  ]
 }
