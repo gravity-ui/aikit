@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.5](https://github.com/gravity-ui/aikit/compare/v1.3.4...v1.3.5) (2026-02-10)
+
+
+### Bug Fixes
+
+* **useSmartScroll:** fix smart scroll in message list ([7110281](https://github.com/gravity-ui/aikit/commit/7110281fe4d62a25fea6f5d89b526223c014170e))
+
 ## [1.3.4](https://github.com/gravity-ui/aikit/compare/v1.3.3...v1.3.4) (2026-02-05)
 
 
