@@ -4,7 +4,6 @@ import type {ChatStatus} from '../types';
 
 export interface UseSmartScrollReturn<T extends HTMLElement> {
     containerRef: RefObject<T>;
-    endRef: RefObject<T>;
     scrollToBottom: (behavior?: ScrollBehavior) => void;
 }
 
@@ -20,14 +19,16 @@ export function useSmartScroll<T extends HTMLElement>({
     status?: ChatStatus;
 }): UseSmartScrollReturn<T> {
     const containerRef = useRef<T>(null);
-    const endRef = useRef<T>(null);
     const userScrolledUpRef = useRef(false);
 
     const scrollToBottom = useCallback((behavior: ScrollBehavior = 'instant') => {
         if (!userScrolledUpRef.current) {
-            const end = endRef.current;
-            if (end) {
-                end.scrollIntoView({behavior, block: 'end'});
+            const container = containerRef.current;
+            if (container) {
+                container.scrollTo({
+                    top: container.scrollHeight,
+                    behavior,
+                });
             }
         }
     }, []);
@@ -98,7 +99,6 @@ export function useSmartScroll<T extends HTMLElement>({
 
     return {
         containerRef,
-        endRef,
         scrollToBottom,
     };
 }

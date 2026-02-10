@@ -74,7 +74,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     const isSubmitted = status === 'submitted';
     const showLoader = status && loaderStatuses.includes(status);
 
-    const {containerRef, endRef} = useSmartScroll<HTMLDivElement>({
+    const {containerRef} = useSmartScroll<HTMLDivElement>({
         isStreaming: isStreaming || isSubmitted,
         messagesCount: messages.length,
         status,
@@ -155,7 +155,6 @@ export function MessageList<TContent extends TMessageContent = never>({
                     errorMessage={errorMessage}
                 />
             )}
-            <div ref={endRef} />
         </div>
     );
 }

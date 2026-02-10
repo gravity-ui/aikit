@@ -1196,6 +1196,144 @@ const addCustomActionsToMessages = (messages: TChatMessage[]): TChatMessage[] =>
 };
 
 /**
+ * Embedded in page with tall content and streaming.
+ * Chat is placed in a sidebar; main content has large height and is scrollable.
+ * When long text streams in the chat, only the chat panel scrolls — the main page does not jump.
+ */
+export const EmbeddedInPageWithStreaming: Story = {
+    args: {
+        messages: [],
+        showActionsOnHover: true,
+        welcomeConfig: {
+            title: 'Sidebar Chat',
+            description: 'Send a message to see streaming. Only the chat area scrolls.',
+            suggestionTitle: 'Try:',
+            suggestions: [{id: '1', title: 'Stream a long response'}],
+        },
+    },
+    render: (args) => {
+        const [messages, setMessages] = useState<TChatMessage[]>([]);
+        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
+            'ready',
+        );
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const userMessageId = Date.now().toString();
+            const userMessage: TChatMessage = {
+                id: userMessageId,
+                role: 'user',
+                content: data.content,
+                actions: createMessageActions(userMessageId, 'user'),
+            };
+            setMessages((prev) => [...prev, userMessage]);
+
+            setStatus('streaming');
+
+            const assistantMessageId = (Date.now() + 1).toString();
+            const fullResponse = [
+                'This is a simulated long streaming response. When the chat is embedded in an application,',
+                'the scroll logic must only scroll the chat container, not the main page.',
+                'Using containerRef.scrollTo({ top: scrollHeight, behavior }) ensures that only the message list',
+                'container scrolls to the bottom, so the main content stays in place and there is no jerking.',
+                '',
+                '**Before the fix**, scrollIntoView on the end element could scroll all scrollable ancestors',
+                '(including the document), which caused the whole page to jump during streaming.',
+                '',
+                '**After the fix**, we explicitly scroll only the container element that holds the messages.',
+                'The main content on the left can stay scrolled at any position while the chat streams.',
+                '',
+                'You can scroll the left column up or down and then send a message — only the chat panel',
+                'will scroll to show the new content.',
+            ].join('\n\n');
+
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: assistantMessageId,
+                    role: 'assistant',
+                    content: '',
+                    actions: createMessageActions(assistantMessageId, 'assistant'),
+                },
+            ]);
+
+            const words = fullResponse.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                await new Promise((resolve) => setTimeout(resolve, 80));
+                const currentText = words.slice(0, i + 1).join(' ');
+                setMessages((prev) =>
+                    prev.map((msg) =>
+                        msg.id === assistantMessageId ? {...msg, content: currentText} : msg,
+                    ),
+                );
+            }
+
+            setStatus('ready');
+        };
+
+        const handleCancel = async () => {
+            setStatus('ready');
+        };
+
+        const tallContent = Array.from({length: 30}, (_, i) => (
+            <p key={i}>
+                Main application content paragraph {i + 1}. This area has large height so the page
+                is scrollable. When the chat on the right streams a long response, only the chat
+                container should scroll — this column must not move.
+            </p>
+        ));
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    minHeight: '100vh',
+                }}
+            >
+                <div
+                    style={{
+                        flex: 1,
+                        minWidth: 0,
+                        padding: 24,
+                        borderRight: '1px solid var(--g-color-line-generic, #e5e5e5)',
+                    }}
+                >
+                    <h2 style={{marginTop: 0}}>Main content (tall, scrollable)</h2>
+                    {tallContent}
+                </div>
+                <div
+                    style={{
+                        width: 420,
+                        flexShrink: 0,
+                        position: 'sticky',
+                        top: 0,
+                        alignSelf: 'flex-start',
+                        height: '100vh',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        minHeight: 0,
+                    }}
+                >
+                    <ChatContainer
+                        {...args}
+                        messages={messages}
+                        onSendMessage={handleSendMessage}
+                        onCancel={handleCancel}
+                        status={status}
+                    />
+                </div>
+            </div>
+        );
+    },
+    decorators: [
+        (Story) => (
+            <div style={{minHeight: '100vh', overflow: 'visible'}}>
+                <Story />
+            </div>
+        ),
+    ],
+};
+
+/**
  * With Additional Actions
  * Demonstrates passing additional actions to Header and custom actions to BaseMessage
  */
