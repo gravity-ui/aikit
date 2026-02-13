@@ -61,7 +61,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     showAvatar,
     userActions,
     assistantActions,
-    loaderStatuses = ['submitted'],
+    loaderStatuses = ['submitted', 'streaming_loading'],
     className,
     qa,
     status,
@@ -70,7 +70,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     hasPreviousMessages = false,
     onLoadPreviousMessages,
 }: MessageListProps<TContent>) {
-    const isStreaming = status === 'streaming';
+    const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
     const showLoader = status && loaderStatuses.includes(status);
 

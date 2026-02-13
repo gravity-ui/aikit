@@ -7,7 +7,7 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {ChatContainer} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import type {ChatType, TChatMessage, TSubmitData} from '../../../../types';
+import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../../types';
 
 import MDXDocs from './Docs.mdx';
 
@@ -263,9 +263,7 @@ export const Playground: Story = {
         const [messages, setMessages] = useState<TChatMessage[]>(
             addActionsToMessages(mockChatMessages[initialChat.id] || []),
         );
-        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
-            args.status || 'ready',
-        );
+        const [status, setStatus] = useState<ChatStatus>(args.status || 'ready');
         const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
 
         const [foldingState, setFoldingState] = useState<'collapsed' | 'opened'>('opened');
@@ -410,9 +408,7 @@ export const WithStreaming: Story = {
         const [messages, setMessages] = useState<TChatMessage[]>(
             addActionsToMessages(args.messages || []),
         );
-        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
-            'ready',
-        );
+        const [status, setStatus] = useState<ChatStatus>('ready');
 
         const handleSendMessage = async (data: TSubmitData) => {
             const userMessageId = Date.now().toString();
@@ -442,9 +438,18 @@ export const WithStreaming: Story = {
                 },
             ]);
 
-            // Simulate word-by-word streaming
+            // Simulate word-by-word streaming with a streaming_loading pause in the middle
             const words = fullResponse.split(' ');
+            const pauseIndex = Math.floor(words.length / 2);
+
             for (let i = 0; i < words.length; i++) {
+                // Pause streaming at the midpoint: switch to streaming_loading for 5 seconds
+                if (i === pauseIndex) {
+                    setStatus('streaming_loading');
+                    await new Promise((resolve) => setTimeout(resolve, 5000));
+                    setStatus('streaming');
+                }
+
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 const currentText = words.slice(0, i + 1).join(' ');
                 setMessages((prev) =>
@@ -926,14 +931,17 @@ export const FullStreamingExample: Story = {
             addActionsToMessages(mockChatMessages[initialChat.id] || []),
         );
         const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
-        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
-            'ready',
-        );
+        const [status, setStatus] = useState<ChatStatus>('ready');
         const [controller, setController] = useState<AbortController | null>(null);
         const isProcessingRef = React.useRef(false);
 
         const handleSendMessage = async (data: TSubmitData) => {
-            if (isProcessingRef.current || status === 'streaming' || status === 'submitted') {
+            if (
+                isProcessingRef.current ||
+                status === 'streaming' ||
+                status === 'streaming_loading' ||
+                status === 'submitted'
+            ) {
                 return;
             }
 
@@ -1067,9 +1075,7 @@ export const FullStreamingExample: Story = {
 export const HiddenTitleOnEmpty: Story = {
     render: (args) => {
         const [messages, setMessages] = useState<TChatMessage[]>([]);
-        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
-            'ready',
-        );
+        const [status, setStatus] = useState<ChatStatus>('ready');
 
         const handleSendMessage = async (data: TSubmitData) => {
             const timestamp = Date.now();
@@ -1213,9 +1219,7 @@ export const EmbeddedInPageWithStreaming: Story = {
     },
     render: (args) => {
         const [messages, setMessages] = useState<TChatMessage[]>([]);
-        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
-            'ready',
-        );
+        const [status, setStatus] = useState<ChatStatus>('ready');
 
         const handleSendMessage = async (data: TSubmitData) => {
             const userMessageId = Date.now().toString();
@@ -1351,9 +1355,7 @@ export const WithAdditionalActions: Story = {
         const [messages, setMessages] = useState<TChatMessage[]>(() =>
             addCustomActionsToMessages(mockChatMessages[initialChat.id] || []),
         );
-        const [status, setStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>(
-            'ready',
-        );
+        const [status, setStatus] = useState<ChatStatus>('ready');
         const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
 
         const handleSendMessage = async (data: TSubmitData) => {
