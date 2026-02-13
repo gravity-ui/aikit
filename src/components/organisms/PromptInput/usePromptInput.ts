@@ -73,6 +73,7 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     // ChatStatus.ready → submitButtonState.enabled
     // ChatStatus.error → submitButtonState.enabled
     // ChatStatus.streaming → submitButtonState.cancelable
+    // ChatStatus.streaming_loading → submitButtonState.cancelable (same as streaming)
     // ChatStatus.submitted → submitButtonState.loading
     let submitButtonState: 'enabled' | 'disabled' | 'loading' | 'cancelable' = 'disabled';
 
@@ -88,6 +89,7 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
                 submitButtonState = 'enabled';
                 break;
             case 'streaming':
+            case 'streaming_loading':
                 submitButtonState = onCancel ? 'cancelable' : 'enabled';
                 break;
             case 'submitted':
