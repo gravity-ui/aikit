@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/gravity-ui/aikit/compare/v1.3.5...v1.4.0) (2026-02-13)
+
+
+### Features
+
+* **ChatStatus:** add status streamin loading ([dce631c](https://github.com/gravity-ui/aikit/commit/dce631c2a85aca2f465506e3d0165072d0c2eb39))
+
 ## [1.3.5](https://github.com/gravity-ui/aikit/compare/v1.3.4...v1.3.5) (2026-02-10)
 
 
