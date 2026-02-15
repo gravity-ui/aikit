@@ -54,7 +54,7 @@
     "lint:styles:fix": "stylelint **/*.scss --fix",
     "lint:prettier": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "lint:prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
-    "test": "npm run test:unit",
+    "test": "npm run test:unit && npm run test:server:unit",
     "build": "npm run build:clean && npm run build:ts && npm run build:copy && npm run build:server",
     "build:clean": "rm -rf dist",
     "build:ts": "tsc",
@@ -65,7 +65,8 @@
     "build:server": "tsc -p src/server/tsconfig.esm.json && tsc -p src/server/tsconfig.cjs.json",
     "start": "TS_NODE_PROJECT=.storybook/tsconfig.json storybook dev",
     "prepublishOnly": "npm run build",
-    "test:unit": "jest --passWithNoTests",
+    "test:unit": "jest --passWithNoTests --testPathIgnorePatterns=src/server",
+    "test:server:unit": "jest --config=src/server/jest.config.js",
     "playwright:install": "playwright install chromium webkit --with-deps",
     "playwright": "playwright test --config=playwright-ct.config.ts",
     "playwright:update": "npm run playwright -- -u all",
@@ -98,7 +99,8 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.14",
+    "@types/mocha": "^10.0.10",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@types/uuid": "^11.0.0",
@@ -148,9 +150,11 @@
     "@bem-react/classname": "^1.7.0",
     "dayjs": "^1.11.19",
     "marked": "^17.0.1",
-    "openai": "^6.18.0",
     "react-window": "^2.2.1",
     "remend": "^1.0.1",
     "uuid": "^13.0.0"
+  },
+  "optionalDependencies": {
+    "openai": "^6.21.0"
   }
 }

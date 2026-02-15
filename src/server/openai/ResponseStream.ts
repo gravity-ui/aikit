@@ -7,14 +7,12 @@ type BufferChunkCb = (buffer: Buffer<ArrayBuffer>) => void;
 export class ResponseStream {
     readonly stream: Stream<Responses.ResponseStreamEvent>;
 
-    private abortController: AbortController;
-
     private eventChunkCb: EventChunkCb | null = null;
     private bufferChunkCb: BufferChunkCb | null = null;
+    private onFinishCb: (() => void) | null = null;
 
-    constructor(stream: Stream<Responses.ResponseStreamEvent>, abortController: AbortController) {
+    constructor(stream: Stream<Responses.ResponseStreamEvent>) {
         this.stream = stream;
-        this.abortController = abortController;
     }
 
     onEventChunk(cb: EventChunkCb) {
@@ -25,12 +23,14 @@ export class ResponseStream {
         this.bufferChunkCb = cb;
     }
 
-    async start() {
-        const abortSignal = this.abortController.signal;
+    onFinish(cb: () => void) {
+        this.onFinishCb = cb;
+    }
 
+    async start() {
         for await (const event of this.stream) {
-            if (abortSignal.aborted) {
-                this.stream.controller.abort();
+            if (this.stream.controller.signal.aborted) {
+                this.onFinishCb?.();
                 break;
             }
 
@@ -41,5 +41,11 @@ export class ResponseStream {
             this.eventChunkCb?.(event);
             this.bufferChunkCb?.(buffer);
         }
+
+        this.onFinishCb?.();
+    }
+
+    abort() {
+        this.stream.controller.abort();
     }
 }
