@@ -1,13 +1,15 @@
 import {OpenAI} from 'openai/client.js';
 import type {ClientOptions} from 'openai/client.js';
-import type {ResponseCreateParamsStreaming} from 'openai/resources/responses/responses.js';
+import type {ResponseCreateParamsBase} from 'openai/resources/responses/responses.js';
 
 import {ResponseStream} from './ResponseStream.js';
+import {checkOpenaiPackage} from './checkOpenaiPackage.js';
 import {BASE_PROMPT_FOR_SUMMARIZATION} from './consts.js';
 
 type ExtraClientOptions = {
     model?: string;
     agent?: string;
+    project?: string;
 };
 
 type ConversationItemsPage = OpenAI.Conversations.ConversationItemsPage;
@@ -20,11 +22,13 @@ type BaseSummarizePayload = {
 
 type SummarizeConversationPayload =
     | (BaseSummarizePayload & {
-          byLastItems: number;
+          byLastItems?: number;
       })
     | (BaseSummarizePayload & {
-          byFirstItems: number;
+          byFirstItems?: number;
       });
+
+checkOpenaiPackage();
 
 export class OpenAIService extends OpenAI {
     private model?: string;
@@ -35,9 +39,12 @@ export class OpenAIService extends OpenAI {
 
         this.model = options.model;
         this.agent = options.agent;
+
+        try {
+        } catch {}
     }
 
-    async createResponseStream(payload: ResponseCreateParamsStreaming) {
+    async createResponseStream(payload: ResponseCreateParamsBase) {
         const metadata = this.getMetadataForResponseStream(payload.metadata);
 
         const stream = await this.responses.create({
@@ -57,16 +64,19 @@ export class OpenAIService extends OpenAI {
 
         let order: 'asc' | 'desc' = 'asc';
         let itemsForSummarize = 5;
-        if ('byLastItems' in summarizePayload) {
+
+        if ('byLastItems' in summarizePayload && typeof summarizePayload.byLastItems === 'number') {
             order = 'desc';
-            itemsForSummarize = summarizePayload.byLastItems;
+            itemsForSummarize = summarizePayload?.byLastItems;
         }
-        if ('byFirstItems' in summarizePayload) {
+
+        if (
+            'byFirstItems' in summarizePayload &&
+            typeof summarizePayload.byFirstItems === 'number'
+        ) {
             order = 'asc';
             itemsForSummarize = summarizePayload.byFirstItems;
         }
-
-        this.chat.completions.list();
 
         const convItems = await this.conversations.items.list(conversation, {
             limit: itemsForSummarize,
@@ -80,7 +90,7 @@ export class OpenAIService extends OpenAI {
         const systemPrompt = promptForSummarization ?? BASE_PROMPT_FOR_SUMMARIZATION;
         const userPrompt = `Create a short title for this conversation:\n\n${conversationContext}`;
 
-        this.responses.create({
+        const response = await this.responses.create({
             model: this.model,
             input: [
                 {
@@ -107,6 +117,17 @@ export class OpenAIService extends OpenAI {
                 },
             ],
         });
+
+        const firstResponseOutput = response.output?.[0];
+        const firstContent =
+            firstResponseOutput?.type === 'message' ? firstResponseOutput.content[0] : null;
+        const firstOutputText = firstContent?.type === 'output_text' ? firstContent.text : null;
+
+        if (firstOutputText === null) {
+            throw new Error('Failed to generate title. Empty response');
+        }
+
+        return firstOutputText;
     }
 
     private joinConvItemsForSummarizingTitle(itemsPage: ConversationItemsPage) {

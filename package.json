@@ -155,6 +155,7 @@
     "uuid": "^13.0.0"
   },
   "optionalDependencies": {
-    "openai": "^6.21.0"
+    "openai": "^6.21.0",
+    "semver": "^7.7.4"
   }
 }

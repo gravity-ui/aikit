@@ -107,12 +107,23 @@ describe('OpenAIService', () => {
                 agent: testAgent,
             });
 
+            service.responses.create = jest.fn().mockResolvedValueOnce({
+                output: [
+                    {
+                        type: 'message',
+                        content: [{type: 'output_text', text: 'SUMMARIZED_TITLE'}],
+                    },
+                ],
+            });
+
             const summarizePayload = {
                 conversation: 'test-conversation-id',
                 byLastItems: 10,
             };
 
-            await service.summarizeConversationTitle(summarizePayload);
+            const title = await service.summarizeConversationTitle(summarizePayload);
+
+            expect(title).toBe('SUMMARIZED_TITLE');
 
             // Check that conversations.items.list was called with the right arguments
             expect(service.conversations.items.list).toHaveBeenCalledWith(
@@ -162,6 +173,15 @@ describe('OpenAIService', () => {
                 agent: testAgent,
             });
 
+            service.responses.create = jest.fn().mockResolvedValueOnce({
+                output: [
+                    {
+                        type: 'message',
+                        content: [{type: 'output_text', text: 'SUMMARIZED_TITLE'}],
+                    },
+                ],
+            });
+
             const summarizePayload = {
                 conversation: 'test-conversation-id',
                 byFirstItems: 5,
@@ -195,11 +215,42 @@ describe('OpenAIService', () => {
             });
         });
 
+        it('summarizeConversationTitle() should throw an error when response has no valid output text', async () => {
+            const service = new OpenAIService({
+                apiKey: testApiKey,
+                model: testModel,
+                agent: testAgent,
+            });
+
+            service.responses.create = jest.fn().mockResolvedValueOnce({
+                output: [],
+            });
+
+            const summarizePayload = {
+                conversation: 'test-conversation-id',
+                byLastItems: 5,
+            };
+
+            // The method should throw an error
+            await expect(service.summarizeConversationTitle(summarizePayload)).rejects.toThrow(
+                'Failed to generate title. Empty response',
+            );
+        });
+
         it('summarizeConversationTitle() should use custom joinItems function if provided', async () => {
             const service = new OpenAIService({
                 apiKey: testApiKey,
                 model: testModel,
                 agent: testAgent,
+            });
+
+            service.responses.create = jest.fn().mockResolvedValueOnce({
+                output: [
+                    {
+                        type: 'message',
+                        content: [{type: 'output_text', text: 'SUMMARIZED_TITLE'}],
+                    },
+                ],
             });
 
             const customJoinItems = jest.fn().mockReturnValue('Custom joined content');
