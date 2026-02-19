@@ -16,6 +16,7 @@ export function isMessageOutputItemDoneEvent(
         (e.data as {item?: {type?: string}} | undefined)?.item;
     if (item === undefined) {
         if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
+            /* eslint-disable-next-line no-console */
             console.warn(
                 '[useOpenAIStreamAdapter] output_item.done event has no item; treating as message done.',
                 event,

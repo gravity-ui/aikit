@@ -68,7 +68,8 @@ function Chat() {
 ### Стриминг через fetch (SSE)
 
 ```tsx
-const result = useOpenAIStreamAdapter(null, {initialMessages: []});
+const [stream, setStream] = useState<OpenAIStreamSource | null>(null);
+const result = useOpenAIStreamAdapter(stream, {initialMessages: []});
 
 const response = await fetch('/api/chat/stream', {
   method: 'POST',
