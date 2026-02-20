@@ -7,7 +7,14 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {ChatContainer} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../../types';
+import type {
+    ChatStatus,
+    ChatType,
+    TAssistantMessage,
+    TChatMessage,
+    TSubmitData,
+} from '../../../../types';
+import {BaseMessageActionType} from '../../../molecules/BaseMessage';
 
 import MDXDocs from './Docs.mdx';
 
@@ -1415,6 +1422,125 @@ export const WithAdditionalActions: Story = {
                 status={status}
                 headerProps={{
                     additionalActions: headerAdditionalActionsConfig,
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+/**
+ * Like / Unlike actions with local rating state.
+ * Only like and unlike actions; rating toggles on repeated click (like → clear, dislike → clear).
+ */
+export const WithLikeUnlikeActions: Story = {
+    args: {
+        chats: mockChats,
+        activeChat: mockChats[0],
+        showHistory: true,
+        showNewChat: true,
+        showActionsOnHover: true,
+    },
+    render: (args) => {
+        const initialChat = mockChats[0];
+        const [messages, setMessages] = useState<TChatMessage[]>(
+            () => mockChatMessages[initialChat.id] || [],
+        );
+        const [status, setStatus] = useState<ChatStatus>('ready');
+        const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
+
+        const assistantActions = [
+            {
+                type: BaseMessageActionType.Like,
+                onClick: (message: TAssistantMessage) => {
+                    setMessages((prev) =>
+                        prev.map((m) =>
+                            m.id === message.id
+                                ? {
+                                      ...m,
+                                      userRating:
+                                          (m as TAssistantMessage).userRating === 'like'
+                                              ? undefined
+                                              : ('like' as const),
+                                  }
+                                : m,
+                        ),
+                    );
+                },
+            },
+            {
+                type: BaseMessageActionType.Unlike,
+                onClick: (message: TAssistantMessage) => {
+                    setMessages((prev) =>
+                        prev.map((m) =>
+                            m.id === message.id
+                                ? {
+                                      ...m,
+                                      userRating:
+                                          (m as TAssistantMessage).userRating === 'dislike'
+                                              ? undefined
+                                              : ('dislike' as const),
+                                  }
+                                : m,
+                        ),
+                    );
+                },
+            },
+        ];
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const timestamp = Date.now();
+            const userMessageId = `user-${timestamp}`;
+            const userMessage: TChatMessage = {
+                id: userMessageId,
+                role: 'user',
+                content: data.content,
+                timestamp: new Date().toISOString(),
+            };
+
+            setMessages((prev) => [...prev, userMessage]);
+            setStatus('streaming');
+
+            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            const assistantMessageId = `assistant-${timestamp + 1}`;
+            const assistantMessage: TChatMessage = {
+                id: assistantMessageId,
+                role: 'assistant',
+                content: `Response to: "${data.content}". Use like/unlike below — they toggle on second click.`,
+                timestamp: new Date().toISOString(),
+            };
+
+            setMessages((prev) => [...prev, assistantMessage]);
+            setStatus('ready');
+        };
+
+        const handleSelectChat = (chat: ChatType) => {
+            setActiveChat(chat);
+            setMessages(mockChatMessages[chat.id] || []);
+        };
+
+        const handleCreateChat = () => {
+            setActiveChat(null);
+            setMessages([]);
+        };
+
+        const handleCancel = async () => {
+            setStatus('ready');
+        };
+
+        return (
+            <ChatContainer
+                {...args}
+                messages={messages}
+                activeChat={activeChat}
+                onSendMessage={handleSendMessage}
+                onCancel={handleCancel}
+                onSelectChat={handleSelectChat}
+                onCreateChat={handleCreateChat}
+                status={status}
+                messageListConfig={{
+                    assistantActions,
                 }}
             />
         );

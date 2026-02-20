@@ -10,9 +10,9 @@ import {
     ThumbsUpFill,
     TrashBin,
 } from '@gravity-ui/icons';
-import {Icon, IconData} from '@gravity-ui/uikit';
+import {Icon} from '@gravity-ui/uikit';
 
-import type {BaseMessageProps} from '../../../types/messages';
+import type {BaseMessageProps, UserRating} from '../../../types/messages';
 import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms';
@@ -33,15 +33,6 @@ export enum BaseMessageActionType {
     Unlike = 'unlike',
     Delete = 'delete',
 }
-
-const BaseMessageActionIcons: Record<BaseMessageActionType | string, IconData> = {
-    [BaseMessageActionType.Copy]: CopyIcon,
-    [BaseMessageActionType.Edit]: Pencil,
-    [BaseMessageActionType.Retry]: ArrowRotateLeft,
-    [BaseMessageActionType.Like]: ThumbsUp,
-    [BaseMessageActionType.Unlike]: ThumbsDown,
-    [BaseMessageActionType.Delete]: TrashBin,
-};
 
 export const BaseMessage = (props: BaseMessageProps) => {
     const {
@@ -85,21 +76,7 @@ export const BaseMessage = (props: BaseMessageProps) => {
 
                             const tooltipText = getTooltipText(action.actionType);
 
-                            let defaultIcon = action.actionType
-                                ? BaseMessageActionIcons[action.actionType]
-                                : undefined;
-
-                            if (
-                                action.actionType === BaseMessageActionType.Like &&
-                                userRating === 'like'
-                            ) {
-                                defaultIcon = ThumbsUpFill;
-                            } else if (
-                                action.actionType === BaseMessageActionType.Unlike &&
-                                userRating === 'dislike'
-                            ) {
-                                defaultIcon = ThumbsDownFill;
-                            }
+                            const defaultIcon = getDefaultIcon(action.actionType, userRating);
 
                             // Determine tooltip title
                             let tooltipTitle: string | undefined;
@@ -138,3 +115,22 @@ export const BaseMessage = (props: BaseMessageProps) => {
         </div>
     );
 };
+
+function getDefaultIcon(actionType?: string, userRating?: UserRating) {
+    switch (actionType) {
+        case BaseMessageActionType.Copy:
+            return CopyIcon;
+        case BaseMessageActionType.Edit:
+            return Pencil;
+        case BaseMessageActionType.Retry:
+            return ArrowRotateLeft;
+        case BaseMessageActionType.Delete:
+            return TrashBin;
+        case BaseMessageActionType.Like:
+            return userRating === 'like' ? ThumbsUpFill : ThumbsUp;
+        case BaseMessageActionType.Unlike:
+            return userRating === 'dislike' ? ThumbsDownFill : ThumbsDown;
+        default:
+            return undefined;
+    }
+}
