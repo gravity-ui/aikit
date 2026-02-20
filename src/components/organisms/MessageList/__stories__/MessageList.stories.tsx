@@ -338,14 +338,14 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
     render: (args) => {
         const userActions = [
             {
-                actionType: BaseMessageActionType.Edit,
+                type: BaseMessageActionType.Edit,
                 onClick: (message: TUserMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Edit user message:', message.id);
                 },
             },
             {
-                actionType: BaseMessageActionType.Delete,
+                type: BaseMessageActionType.Delete,
                 onClick: (message: TUserMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Delete user message:', message.id);
@@ -355,14 +355,14 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
 
         const assistantActions = [
             {
-                actionType: BaseMessageActionType.Copy,
+                type: BaseMessageActionType.Copy,
                 onClick: (message: TAssistantMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Copy assistant message:', message.id);
                 },
             },
             {
-                actionType: BaseMessageActionType.Like,
+                type: BaseMessageActionType.Like,
                 onClick: (message: TAssistantMessage) => {
                     // eslint-disable-next-line no-console
                     console.log('Like assistant message:', message.id);
@@ -413,6 +413,69 @@ export const WithDefaultActions: StoryObj<MessageListProps> = {
                         userActions={userActions}
                         assistantActions={assistantActions}
                         status="streaming"
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithUserRating: StoryObj<MessageListProps> = {
+    render: (args) => {
+        const assistantActions = [
+            {
+                type: BaseMessageActionType.Copy,
+                onClick: (message: TAssistantMessage) => {
+                    // eslint-disable-next-line no-console
+                    console.log('Copy:', message.id);
+                },
+            },
+            {
+                type: BaseMessageActionType.Like,
+                onClick: (message: TAssistantMessage) => {
+                    // eslint-disable-next-line no-console
+                    console.log('Like:', message.id);
+                },
+            },
+            {
+                type: BaseMessageActionType.Unlike,
+                onClick: (message: TAssistantMessage) => {
+                    // eslint-disable-next-line no-console
+                    console.log('Unlike:', message.id);
+                },
+            },
+        ];
+
+        return (
+            <ShowcaseItem title="With User Rating">
+                <ContentWrapper width="480px">
+                    <MessageList
+                        {...args}
+                        messages={[
+                            {
+                                id: 'user-1',
+                                role: 'user',
+                                timestamp: '2024-01-01T00:00:00Z',
+                                content: 'Compare these two answers.',
+                            },
+                            {
+                                id: 'assistant-like',
+                                role: 'assistant',
+                                timestamp: '2024-01-01T00:00:01Z',
+                                content: 'This message is rated as liked (filled thumb up).',
+                                userRating: 'like',
+                            },
+                            {
+                                id: 'assistant-dislike',
+                                role: 'assistant',
+                                timestamp: '2024-01-01T00:00:02Z',
+                                content: 'This message is rated as disliked (filled thumb down).',
+                                userRating: 'dislike',
+                            },
+                        ]}
+                        assistantActions={assistantActions}
+                        status="ready"
                     />
                 </ContentWrapper>
             </ShowcaseItem>

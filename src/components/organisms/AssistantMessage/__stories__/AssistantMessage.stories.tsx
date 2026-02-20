@@ -55,6 +55,11 @@ export default {
             control: 'boolean',
             description: 'Show timestamp in actions area',
         },
+        userRating: {
+            control: 'radio',
+            options: [undefined, 'like', 'dislike'],
+            description: 'Current user rating (filled like/unlike icons when set)',
+        },
         className: {
             control: 'text',
             description: 'Additional CSS class',
@@ -123,6 +128,38 @@ Playground.args = {
     actions,
     timestamp: simpleMessage.timestamp,
     id: simpleMessage.id,
+};
+
+export const WithUserRating: StoryObj<AssistantMessageProps> = {
+    render: (args) => (
+        <>
+            <ShowcaseItem title="Rated like" width="400px">
+                <AssistantMessage
+                    {...args}
+                    content="This message has userRating: like (thumb up filled)."
+                    actions={actions}
+                    userRating="like"
+                />
+            </ShowcaseItem>
+            <ShowcaseItem title="Rated dislike" width="400px">
+                <AssistantMessage
+                    {...args}
+                    content="This message has userRating: dislike (thumb down filled)."
+                    actions={actions}
+                    userRating="dislike"
+                />
+            </ShowcaseItem>
+        </>
+    ),
+    decorators: [
+        (Story) => (
+            <ContentWrapper>
+                <Showcase>
+                    <Story />
+                </Showcase>
+            </ContentWrapper>
+        ),
+    ],
 };
 
 export const WithToolCall: StoryObj<AssistantMessageProps> = {

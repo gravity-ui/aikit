@@ -127,6 +127,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                     showActionsOnHover={showActionsOnHover}
                     showTimestamp={showTimestamp}
+                    userRating={message.userRating}
                 />
             );
         }

@@ -5,7 +5,9 @@ import {
     Copy as CopyIcon,
     Pencil,
     ThumbsDown,
+    ThumbsDownFill,
     ThumbsUp,
+    ThumbsUpFill,
     TrashBin,
 } from '@gravity-ui/icons';
 import {Icon, IconData} from '@gravity-ui/uikit';
@@ -51,6 +53,7 @@ export const BaseMessage = (props: BaseMessageProps) => {
         role: variant,
         showTimestamp,
         timestamp = '',
+        userRating,
     } = props;
 
     // Get tooltip text for action
@@ -81,9 +84,22 @@ export const BaseMessage = (props: BaseMessageProps) => {
                             }
 
                             const tooltipText = getTooltipText(action.actionType);
-                            const defaultIcon = action.actionType
+
+                            let defaultIcon = action.actionType
                                 ? BaseMessageActionIcons[action.actionType]
                                 : undefined;
+
+                            if (
+                                action.actionType === BaseMessageActionType.Like &&
+                                userRating === 'like'
+                            ) {
+                                defaultIcon = ThumbsUpFill;
+                            } else if (
+                                action.actionType === BaseMessageActionType.Unlike &&
+                                userRating === 'dislike'
+                            ) {
+                                defaultIcon = ThumbsDownFill;
+                            }
 
                             // Determine tooltip title
                             let tooltipTitle: string | undefined;
