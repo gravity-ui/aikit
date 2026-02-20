@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/gravity-ui/aikit/compare/v1.4.0...v1.5.0) (2026-02-20)
+
+
+### Features
+
+* **StreamAdapter:** add openai stream adapter [DATAUI-3561] ([061080c](https://github.com/gravity-ui/aikit/commit/061080cfcadbef3590b99a1356fe3914bf3ba841))
+
 ## [1.4.0](https://github.com/gravity-ui/aikit/compare/v1.3.5...v1.4.0) (2026-02-13)
 
 
