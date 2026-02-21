@@ -65,6 +65,13 @@ const buttons = [
     {actionType: 'unlike', onClick: () => console.log('unlike')},
 ];
 
+const likeUnlikeButtons = [
+    // eslint-disable-next-line no-console
+    {actionType: 'like', onClick: () => console.log('like')},
+    // eslint-disable-next-line no-console
+    {actionType: 'unlike', onClick: () => console.log('unlike')},
+];
+
 export const Playground: StoryFn<BaseMessageProps> = (args) => (
     <ContentWrapper>
         <BaseMessage {...args} />
@@ -162,3 +169,36 @@ export const WithCustomAction: StoryFn<BaseMessageProps> = (args) => (
         </BaseMessage>
     </ContentWrapper>
 );
+
+export const WithUserRating: StoryObj<BaseMessageProps> = {
+    render: (args) => (
+        <>
+            <ShowcaseItem title="No rating" width="300px">
+                <BaseMessage {...args} actions={likeUnlikeButtons} role="assistant">
+                    {'Message'}
+                </BaseMessage>
+            </ShowcaseItem>
+            <ShowcaseItem title="Rated like" width="300px">
+                <BaseMessage
+                    {...args}
+                    actions={likeUnlikeButtons}
+                    role="assistant"
+                    userRating="like"
+                >
+                    {'Message'}
+                </BaseMessage>
+            </ShowcaseItem>
+            <ShowcaseItem title="Rated dislike" width="300px">
+                <BaseMessage
+                    {...args}
+                    actions={likeUnlikeButtons}
+                    role="assistant"
+                    userRating="dislike"
+                >
+                    {'Message'}
+                </BaseMessage>
+            </ShowcaseItem>
+        </>
+    ),
+    decorators: defaultDecorators,
+};
