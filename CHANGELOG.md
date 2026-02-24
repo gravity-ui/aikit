@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.5.0](https://github.com/gravity-ui/aikit/compare/v1.4.0...v1.5.0) (2026-02-20)
+
+
+### Features
+
+* **StreamAdapter:** add openai stream adapter [DATAUI-3561] ([061080c](https://github.com/gravity-ui/aikit/commit/061080cfcadbef3590b99a1356fe3914bf3ba841))
+
+## [1.4.0](https://github.com/gravity-ui/aikit/compare/v1.3.5...v1.4.0) (2026-02-13)
+
+
+### Features
+
+* **ChatStatus:** add status streamin loading ([dce631c](https://github.com/gravity-ui/aikit/commit/dce631c2a85aca2f465506e3d0165072d0c2eb39))
+
+## [1.3.5](https://github.com/gravity-ui/aikit/compare/v1.3.4...v1.3.5) (2026-02-10)
+
+
+### Bug Fixes
+
+* **useSmartScroll:** fix smart scroll in message list ([7110281](https://github.com/gravity-ui/aikit/commit/7110281fe4d62a25fea6f5d89b526223c014170e))
+
 ## [1.3.4](https://github.com/gravity-ui/aikit/compare/v1.3.3...v1.3.4) (2026-02-05)
 
 

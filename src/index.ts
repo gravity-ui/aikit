@@ -20,6 +20,9 @@ export * from './components/templates';
 // === Pages ===
 export * from './components/pages';
 
+// === Adapters ===
+export * from './adapters';
+
 // === Hooks ===
 export * from './hooks';
 
