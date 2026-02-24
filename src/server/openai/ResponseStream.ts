@@ -30,7 +30,6 @@ export class ResponseStream {
     async start() {
         for await (const event of this.stream) {
             if (this.stream.controller.signal.aborted) {
-                this.onFinishCb?.();
                 break;
             }
 
