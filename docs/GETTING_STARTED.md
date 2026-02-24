@@ -262,6 +262,37 @@ const handleSendMessage = async (content: string) => {
 };
 ```
 
+## Server
+
+### Streaming
+
+```typescript
+const service = new OpenAIService({...})
+
+const stream = await service.createResponseStream({
+    input: 'Hello world',
+});
+
+stream.start() // start stream to get chunks
+stream.onEventChunk(console.log) // a typed chunk object
+stream.onBufferChunk(console.log) // if we need pass chunks to another service (for example via http)
+stream.abort() // abort stream
+```
+
+### Summarizing the header of a dialog.
+
+```typescript
+const summarizing = await service.summarizeConversationTitle({
+  conversation: '<convId>',
+  byLastItems: 5, // summarizes based on the last 5 messages
+  // byFirstItems: 5, summarizes based on the first 5 messages
+});
+
+console.log('summarizing :>> ', summarizing); // header of conversation
+```
+
+If neither the _byLastItems_ nor the _byFirstItems_ parameter is provided, summarization will, by default, be performed on the first 5 items.
+
 ## Next Steps
 
 - Study the [full architecture](./ARCHITECTURE.md)
