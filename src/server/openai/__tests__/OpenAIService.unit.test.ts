@@ -1,4 +1,4 @@
-jest.mock('openai/client.js', () => {
+jest.mock('openai/client', () => {
     const mockStream = {
         controller: {
             signal: {aborted: false},
@@ -62,7 +62,7 @@ describe('OpenAIService', () => {
                 metadata: {custom: 'value'},
             };
 
-            // @ts-ignore
+            // @ts-expect-error
             const result = await service.createResponseStream(payload);
 
             // Check that responses.create was called with the right arguments
@@ -88,7 +88,7 @@ describe('OpenAIService', () => {
                 input: [{content: [{text: 'Test input', type: 'input_text'}], role: 'user'}],
             };
 
-            // @ts-ignore
+            // @ts-expect-error
             await service.createResponseStream(payload);
 
             // Check that responses.create was called with agent metadata

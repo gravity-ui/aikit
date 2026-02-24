@@ -1,5 +1,5 @@
-import {Responses} from 'openai/resources/responses/responses.js';
-import {Stream} from 'openai/streaming.js';
+import {Responses} from 'openai/resources/responses/responses';
+import {Stream} from 'openai/streaming';
 
 type EventChunkCb = (event: Responses.ResponseStreamEvent) => void;
 type BufferChunkCb = (buffer: Buffer<ArrayBuffer>) => void;

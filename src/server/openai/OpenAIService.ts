@@ -41,6 +41,10 @@ export class OpenAIService extends OpenAI {
         this.agent = options.agent;
     }
 
+    setModel(model: string) {
+        this.model = model;
+    }
+
     async createResponseStream(payload: ResponseCreateParamsBase) {
         const metadata = this.getMetadataForResponseStream(payload.metadata);
 
@@ -130,7 +134,7 @@ export class OpenAIService extends OpenAI {
     private joinConvItemsForSummarizingTitle(itemsPage: ConversationItemsPage) {
         return itemsPage.data
             .map((item) => {
-                if (item.type === 'message') {
+                if (item.type === 'message' && typeof item.content === 'string') {
                     return item.content;
                 }
                 return '';

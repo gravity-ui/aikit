@@ -1,5 +1,5 @@
-import {Responses} from 'openai/resources/responses/responses.js';
-import {Stream} from 'openai/streaming.js';
+import {Responses} from 'openai/resources/responses/responses';
+import {Stream} from 'openai/streaming';
 
 import {ResponseStream} from '../ResponseStream';
 
@@ -9,7 +9,7 @@ describe('ResponseStream', () => {
 
         const abortedFn = jest.fn();
 
-        // @ts-ignore
+        // @ts-expect-error
         stream.controller = {
             signal: {aborted: false},
             abort: function () {
@@ -38,7 +38,7 @@ describe('ResponseStream', () => {
 
         const abortedFn = jest.fn();
 
-        // @ts-ignore
+        // @ts-expect-error
         stream.controller = {
             signal: {aborted: false},
             abort: function () {
@@ -75,7 +75,7 @@ describe('ResponseStream', () => {
 
         const abortedFn = jest.fn();
 
-        // @ts-ignore
+        // @ts-expect-error
         stream.controller = {
             signal: {aborted: false},
             abort: function () {
@@ -93,7 +93,7 @@ describe('ResponseStream', () => {
         service.start();
         service.onEventChunk((chunk) => {
             recordedChunks.push(chunk);
-            // @ts-ignore
+            // @ts-expect-error
             if (chunk === 'chunk2') {
                 service.abort();
             }
