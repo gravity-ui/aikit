@@ -9,7 +9,7 @@ export const checkOpenaiPackage = async () => {
             openaiPkg = await import(packageName);
         } catch {
             throw new Error(
-                `Пакет ${packageName} не установлен. Установите его с помощью: npm install ${packageName}@${versionRange}`,
+                `The package ${packageName} is not installed. Please install it using: npm install ${packageName}@${versionRange}`,
             );
         }
 
@@ -26,12 +26,12 @@ export const checkOpenaiPackage = async () => {
         const semver = await import('semver');
         if (!semver.satisfies(pkgVersion, versionRange)) {
             throw new Error(
-                `Установлен пакет ${packageName}@${pkgVersion}, но требуется версия ${versionRange}`,
+                `The package ${packageName}@${pkgVersion} is installed, but version ${versionRange} is required.`,
             );
         }
     } catch (err) {
         throw new Error(
-            `Не найдена или не поддерживается необходимая зависимость: openai. Установите совместимую версию: ^6.21.0\n${err}`,
+            `The required dependency "openai" was not found or is not supported. Please install a compatible version: ^6.21.0\n${err}`,
         );
     }
 };

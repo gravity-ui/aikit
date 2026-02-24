@@ -1,10 +1,10 @@
-import {OpenAI} from 'openai/client.js';
-import type {ClientOptions} from 'openai/client.js';
-import type {ResponseCreateParamsBase} from 'openai/resources/responses/responses.js';
+import type {ClientOptions} from 'openai/client';
+import {OpenAI} from 'openai/client';
+import type {ResponseCreateParamsBase} from 'openai/resources/responses/responses';
 
-import {ResponseStream} from './ResponseStream.js';
-import {checkOpenaiPackage} from './checkOpenaiPackage.js';
-import {BASE_PROMPT_FOR_SUMMARIZATION} from './consts.js';
+import {ResponseStream} from './ResponseStream';
+import {checkOpenaiPackage} from './checkOpenaiPackage';
+import {BASE_PROMPT_FOR_SUMMARIZATION} from './consts';
 
 type ExtraClientOptions = {
     model?: string;
@@ -39,9 +39,6 @@ export class OpenAIService extends OpenAI {
 
         this.model = options.model;
         this.agent = options.agent;
-
-        try {
-        } catch {}
     }
 
     async createResponseStream(payload: ResponseCreateParamsBase) {
@@ -141,9 +138,7 @@ export class OpenAIService extends OpenAI {
             .join('\n');
     }
 
-    private getMetadataForResponseStream(
-        payloadMetadata: ResponseCreateParamsStreaming['metadata'],
-    ) {
+    private getMetadataForResponseStream(payloadMetadata: ResponseCreateParamsBase['metadata']) {
         if (payloadMetadata) return payloadMetadata;
 
         if (this.agent) return {agent: this.agent};
