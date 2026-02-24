@@ -1,10 +1,20 @@
-# useOpenAIStreamAdapter
+# OpenAI Adapters
 
-React hooks to adapt [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses) (streaming and non-streaming) to `TChatMessage[]` for use with ChatContainer and MessageList.
+React hooks to adapt [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses) and conversations list to the library types: `TChatMessage[]` for ChatContainer/MessageList and `ChatType[]` for History.
 
 Requires `openai` as an optional peer dependency (`openai ^6.x`).
 
 ## Hooks
+
+### useOpenAIConversationsAdapter
+
+Use for **conversations list**: accepts an array of conversations or a response object with `data` and returns `ChatType[]` for the History component (sidebar chat list).
+
+**Input:** `OpenAIConversationLike[]` or `OpenAIConversationsListResponseLike` (e.g. `{ data: conversations }`) or `null` / `undefined`.
+
+**Result:** `{ chats: ChatType[] }` — each chat has `id`, `name` (from `metadata.title` or `metadata.name`, fallback `"Chat"`), `createTime` (ISO string from `created_at`), `lastMessage` (from `metadata.last_message`), and `metadata`.
+
+Use with ChatContainer's History: pass `chats` from the result into the `chats` prop.
 
 ### useOpenAIStreamAdapter
 
@@ -26,6 +36,34 @@ Use for **single, non-streaming** responses: accepts a full response object and 
 ---
 
 ## Examples
+
+### Conversations list for History
+
+```tsx
+import {ChatContainer, useOpenAIConversationsAdapter, type ChatType} from '@gravity-ui/aikit';
+
+function ChatWithHistory() {
+  const [conversationsResponse, setConversationsResponse] = useState(null);
+  const {chats} = useOpenAIConversationsAdapter(conversationsResponse);
+  const [activeChat, setActiveChat] = useState<ChatType | null>(null);
+
+  useEffect(() => {
+    fetch('/api/conversations')
+      .then((res) => res.json())
+      .then(setConversationsResponse);
+  }, []);
+
+  return (
+    <ChatContainer
+      chats={chats}
+      activeChat={activeChat}
+      onSelectChat={setActiveChat}
+      messages={[]}
+      onSendMessage={() => {}}
+    />
+  );
+}
+```
 
 ### Streaming with OpenAI SDK
 
@@ -100,4 +138,4 @@ Multiple assistant messages are created only when the API sends `response.output
 
 ## Types
 
-Exported types: `OpenAIStreamAdapterOptions`, `OpenAIStreamAdapterResult`, `OpenAIStreamSource`, `OpenAIResponseLike`, `OpenAIStreamEventLike`, `FetchResponseLike`. See `./types` and `./types/openAiTypes`.
+Exported types: `OpenAIStreamAdapterOptions`, `OpenAIStreamAdapterResult`, `OpenAIStreamSource`, `OpenAIResponseLike`, `OpenAIStreamEventLike`, `FetchResponseLike`, `OpenAIConversationLike`, `OpenAIConversationsListResponseLike`, `UseOpenAIConversationsAdapterResult`. See `./types` and `./types/openAiTypes`.
