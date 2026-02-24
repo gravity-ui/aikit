@@ -1,4 +1,5 @@
 import type {TChatMessage} from '../../../types';
+import type {ChatStatus} from '../../../types/chat';
 
 import type {OpenAIStreamEventLike} from './openAiTypes';
 
@@ -17,9 +18,12 @@ export type OpenAIStreamAdapterOptions = {
     onStreamEnd?: (messages: TChatMessage[]) => void;
 };
 
+/** Status from useOpenAIStreamAdapter. Subset of ChatStatus (no 'submitted'); safe to pass to ChatContainer. */
+export type OpenAIStreamAdapterStatus = Exclude<ChatStatus, 'submitted'>;
+
 export type OpenAIStreamAdapterResult = {
     messages: TChatMessage[];
-    status: 'idle' | 'streaming' | 'done' | 'error';
+    status: OpenAIStreamAdapterStatus;
     error: Error | null;
 };
 

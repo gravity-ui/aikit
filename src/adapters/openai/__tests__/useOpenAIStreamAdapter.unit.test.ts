@@ -22,7 +22,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         expect(result.current.error).toBeNull();
@@ -62,7 +62,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         expect(result.current.error).toBeNull();
@@ -105,7 +105,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         expect(result.current.error).toBeNull();
@@ -139,7 +139,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         const content = result.current.messages[0].content;
@@ -164,7 +164,7 @@ describe('useOpenAIStreamAdapter', () => {
         );
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         expect(result.current.messages[0].id).toBe('custom-id-123');
@@ -186,7 +186,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         expect(result.current.messages[0].content).toBe('I cannot do that.');
@@ -212,7 +212,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         const content = result.current.messages[0].content as Array<{
@@ -249,7 +249,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         const content = result.current.messages[0].content as Array<{
@@ -280,7 +280,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         const content = result.current.messages[0].content as Array<{
@@ -314,7 +314,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         const content = result.current.messages[0].content as Array<{
@@ -344,7 +344,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         const content = result.current.messages[0].content as Array<{
@@ -383,7 +383,7 @@ describe('useOpenAIStreamAdapter', () => {
         const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
 
         await waitFor(() => {
-            expect(result.current.status).toBe('done');
+            expect(result.current.status).toBe('ready');
         });
 
         const content = result.current.messages[0].content as Array<{

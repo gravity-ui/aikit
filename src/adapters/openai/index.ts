@@ -8,6 +8,7 @@ export {useOpenAIResponsesAdapter, useOpenAIStreamAdapter} from './useOpenAIResp
 export type {
     OpenAIStreamAdapterOptions,
     OpenAIStreamAdapterResult,
+    OpenAIStreamAdapterStatus,
     OpenAIStreamSource,
 } from './types';
 export type {FetchResponseLike, OpenAIStreamEventLike} from './types';
