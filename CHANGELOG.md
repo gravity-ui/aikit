@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.6.0](https://github.com/gravity-ui/aikit/compare/v1.5.0...v1.6.0) (2026-02-24)
+
+
+### Features
+
+* **GETTING_STARTED.md:** add part about server ([85edb57](https://github.com/gravity-ui/aikit/commit/85edb57c896321180126b03b4e2a83f4849abfdc))
+* **OpenAIService:** add method change model ([af27c84](https://github.com/gravity-ui/aikit/commit/af27c842163f568e053d717bed827ca4bb603fda))
+* **README:** update library docs ([8c38d5c](https://github.com/gravity-ui/aikit/commit/8c38d5c3f252d5a575d18d3ce3941bad42a50c37))
+
+
+### Bug Fixes
+
+* **OpenAIService:** fixed correct imports ([07cd54f](https://github.com/gravity-ui/aikit/commit/07cd54f0713dea9722477006e0aacdd73fbd30d5))
+* **package-lock:** fix dependencies in package lock ([73a518a](https://github.com/gravity-ui/aikit/commit/73a518a35872555a25c9f7c3912a1b6882d89227))
+* **ResponseStream:** delete onFinish cb called twice ([3599236](https://github.com/gravity-ui/aikit/commit/3599236b7e51a37ef0bcc8645112599a845bda42))
+
 ## [1.5.0](https://github.com/gravity-ui/aikit/compare/v1.4.0...v1.5.0) (2026-02-20)
 
 
