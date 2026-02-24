@@ -22,6 +22,12 @@ npm run test:ct:ui
 npm run test:ct:update
 ```
 
+### Run tests with Server mode
+
+```bash
+npm run test:server:unit
+```
+
 ## Writing Tests
 
 Component tests are located alongside components in `__tests__` directories with `.spec.tsx` extension.

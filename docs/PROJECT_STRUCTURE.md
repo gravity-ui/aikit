@@ -112,6 +112,9 @@ aikit/
 │   │   ├── light.css
 │   │   └── dark.css
 │   │
+│   ├── 📁 server/              # 🗄️ Server utilites for interacting with neural network services
+│   │   └── openai
+│   │
 │   └── index.ts                # Main export
 │
 ├── 📄 .gitignore

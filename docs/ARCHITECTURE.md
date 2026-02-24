@@ -73,6 +73,18 @@ Full integrations with specific data.
 
 **Examples:** `ChatContainer`
 
+### 6. Server
+
+Code that runs exclusively on the server side and is responsible for interacting with external APIs, primarily neural network services.
+
+**Characteristics:**
+
+- Runs only on the server
+- Contains no UI and is not involved in component rendering
+- Serves as a middleware layer between the application and external services (such as neural network APIs)
+
+**Examples:** `OpenAIService`
+
 ## Two-Level Approach
 
 Each organism provides two ways of usage:
