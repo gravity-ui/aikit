@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/gravity-ui/aikit/compare/v1.6.0...v1.7.0) (2026-02-25)
+
+
+### Features
+
+* **OpenaiAdapter:** add conversations adapter [DATAUI-3561] ([feb630d](https://github.com/gravity-ui/aikit/commit/feb630d493d72f345dc171670582908be7d87098))
+
 ## [1.6.0](https://github.com/gravity-ui/aikit/compare/v1.5.0...v1.6.0) (2026-02-24)
 
 
