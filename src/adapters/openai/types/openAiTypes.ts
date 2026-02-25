@@ -7,6 +7,13 @@
  */
 import type {ResponseOutputRefusal, ResponseOutputText} from 'openai/resources/responses/responses';
 
+export type OpenAIConversationLike = {
+    id: string;
+    created_at: number;
+    metadata?: Record<string, string> | null;
+    object?: 'conversation';
+};
+
 /** Minimal response shape (Response subset); all optional for partial/SSE. */
 export type OpenAIResponseLike = {
     id?: string;

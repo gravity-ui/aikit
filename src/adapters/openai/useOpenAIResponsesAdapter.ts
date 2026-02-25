@@ -16,6 +16,7 @@ import {OpenAIResponseLike, OpenAIStreamEventLike} from './types/openAiTypes';
 export type {
     OpenAIStreamAdapterOptions,
     OpenAIStreamAdapterResult,
+    OpenAIStreamAdapterStatus,
     OpenAIStreamSource,
 } from './types';
 
@@ -42,14 +43,14 @@ export function useOpenAIStreamAdapter(
     initialMessagesRef.current = initialMessages;
 
     const [messages, setMessages] = useState<TChatMessage[]>(initialMessages);
-    const [status, setStatus] = useState<OpenAIStreamAdapterResult['status']>('idle');
+    const [status, setStatus] = useState<OpenAIStreamAdapterResult['status']>('ready');
     const [error, setError] = useState<Error | null>(null);
 
     const assistantMessageId = useMemo(() => optionId ?? `assistant-${Date.now()}`, [optionId]);
 
     useEffect(() => {
         if (!stream) {
-            setStatus('idle');
+            setStatus('ready');
             setError(null);
             return undefined;
         }
@@ -101,7 +102,7 @@ export function useOpenAIStreamAdapter(
                 ]);
             },
             onEnd: (finalMessages, s, err) => {
-                setStatus(s);
+                setStatus(s === 'done' ? 'ready' : s);
                 setError(err ?? null);
                 onStreamEndRef.current?.(finalMessages);
             },

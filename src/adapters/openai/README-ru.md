@@ -1,10 +1,20 @@
-# useOpenAIStreamAdapter
+# OpenAI Adapters
 
-React-хуки для приведения ответов [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses) (стриминг и обычный ответ) к формату `TChatMessage[]` для использования с ChatContainer и MessageList.
+React-хуки для приведения ответов [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses) и списка диалогов к типам библиотеки: `TChatMessage[]` для ChatContainer/MessageList и `ChatType[]` для History.
 
 Требуется опциональная зависимость `openai` (`openai ^6.x`).
 
 ## Хуки
+
+### useOpenAIConversationsAdapter
+
+Для **списка диалогов**: принимает массив диалогов или объект ответа с полем `data` и возвращает `ChatType[]` для компонента History (список чатов в сайдбаре).
+
+**Вход:** `OpenAIConversationLike[]` или `OpenAIConversationsListResponseLike` (например `{ data: conversations }`) или `null` / `undefined`.
+
+**Результат:** `{ chats: ChatType[] }` — каждый чат содержит `id`, `name` (из `metadata.title` или `metadata.name`, по умолчанию `"Chat"`), `createTime` (ISO-строка из `created_at`), `lastMessage` (из `metadata.last_message`) и `metadata`.
+
+Использование с History в ChatContainer: передайте `chats` из результата в проп `chats`.
 
 ### useOpenAIStreamAdapter
 
@@ -26,6 +36,34 @@ React-хуки для приведения ответов [OpenAI Responses API]
 ---
 
 ## Примеры
+
+### Список диалогов для History
+
+```tsx
+import {ChatContainer, useOpenAIConversationsAdapter, type ChatType} from '@gravity-ui/aikit';
+
+function ChatWithHistory() {
+  const [conversationsResponse, setConversationsResponse] = useState(null);
+  const {chats} = useOpenAIConversationsAdapter(conversationsResponse);
+  const [activeChat, setActiveChat] = useState<ChatType | null>(null);
+
+  useEffect(() => {
+    fetch('/api/conversations')
+      .then((res) => res.json())
+      .then(setConversationsResponse);
+  }, []);
+
+  return (
+    <ChatContainer
+      chats={chats}
+      activeChat={activeChat}
+      onSelectChat={setActiveChat}
+      messages={[]}
+      onSendMessage={() => {}}
+    />
+  );
+}
+```
 
 ### Стриминг с OpenAI SDK
 
@@ -100,4 +138,4 @@ const messages = useOpenAIResponsesAdapter(response);
 
 ## Типы
 
-Экспортируемые типы: `OpenAIStreamAdapterOptions`, `OpenAIStreamAdapterResult`, `OpenAIStreamSource`, `OpenAIResponseLike`, `OpenAIStreamEventLike`, `FetchResponseLike`. См. `./types` и `./types/openAiTypes`.
+Экспортируемые типы: `OpenAIStreamAdapterOptions`, `OpenAIStreamAdapterResult`, `OpenAIStreamSource`, `OpenAIResponseLike`, `OpenAIStreamEventLike`, `FetchResponseLike`, `OpenAIConversationLike`, `OpenAIConversationsListResponseLike`, `UseOpenAIConversationsAdapterResult`. См. `./types` и `./types/openAiTypes`.
