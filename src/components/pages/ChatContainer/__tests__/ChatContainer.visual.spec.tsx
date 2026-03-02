@@ -316,4 +316,89 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with rating block', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContainerStories.WithRatingBlock />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with rating block dynamic scenarios', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContainerStories.WithRatingBlockDynamicScenarios />);
+
+        await expectScreenshot();
+    });
+
+    test('should handle rating interaction in chat container', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithRatingBlock />);
+
+        // Find rating block
+        const ratingBlock = page.locator('.g-aikit-rating-block');
+        await expect(ratingBlock).toBeVisible();
+
+        // Click on 5th star
+        const fifthStar = page.locator('[data-qa="star-rating-button-5"]');
+        await fifthStar.click();
+
+        // Verify star is selected
+        await expect(
+            page.locator('[data-qa="star-rating-button-5"][aria-checked="true"]'),
+        ).toBeVisible();
+
+        // Title should remain positive
+        await expect(page.getByText('Rate the assistant response:')).toBeVisible();
+    });
+
+    test('should change title dynamically on low rating in chat container', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<ChatContainerStories.WithRatingBlockDynamicScenarios />);
+
+        // Initially should show default title
+        await expect(page.getByText('Rate the assistant response:')).toBeVisible();
+
+        // Click on 1st star (low rating)
+        const firstStar = page.locator('[data-qa="star-rating-button-1"]');
+        await firstStar.click();
+
+        // Title should change with survey link
+        await expect(page.getByText(/What went wrong/)).toBeVisible();
+        await expect(page.getByText('Go to survey')).toBeVisible();
+    });
+
+    test('should show different messages for different ratings', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithRatingBlockDynamicScenarios />);
+
+        // Test rating 3 (neutral)
+        const thirdStar = page.locator('[data-qa="star-rating-button-3"]');
+        await thirdStar.click();
+
+        await expect(page.getByText(/How can we improve/)).toBeVisible();
+
+        // Test rating 5 (positive)
+        const fifthStar = page.locator('[data-qa="star-rating-button-5"]');
+        await fifthStar.click();
+
+        await expect(page.getByText(/Thank you for your positive feedback/)).toBeVisible();
+    });
+
+    test('should send message and show rating block when ready', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithRatingBlock />);
+
+        // Initially rating block should be visible
+        const ratingBlock = page.locator('.g-aikit-rating-block');
+        await expect(ratingBlock).toBeVisible();
+
+        // Send a new message
+        const textarea = page.locator('textarea');
+        await textarea.fill('New test message');
+        await textarea.press('Enter');
+
+        // Wait for response
+        await page.waitForTimeout(1500);
+
+        // Rating block should still be visible after response
+        await expect(ratingBlock).toBeVisible();
+    });
 });

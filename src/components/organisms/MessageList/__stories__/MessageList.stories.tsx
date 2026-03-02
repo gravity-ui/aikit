@@ -583,7 +583,17 @@ export const WithRatingBlock: StoryObj<MessageListProps> = {
                             },
                         ]}
                         ratingBlockProps={{
-                            title: 'Rate the assistant response:',
+                            title:
+                                rating && rating <= 2 ? (
+                                    <>
+                                        What went wrong?{' '}
+                                        <a href="#feedback" onClick={(e) => e.preventDefault()}>
+                                            Go to survey
+                                        </a>
+                                    </>
+                                ) : (
+                                    'Rate the assistant response:'
+                                ),
                             value: rating,
                             onChange: setRating,
                         }}

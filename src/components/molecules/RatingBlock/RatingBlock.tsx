@@ -48,7 +48,7 @@ export function RatingBlock({title, value, onChange, size = 'l', className, qa}:
                     {title && <div className={b('title')}>{title}</div>}
                 </div>
                 <div className={b('right')}>
-                    <StarRating value={value} onChange={onChange} size={size} />
+                    <StarRating value={value} onChange={onChange} size={size} qa={qa} />
                 </div>
             </div>
         </div>

@@ -109,6 +109,7 @@ export function StarRating({
                             aria-checked={rating === value}
                             aria-label={i18n('aria-label-star', {rating})}
                             className={b('star', {filled: isFilled})}
+                            qa={`star-rating-button-${rating}`}
                         >
                             <Icon data={isFilled ? StarFill : Star} size={iconSize} />
                         </Button>
