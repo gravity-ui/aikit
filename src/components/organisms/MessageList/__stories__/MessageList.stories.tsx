@@ -557,3 +557,127 @@ export const WithPreviousMessages: StoryObj<MessageListProps> = {
     },
     decorators: defaultDecorators,
 };
+
+export const WithCsatBlock: StoryObj<MessageListProps> = {
+    render: () => {
+        const [rating, setRating] = useState<number | undefined>(undefined);
+
+        return (
+            <ShowcaseItem title="With CSAT Block">
+                <ContentWrapper width="480px" height="400px" display="flex">
+                    <MessageList
+                        messages={[
+                            {
+                                id: 'user-1',
+                                role: 'user',
+                                timestamp: '2024-01-01T00:00:00Z',
+                                content:
+                                    'I am ready to create a virtual machine `my-cheap-vm` with the following characteristics...',
+                            },
+                            {
+                                id: 'assistant-1',
+                                role: 'assistant',
+                                timestamp: '2024-01-01T00:00:01Z',
+                                content:
+                                    'Virtual machine my-cheap-vm has been successfully created.',
+                            },
+                        ]}
+                        csatBlockProps={{
+                            title: 'Rate the assistant response:',
+                            value: rating,
+                            onChange: setRating,
+                        }}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithCsatRated: StoryObj<MessageListProps> = {
+    render: () => {
+        const [rating, setRating] = useState<number>(2);
+
+        return (
+            <ShowcaseItem title="With CSAT Block - Low Rating">
+                <ContentWrapper width="480px" height="400px" display="flex">
+                    <MessageList
+                        messages={[
+                            {
+                                id: 'user-1',
+                                role: 'user',
+                                timestamp: '2024-01-01T00:00:00Z',
+                                content:
+                                    'I am ready to create a virtual machine `my-cheap-vm` with the following characteristics...',
+                            },
+                            {
+                                id: 'assistant-1',
+                                role: 'assistant',
+                                timestamp: '2024-01-01T00:00:01Z',
+                                content:
+                                    'Virtual machine my-cheap-vm has been successfully created.',
+                            },
+                        ]}
+                        csatBlockProps={{
+                            title: (
+                                <>
+                                    What went wrong?{' '}
+                                    <a href="#feedback" onClick={(e) => e.preventDefault()}>
+                                        Go to survey
+                                    </a>
+                                </>
+                            ),
+                            value: rating,
+                            onChange: setRating,
+                        }}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithCsatCustom: StoryObj<MessageListProps> = {
+    render: () => {
+        const [rating, setRating] = useState<number>(4);
+
+        return (
+            <ShowcaseItem title="With CSAT Block - Custom Labels">
+                <ContentWrapper width="480px" height="400px" display="flex">
+                    <MessageList
+                        messages={[userMessage, assistantMessage]}
+                        csatBlockProps={{
+                            title: 'How was your experience?',
+                            subtitle: 'Your feedback helps us improve',
+                            value: rating,
+                            onChange: setRating,
+                            size: 'm',
+                        }}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithCsatHidden: StoryObj<MessageListProps> = {
+    render: () => (
+        <ShowcaseItem title="With CSAT Block Hidden">
+            <ContentWrapper width="480px" height="400px" display="flex">
+                <MessageList
+                    messages={[userMessage, assistantMessage]}
+                    csatBlockProps={{
+                        title: 'Rate the assistant:',
+                        value: 3,
+                        onChange: () => {},
+                        visible: false,
+                    }}
+                />
+            </ContentWrapper>
+        </ShowcaseItem>
+    ),
+    decorators: defaultDecorators,
+};

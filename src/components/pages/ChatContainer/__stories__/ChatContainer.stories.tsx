@@ -1547,3 +1547,81 @@ export const WithLikeUnlikeActions: Story = {
     },
     decorators: defaultDecorators,
 };
+
+export const WithCsatBlock: Story = {
+    render: () => {
+        const [messages, setMessages] = useState<TChatMessage[]>([
+            {
+                id: '1',
+                role: 'user',
+                timestamp: new Date().toISOString(),
+                content:
+                    'I am ready to create a virtual machine `my-cheap-vm` with the following characteristics: Catalog: auxiliary, Availability zone: ru-central1-a, Platform: Intel Ice Lake.',
+            },
+            {
+                id: '2',
+                role: 'assistant',
+                timestamp: new Date().toISOString(),
+                content: 'Virtual machine my-cheap-vm has been successfully created.',
+            },
+        ]);
+
+        const [csatRating, setCsatRating] = useState<number | undefined>(undefined);
+        const [status, setStatus] = useState<ChatStatus>('ready');
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const newMessage: TChatMessage = {
+                id: String(messages.length + 1),
+                role: 'user',
+                timestamp: new Date().toISOString(),
+                content: data.content,
+            };
+
+            setMessages((prev) => [...prev, newMessage]);
+            setStatus('streaming');
+
+            setTimeout(() => {
+                const assistantResponse: TChatMessage = {
+                    id: String(messages.length + 2),
+                    role: 'assistant',
+                    timestamp: new Date().toISOString(),
+                    content: `Response to: "${data.content}"`,
+                };
+                setMessages((prev) => [...prev, assistantResponse]);
+                setStatus('ready');
+            }, 1000);
+        };
+
+        const handleRatingChange = (rating: number) => {
+            setCsatRating(rating);
+            console.log('CSAT Rating changed:', rating);
+        };
+
+        return (
+            <ChatContainer
+                messages={messages}
+                status={status}
+                onSendMessage={handleSendMessage}
+                messageListConfig={{
+                    csatBlockProps: {
+                        title:
+                            csatRating && csatRating <= 2 ? (
+                                <>
+                                    What went wrong?{' '}
+                                    <a href="#feedback" onClick={(e) => e.preventDefault()}>
+                                        Go to survey
+                                    </a>
+                                </>
+                            ) : (
+                                'Rate the assistant response:'
+                            ),
+                        value: csatRating,
+                        onChange: handleRatingChange,
+                        visible: status === 'ready' && messages.length > 0,
+                    },
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};

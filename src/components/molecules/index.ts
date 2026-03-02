@@ -6,6 +6,7 @@ export * from './PromptInputBody';
 export * from './PromptInputFooter';
 export * from './PromptInputHeader';
 export * from './PromptInputPanel';
+export * from './StarRating';
 export * from './Suggestions';
 export * from './Tabs';
 export * from './ToolFooter';

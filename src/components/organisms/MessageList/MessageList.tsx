@@ -21,6 +21,7 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
+import {StarRating} from '../../molecules/StarRating';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
@@ -29,6 +30,25 @@ import {ErrorAlert} from './ErrorAlert';
 import './MessageList.scss';
 
 const b = block('message-list');
+
+export type CsatBlockProps = {
+    /** Rating value (1-5) */
+    value?: number;
+    /** Rating change callback */
+    onChange: (rating: number) => void;
+    /** Whether CSAT block is visible (default: true if csatBlockProps provided) */
+    visible?: boolean;
+    /** Title text or React element */
+    title?: React.ReactNode;
+    /** Subtitle/description - can include links, formatted text, etc. */
+    subtitle?: React.ReactNode;
+    /** Star size (default: 'l' for visibility) */
+    size?: 's' | 'm' | 'l';
+    /** Additional CSS class */
+    className?: string;
+    /** QA/test identifier */
+    qa?: string;
+};
 
 export type MessageListProps<TContent extends TMessageContent = never> = {
     messages: TChatMessage<TContent, TMessageMetadata>[];
@@ -49,6 +69,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     qa?: string;
     hasPreviousMessages?: boolean;
     onLoadPreviousMessages?: () => void;
+    /** CSAT block configuration - renders after messages list */
+    csatBlockProps?: CsatBlockProps;
 };
 
 export function MessageList<TContent extends TMessageContent = never>({
@@ -69,6 +91,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     onRetry,
     hasPreviousMessages = false,
     onLoadPreviousMessages,
+    csatBlockProps,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
@@ -155,6 +178,22 @@ export function MessageList<TContent extends TMessageContent = never>({
                     onRetry={onRetry}
                     errorMessage={errorMessage}
                 />
+            )}
+            {csatBlockProps && csatBlockProps.visible !== false && (
+                <div className={b('csat-block')} data-qa={csatBlockProps.qa}>
+                    {csatBlockProps.title && (
+                        <div className={b('csat-title')}>{csatBlockProps.title}</div>
+                    )}
+                    {csatBlockProps.subtitle && (
+                        <div className={b('csat-subtitle')}>{csatBlockProps.subtitle}</div>
+                    )}
+                    <StarRating
+                        value={csatBlockProps.value}
+                        onChange={csatBlockProps.onChange}
+                        size={csatBlockProps.size || 'l'}
+                        className={csatBlockProps.className}
+                    />
+                </div>
             )}
         </div>
     );
