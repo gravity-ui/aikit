@@ -558,12 +558,12 @@ export const WithPreviousMessages: StoryObj<MessageListProps> = {
     decorators: defaultDecorators,
 };
 
-export const WithCsatBlock: StoryObj<MessageListProps> = {
+export const WithRatingBlock: StoryObj<MessageListProps> = {
     render: () => {
         const [rating, setRating] = useState<number | undefined>(undefined);
 
         return (
-            <ShowcaseItem title="With CSAT Block">
+            <ShowcaseItem title="With Rating Block">
                 <ContentWrapper width="480px" height="400px" display="flex">
                     <MessageList
                         messages={[
@@ -582,7 +582,7 @@ export const WithCsatBlock: StoryObj<MessageListProps> = {
                                     'Virtual machine my-cheap-vm has been successfully created.',
                             },
                         ]}
-                        csatBlockProps={{
+                        ratingBlockProps={{
                             title: 'Rate the assistant response:',
                             value: rating,
                             onChange: setRating,
@@ -595,12 +595,12 @@ export const WithCsatBlock: StoryObj<MessageListProps> = {
     decorators: defaultDecorators,
 };
 
-export const WithCsatRated: StoryObj<MessageListProps> = {
+export const WithRatingBlockLowRating: StoryObj<MessageListProps> = {
     render: () => {
         const [rating, setRating] = useState<number>(2);
 
         return (
-            <ShowcaseItem title="With CSAT Block - Low Rating">
+            <ShowcaseItem title="With Rating Block - Low Rating">
                 <ContentWrapper width="480px" height="400px" display="flex">
                     <MessageList
                         messages={[
@@ -619,7 +619,7 @@ export const WithCsatRated: StoryObj<MessageListProps> = {
                                     'Virtual machine my-cheap-vm has been successfully created.',
                             },
                         ]}
-                        csatBlockProps={{
+                        ratingBlockProps={{
                             title: (
                                 <>
                                     What went wrong?{' '}
@@ -639,18 +639,17 @@ export const WithCsatRated: StoryObj<MessageListProps> = {
     decorators: defaultDecorators,
 };
 
-export const WithCsatCustom: StoryObj<MessageListProps> = {
+export const WithRatingBlockCustomSize: StoryObj<MessageListProps> = {
     render: () => {
         const [rating, setRating] = useState<number>(4);
 
         return (
-            <ShowcaseItem title="With CSAT Block - Custom Labels">
+            <ShowcaseItem title="With Rating Block - Custom Size">
                 <ContentWrapper width="480px" height="400px" display="flex">
                     <MessageList
                         messages={[userMessage, assistantMessage]}
-                        csatBlockProps={{
+                        ratingBlockProps={{
                             title: 'How was your experience?',
-                            subtitle: 'Your feedback helps us improve',
                             value: rating,
                             onChange: setRating,
                             size: 'm',
@@ -663,13 +662,13 @@ export const WithCsatCustom: StoryObj<MessageListProps> = {
     decorators: defaultDecorators,
 };
 
-export const WithCsatHidden: StoryObj<MessageListProps> = {
+export const WithRatingBlockHidden: StoryObj<MessageListProps> = {
     render: () => (
-        <ShowcaseItem title="With CSAT Block Hidden">
+        <ShowcaseItem title="With Rating Block Hidden">
             <ContentWrapper width="480px" height="400px" display="flex">
                 <MessageList
                     messages={[userMessage, assistantMessage]}
-                    csatBlockProps={{
+                    ratingBlockProps={{
                         title: 'Rate the assistant:',
                         value: 3,
                         onChange: () => {},
@@ -679,5 +678,54 @@ export const WithCsatHidden: StoryObj<MessageListProps> = {
             </ContentWrapper>
         </ShowcaseItem>
     ),
+    decorators: defaultDecorators,
+};
+
+export const WithRatingBlockManyMessages: StoryObj<MessageListProps> = {
+    render: () => {
+        const [rating, setRating] = useState<number | undefined>(undefined);
+
+        // Generate many messages to demonstrate sticky behavior
+        const manyMessages: Array<TUserMessage | TAssistantMessage> = [];
+        for (let i = 0; i < 20; i++) {
+            manyMessages.push({
+                id: `user-${i}`,
+                role: 'user',
+                timestamp: new Date(Date.now() - (20 - i) * 60000).toISOString(),
+                content: `User message ${i + 1}: Can you help me with task number ${i + 1}?`,
+            });
+            manyMessages.push({
+                id: `assistant-${i}`,
+                role: 'assistant',
+                timestamp: new Date(Date.now() - (20 - i) * 60000 + 30000).toISOString(),
+                content: `Assistant response ${i + 1}: Sure! I can help you with task number ${i + 1}. Here's a detailed explanation of what you need to do...`,
+            });
+        }
+
+        return (
+            <ShowcaseItem title="With Rating Block - Many Messages (Scroll to see sticky behavior)">
+                <ContentWrapper width="480px" height="400px" display="flex">
+                    <MessageList
+                        messages={manyMessages}
+                        ratingBlockProps={{
+                            title:
+                                rating && rating <= 2 ? (
+                                    <>
+                                        What went wrong?{' '}
+                                        <a href="#feedback" onClick={(e) => e.preventDefault()}>
+                                            Go to survey
+                                        </a>
+                                    </>
+                                ) : (
+                                    'Rate the assistant response:'
+                                ),
+                            value: rating,
+                            onChange: setRating,
+                        }}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
     decorators: defaultDecorators,
 };

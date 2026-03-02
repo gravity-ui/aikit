@@ -71,7 +71,7 @@ When disabled, the component displays the current rating but does not respond to
 
 - **s (small)**: 16px icons - compact size for inline usage
 - **m (medium)**: 20px icons - standard size for forms
-- **l (large)**: 24px icons - default size, best for prominent ratings like CSAT blocks
+- **l (large)**: 24px icons - default size, best for prominent ratings like rating blocks
 
 ## Keyboard Support
 

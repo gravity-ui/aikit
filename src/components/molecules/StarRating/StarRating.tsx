@@ -1,9 +1,10 @@
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 
 import {Star, StarFill} from '@gravity-ui/icons';
 import {Button, Icon} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
+import {ButtonGroup} from '../ButtonGroup';
 
 import {i18n} from './i18n';
 
@@ -46,19 +47,6 @@ export interface StarRatingProps {
     qa?: string;
 }
 
-/**
- * StarRating component for displaying and selecting star ratings (1-5)
- *
- * Features:
- * - Hover preview
- * - Click to select rating
- * - Keyboard navigation support
- * - Accessible with screen readers
- * - Supports different sizes
- *
- * @param props - Component props
- * @returns StarRating component
- */
 export function StarRating({
     value,
     onChange,
@@ -104,29 +92,29 @@ export function StarRating({
             data-qa={qa}
             onMouseLeave={handleMouseLeave}
         >
-            {Array.from({length: STAR_COUNT}, (_, index) => {
-                const rating = index + 1;
-                const isFilled = rating <= displayValue;
+            <ButtonGroup>
+                {Array.from({length: STAR_COUNT}, (_, index) => {
+                    const rating = index + 1;
+                    const isFilled = rating <= displayValue;
 
-                return (
-                    <Button
-                        key={rating}
-                        view="flat-secondary"
-                        size={buttonSize}
-                        onClick={() => handleClick(rating)}
-                        onMouseEnter={() => handleMouseEnter(rating)}
-                        disabled={disabled}
-                        extraProps={{
-                            role: 'radio',
-                            'aria-checked': rating === value,
-                            'aria-label': i18n('aria-label-star', {rating}),
-                        }}
-                        className={b('star', {filled: isFilled})}
-                    >
-                        <Icon data={isFilled ? StarFill : Star} size={iconSize} />
-                    </Button>
-                );
-            })}
+                    return (
+                        <Button
+                            key={rating}
+                            view="flat-secondary"
+                            size={buttonSize}
+                            onClick={() => handleClick(rating)}
+                            onMouseEnter={() => handleMouseEnter(rating)}
+                            disabled={disabled}
+                            role="radio"
+                            aria-checked={rating === value}
+                            aria-label={i18n('aria-label-star', {rating})}
+                            className={b('star', {filled: isFilled})}
+                        >
+                            <Icon data={isFilled ? StarFill : Star} size={iconSize} />
+                        </Button>
+                    );
+                })}
+            </ButtonGroup>
         </div>
     );
 }

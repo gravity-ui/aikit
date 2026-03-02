@@ -3,18 +3,8 @@
 $block: '.#{variables.$ns}star-rating';
 
 #{$block} {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--g-spacing-1);
-
     &_disabled {
         opacity: 0.5;
         cursor: not-allowed;
-    }
-
-    &__star {
-        &_filled {
-            // Filled stars inherit button styles from flat-secondary
-        }
     }
 }

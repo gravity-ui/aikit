@@ -33,32 +33,11 @@ $block: '.#{variables.$ns}message-list';
         padding: var(--g-spacing-2);
     }
 
-    &__csat-block {
+    &__rating-block {
+        position: sticky;
+        bottom: 0;
         margin-top: var(--g-spacing-4);
-        padding: var(--g-spacing-4);
-        border-radius: var(--g-border-radius-l);
-        background: var(--g-color-base-float);
-        border: 1px solid var(--g-color-line-generic);
-    }
-
-    &__csat-title {
-        font-size: var(--g-text-body-1-font-size);
-        color: var(--g-color-text-primary);
-        margin-bottom: var(--g-spacing-2);
-
-        a {
-            color: var(--g-color-text-link);
-            text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-    }
-
-    &__csat-subtitle {
-        font-size: var(--g-text-body-2-font-size);
-        color: var(--g-color-text-secondary);
-        margin-bottom: var(--g-spacing-3);
+        background: var(--g-color-base-background);
+        z-index: 1;
     }
 }
