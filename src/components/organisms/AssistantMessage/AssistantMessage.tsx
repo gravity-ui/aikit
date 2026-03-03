@@ -28,7 +28,7 @@ type BaseMessagePick = Pick<
 >;
 type AssistantMessagePick<TContent extends TMessageContent> = Pick<
     TAssistantMessage<TContent, TMessageMetadata>,
-    'id' | 'content'
+    'id' | 'content' | 'userRating'
 >;
 
 export type AssistantMessageProps<TContent extends TMessageContent = never> = BaseMessagePick &
@@ -52,6 +52,7 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
     shouldParseIncompleteMarkdown,
     showActionsOnHover,
     showTimestamp,
+    userRating,
     className,
     qa,
 }: AssistantMessageProps<TContent>) {
@@ -92,6 +93,7 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
             showActionsOnHover={showActionsOnHover}
             showTimestamp={showTimestamp}
             timestamp={timestamp}
+            userRating={userRating}
             className={b(null, className)}
             qa={qa}
         >

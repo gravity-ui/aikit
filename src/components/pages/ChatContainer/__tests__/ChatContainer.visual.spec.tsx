@@ -303,4 +303,17 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         // Wait a bit for streaming (don't wait for completion to avoid timeout)
         await page.waitForTimeout(1000);
     });
+
+    test('should toggle like on assistant message', async ({mount, page, expectScreenshot}) => {
+        await mount(<ChatContainerStories.WithLikeUnlikeActions />);
+
+        const assistantMessage = page.locator('.g-aikit-assistant-message').last();
+        await assistantMessage.hover();
+
+        const actionsContainer = assistantMessage.locator('.g-aikit-base-message__actions');
+        const likeButton = actionsContainer.getByRole('button').first();
+        await likeButton.click();
+
+        await expectScreenshot();
+    });
 });

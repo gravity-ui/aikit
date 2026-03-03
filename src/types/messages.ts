@@ -12,10 +12,13 @@ export type BaseMessageActionConfig = ActionConfig;
  */
 export type BaseMessageAction = BaseMessageActionConfig | React.ReactNode;
 
+export type UserRating = 'like' | 'dislike';
+
 export type BaseMessageProps = {
     children: React.ReactNode;
     role: TMessageRole;
     actions?: BaseMessageAction[];
+    userRating?: UserRating;
     timestamp?: string;
     showTimestamp?: boolean;
     showActionsOnHover?: boolean;
@@ -99,6 +102,7 @@ export type TAssistantMessage<
 > = TBaseMessage<Metadata> & {
     role: 'assistant';
     content: TAssistantMessageContent<TCustomMessageContent>;
+    userRating?: UserRating;
 };
 
 export type TChatMessage<

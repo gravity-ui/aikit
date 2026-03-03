@@ -6,6 +6,7 @@ $block: '.#{variables.$ns}base-message';
     display: flex;
     flex-direction: column;
     gap: var(--g-spacing-1);
+    word-break: break-word;
 
     &_variant_user {
         align-items: flex-end;
