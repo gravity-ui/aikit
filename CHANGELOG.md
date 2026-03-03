@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/gravity-ui/aikit/compare/v1.7.0...v1.8.0) (2026-03-03)
+
+
+### Features
+
+* **build:** add css files to build ([f6854e0](https://github.com/gravity-ui/aikit/commit/456863ca35a76c83391f3cc14895c2739857e193))
+
 ## [1.7.0](https://github.com/gravity-ui/aikit/compare/v1.6.0...v1.7.0) (2026-02-25)
 
 
