@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/gravity-ui/aikit/compare/v1.8.1...v1.9.0) (2026-03-03)
+
+
+### Features
+
+* add user rating support for like / unlike actions ([930b865](https://github.com/gravity-ui/aikit/commit/930b865ecae1830a1809eedc8f3c7ea8336ecd8e))
+
 ## [1.8.1](https://github.com/gravity-ui/aikit/compare/v1.8.0...v1.8.1) (2026-03-03)
 
 

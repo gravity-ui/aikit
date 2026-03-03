@@ -1,6 +1,6 @@
 {
   "name": "@gravity-ui/aikit",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "description": "Gravity UI base kit for building ai assistant chats",
   "license": "MIT",
   "main": "./dist/index.js",
@@ -59,7 +59,7 @@
     "build:clean": "rm -rf dist",
     "build:ts": "tsc",
     "build:compile:scss": "sass --no-source-map --load-path=src --load-path=node_modules src:dist",
-    "build:fix-imports": "find dist -type f -name '*.js' -exec sed -i '' \"s/\\.scss'/.css'/g; s/\\.scss\\\"/.css\\\"/g\" {} +",
+    "build:fix-imports": "find dist -type f -name '*.js' -exec perl -i -pe \"s/\\.scss'/.css'/g; s/\\.scss\\\"/.css\\\"/g\" {} +",
     "build:copy": "npm run build:copy:themes && npm run build:copy:i18n",
     "build:copy:themes": "copyfiles -u 1 'src/themes/**/*.css' dist",
     "build:copy:i18n": "copyfiles -u 1 'src/**/i18n/*.json' dist",
