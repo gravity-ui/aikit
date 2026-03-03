@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/gravity-ui/aikit/compare/v1.8.0...v1.8.1) (2026-03-03)
+
+
+### Bug Fixes
+
+* **fix-scss:** fix scss imports ([16ca79c](https://github.com/gravity-ui/aikit/commit/16ca79ce272298c54fff3096337564f8ec1d0ad5))
+
 ## [1.8.0](https://github.com/gravity-ui/aikit/compare/v1.7.0...v1.8.0) (2026-03-03)
 
 
