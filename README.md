@@ -185,10 +185,8 @@ If you're on Linux, you can run tests locally:
 ```bash
 # Install Playwright browsers (run once)
 npm run playwright:install
-
 # Run all component tests
 npm run playwright
-
 # Update screenshot baselines
 npm run playwright:update
 ```
