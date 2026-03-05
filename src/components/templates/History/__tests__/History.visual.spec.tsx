@@ -23,6 +23,14 @@ test.describe('History', {tag: '@History'}, () => {
         await expectScreenshot();
     });
 
+    test('should render lazy load more state', async ({mount, page, expectScreenshot}) => {
+        await mount(<HistoryStories.WithLazyLoadMore />);
+
+        await page.waitForTimeout(1000);
+
+        await expectScreenshot();
+    });
+
     test('should render without search', async ({mount, expectScreenshot}) => {
         await mount(<HistoryStories.WithoutSearch />);
 

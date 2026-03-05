@@ -13,12 +13,12 @@ $block: '.#{variables.$ns}history';
 
     &__list-wrapper {
         flex: 1;
+        overflow: auto;
+        max-height: var(--g-aikit-history-max-height);
     }
 
     &__list {
         padding: 0 spacing(2) 0 spacing(2);
-        overflow: auto;
-        max-height: var(--g-aikit-history-max-height);
     }
 
     &__list-item {
@@ -26,6 +26,10 @@ $block: '.#{variables.$ns}history';
     }
 
     &__filter {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--g-color-base-background);
         padding: spacing(2);
         border-bottom: 1px solid var(--g-color-line-generic);
         margin-bottom: 0;
@@ -99,5 +103,12 @@ $block: '.#{variables.$ns}history';
         justify-content: center;
         padding: spacing(8) spacing(4);
         flex: 1;
+    }
+
+    &__lazy-loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: spacing(2) spacing(4);
     }
 }
