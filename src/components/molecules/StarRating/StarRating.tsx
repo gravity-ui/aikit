@@ -2,6 +2,7 @@ import {useCallback, useState} from 'react';
 
 import {Star, StarFill} from '@gravity-ui/icons';
 import {Button, Icon} from '@gravity-ui/uikit';
+import type {ButtonSize} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 import {ButtonGroup} from '../ButtonGroup';
@@ -13,6 +14,18 @@ import './StarRating.scss';
 const b = block('star-rating');
 
 const STAR_COUNT = 5;
+
+const getButtonSize = (size: StarRatingSize): ButtonSize => {
+    if (size === 's') return 'xs';
+    if (size === 'm') return 's';
+    return 'm';
+};
+
+const getIconSize = (size: StarRatingSize): number => {
+    if (size === 's') return 16;
+    if (size === 'm') return 20;
+    return 24;
+};
 
 export type StarRatingSize = 's' | 'm' | 'l';
 
@@ -38,6 +51,11 @@ export interface StarRatingProps {
      */
     'aria-label'?: string;
     /**
+     * Custom aria-label formatter for individual stars
+     * @param rating - star rating value (1-5)
+     */
+    'aria-label-star'?: (rating: number) => string;
+    /**
      * Additional CSS class
      */
     className?: string;
@@ -53,6 +71,7 @@ export function StarRating({
     disabled = false,
     size = 'l',
     'aria-label': ariaLabel,
+    'aria-label-star': ariaLabelStar,
     className,
     qa,
 }: StarRatingProps) {
@@ -81,8 +100,8 @@ export function StarRating({
     }, []);
 
     const displayValue = hoverValue ?? value ?? 0;
-    const buttonSize = size === 's' ? 'xs' : size === 'm' ? 's' : 'm';
-    const iconSize = size === 's' ? 16 : size === 'm' ? 20 : 24;
+    const buttonSize = getButtonSize(size);
+    const iconSize = getIconSize(size);
 
     return (
         <div
@@ -107,7 +126,11 @@ export function StarRating({
                             disabled={disabled}
                             role="radio"
                             aria-checked={rating === value}
-                            aria-label={i18n('aria-label-star', {rating})}
+                            aria-label={
+                                ariaLabelStar
+                                    ? ariaLabelStar(rating)
+                                    : i18n('aria-label-star', {rating})
+                            }
                             className={b('star', {filled: isFilled})}
                             qa={`star-rating-button-${rating}`}
                         >

@@ -39,6 +39,7 @@ export type RatingBlockProps = {
  *   size="l"
  * />
  * ```
+ * @returns {JSX.Element} Rating block component
  */
 export function RatingBlock({title, value, onChange, size = 'l', className, qa}: RatingBlockProps) {
     return (

@@ -305,7 +305,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         // Scroll to top
         const messageList = page.locator('.g-aikit-message-list');
         await messageList.evaluate((el) => {
-            el.scrollTop = 0;
+            el.scrollTo({top: 0});
         });
 
         await page.waitForTimeout(100);
