@@ -1,0 +1,10 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}star-rating';
+
+#{$block} {
+    &_disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

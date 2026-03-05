@@ -1547,3 +1547,188 @@ export const WithLikeUnlikeActions: Story = {
     },
     decorators: defaultDecorators,
 };
+
+export const WithRatingBlock: Story = {
+    render: () => {
+        const [messages, setMessages] = useState<TChatMessage[]>([
+            {
+                id: '1',
+                role: 'user',
+                timestamp: new Date().toISOString(),
+                content:
+                    'I am ready to create a virtual machine `my-cheap-vm` with the following characteristics: Catalog: auxiliary, Availability zone: ru-central1-a, Platform: Intel Ice Lake.',
+            },
+            {
+                id: '2',
+                role: 'assistant',
+                timestamp: new Date().toISOString(),
+                content: 'Virtual machine my-cheap-vm has been successfully created.',
+            },
+        ]);
+
+        const [rating, setRating] = useState<number | undefined>(undefined);
+        const [status, setStatus] = useState<ChatStatus>('ready');
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const newMessage: TChatMessage = {
+                id: String(messages.length + 1),
+                role: 'user',
+                timestamp: new Date().toISOString(),
+                content: data.content,
+            };
+
+            setMessages((prev) => [...prev, newMessage]);
+            setStatus('streaming');
+
+            setTimeout(() => {
+                const assistantResponse: TChatMessage = {
+                    id: String(messages.length + 2),
+                    role: 'assistant',
+                    timestamp: new Date().toISOString(),
+                    content: `Response to: "${data.content}"`,
+                };
+                setMessages((prev) => [...prev, assistantResponse]);
+                setStatus('ready');
+            }, 1000);
+        };
+
+        const handleRatingChange = (newRating: number) => {
+            setRating(newRating);
+            console.log('Rating changed:', newRating);
+        };
+
+        return (
+            <ChatContainer
+                messages={messages}
+                status={status}
+                onSendMessage={handleSendMessage}
+                messageListConfig={{
+                    ratingBlockProps: {
+                        title:
+                            rating && rating <= 2 ? (
+                                <>
+                                    What went wrong?{' '}
+                                    <a href="#feedback" onClick={(e) => e.preventDefault()}>
+                                        Go to survey
+                                    </a>
+                                </>
+                            ) : (
+                                'Rate the assistant response:'
+                            ),
+                        value: rating,
+                        onChange: handleRatingChange,
+                        visible: status === 'ready' && messages.length > 0,
+                    },
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithRatingBlockDynamicScenarios: Story = {
+    render: () => {
+        const [messages, setMessages] = useState<TChatMessage[]>([
+            {
+                id: '1',
+                role: 'user',
+                timestamp: new Date().toISOString(),
+                content: 'Create a virtual machine with 2 cores and 4GB RAM',
+            },
+            {
+                id: '2',
+                role: 'assistant',
+                timestamp: new Date().toISOString(),
+                content:
+                    'Virtual machine has been successfully created with the requested specifications.',
+            },
+        ]);
+
+        const [rating, setRating] = useState<number | undefined>(undefined);
+        const [status, setStatus] = useState<ChatStatus>('ready');
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            // Reset rating on new conversation
+            setRating(undefined);
+
+            const newMessage: TChatMessage = {
+                id: String(messages.length + 1),
+                role: 'user',
+                timestamp: new Date().toISOString(),
+                content: data.content,
+            };
+
+            setMessages((prev) => [...prev, newMessage]);
+            setStatus('streaming');
+
+            setTimeout(() => {
+                const assistantResponse: TChatMessage = {
+                    id: String(messages.length + 2),
+                    role: 'assistant',
+                    timestamp: new Date().toISOString(),
+                    content: `I've processed your request: "${data.content}". The task has been completed successfully.`,
+                };
+                setMessages((prev) => [...prev, assistantResponse]);
+                setStatus('ready');
+            }, 1500);
+        };
+
+        const handleRatingChange = (newRating: number) => {
+            setRating(newRating);
+            console.log('Rating changed:', newRating);
+        };
+
+        // Dynamic title based on rating
+        const getRatingTitle = (): React.ReactNode => {
+            if (!rating) {
+                return 'Rate the assistant response:';
+            }
+
+            if (rating <= 2) {
+                return (
+                    <>
+                        What went wrong?{' '}
+                        <a
+                            href="https://forms.example.com/feedback"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                console.log('Survey link clicked');
+                            }}
+                        >
+                            Go to survey
+                        </a>
+                    </>
+                );
+            }
+
+            if (rating === 3) {
+                return 'Thank you for your feedback. How can we improve?';
+            }
+
+            return 'Thank you for your positive feedback!';
+        };
+
+        return (
+            <ChatContainer
+                messages={messages}
+                status={status}
+                onSendMessage={handleSendMessage}
+                messageListConfig={{
+                    ratingBlockProps: {
+                        title: getRatingTitle(),
+                        value: rating,
+                        onChange: handleRatingChange,
+                        // Only visible when conversation is complete and ready
+                        visible: status === 'ready' && messages.length >= 2,
+                    },
+                }}
+                headerProps={{
+                    title: 'Rating Block Dynamic Scenarios Demo',
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};

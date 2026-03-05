@@ -32,4 +32,12 @@ $block: '.#{variables.$ns}message-list';
         justify-content: center;
         padding: var(--g-spacing-2);
     }
+
+    &__rating-block {
+        position: sticky;
+        bottom: 0;
+        margin-top: var(--g-spacing-4);
+        background: var(--g-color-base-background);
+        z-index: 1;
+    }
 }

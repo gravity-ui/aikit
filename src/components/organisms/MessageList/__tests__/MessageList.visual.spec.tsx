@@ -225,4 +225,92 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
             await expect(actionsContainer).toBeVisible();
         });
     });
+
+    test('should render with rating block', async ({mount, expectScreenshot}) => {
+        await mount(<MessageListStories.WithRatingBlock />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with rating block low rating', async ({mount, expectScreenshot}) => {
+        await mount(<MessageListStories.WithRatingBlockLowRating />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with rating block custom size', async ({mount, expectScreenshot}) => {
+        await mount(<MessageListStories.WithRatingBlockCustomSize />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with rating block hidden', async ({mount, expectScreenshot}) => {
+        await mount(<MessageListStories.WithRatingBlockHidden />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with rating block many messages', async ({mount, expectScreenshot}) => {
+        await mount(<MessageListStories.WithRatingBlockManyMessages />);
+
+        await expectScreenshot();
+    });
+
+    test('should handle rating click in rating block', async ({mount, page}) => {
+        await mount(<MessageListStories.WithRatingBlock />);
+
+        // Find rating block
+        const ratingBlock = page.locator('.g-aikit-rating-block');
+        await expect(ratingBlock).toBeVisible();
+
+        // Click on 4th star
+        const fourthStar = page.locator('[data-qa="star-rating-button-4"]');
+        await fourthStar.click();
+
+        // Verify star is selected
+        await expect(
+            page.locator('[data-qa="star-rating-button-4"][aria-checked="true"]'),
+        ).toBeVisible();
+    });
+
+    test('should change title on low rating', async ({mount, page}) => {
+        await mount(<MessageListStories.WithRatingBlock />);
+
+        // Initially should show default title
+        await expect(page.getByText('Rate the assistant response:')).toBeVisible();
+
+        // Click on 2nd star (low rating)
+        const secondStar = page.locator('[data-qa="star-rating-button-2"]');
+        await secondStar.click();
+
+        // Title should change to low rating message with survey link
+        await expect(page.getByText(/What went wrong/)).toBeVisible();
+        await expect(page.getByText('Go to survey')).toBeVisible();
+    });
+
+    test('should hide rating block when visible is false', async ({mount, page}) => {
+        await mount(<MessageListStories.WithRatingBlockHidden />);
+
+        // Rating block should not be visible
+        const ratingBlock = page.locator('.g-aikit-rating-block');
+        await expect(ratingBlock).not.toBeVisible();
+    });
+
+    test('should show rating block sticky at bottom when scrolling', async ({mount, page}) => {
+        await mount(<MessageListStories.WithRatingBlockManyMessages />);
+
+        const ratingBlock = page.locator('.g-aikit-rating-block');
+        await expect(ratingBlock).toBeVisible();
+
+        // Scroll to top
+        const messageList = page.locator('.g-aikit-message-list');
+        await messageList.evaluate((el) => {
+            el.scrollTo({top: 0});
+        });
+
+        await page.waitForTimeout(100);
+
+        // Rating block should still be visible (sticky behavior)
+        await expect(ratingBlock).toBeVisible();
+    });
 });

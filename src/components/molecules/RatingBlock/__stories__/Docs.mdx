@@ -1,0 +1,56 @@
+import {Meta, Canvas} from '@storybook/addon-docs';
+import * as Stories from './RatingBlock.stories.tsx';
+
+<Meta of={Stories} />
+
+# RatingBlock
+
+Universal rating block with title and star rating component.
+
+<Canvas of={Stories.Playground} />
+
+## Features
+
+- Title with support for React elements (text, links, formatted content)
+- Integrated 5-star rating component
+- Configurable star size (s, m, l)
+- Responsive layout with border and padding
+- Link styling support in title
+
+## Examples
+
+### Default
+
+Empty rating block ready for user input.
+
+<Canvas of={Stories.Default} />
+
+### With Rating
+
+Block with pre-selected rating value.
+
+<Canvas of={Stories.WithRating} />
+
+### Dynamic Title
+
+Title that changes based on rating value (e.g., shows survey link for low ratings).
+
+<Canvas of={Stories.DynamicTitle} />
+
+### Sizes
+
+Available star sizes: s (16px), m (20px), l (24px, default).
+
+<Canvas of={Stories.Sizes} />
+
+### Without Title
+
+Block with only star rating, no title.
+
+<Canvas of={Stories.WithoutTitle} />
+
+### Multiple Blocks
+
+Multiple rating blocks in different states.
+
+<Canvas of={Stories.MultipleBlocks} />

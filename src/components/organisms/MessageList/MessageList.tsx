@@ -21,6 +21,7 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
+import {RatingBlock, type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
@@ -49,6 +50,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     qa?: string;
     hasPreviousMessages?: boolean;
     onLoadPreviousMessages?: () => void;
+    /** Rating block configuration (for CSAT or other feedback use cases) - renders after messages list */
+    ratingBlockProps?: RatingBlockProps;
 };
 
 export function MessageList<TContent extends TMessageContent = never>({
@@ -69,6 +72,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     onRetry,
     hasPreviousMessages = false,
     onLoadPreviousMessages,
+    ratingBlockProps,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
@@ -154,6 +158,12 @@ export function MessageList<TContent extends TMessageContent = never>({
                     className={b('error-alert')}
                     onRetry={onRetry}
                     errorMessage={errorMessage}
+                />
+            )}
+            {ratingBlockProps && ratingBlockProps.visible !== false && (
+                <RatingBlock
+                    {...ratingBlockProps}
+                    className={b('rating-block', ratingBlockProps.className)}
                 />
             )}
         </div>
