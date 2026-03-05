@@ -100,4 +100,11 @@ $block: '.#{variables.$ns}history';
         padding: spacing(8) spacing(4);
         flex: 1;
     }
+
+    &__lazy-loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: spacing(2) spacing(4);
+    }
 }

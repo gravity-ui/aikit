@@ -1,44 +1,11 @@
-import React from 'react';
+import {Popup} from '@gravity-ui/uikit';
 
-import {DOMProps, Popup, QAProps} from '@gravity-ui/uikit';
-
-import {ChatType} from '../../../types';
-import {ChatFilterFunction} from '../../../utils/chatUtils';
-
-import {HistoryList} from './HistoryList';
+import {HistoryList, type HistoryListProps} from './HistoryList';
 
 /**
  * Props for the History component
  */
-export interface HistoryProps extends QAProps, DOMProps {
-    /** Array of chat items */
-    chats: ChatType[];
-    /** Currently selected chat */
-    selectedChat?: ChatType | null;
-    /** Callback when a chat is selected */
-    onSelectChat?: (chat: ChatType) => void;
-    /** Callback when a chat is deleted */
-    onDeleteChat?: (chat: ChatType) => void;
-    /** Callback to load more chats */
-    onLoadMore?: () => void;
-    /** Whether there are more chats to load */
-    hasMore?: boolean;
-    /** Enable search functionality */
-    searchable?: boolean;
-    /** Group chats by date or none */
-    groupBy?: 'date' | 'none';
-    /** Show action buttons (delete, etc.) */
-    showActions?: boolean;
-    /** Empty state placeholder */
-    emptyPlaceholder?: React.ReactNode;
-    /** Empty filtered state placeholder (when search returns no results) */
-    emptyFilteredPlaceholder?: React.ReactNode;
-    /** Additional CSS class */
-    className?: string;
-    /** Custom filter function for search */
-    filterFunction?: ChatFilterFunction;
-    /** Loading state */
-    loading?: boolean;
+export interface HistoryProps extends Omit<HistoryListProps, 'onChatClick'> {
     /** Control popup open state */
     open?: boolean;
     /** Callback when popup open state changes */
@@ -54,27 +21,7 @@ export interface HistoryProps extends QAProps, DOMProps {
  * @returns React component
  */
 export function History(props: HistoryProps) {
-    const {
-        chats,
-        selectedChat,
-        onSelectChat,
-        onDeleteChat,
-        onLoadMore,
-        hasMore = false,
-        searchable = true,
-        groupBy = 'date',
-        showActions = true,
-        emptyPlaceholder,
-        emptyFilteredPlaceholder,
-        className,
-        qa,
-        style,
-        filterFunction,
-        loading = false,
-        open = false,
-        onOpenChange,
-        anchorElement,
-    } = props;
+    const {open = false, onOpenChange, anchorElement, ...listProps} = props;
 
     const handleChatClick = () => {
         onOpenChange?.(false);
@@ -87,25 +34,7 @@ export function History(props: HistoryProps) {
             open={open}
             onOpenChange={onOpenChange}
         >
-            <HistoryList
-                chats={chats}
-                selectedChat={selectedChat}
-                onSelectChat={onSelectChat}
-                onDeleteChat={onDeleteChat}
-                onLoadMore={onLoadMore}
-                hasMore={hasMore}
-                searchable={searchable}
-                groupBy={groupBy}
-                showActions={showActions}
-                emptyPlaceholder={emptyPlaceholder}
-                emptyFilteredPlaceholder={emptyFilteredPlaceholder}
-                className={className}
-                qa={qa}
-                style={style}
-                filterFunction={filterFunction}
-                loading={loading}
-                onChatClick={handleChatClick}
-            />
+            <HistoryList {...listProps} onChatClick={handleChatClick} />
         </Popup>
     );
 }
