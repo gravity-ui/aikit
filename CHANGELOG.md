@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.10.0](https://github.com/gravity-ui/aikit/compare/v1.9.0...v1.10.0) (2026-03-05)
+
+
+### Features
+
+* add star rating component ([7450db4](https://github.com/gravity-ui/aikit/commit/7450db467001050c4771a3d2c4faf43ee753eda5))
+* make two molecules star rating and rating block ([12c9ee6](https://github.com/gravity-ui/aikit/commit/12c9ee6228af2228639d661e65398589bc4db9b6))
+
+
+### Bug Fixes
+
+* fix review issues, refactor some hardcorde ([aa53bcf](https://github.com/gravity-ui/aikit/commit/aa53bcf4708a89de4a01d8a998cfdc2a6183208b))
+
 ## [1.9.0](https://github.com/gravity-ui/aikit/compare/v1.8.1...v1.9.0) (2026-03-03)
 
 
