@@ -80,26 +80,29 @@ function MyComponent() {
 
 ## Props
 
-| Prop               | Type                        | Required | Default             | Description                           |
-| ------------------ | --------------------------- | -------- | ------------------- | ------------------------------------- |
-| `chats`            | `ChatType[]`                | ✓        | -                   | Array of chat items                   |
-| `anchorElement`    | `HTMLElement \| null`       | ✓        | -                   | Anchor element for the popup          |
-| `open`             | `boolean`                   | -        | `false`             | Control popup open state              |
-| `onOpenChange`     | `(open: boolean) => void`   | -        | -                   | Callback when popup state changes     |
-| `selectedChat`     | `ChatType \| null`          | -        | -                   | Currently selected chat               |
-| `onSelectChat`     | `(chat) => void`            | -        | -                   | Callback when a chat is selected      |
-| `onDeleteChat`     | `(chat) => void`            | -        | -                   | Callback when a chat is deleted       |
-| `onLoadMore`       | `() => void`                | -        | -                   | Callback to load more chats           |
-| `hasMore`          | `boolean`                   | -        | `false`             | Whether there are more chats to load  |
-| `searchable`       | `boolean`                   | -        | `true`              | Enable search functionality           |
-| `groupBy`          | `'date' \| 'none'`          | -        | `'date'`            | Group chats by date or show flat list |
-| `showActions`      | `boolean`                   | -        | `true`              | Show action buttons (delete)          |
-| `emptyPlaceholder` | `React.ReactNode`           | -        | -                   | Custom empty state placeholder        |
-| `className`        | `string`                    | -        | -                   | Additional CSS class                  |
-| `qa`               | `string`                    | -        | -                   | QA/test identifier                    |
-| `style`            | `CSSProperties`             | -        | -                   | Inline styles                         |
-| `filterFunction`   | `ChatFilterFunction`        | -        | `defaultChatFilter` | Custom filter function for search     |
-| `size`             | `'s' \| 'm' \| 'l' \| 'xl'` | -        | `m`                 | Size of the list                      |
+| Prop                       | Type                             | Required | Default             | Description                                      |
+| -------------------------- | -------------------------------- | -------- | ------------------- | ------------------------------------------------ |
+| `chats`                    | `ChatType[]`                     | ✓        | -                   | Array of chat items                              |
+| `anchorElement`            | `HTMLElement \| null`            | ✓        | -                   | Anchor element for the popup                     |
+| `open`                     | `boolean`                        | -        | `false`             | Control popup open state                         |
+| `onOpenChange`             | `(open: boolean) => void`        | -        | -                   | Callback when popup state changes                |
+| `selectedChat`             | `ChatType \| null`               | -        | -                   | Currently selected chat                          |
+| `onSelectChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is selected                 |
+| `onDeleteChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is deleted                  |
+| `onLoadMore`               | `() => void` or `OnLoadMoreLazy` | -        | -                   | Callback to load more chats (see Load modes)     |
+| `hasMore`                  | `boolean`                        | -        | `false`             | Whether there are more chats to load             |
+| `loadMode`                 | `'full' \| 'lazy'`               | -        | `'full'`            | Load mode: button (full) or scroll (lazy)        |
+| `searchable`               | `boolean`                        | -        | `true`              | Enable search functionality                      |
+| `groupBy`                  | `'date' \| 'none'`               | -        | `'date'`            | Group chats by date or show flat list            |
+| `showActions`              | `boolean`                        | -        | `true`              | Show action buttons (delete)                     |
+| `emptyPlaceholder`         | `React.ReactNode`                | -        | -                   | Custom empty state placeholder                   |
+| `emptyFilteredPlaceholder` | `React.ReactNode`                | -        | -                   | Placeholder shown when search returns no results |
+| `loading`                  | `boolean`                        | -        | `false`             | Show loading state                               |
+| `className`                | `string`                         | -        | -                   | Additional CSS class                             |
+| `qa`                       | `string`                         | -        | -                   | QA/test identifier                               |
+| `style`                    | `CSSProperties`                  | -        | -                   | Inline styles                                    |
+| `filterFunction`           | `ChatFilterFunction`             | -        | `defaultChatFilter` | Custom filter function for search                |
+| `size`                     | `'s' \| 'm' \| 'l' \| 'xl'`      | -        | `m`                 | Size of the list                                 |
 
 ## Chat Type
 
@@ -165,9 +168,13 @@ The `defaultChatFilter` utility function is exported from `@gravity-ui/aikit` an
 
 **Note:** Date headers are automatically hidden when search is active to avoid showing empty date groups. Your filter function should always return `true` for `date-header` items - the component handles their visibility internally during search.
 
-## Pagination
+## Load Modes
 
-For large chat lists, use the `hasMore` and `onLoadMore` props:
+The component supports two load modes via the `loadMode` prop:
+
+### Full mode (default)
+
+Parent manages all data. When user clicks "Load more" button, `onLoadMore()` is called. Parent fetches and updates the `chats` prop with the full list.
 
 ```typescript
 const [chats, setChats] = useState(initialChats);
@@ -184,8 +191,32 @@ const handleLoadMore = () => {
   chats={chats}
   hasMore={hasMore}
   onLoadMore={handleLoadMore}
+  loadMode="full"
 />
 ```
+
+### Lazy mode (scroll)
+
+Callback returns only new chats. Component accumulates data internally. Loads automatically when user scrolls to the bottom.
+
+```typescript
+const handleLoadMoreLazy = async (offset: number) => {
+  const newChats = await fetchChats(offset, pageSize);
+  return { chats: newChats, hasMore: newChats.length === pageSize };
+};
+
+<History
+  chats={initialChats}
+  hasMore={true}
+  onLoadMore={handleLoadMoreLazy}
+  loadMode="lazy"
+/>
+```
+
+The lazy callback receives `offset` (current total count) and returns either:
+
+- `ChatType[]` - new chats only (empty array means no more)
+- `{ chats: ChatType[]; hasMore?: boolean }` - new chats and optional hasMore flag
 
 ## Actions
 

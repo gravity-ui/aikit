@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {Button, DOMProps, InputControlSize, List, ListItemData, QAProps} from '@gravity-ui/uikit';
 
@@ -15,6 +15,15 @@ import './History.scss';
 
 const b = block('history');
 
+/** Result of lazy load more callback - either array of new chats or object with chats and hasMore flag */
+export type LoadMoreLazyResult = ChatType[] | {chats: ChatType[]; hasMore?: boolean};
+
+/** Callback for lazy load more - returns only new chats, not previously loaded */
+export type OnLoadMoreLazy = (offset: number) => Promise<LoadMoreLazyResult>;
+
+/** Load mode: full (button, parent manages all data) or lazy (scroll, callback returns new data only) */
+export type HistoryLoadMode = 'full' | 'lazy';
+
 /**
  * Props for the HistoryList component
  */
@@ -27,10 +36,19 @@ export interface HistoryListProps extends QAProps, DOMProps {
     onSelectChat?: (chat: ChatType) => void;
     /** Callback when a chat is deleted */
     onDeleteChat?: (chat: ChatType) => void;
-    /** Callback to load more chats */
-    onLoadMore?: () => void;
+    /**
+     * Callback to load more chats.
+     * - Full mode: () => void - triggers load, parent updates chats prop
+     * - Lazy mode: (offset) => Promise<ChatType[]|{chats,hasMore}> - returns only new chats
+     */
+    onLoadMore?: (() => void) | OnLoadMoreLazy;
     /** Whether there are more chats to load */
     hasMore?: boolean;
+    /**
+     * Load mode: 'full' (button click, parent provides all data) or 'lazy' (scroll, callback returns new data only)
+     * @default 'full'
+     */
+    loadMode?: HistoryLoadMode;
     /** Enable search functionality */
     searchable?: boolean;
     /** Group chats by date or none */
@@ -67,6 +85,7 @@ export function HistoryList(props: HistoryListProps) {
         onDeleteChat,
         onLoadMore,
         hasMore = false,
+        loadMode = 'full',
         searchable = true,
         groupBy = 'date',
         showActions = true,
@@ -81,14 +100,45 @@ export function HistoryList(props: HistoryListProps) {
         size = 'm',
     } = props;
     const [filteredItemCount, setFilteredItemCount] = useState<number | null>(null);
+    const [loadedChats, setLoadedChats] = useState<ChatType[]>([]);
+    const [lazyLoading, setLazyLoading] = useState(false);
+    const [lazyHasMore, setLazyHasMore] = useState(hasMore);
+    const listWrapperRef = useRef<HTMLDivElement>(null);
+    const isLoadingRef = useRef(false);
+    const lazyHasMoreRef = useRef(lazyHasMore);
+    lazyHasMoreRef.current = lazyHasMore;
+
+    const displayChats = useMemo(() => {
+        if (loadMode === 'lazy') {
+            return [...chats, ...loadedChats];
+        }
+        return chats;
+    }, [loadMode, chats, loadedChats]);
+
+    const displayChatsLengthRef = useRef(displayChats.length);
+    displayChatsLengthRef.current = displayChats.length;
+
+    // Sync hasMore for lazy mode when props change
+    useEffect(() => {
+        if (loadMode === 'lazy') {
+            setLazyHasMore(hasMore);
+        }
+    }, [loadMode, hasMore]);
+
+    // Reset accumulated chats when initial chats change (e.g. context switch or refresh)
+    useEffect(() => {
+        if (loadMode === 'lazy') {
+            setLoadedChats([]);
+        }
+    }, [chats, loadMode]);
 
     // Group chats if needed
     const groupedChats = useMemo(() => {
         if (groupBy === 'none') {
-            return new Map([['all', chats]]);
+            return new Map([['all', displayChats]]);
         }
-        return groupChatsByDate(chats);
-    }, [chats, groupBy]);
+        return groupChatsByDate(displayChats);
+    }, [displayChats, groupBy]);
 
     // Convert grouped chats to list items
     const listItems: ListItemData<ListItemChatData>[] = useMemo(() => {
@@ -101,12 +151,10 @@ export function HistoryList(props: HistoryListProps) {
         });
 
         sortedGroups.forEach(([dateKey, groupChats]) => {
-            // Skip empty groups (important for filtering)
             if (groupChats.length === 0) {
                 return;
             }
 
-            // Add date header for grouped view only if there are chats in this group
             if (groupBy === 'date' && dateKey !== 'all') {
                 items.push({
                     type: 'date-header',
@@ -115,7 +163,6 @@ export function HistoryList(props: HistoryListProps) {
                 });
             }
 
-            // Add chat items
             groupChats.forEach((chat) => {
                 items.push({
                     type: 'chat',
@@ -130,6 +177,51 @@ export function HistoryList(props: HistoryListProps) {
     const selectedItemIndex = useMemo(() => {
         return listItems.findIndex((item) => item.type === 'chat' && item.id === selectedChat?.id);
     }, [listItems, selectedChat]);
+
+    const handleLazyLoadMore = useCallback(async () => {
+        if (!onLoadMore || isLoadingRef.current || !lazyHasMoreRef.current) {
+            return;
+        }
+        const offset = displayChatsLengthRef.current;
+        isLoadingRef.current = true;
+        setLazyLoading(true);
+        try {
+            const result = await (onLoadMore as OnLoadMoreLazy)(offset);
+            const newChats = Array.isArray(result) ? result : result.chats;
+            const resultHasMore = Array.isArray(result) ? newChats.length > 0 : result.hasMore;
+            setLoadedChats((prev) => [...prev, ...newChats]);
+            setLazyHasMore(resultHasMore ?? newChats.length > 0);
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('HistoryList: failed to load more chats', error);
+        } finally {
+            isLoadingRef.current = false;
+            setLazyLoading(false);
+        }
+    }, [onLoadMore]);
+
+    // Scroll listener for lazy load - triggers when user scrolls near bottom or on initial render
+    useEffect(() => {
+        if (loadMode !== 'lazy' || !onLoadMore || !lazyHasMore) {
+            return;
+        }
+        const scrollContainer = listWrapperRef.current?.querySelector(`.${b('list')}`);
+        if (!scrollContainer) return;
+
+        const checkAndLoad = () => {
+            if (isLoadingRef.current || !lazyHasMoreRef.current) return;
+            const {scrollTop, scrollHeight, clientHeight} = scrollContainer;
+            const threshold = 100;
+            if (scrollHeight - scrollTop - clientHeight < threshold) {
+                handleLazyLoadMore();
+            }
+        };
+
+        checkAndLoad();
+
+        scrollContainer.addEventListener('scroll', checkAndLoad, {passive: true});
+        return () => scrollContainer.removeEventListener('scroll', checkAndLoad);
+    }, [loadMode, onLoadMore, lazyHasMore, handleLazyLoadMore]);
 
     const handleChatClick = (
         chat: ListItemData<ListItemChatData>,
@@ -154,7 +246,6 @@ export function HistoryList(props: HistoryListProps) {
         return (filter: string) => {
             const userFilter = filterFunction(filter);
             return (item: ListItemData<ListItemChatData>): boolean => {
-                // Hide date headers when searching (they will be empty after chat filtering)
                 if (filter && item.type === 'date-header') {
                     return false;
                 }
@@ -162,6 +253,10 @@ export function HistoryList(props: HistoryListProps) {
             };
         };
     }, [filterFunction]);
+
+    const handleLoadMoreClick = useCallback(() => {
+        (onLoadMore as () => void)?.();
+    }, [onLoadMore]);
 
     const renderItem = (item: ListItemData<ListItemChatData>, isActive: boolean) => {
         if (item.type === 'date-header') {
@@ -185,7 +280,6 @@ export function HistoryList(props: HistoryListProps) {
         <div className={b('empty')}>{i18n('empty-filtered-state')}</div>
     );
 
-    // Determine which empty placeholder to show
     const finalEmptyPlaceholder =
         filteredItemCount === null || filteredItemCount === listItems.length
             ? emptyState
@@ -193,33 +287,40 @@ export function HistoryList(props: HistoryListProps) {
 
     return (
         <div className={b('container', className)} data-qa={qa} style={style}>
-            <div className={b('list-wrapper')}>
+            <div ref={listWrapperRef} className={b('list-wrapper')}>
                 {loading ? (
                     <div className={b('loader-wrapper')}>
                         <Loader view="loading" />
                     </div>
                 ) : (
-                    <List
-                        size={size}
-                        items={listItems}
-                        renderItem={renderItem}
-                        virtualized={false}
-                        filterable={searchable}
-                        filterItem={wrappedFilterFunction}
-                        filterPlaceholder={i18n('search-placeholder')}
-                        filterClassName={b('filter')}
-                        emptyPlaceholder={finalEmptyPlaceholder}
-                        selectedItemIndex={selectedItemIndex}
-                        itemsClassName={b('list')}
-                        itemClassName={b('list-item')}
-                        onFilterEnd={(data) => setFilteredItemCount(data.items.length)}
-                        onItemClick={handleChatClick}
-                    />
+                    <React.Fragment>
+                        <List
+                            size={size}
+                            items={listItems}
+                            renderItem={renderItem}
+                            virtualized={false}
+                            filterable={searchable}
+                            filterItem={wrappedFilterFunction}
+                            filterPlaceholder={i18n('search-placeholder')}
+                            filterClassName={b('filter')}
+                            emptyPlaceholder={finalEmptyPlaceholder}
+                            selectedItemIndex={selectedItemIndex}
+                            itemsClassName={b('list')}
+                            itemClassName={b('list-item')}
+                            onFilterEnd={(data) => setFilteredItemCount(data.items.length)}
+                            onItemClick={handleChatClick}
+                        />
+                        {loadMode === 'lazy' && lazyLoading && (
+                            <div className={b('lazy-loader')}>
+                                <Loader view="loading" />
+                            </div>
+                        )}
+                    </React.Fragment>
                 )}
             </div>
 
-            {hasMore && onLoadMore && (
-                <Button view="flat-action" size="m" width="max" onClick={onLoadMore}>
+            {loadMode === 'full' && hasMore && onLoadMore && (
+                <Button view="flat-action" size="m" width="max" onClick={handleLoadMoreClick}>
                     {i18n('action-load-more')}
                 </Button>
             )}
