@@ -11,6 +11,12 @@ test.describe('Header', {tag: '@Header'}, () => {
         await expectScreenshot();
     });
 
+    test('should truncate long title with ellipsis', async ({mount, expectScreenshot}) => {
+        await mount(<HeaderStories.WithLongTitle />);
+
+        await expectScreenshot();
+    });
+
     test('should render with icon', async ({mount, expectScreenshot}) => {
         await mount(<HeaderStories.WithIcon />);
 

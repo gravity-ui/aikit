@@ -105,6 +105,19 @@ export const WithIcon: StoryFn<HeaderProps> = (args) => {
     );
 };
 
+export const WithLongTitle: StoryFn<HeaderProps> = (args) => {
+    return (
+        <ContentWrapper width="480px">
+            <Header
+                title="This is a very long title that should be truncated with ellipsis when it overflows the available space"
+                baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
+                {...mockHandlers}
+                {...args}
+            />
+        </ContentWrapper>
+    );
+};
+
 export const WithoutIcon: StoryFn<HeaderProps> = (args) => {
     return (
         <ContentWrapper width="480px">

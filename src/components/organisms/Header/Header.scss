@@ -21,6 +21,7 @@ $block: '.#{variables.$ns}header';
         display: flex;
         gap: var(--g-spacing-1);
         flex: 1;
+        min-width: 0;
         align-items: baseline;
 
         &_position_left {
@@ -36,7 +37,7 @@ $block: '.#{variables.$ns}header';
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        flex-shrink: 0;
+        min-width: 0;
     }
 
     &__preview {

@@ -133,7 +133,7 @@ export function Header(props: HeaderProps) {
             {showTitle && (
                 <div className={titlePositionClass}>
                     {title && (
-                        <Text as="div" variant="subheader-2" className={b('title')}>
+                        <Text title={title} as="div" variant="subheader-2" className={b('title')}>
                             {title}
                         </Text>
                     )}
