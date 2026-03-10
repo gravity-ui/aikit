@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/gravity-ui/aikit/compare/v1.10.0...v1.10.1) (2026-03-10)
+
+
+### Bug Fixes
+
+* **Header:** fix width title ([11df75c](https://github.com/gravity-ui/aikit/commit/11df75cf93484ddb592358d388a69d5863cf5be1))
+
 ## [1.10.0](https://github.com/gravity-ui/aikit/compare/v1.9.0...v1.10.0) (2026-03-05)
 
 
