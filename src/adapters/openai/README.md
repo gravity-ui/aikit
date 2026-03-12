@@ -27,7 +27,7 @@ Use for **streaming** responses: consumes an SSE stream or an `AsyncIterable` of
 
 **Options:** `initialMessages`, `assistantMessageId`, `onStreamEnd`.
 
-**Result:** `{ messages, status, error }` where `status` is `'idle' | 'streaming' | 'done' | 'error'`.
+**Result:** `{ messages, status, error, responseId }` where `responseId` is populated from stream lifecycle events such as `response.created`, and `status` is `'idle' | 'streaming' | 'done' | 'error'`.
 
 ### useOpenAIResponsesAdapter
 

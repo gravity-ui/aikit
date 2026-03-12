@@ -27,7 +27,7 @@ React-хуки для приведения ответов [OpenAI Responses API]
 
 **Опции:** `initialMessages`, `assistantMessageId`, `onStreamEnd`.
 
-**Результат:** `{ messages, status, error }`, где `status` — `'idle' | 'streaming' | 'done' | 'error'`.
+**Результат:** `{ messages, status, error, responseId }`, где `responseId` заполняется из служебных событий стрима вроде `response.created`, а `status` — `'idle' | 'streaming' | 'done' | 'error'`.
 
 ### useOpenAIResponsesAdapter
 

@@ -1,5 +1,4 @@
-import type {TChatMessage} from '../../../types';
-import type {ChatStatus} from '../../../types/chat';
+import type {ChatStatus, TChatMessage} from '../../../types';
 
 import type {OpenAIStreamEventLike} from './openAiTypes';
 
@@ -25,6 +24,7 @@ export type OpenAIStreamAdapterResult = {
     messages: TChatMessage[];
     status: OpenAIStreamAdapterStatus;
     error: Error | null;
+    responseId: string | null;
 };
 
 export type OpenAIStreamSource = AsyncIterable<OpenAIStreamEventLike> | FetchResponseLike;

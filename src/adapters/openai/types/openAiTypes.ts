@@ -100,6 +100,11 @@ export type OpenAIStreamOutputItemLike = {type?: string; [key: string]: unknown}
 
 /** ResponseStreamEvent-compatible; includes SSE wrapper (event/data) for raw fetch. */
 export type OpenAIStreamEventLike =
+    | {
+          type: 'response.created' | 'response.in_progress';
+          response?: OpenAIResponseLike;
+          sequence_number?: number;
+      }
     | {type: 'response.output_text.delta'; delta: string}
     | {type: 'response.output_text.done'; text?: string}
     | {type: 'response.content_part.delta'; delta?: string}
