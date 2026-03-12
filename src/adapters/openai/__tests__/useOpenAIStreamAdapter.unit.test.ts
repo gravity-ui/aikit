@@ -170,6 +170,31 @@ describe('useOpenAIStreamAdapter', () => {
         expect(result.current.messages[0].id).toBe('custom-id-123');
     });
 
+    it('should expose responseId from response lifecycle events', async () => {
+        const stream = createMockStream([
+            {
+                type: 'response.created',
+                response: {id: 'resp-12764d48bf1346d48ecaaa4fb8bacff3'},
+                sequence_number: 1,
+            },
+            {
+                type: 'response.in_progress',
+                response: {id: 'resp-12764d48bf1346d48ecaaa4fb8bacff3'},
+                sequence_number: 2,
+            },
+            {type: 'response.output_text.delta', delta: 'Hi'},
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        expect(result.current.responseId).toBe('resp-12764d48bf1346d48ecaaa4fb8bacff3');
+    });
+
     it('should accumulate refusal deltas into assistant message text', async () => {
         const stream = createMockStream([
             {type: 'response.refusal.delta', delta: 'I cannot ', item_id: 'out-1', output_index: 0},

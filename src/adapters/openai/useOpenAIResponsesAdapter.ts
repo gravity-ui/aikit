@@ -22,6 +22,16 @@ export type {
 
 /** Single non-streaming response → TChatMessage[]. For streaming use useOpenAIStreamAdapter. */
 
+function getResponseIdFromEvent(event: OpenAIStreamEventLike): string | null {
+    const response = (event as {response?: unknown}).response;
+    if (!response || typeof response !== 'object') {
+        return null;
+    }
+
+    const id = (response as {id?: unknown}).id;
+    return typeof id === 'string' ? id : null;
+}
+
 export function useOpenAIResponsesAdapter(response: OpenAIResponseLike | null): TChatMessage[] {
     return useMemo(() => openAIResponseToMessages(response), [response]);
 }
@@ -45,6 +55,7 @@ export function useOpenAIStreamAdapter(
     const [messages, setMessages] = useState<TChatMessage[]>(initialMessages);
     const [status, setStatus] = useState<OpenAIStreamAdapterResult['status']>('ready');
     const [error, setError] = useState<Error | null>(null);
+    const [responseId, setResponseId] = useState<string | null>(null);
 
     const assistantMessageId = useMemo(() => optionId ?? `assistant-${Date.now()}`, [optionId]);
 
@@ -52,16 +63,30 @@ export function useOpenAIStreamAdapter(
         if (!stream) {
             setStatus('ready');
             setError(null);
+            setResponseId(null);
             return undefined;
         }
 
-        const streamToConsume: AsyncIterable<OpenAIStreamEventLike> = isFetchResponse(stream)
+        const sourceStream: AsyncIterable<OpenAIStreamEventLike> = isFetchResponse(stream)
             ? fetchResponseToStreamEvents(stream)
             : stream;
 
         let cancelled = false;
         setStatus('streaming');
         setError(null);
+        setResponseId(null);
+
+        const streamToConsume: AsyncIterable<OpenAIStreamEventLike> = {
+            async *[Symbol.asyncIterator]() {
+                for await (const event of sourceStream) {
+                    const nextResponseId = getResponseIdFromEvent(event);
+                    if (!cancelled && nextResponseId) {
+                        setResponseId((prev) => (prev === nextResponseId ? prev : nextResponseId));
+                    }
+                    yield event;
+                }
+            },
+        };
 
         const baseMessages = initialMessagesRef.current;
         const getAssistantMessageId = (index: number) =>
@@ -116,5 +141,5 @@ export function useOpenAIStreamAdapter(
         };
     }, [stream, assistantMessageId]);
 
-    return {messages, status, error};
+    return {messages, status, error, responseId};
 }
