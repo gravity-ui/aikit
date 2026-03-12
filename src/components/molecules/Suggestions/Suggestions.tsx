@@ -1,25 +1,15 @@
 import React from 'react';
 
 import {ChevronLeft, ChevronRight} from '@gravity-ui/icons';
-import {ButtonButtonProps, Icon, Text} from '@gravity-ui/uikit';
+import {Icon, Text} from '@gravity-ui/uikit';
 
+import type {SuggestionsItem} from '../../../types/common';
 import {block} from '../../../utils/cn';
-import {ActionButton} from '../../atoms';
+import {ActionButton} from '../../atoms/ActionButton';
 
 import './Suggestions.scss';
 
 const b = block('suggestions');
-
-export type SuggestionsItem = {
-    /** Optional unique identifier for the item */
-    id?: string;
-    /** Title text to display on the button */
-    title: string;
-    /** Button view */
-    view?: ButtonButtonProps['view'];
-    /** Icon position: 'left' for ChevronLeft, 'right' for ChevronRight */
-    icon?: 'left' | 'right';
-};
 
 /**
  * Props for the Suggestions component

@@ -5,7 +5,7 @@ import {Text} from '@gravity-ui/uikit';
 import type {ToolHeaderProps} from '../../../types/tool';
 import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
-import {ActionButton} from '../../atoms';
+import {ActionButton} from '../../atoms/ActionButton';
 import {ButtonGroup} from '../ButtonGroup';
 import {ToolStatus} from '../ToolStatus';
 

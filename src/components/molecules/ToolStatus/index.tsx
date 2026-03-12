@@ -2,7 +2,7 @@ import {Text} from '@gravity-ui/uikit';
 
 import type {TToolStatus as ToolStatusType} from '../../../types/tool';
 import {block} from '../../../utils/cn';
-import {ToolIndicator} from '../../atoms';
+import {ToolIndicator} from '../../atoms/ToolIndicator';
 
 import {i18n} from './i18n';
 

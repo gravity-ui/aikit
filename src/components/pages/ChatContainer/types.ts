@@ -3,9 +3,9 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import {MessageListProps} from 'src/components/organisms/MessageList';
 
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
+import type {SuggestionsItem} from '../../../types/common';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
-import type {SuggestionsItem} from '../../molecules/Suggestions';
 import type {HeaderProps} from '../../organisms/Header';
 import type {PromptInputProps} from '../../organisms/PromptInput';
 import type {ChatContentProps} from '../../templates/ChatContent';

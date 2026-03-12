@@ -1,8 +1,7 @@
-import type {ButtonView} from '@gravity-ui/uikit';
-
 import type {
     BaseMessageAction,
     BaseMessageActionConfig,
+    DefaultMessageAction,
     TAssistantMessage,
     TChatMessage,
     TMessageContent,
@@ -66,14 +65,6 @@ export function hasOnlyThinkingContent<TCustomMessageContent extends TMessageCon
     }
     return parts.every((part) => part.type === 'thinking');
 }
-
-export type DefaultMessageAction<TMessage> = {
-    type?: string;
-    onClick: (message: TMessage) => void;
-    icon?: React.ReactNode;
-    label?: string;
-    view?: ButtonView;
-};
 
 export function resolveMessageActions<
     TMessage extends TChatMessage<TMessageContent, TMessageMetadata>,

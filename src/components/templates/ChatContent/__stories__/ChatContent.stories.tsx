@@ -6,9 +6,8 @@ import {Icon} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {ChatContent} from '..';
-import {BaseMessageActionType} from '../../../../components/molecules/BaseMessage';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import {TChatMessage} from '../../../../types/messages';
+import {BaseMessageActionType, TChatMessage} from '../../../../types/messages';
 
 import MDXDocs from './Docs.mdx';
 

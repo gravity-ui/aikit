@@ -13,9 +13,10 @@ import {
 import {Icon} from '@gravity-ui/uikit';
 
 import type {BaseMessageProps, UserRating} from '../../../types/messages';
+import {BaseMessageActionType} from '../../../types/messages';
 import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
-import {ActionButton} from '../../atoms';
+import {ActionButton} from '../../atoms/ActionButton';
 import {ChatDate} from '../../atoms/ChatDate';
 import {ButtonGroup} from '../ButtonGroup';
 
@@ -24,15 +25,6 @@ import {i18n} from './i18n';
 import './BaseMessage.scss';
 
 const b = block('base-message');
-
-export enum BaseMessageActionType {
-    Copy = 'copy',
-    Edit = 'edit',
-    Retry = 'retry',
-    Like = 'like',
-    Unlike = 'unlike',
-    Delete = 'delete',
-}
 
 export const BaseMessage = (props: BaseMessageProps) => {
     const {

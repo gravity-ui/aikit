@@ -1,7 +1,8 @@
 import {ReactNode} from 'react';
 
+import type {SuggestionsItem} from '../../../types/common';
 import {PromptInputHeaderProps} from '../../molecules/PromptInputHeader';
-import {SuggestionsItem, SuggestionsProps} from '../../molecules/Suggestions';
+import type {SuggestionsProps} from '../../molecules/Suggestions';
 
 /**
  * Props for a panel (top or bottom)

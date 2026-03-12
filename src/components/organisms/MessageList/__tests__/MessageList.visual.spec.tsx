@@ -3,7 +3,7 @@ import React from 'react';
 import {expect, test} from '~playwright/core';
 
 import type {TAssistantMessage, TUserMessage} from '../../../../types/messages';
-import {BaseMessageActionType} from '../../../molecules/BaseMessage';
+import {BaseMessageActionType} from '../../../../types/messages';
 import {MessageList} from '../MessageList';
 
 import {MessageListStories} from './helpersPlaywright';

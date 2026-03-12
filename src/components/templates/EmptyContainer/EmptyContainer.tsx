@@ -3,8 +3,9 @@ import React from 'react';
 import {ArrowRotateRight} from '@gravity-ui/icons';
 import {Button, Text} from '@gravity-ui/uikit';
 
+import type {SuggestionsItem} from '../../../types/common';
 import {block} from '../../../utils/cn';
-import {Suggestions, SuggestionsItem} from '../../molecules/Suggestions';
+import {Suggestions} from '../../molecules/Suggestions';
 
 import {i18n} from './i18n';
 
