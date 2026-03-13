@@ -162,6 +162,44 @@ export const WithLoadMore: Story = {
                 chats={chats}
                 hasMore={hasMore}
                 onLoadMore={handleLoadMore}
+                loadMode="full"
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+const mockChatsForLazy = generateMockChats(45);
+
+export const WithLazyLoadMore: Story = {
+    args: {
+        searchable: true,
+        groupBy: 'date',
+        showActions: true,
+        onSelectChat: (chat) => {
+            // eslint-disable-next-line no-console
+            console.log('Selected chat:', chat);
+        },
+    },
+    render: (args) => {
+        const initialChats = mockChatsForLazy.slice(0, 6);
+
+        const handleLoadMoreLazy = async (offset: number) => {
+            // eslint-disable-next-line no-console
+            console.log('Lazy loading from offset:', offset);
+            await new Promise((r) => setTimeout(r, 500));
+            const newChats = mockChatsForLazy.slice(offset, offset + 6);
+            const hasMore = offset + newChats.length < mockChatsForLazy.length;
+            return {chats: newChats, hasMore};
+        };
+
+        return (
+            <HistoryWithTrigger
+                {...args}
+                chats={initialChats}
+                hasMore={true}
+                onLoadMore={handleLoadMoreLazy}
+                loadMode="lazy"
             />
         );
     },
@@ -340,7 +378,10 @@ export const WithCustomFilter: Story = {
             if (item.type === 'date-header') {
                 return true;
             }
-            return item.name.toLowerCase().includes(filter.toLowerCase());
+            if (item.type === 'chat') {
+                return item.name.toLowerCase().includes(filter.toLowerCase());
+            }
+            return true;
         },
     },
     render: (args) => <HistoryWithTrigger {...args} />,
