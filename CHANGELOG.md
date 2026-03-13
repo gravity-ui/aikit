@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/gravity-ui/aikit/compare/v1.11.0...v1.12.0) (2026-03-13)
+
+
+### Features
+
+* **History:** add lazy mode to load more chats ([1d2e5c8](https://github.com/gravity-ui/aikit/commit/1d2e5c8e60e456f30f447051a22c00c8fdebc84c))
+
 ## [1.11.0](https://github.com/gravity-ui/aikit/compare/v1.10.1...v1.11.0) (2026-03-12)
 
 
