@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/gravity-ui/aikit/compare/v1.10.1...v1.11.0) (2026-03-12)
+
+
+### Features
+
+* **OpenaiAdapter:** response id [DATAUI-3561] ([5fc64a4](https://github.com/gravity-ui/aikit/commit/5fc64a4e896fd8712935ede256f389481e01a4b5))
+
 ## [1.10.1](https://github.com/gravity-ui/aikit/compare/v1.10.0...v1.10.1) (2026-03-10)
 
 
