@@ -168,6 +168,109 @@ const messages = [
 ];
 ```
 
+### With Action Popups
+
+Actions can have associated popups that open when the action button is clicked. This is useful for collecting feedback, confirmations, or any additional information.
+
+```tsx
+import {MessageList, FeedbackForm} from '@gravity-ui/aikit';
+import {ThumbsDown, ThumbsUp} from '@gravity-ui/icons';
+
+const assistantActions = [
+  {
+    type: 'like',
+    icon: <ThumbsUp />,
+    onClick: (message) => {
+      submitRating(message.id, 'like');
+    },
+  },
+  {
+    type: 'unlike',
+    icon: <ThumbsDown />,
+    onClick: (message) => {
+      submitRating(message.id, 'dislike');
+    },
+    popup: {
+      title: 'What went wrong?',
+      placement: 'bottom-start',
+      getContent: (message, {setContent, closePopup}) => {
+        const handleSubmit = (reasons: string[], comment: string) => {
+          // Submit feedback
+          submitFeedback(message.id, reasons, comment);
+
+          // Update popup content to show success
+          setContent(
+            <div style={{padding: '16px', textAlign: 'center'}}>
+              <Text>Thank you for your feedback!</Text>
+            </div>,
+          );
+
+          // Auto-close after 2 seconds
+          setTimeout(closePopup, 2000);
+        };
+
+        return (
+          <FeedbackForm
+            options={[
+              {id: 'no-answer', label: 'No answer'},
+              {id: 'wrong-info', label: 'Wrong information'},
+              {id: 'not-helpful', label: 'Not helpful'},
+              {id: 'other', label: 'Other'},
+            ]}
+            onSubmit={handleSubmit}
+            commentPlaceholder="Tell us more..."
+            submitLabel="Submit"
+          />
+        );
+      },
+    },
+  },
+];
+
+<MessageList
+  messages={messages}
+  assistantActions={assistantActions}
+  actionPopupProps={{
+    placement: 'bottom-start', // Default placement for all popups
+    className: 'custom-popup',
+  }}
+/>;
+```
+
+**Popup Context API:**
+
+The `getContent` function receives a context object with the following methods:
+
+- `setContent(newContent: React.ReactNode)` — Update popup content without closing it (useful for form → success state transitions)
+- `setTitle(title: string | undefined)` — Update popup title dynamically (pass `undefined` to hide)
+- `setSubtitle(subtitle: string | undefined)` — Update popup subtitle dynamically (pass `undefined` to hide)
+- `closePopup()` — Programmatically close the popup
+
+**ActionPopup Configuration:**
+
+```typescript
+popup?: {
+  getContent: (message, context) => React.ReactNode;  // Function that returns popup content
+  title?: string;                                     // Optional popup title
+  subtitle?: string;                                  // Optional popup subtitle
+  placement?: PopupPlacement;                         // Popup placement (default: 'bottom-start')
+}
+```
+
+**Global Popup Configuration:**
+
+Use `actionPopupProps` to set global defaults for all action popups:
+
+```typescript
+actionPopupProps?: {
+  title?: string;           // Override title for all popups
+  subtitle?: string;        // Override subtitle for all popups
+  placement?: PopupPlacement;  // Override placement for all popups
+  className?: string;       // Additional CSS class for all popups
+  qa?: string;              // QA/test identifier for all popups
+}
+```
+
 ### With Custom Loader Statuses
 
 By default, the loader is displayed when `status` is `'submitted'`. You can customize which statuses show the loader:
@@ -187,19 +290,21 @@ import {MessageList} from '@/components/organisms';
 
 ## Props
 
-| Prop                      | Type                                                             | Required | Default         | Description                                                                                                 |
-| ------------------------- | ---------------------------------------------------------------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| `messages`                | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -               | Array of messages to render                                                                                 |
-| `status`                  | `ChatStatus`                                                     | -        | -               | Current chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'`                               |
-| `errorMessage`            | `AlertProps`                                                     | -        | -               | Error message to display when status is `'error'`                                                           |
-| `onRetry`                 | `() => void`                                                     | -        | -               | Callback when user clicks retry button in error state                                                       |
-| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -               | Custom message renderer registry                                                                            |
-| `transformOptions`        | `OptionsType`                                                    | -        | -               | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                  |
-| `showActionsOnHover`      | `boolean`                                                        | -        | -               | Show message actions on hover                                                                               |
-| `showTimestamp`           | `boolean`                                                        | -        | -               | Show message timestamp                                                                                      |
-| `showAvatar`              | `boolean`                                                        | -        | -               | Show avatar for user messages                                                                               |
-| `userActions`             | `DefaultMessageAction<TUserMessage>[]`                           | -        | -               | Array of default actions for user messages. Each action's onClick receives the message as a parameter.      |
-| `assistantActions`        | `DefaultMessageAction<TAssistantMessage>[]`                      | -        | -               | Array of default actions for assistant messages. Each action's onClick receives the message as a parameter. |
-| `loaderStatuses`          | `ChatStatus[]`                                                   | -        | `['submitted']` | Array of chat statuses that should display the loader                                                       |
-| `className`               | `string`                                                         | -        | -               | Additional CSS class                                                                                        |
-| `qa`                      | `string`                                                         | -        | -               | QA/test identifier                                                                                          |
+| Prop                      | Type                                                             | Required | Default         | Description                                                                                                                                   |
+| ------------------------- | ---------------------------------------------------------------- | -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `messages`                | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -               | Array of messages to render                                                                                                                   |
+| `status`                  | `ChatStatus`                                                     | -        | -               | Current chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'`                                                                 |
+| `errorMessage`            | `AlertProps`                                                     | -        | -               | Error message to display when status is `'error'`                                                                                             |
+| `onRetry`                 | `() => void`                                                     | -        | -               | Callback when user clicks retry button in error state                                                                                         |
+| `messageRendererRegistry` | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -               | Custom message renderer registry                                                                                                              |
+| `transformOptions`        | `OptionsType`                                                    | -        | -               | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                    |
+| `showActionsOnHover`      | `boolean`                                                        | -        | -               | Show message actions on hover                                                                                                                 |
+| `showTimestamp`           | `boolean`                                                        | -        | -               | Show message timestamp                                                                                                                        |
+| `showAvatar`              | `boolean`                                                        | -        | -               | Show avatar for user messages                                                                                                                 |
+| `userActions`             | `DefaultMessageAction<TUserMessage>[]`                           | -        | -               | Array of default actions for user messages. Each action's onClick receives the message as a parameter. Actions can include popup config.      |
+| `assistantActions`        | `DefaultMessageAction<TAssistantMessage>[]`                      | -        | -               | Array of default actions for assistant messages. Each action's onClick receives the message as a parameter. Actions can include popup config. |
+| `loaderStatuses`          | `ChatStatus[]`                                                   | -        | `['submitted']` | Array of chat statuses that should display the loader                                                                                         |
+| `ratingBlockProps`        | `RatingBlockProps`                                               | -        | -               | Rating block configuration (for CSAT or other feedback use cases) - renders after messages list                                               |
+| `actionPopupProps`        | `MessageListActionPopupConfig`                                   | -        | -               | Global configuration for action popups (title, subtitle, placement, className, qa)                                                            |
+| `className`               | `string`                                                         | -        | -               | Additional CSS class                                                                                                                          |
+| `qa`                      | `string`                                                         | -        | -               | QA/test identifier                                                                                                                            |

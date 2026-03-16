@@ -1,11 +1,42 @@
 import type React from 'react';
 
-import type {ButtonView} from '@gravity-ui/uikit';
+import type {ButtonView, PopupPlacement} from '@gravity-ui/uikit';
 
 import {ActionConfig} from './common';
 import {ToolMessageProps} from './tool';
 
-export type BaseMessageActionConfig = ActionConfig;
+/**
+ * Context object passed to popup content generator function
+ */
+export interface ActionPopupContext {
+    /** Update popup content without closing it */
+    setContent: (content: React.ReactNode) => void;
+    /** Update popup title dynamically */
+    setTitle: (title: string | undefined) => void;
+    /** Update popup subtitle dynamically */
+    setSubtitle: (subtitle: string | undefined) => void;
+    /** Programmatically close the popup */
+    closePopup: () => void;
+}
+
+/**
+ * Configuration for action popup
+ */
+export interface ActionPopupConfig<TMessage> {
+    /** Function that generates popup content */
+    getContent: (message: TMessage, context: ActionPopupContext) => React.ReactNode;
+    /** Optional popup title (can be overridden by actionPopupProps) */
+    title?: string;
+    /** Optional popup subtitle (can be overridden by actionPopupProps) */
+    subtitle?: string;
+    /** Optional popup placement (can be overridden by actionPopupProps) */
+    placement?: PopupPlacement;
+}
+
+export type BaseMessageActionConfig = ActionConfig & {
+    /** Optional popup configuration for this action */
+    popup?: ActionPopupConfig<any>;
+};
 
 /**
  * BaseMessage action can be either:
@@ -35,6 +66,8 @@ export type DefaultMessageAction<TMessage> = {
     icon?: React.ReactNode;
     label?: string;
     view?: ButtonView;
+    /** Optional popup configuration for this action */
+    popup?: ActionPopupConfig<TMessage>;
 };
 
 export type BaseMessageProps = {
@@ -47,6 +80,8 @@ export type BaseMessageProps = {
     showActionsOnHover?: boolean;
     className?: string;
     qa?: string;
+    /** Callback when action with popup config is clicked */
+    onActionPopup?: (action: BaseMessageActionConfig, anchorElement: HTMLElement) => void;
 };
 
 export type TMessageMetadata = Record<string, unknown>;

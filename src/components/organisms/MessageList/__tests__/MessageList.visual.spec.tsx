@@ -313,4 +313,81 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         // Rating block should still be visible (sticky behavior)
         await expect(ratingBlock).toBeVisible();
     });
+
+    test.describe('action popups', () => {
+        test('should open feedback popup on dislike click', async ({mount, page}) => {
+            await mount(<MessageListStories.WithFeedbackPopup />);
+
+            await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+            await expect(page.getByText('No answer')).toBeVisible();
+        });
+
+        test('should render feedback popup screenshot', async ({mount, page, expectScreenshot}) => {
+            await mount(<MessageListStories.WithFeedbackPopup />);
+
+            await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
+
+            await expectScreenshot();
+        });
+
+        test('should transition popup to thank you after feedback submit', async ({
+            mount,
+            page,
+        }) => {
+            await mount(<MessageListStories.WithFeedbackPopup />);
+
+            await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
+            // Select a reason and submit
+            await page.getByText('No answer').click();
+            await page.getByRole('button', {name: /submit/i}).click();
+
+            // Popup stays open, content changes to thank you, title is gone
+            await expect(page.getByText('Thank you for your feedback!')).toBeVisible();
+            await expect(page.getByText('What went wrong?')).not.toBeVisible();
+        });
+
+        test('should close popup when clicking outside', async ({mount, page}) => {
+            await mount(<MessageListStories.WithFeedbackPopup />);
+
+            await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
+            await page.mouse.click(10, 10);
+
+            await expect(page.getByText('What went wrong?')).not.toBeVisible();
+        });
+
+        test('should open different popups for different actions in WithMultipleActionPopups', async ({
+            mount,
+            page,
+        }) => {
+            await mount(<MessageListStories.WithMultipleActionPopups />);
+
+            const actions = page.locator('.g-aikit-base-message__actions').getByRole('button');
+
+            // Click Like (first action) — popup with "What did you like?"
+            await actions.nth(0).click();
+            await expect(page.getByText('What did you like?')).toBeVisible();
+
+            // Close by clicking outside
+            await page.mouse.click(10, 10);
+            await expect(page.getByText('What did you like?')).not.toBeVisible();
+
+            // Click Dislike (second action) — popup with "What went wrong?"
+            await actions.nth(1).click();
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
+            await page.mouse.click(10, 10);
+
+            // Click Report (third action) — popup with "Report issue"
+            await actions.nth(2).click();
+            await expect(page.getByText('Report issue')).toBeVisible();
+        });
+    });
 });

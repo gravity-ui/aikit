@@ -15,6 +15,8 @@ import type {
     TSubmitData,
 } from '../../../../types';
 import {BaseMessageActionType} from '../../../../types/messages';
+import type {ActionPopupContext, DefaultMessageAction} from '../../../../types/messages';
+import {FeedbackForm} from '../../../molecules/FeedbackForm';
 
 import MDXDocs from './Docs.mdx';
 
@@ -1726,6 +1728,136 @@ export const WithRatingBlockDynamicScenarios: Story = {
                 }}
                 headerProps={{
                     title: 'Rating Block Dynamic Scenarios Demo',
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithActionPopup: Story = {
+    render: () => {
+        const [messages, setMessages] = useState<TChatMessage[]>([
+            {
+                id: '1',
+                role: 'user',
+                content: 'What is machine learning?',
+                timestamp: new Date(Date.now() - 120000).toISOString(),
+            },
+            {
+                id: '2',
+                role: 'assistant',
+                content:
+                    'Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience without being explicitly programmed.',
+                timestamp: new Date(Date.now() - 60000).toISOString(),
+            },
+        ]);
+        const [status, setStatus] = useState<ChatStatus>('ready');
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const userMessage: TChatMessage = {
+                id: Date.now().toString(),
+                role: 'user',
+                content: data.content,
+                timestamp: new Date().toISOString(),
+            };
+
+            setMessages((prev) => [...prev, userMessage]);
+            setStatus('streaming');
+
+            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            const assistantMessageId = (Date.now() + 1).toString();
+            const assistantMessage: TChatMessage = {
+                id: assistantMessageId,
+                role: 'assistant',
+                content: `Response to: "${data.content}"`,
+                timestamp: new Date().toISOString(),
+            };
+
+            setMessages((prev) => [...prev, assistantMessage]);
+            setStatus('ready');
+        };
+
+        const assistantActions: DefaultMessageAction<TAssistantMessage>[] = [
+            {
+                type: BaseMessageActionType.Copy,
+                onClick: (message) => {
+                    const content =
+                        typeof message.content === 'string'
+                            ? message.content
+                            : JSON.stringify(message.content);
+                    navigator.clipboard.writeText(content);
+                    console.log('Copied message:', message.id);
+                },
+            },
+            {
+                type: BaseMessageActionType.Like,
+                onClick: (message) => {
+                    console.log('Like message:', message.id);
+                },
+            },
+            {
+                type: BaseMessageActionType.Unlike,
+                onClick: (message) => {
+                    console.log('Dislike message:', message.id);
+                },
+                popup: {
+                    title: 'What went wrong?',
+                    placement: 'bottom-start',
+                    getContent: (
+                        message: TAssistantMessage,
+                        context: ActionPopupContext,
+                    ): React.ReactNode => {
+                        const {setContent, setTitle, setSubtitle, closePopup} = context;
+
+                        const handleSubmit = (reasons: string[], comment: string) => {
+                            console.log('Feedback submitted:', {
+                                messageId: message.id,
+                                reasons,
+                                comment,
+                            });
+                            setTitle(undefined);
+                            setSubtitle(undefined);
+                            setContent(
+                                <div>
+                                    <p style={{margin: 0}}>Thank you for your feedback!</p>
+                                </div>,
+                            );
+                            setTimeout(() => {
+                                closePopup();
+                            }, 2000);
+                        };
+
+                        return (
+                            <FeedbackForm
+                                options={[
+                                    {id: 'no-answer', label: 'No answer'},
+                                    {id: 'wrong-info', label: 'Wrong info'},
+                                    {id: 'not-helpful', label: 'Not helpful'},
+                                    {id: 'other', label: 'Other'},
+                                ]}
+                                commentPlaceholder="Tell us more..."
+                                submitLabel="Submit"
+                                onSubmit={handleSubmit}
+                                qa="feedback-form"
+                            />
+                        );
+                    },
+                },
+            },
+        ];
+
+        return (
+            <ChatContainer
+                messages={messages}
+                status={status}
+                onSendMessage={handleSendMessage}
+                messageListConfig={{
+                    assistantActions,
+                }}
+                headerProps={{
+                    title: 'Action Popup Demo',
                 }}
             />
         );
