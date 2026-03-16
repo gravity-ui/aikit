@@ -84,7 +84,7 @@ test.describe('FeedbackForm', {tag: '@FeedbackForm'}, () => {
     test('should toggle reason selection', async ({mount, page}) => {
         await mount(<FeedbackFormStories.Playground />);
 
-        const reason = page.getByText('No answer');
+        const reason = page.getByRole('button', {name: 'No answer'});
 
         await reason.click();
         await expect(reason).toHaveAttribute('aria-pressed', 'true');

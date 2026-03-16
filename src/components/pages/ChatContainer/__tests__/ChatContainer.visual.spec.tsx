@@ -401,4 +401,68 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         // Rating block should still be visible after response
         await expect(ratingBlock).toBeVisible();
     });
+
+    test.describe('action popup', () => {
+        test('should open feedback popup on dislike click', async ({mount, page}) => {
+            await mount(<ChatContainerStories.WithActionPopup />);
+
+            const assistantMessage = page.locator('.g-aikit-assistant-message').last();
+            await assistantMessage.hover();
+
+            const actionsContainer = assistantMessage.locator('.g-aikit-base-message__actions');
+            const unlikeButton = actionsContainer.getByRole('button').nth(2);
+            await unlikeButton.click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+            await expect(page.getByText('No answer')).toBeVisible();
+        });
+
+        test('should render feedback popup screenshot', async ({mount, page, expectScreenshot}) => {
+            await mount(<ChatContainerStories.WithActionPopup />);
+
+            const assistantMessage = page.locator('.g-aikit-assistant-message').last();
+            await assistantMessage.hover();
+
+            const actionsContainer = assistantMessage.locator('.g-aikit-base-message__actions');
+            await actionsContainer.getByRole('button').nth(2).click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
+            await expectScreenshot({component: page.locator('.content-wrapper')});
+        });
+
+        test('should submit feedback and show thank you', async ({mount, page}) => {
+            await mount(<ChatContainerStories.WithActionPopup />);
+
+            const assistantMessage = page.locator('.g-aikit-assistant-message').last();
+            await assistantMessage.hover();
+
+            const actionsContainer = assistantMessage.locator('.g-aikit-base-message__actions');
+            await actionsContainer.getByRole('button').nth(2).click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
+            await page.getByRole('button', {name: 'No answer'}).click();
+            await page.getByRole('button', {name: /submit/i}).click();
+
+            await expect(page.getByText('Thank you for your feedback!')).toBeVisible();
+            await expect(page.getByText('What went wrong?')).not.toBeVisible();
+        });
+
+        test('should close popup on Escape', async ({mount, page}) => {
+            await mount(<ChatContainerStories.WithActionPopup />);
+
+            const assistantMessage = page.locator('.g-aikit-assistant-message').last();
+            await assistantMessage.hover();
+
+            const actionsContainer = assistantMessage.locator('.g-aikit-base-message__actions');
+            await actionsContainer.getByRole('button').nth(2).click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
+            await page.keyboard.press('Escape');
+
+            await expect(page.getByText('What went wrong?')).not.toBeVisible();
+        });
+    });
 });

@@ -5,36 +5,36 @@ import {expect, test} from '~playwright/core';
 import {ActionPopupStories} from './helpersPlaywright';
 
 test.describe('ActionPopup', {tag: '@ActionPopup'}, () => {
-    test('should render playground state', async ({mount, expectScreenshot}) => {
+    test('should render playground state', async ({mount, page, expectScreenshot}) => {
         await mount(<ActionPopupStories.Playground />);
 
-        await mount.getByRole('button', {name: 'Open Popup'}).click();
+        await page.getByRole('button', {name: 'Open Popup'}).click();
 
-        await expectScreenshot();
+        await expectScreenshot({component: page.locator('.g-aikit-action-popup')});
     });
 
-    test('should render with title only', async ({mount, expectScreenshot}) => {
+    test('should render with title only', async ({mount, page, expectScreenshot}) => {
         await mount(<ActionPopupStories.WithTitleOnly />);
 
-        await mount.getByRole('button', {name: 'Open Popup'}).click();
+        await page.getByRole('button', {name: 'Open Popup'}).click();
 
-        await expectScreenshot();
+        await expectScreenshot({component: page.locator('.g-aikit-action-popup')});
     });
 
-    test('should render with title and subtitle', async ({mount, expectScreenshot}) => {
+    test('should render with title and subtitle', async ({mount, page, expectScreenshot}) => {
         await mount(<ActionPopupStories.WithTitleAndSubtitle />);
 
-        await mount.getByRole('button', {name: 'Open Popup'}).click();
+        await page.getByRole('button', {name: 'Open Popup'}).click();
 
-        await expectScreenshot();
+        await expectScreenshot({component: page.locator('.g-aikit-action-popup')});
     });
 
-    test('should render without title or subtitle', async ({mount, expectScreenshot}) => {
+    test('should render without title or subtitle', async ({mount, page, expectScreenshot}) => {
         await mount(<ActionPopupStories.WithoutTitleOrSubtitle />);
 
-        await mount.getByRole('button', {name: 'Open Popup'}).click();
+        await page.getByRole('button', {name: 'Open Popup'}).click();
 
-        await expectScreenshot();
+        await expectScreenshot({component: page.locator('.g-aikit-action-popup')});
     });
 
     test('should not show close button when there is no title or subtitle', async ({
@@ -43,36 +43,36 @@ test.describe('ActionPopup', {tag: '@ActionPopup'}, () => {
     }) => {
         await mount(<ActionPopupStories.WithoutTitleOrSubtitle />);
 
-        await mount.getByRole('button', {name: 'Open Popup'}).click();
+        await page.getByRole('button', {name: 'Open Popup'}).click();
 
         const closeButton = page.getByRole('button', {name: /close|закрыть/i});
         await expect(closeButton).not.toBeVisible();
     });
 
-    test('should render with form content', async ({mount, expectScreenshot}) => {
+    test('should render with form content', async ({mount, page, expectScreenshot}) => {
         await mount(<ActionPopupStories.WithFormContent />);
 
-        await mount.getByRole('button', {name: 'Open Popup'}).click();
+        await page.getByRole('button', {name: 'Open Popup'}).click();
 
-        await expectScreenshot();
+        await expectScreenshot({component: page.locator('.g-aikit-action-popup')});
     });
 
     test('should close when close button clicked', async ({mount, page}) => {
         await mount(<ActionPopupStories.WithTitleOnly />);
 
-        const openButton = page.getByRole('button', {name: 'Open Popup'});
-        await openButton.click();
+        await page.getByRole('button', {name: 'Open Popup'}).click();
 
         await expect(page.getByText('What went wrong?')).toBeVisible();
 
-        const closeButton = page.getByRole('button', {name: /close|закрыть/i});
-        await closeButton.click();
+        await page.getByRole('button', {name: /close|закрыть/i}).click();
 
         await expect(page.getByText('What went wrong?')).not.toBeVisible();
     });
 
-    test('should handle different placements', async ({mount, expectScreenshot}) => {
+    test('should handle different placements', async ({mount, page, expectScreenshot}) => {
         await mount(<ActionPopupStories.DifferentPlacements />);
+
+        await page.getByRole('button', {name: 'Bottom'}).click();
 
         await expectScreenshot();
     });
@@ -82,13 +82,10 @@ test.describe('ActionPopup', {tag: '@ActionPopup'}, () => {
 
         await page.getByRole('button', {name: /Open/i}).click();
 
-        // Popup is open with the form
         await expect(page.getByText('Some feedback content here.')).toBeVisible();
 
-        // Click submit — content changes in-place
-        await page.getByRole('button', {name: 'Submit'}).click();
+        await page.getByRole('button', {name: 'Submit', exact: true}).click();
 
-        // Popup stays open, title is gone, new content shown
         await expect(page.getByText(/Thank you/i)).toBeVisible();
         await expect(page.getByText('What went wrong?')).not.toBeVisible();
     });
@@ -101,15 +98,12 @@ test.describe('ActionPopup', {tag: '@ActionPopup'}, () => {
 
         await page.getByRole('button', {name: 'Open Feedback Form'}).click();
 
-        // Feedback form is visible
         await expect(page.getByText('What went wrong?')).toBeVisible();
         await expect(page.getByText('No answer')).toBeVisible();
 
-        // Select a reason and submit
-        await page.getByText('No answer').click();
-        await page.getByRole('button', {name: /submit/i}).click();
+        await page.getByRole('button', {name: 'No answer'}).click();
+        await page.getByRole('button', {name: 'Submit', exact: true}).click();
 
-        // Content transitions to thank you, title disappears
         await expect(page.getByText('Thank you for your feedback!')).toBeVisible();
         await expect(page.getByText('What went wrong?')).not.toBeVisible();
     });

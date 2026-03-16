@@ -329,6 +329,8 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
             await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
 
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
             await expectScreenshot();
         });
 
@@ -342,11 +344,9 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
             await expect(page.getByText('What went wrong?')).toBeVisible();
 
-            // Select a reason and submit
             await page.getByText('No answer').click();
             await page.getByRole('button', {name: /submit/i}).click();
 
-            // Popup stays open, content changes to thank you, title is gone
             await expect(page.getByText('Thank you for your feedback!')).toBeVisible();
             await expect(page.getByText('What went wrong?')).not.toBeVisible();
         });
@@ -358,7 +358,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
             await expect(page.getByText('What went wrong?')).toBeVisible();
 
-            await page.mouse.click(10, 10);
+            await page.keyboard.press('Escape');
 
             await expect(page.getByText('What went wrong?')).not.toBeVisible();
         });
@@ -371,21 +371,17 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
 
             const actions = page.locator('.g-aikit-base-message__actions').getByRole('button');
 
-            // Click Like (first action) — popup with "What did you like?"
             await actions.nth(0).click();
             await expect(page.getByText('What did you like?')).toBeVisible();
 
-            // Close by clicking outside
-            await page.mouse.click(10, 10);
+            await page.keyboard.press('Escape');
             await expect(page.getByText('What did you like?')).not.toBeVisible();
 
-            // Click Dislike (second action) — popup with "What went wrong?"
             await actions.nth(1).click();
             await expect(page.getByText('What went wrong?')).toBeVisible();
 
-            await page.mouse.click(10, 10);
+            await page.keyboard.press('Escape');
 
-            // Click Report (third action) — popup with "Report issue"
             await actions.nth(2).click();
             await expect(page.getByText('Report issue')).toBeVisible();
         });
