@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.0](https://github.com/gravity-ui/aikit/compare/v1.13.0...v1.14.0) (2026-03-17)
+
+
+### Features
+
+* add method for fetch all conv items ([6e81c01](https://github.com/gravity-ui/aikit/commit/6e81c01b394d69ff0499c664803f4b9f35f031fd))
+* make model and agent public ([f32c82e](https://github.com/gravity-ui/aikit/commit/f32c82ed2630dc1c9f66715816dee1de0d8ad899))
+
 ## [1.13.0](https://github.com/gravity-ui/aikit/compare/v1.12.0...v1.13.0) (2026-03-17)
 
 
