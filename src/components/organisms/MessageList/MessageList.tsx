@@ -3,6 +3,7 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import {useScrollPreservation, useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
 import type {
+    DefaultMessageAction,
     TAssistantMessage,
     TChatMessage,
     TMessageContent,
@@ -10,7 +11,6 @@ import type {
     TUserMessage,
 } from '../../../types/messages';
 import {
-    type DefaultMessageAction,
     hasOnlyThinkingContent,
     isAssistantMessage,
     isUserMessage,

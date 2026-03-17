@@ -14,8 +14,8 @@ import {Action} from 'src/types';
 
 import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
-import {ActionButton} from '../../atoms';
-import {ButtonGroup} from '../../molecules';
+import {ActionButton} from '../../atoms/ActionButton';
+import {ButtonGroup} from '../../molecules/ButtonGroup';
 
 import {i18n} from './i18n';
 import {HeaderAction, type HeaderProps} from './types';

@@ -5,7 +5,8 @@ import {Button, Text} from '@gravity-ui/uikit';
 import type {ToolFooterProps} from '../../../types';
 import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
-import {Loader, Shimmer} from '../../atoms';
+import {Loader} from '../../atoms/Loader';
+import {Shimmer} from '../../atoms/Shimmer';
 import {ButtonGroup} from '../ButtonGroup';
 
 import './ToolFooter.scss';

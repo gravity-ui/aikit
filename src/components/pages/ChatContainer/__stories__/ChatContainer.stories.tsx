@@ -14,7 +14,7 @@ import type {
     TChatMessage,
     TSubmitData,
 } from '../../../../types';
-import {BaseMessageActionType} from '../../../molecules/BaseMessage';
+import {BaseMessageActionType} from '../../../../types/messages';
 
 import MDXDocs from './Docs.mdx';
 

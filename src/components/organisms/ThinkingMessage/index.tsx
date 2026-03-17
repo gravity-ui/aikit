@@ -5,7 +5,7 @@ import {Button, DOMProps, Icon, QAProps, Text} from '@gravity-ui/uikit';
 
 import type {ThinkingMessageContentData} from '../../../types/messages';
 import {block} from '../../../utils/cn';
-import {ActionButton} from '../../atoms';
+import {ActionButton} from '../../atoms/ActionButton';
 import {Loader} from '../../atoms/Loader';
 
 import {useThinkingMessage} from './useThinkingMessage';

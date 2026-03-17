@@ -1,7 +1,7 @@
 import {useMemo, useRef} from 'react';
 
 import transform from '@diplodoc/transform';
-import '@diplodoc/transform/dist/js/yfm';
+import '@diplodoc/transform/dist/js/yfm.js';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {areOptionsEqual} from '../utils/markdownUtils';

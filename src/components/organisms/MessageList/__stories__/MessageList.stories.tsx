@@ -9,13 +9,13 @@ import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 import type {TAssistantMessage, TMessageContent, TUserMessage} from '../../../../types/messages';
+import {BaseMessageActionType} from '../../../../types/messages';
 import {
     type MessageContentComponentProps,
     type MessageRendererRegistry,
     createMessageRendererRegistry,
     registerMessageRenderer,
 } from '../../../../utils/messageTypeRegistry';
-import {BaseMessageActionType} from '../../../molecules/BaseMessage';
 
 import MDXDocs from './Docs.mdx';
 

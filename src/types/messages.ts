@@ -1,5 +1,7 @@
 import type React from 'react';
 
+import type {ButtonView} from '@gravity-ui/uikit';
+
 import {ActionConfig} from './common';
 import {ToolMessageProps} from './tool';
 
@@ -13,6 +15,27 @@ export type BaseMessageActionConfig = ActionConfig;
 export type BaseMessageAction = BaseMessageActionConfig | React.ReactNode;
 
 export type UserRating = 'like' | 'dislike';
+
+export enum BaseMessageActionType {
+    Copy = 'copy',
+    Edit = 'edit',
+    Retry = 'retry',
+    Like = 'like',
+    Unlike = 'unlike',
+    Delete = 'delete',
+}
+
+/**
+ * Default action descriptor for message action buttons.
+ * Generic over the message type to provide typed onClick handler.
+ */
+export type DefaultMessageAction<TMessage> = {
+    type?: string;
+    onClick: (message: TMessage) => void;
+    icon?: React.ReactNode;
+    label?: string;
+    view?: ButtonView;
+};
 
 export type BaseMessageProps = {
     children: React.ReactNode;
