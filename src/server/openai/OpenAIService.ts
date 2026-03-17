@@ -31,8 +31,8 @@ type SummarizeConversationPayload =
 checkOpenaiPackage();
 
 export class OpenAIService extends OpenAI {
-    private model?: string;
-    private agent?: string;
+    model?: string;
+    agent?: string;
 
     constructor(options: ClientOptions & ExtraClientOptions) {
         super(options);
