@@ -31,8 +31,8 @@ type SummarizeConversationPayload =
 checkOpenaiPackage();
 
 export class OpenAIService extends OpenAI {
-    private model?: string;
-    private agent?: string;
+    model?: string;
+    agent?: string;
 
     constructor(options: ClientOptions & ExtraClientOptions) {
         super(options);
@@ -60,7 +60,17 @@ export class OpenAIService extends OpenAI {
         return responseStream;
     }
 
-    async summarizeConversationTitle(summarizePayload: SummarizeConversationPayload) {
+    async getAllConvItems(convId: string, fetchBy = 100, order: 'asc' | 'desc' = 'asc') {
+        const allConvItems: OpenAI.Conversations.Items.ConversationItem[] = [];
+
+        for await (const items of this.iterateByConvItems(convId, fetchBy, order)) {
+            allConvItems.push(...items);
+        }
+
+        return allConvItems;
+    }
+
+    async summarizeConvTitle(summarizePayload: SummarizeConversationPayload) {
         const {conversation, joinItems, promptForSummarization} = summarizePayload;
 
         let order: 'asc' | 'desc' = 'asc';
@@ -148,5 +158,23 @@ export class OpenAIService extends OpenAI {
         if (this.agent) return {agent: this.agent};
 
         return undefined;
+    }
+
+    private async *iterateByConvItems(convId: string, fetchBy: number, order: 'asc' | 'desc') {
+        let after: string | undefined;
+
+        while (true) {
+            const page = await this.conversations.items.list(convId, {
+                limit: fetchBy,
+                after,
+                order,
+            });
+
+            yield page.data;
+
+            if (!page.has_more) return;
+
+            after = page.data[page.data.length - 1]?.id;
+        }
     }
 }
