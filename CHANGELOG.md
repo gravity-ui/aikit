@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/gravity-ui/aikit/compare/v1.12.0...v1.13.0) (2026-03-17)
+
+
+### Features
+
+* **build:** add esm build ([3658a4e](https://github.com/gravity-ui/aikit/commit/3658a4e116a857ee16d5ecd87999499765834a4a))
+
 ## [1.12.0](https://github.com/gravity-ui/aikit/compare/v1.11.0...v1.12.0) (2026-03-13)
 
 
