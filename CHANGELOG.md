@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/gravity-ui/aikit/compare/v1.14.0...v1.14.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* add pass metadata to summarize OpenAIService ([abe816b](https://github.com/gravity-ui/aikit/commit/abe816bd0597306c7f5d71641b0a3a2109f659ee))
+
 ## [1.14.0](https://github.com/gravity-ui/aikit/compare/v1.13.0...v1.14.0) (2026-03-17)
 
 
