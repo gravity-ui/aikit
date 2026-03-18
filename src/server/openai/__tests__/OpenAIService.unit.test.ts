@@ -163,6 +163,7 @@ describe('OpenAIService', () => {
                         type: 'message',
                     },
                 ],
+                metadata: {agent: testAgent},
             });
         });
 
@@ -212,6 +213,7 @@ describe('OpenAIService', () => {
                         ],
                     }),
                 ]),
+                metadata: {agent: testAgent},
             });
         });
 
@@ -278,6 +280,104 @@ describe('OpenAIService', () => {
                             ],
                         }),
                     ]),
+                }),
+            );
+        });
+
+        it('summarizeConvTitle() should pass correct metadata to responses.create', async () => {
+            const service = new OpenAIService({
+                apiKey: testApiKey,
+                model: testModel,
+                agent: testAgent,
+            });
+
+            service.responses.create = jest.fn().mockResolvedValueOnce({
+                output: [
+                    {
+                        type: 'message',
+                        content: [{type: 'output_text', text: 'SUMMARIZED_TITLE'}],
+                    },
+                ],
+            });
+
+            const customMetadata = {
+                customKey: 'customValue',
+                anotherKey: 'anotherValue',
+            };
+
+            const summarizePayload = {
+                conversation: 'test-conversation-id',
+                byLastItems: 5,
+                metadata: customMetadata,
+            };
+
+            await service.summarizeConvTitle(summarizePayload);
+
+            // Check that responses.create was called with the custom metadata
+            expect(service.responses.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    metadata: customMetadata,
+                }),
+            );
+        });
+
+        it('summarizeConvTitle() should use agent metadata when no metadata is provided', async () => {
+            const service = new OpenAIService({
+                apiKey: testApiKey,
+                model: testModel,
+                agent: testAgent,
+            });
+
+            service.responses.create = jest.fn().mockResolvedValueOnce({
+                output: [
+                    {
+                        type: 'message',
+                        content: [{type: 'output_text', text: 'SUMMARIZED_TITLE'}],
+                    },
+                ],
+            });
+
+            const summarizePayload = {
+                conversation: 'test-conversation-id',
+                byFirstItems: 5,
+            };
+
+            await service.summarizeConvTitle(summarizePayload);
+
+            // Check that responses.create was called with agent metadata
+            expect(service.responses.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    metadata: {agent: testAgent},
+                }),
+            );
+        });
+
+        it('summarizeConvTitle() should not include metadata when no metadata and no agent', async () => {
+            const service = new OpenAIService({
+                apiKey: testApiKey,
+                model: testModel,
+            });
+
+            service.responses.create = jest.fn().mockResolvedValueOnce({
+                output: [
+                    {
+                        type: 'message',
+                        content: [{type: 'output_text', text: 'SUMMARIZED_TITLE'}],
+                    },
+                ],
+            });
+
+            const summarizePayload = {
+                conversation: 'test-conversation-id',
+                byLastItems: 3,
+            };
+
+            await service.summarizeConvTitle(summarizePayload);
+
+            // Check that responses.create was called without metadata
+            expect(service.responses.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    metadata: undefined,
                 }),
             );
         });
