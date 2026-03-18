@@ -18,6 +18,7 @@ type BaseSummarizePayload = {
     conversation: string;
     promptForSummarization?: string;
     joinItems?: (items: ConversationItemsPage) => string;
+    metadata?: ResponseCreateParamsBase['metadata'];
 };
 
 type SummarizeConversationPayload =
@@ -46,7 +47,7 @@ export class OpenAIService extends OpenAI {
     }
 
     async createResponseStream(payload: ResponseCreateParamsBase) {
-        const metadata = this.getMetadataForResponseStream(payload.metadata);
+        const metadata = this.getMetadataForResponse(payload.metadata);
 
         const stream = await this.responses.create({
             model: this.model,
@@ -101,6 +102,8 @@ export class OpenAIService extends OpenAI {
         const systemPrompt = promptForSummarization ?? BASE_PROMPT_FOR_SUMMARIZATION;
         const userPrompt = `Create a short title for this conversation:\n\n${conversationContext}`;
 
+        const metadata = this.getMetadataForResponse(summarizePayload.metadata);
+
         const response = await this.responses.create({
             model: this.model,
             input: [
@@ -127,6 +130,7 @@ export class OpenAIService extends OpenAI {
                     type: 'message',
                 },
             ],
+            metadata,
         });
 
         const firstResponseOutput = response.output?.[0];
@@ -152,7 +156,7 @@ export class OpenAIService extends OpenAI {
             .join('\n');
     }
 
-    private getMetadataForResponseStream(payloadMetadata: ResponseCreateParamsBase['metadata']) {
+    private getMetadataForResponse(payloadMetadata: ResponseCreateParamsBase['metadata']) {
         if (payloadMetadata) return payloadMetadata;
 
         if (this.agent) return {agent: this.agent};
