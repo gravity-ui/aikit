@@ -87,12 +87,14 @@ function applyToolUpdate(
             id: update.item_id,
             toolName: update.toolName ?? '',
             status: update.status,
-            headerContent: update.output ?? update.error,
         });
         idx = partsToUpdate.length - 1;
     }
     const prev = partsToUpdate[idx];
     if (prev.type !== 'tool') return partsToUpdate;
+
+    const bodyText = update.error || update.output || undefined;
+
     return partsToUpdate.map((p, i) =>
         i === idx
             ? {
@@ -101,7 +103,7 @@ function applyToolUpdate(
                       ...prev.data,
                       ...(update.toolName && {toolName: update.toolName}),
                       status: update.status,
-                      headerContent: update.output ?? update.error ?? prev.data.headerContent,
+                      ...(bodyText ? {bodyContent: bodyText} : {}),
                   },
               }
             : p,

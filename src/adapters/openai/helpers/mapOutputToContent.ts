@@ -58,13 +58,19 @@ function pushBlocksForMcpCall(
         failed: 'error',
     };
     const status = statusByMcpStatus[mcp.status ?? ''] ?? 'loading';
+    let bodyText: string | undefined;
+    if (typeof mcp.error === 'string' && mcp.error.length > 0) {
+        bodyText = mcp.error;
+    } else if (typeof mcp.output === 'string' && mcp.output.length > 0) {
+        bodyText = mcp.output;
+    }
     blocks.push({
         type: 'tool',
         id: mcp.id,
         data: {
             toolName: mcp.name ?? mcp.server_label ?? 'MCP',
             status,
-            headerContent: mcp.output ?? undefined,
+            ...(bodyText ? {bodyContent: bodyText} : {}),
         },
     });
 }

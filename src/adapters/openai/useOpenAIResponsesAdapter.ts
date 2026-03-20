@@ -1,8 +1,9 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 
-import type {TAssistantMessage, TChatMessage} from '../../types';
+import type {TAssistantMessage, TChatMessage, TMessageContentUnion} from '../../types';
 
 import {type ConsumeStreamCallbacks, consumeOpenAIStream} from './helpers/consumeOpenAIStream';
+import {contentPartsToMessageContent} from './helpers/contentPartsToMessageContent';
 import {fetchResponseToStreamEvents} from './helpers/fetchResponseToStreamEvents';
 import {isFetchResponse} from './helpers/isFetchResponse';
 import {openAIResponseToMessages} from './helpers/openAIResponseToMessages';
@@ -22,6 +23,69 @@ export type {
 
 /** Single non-streaming response → TChatMessage[]. For streaming use useOpenAIStreamAdapter. */
 
+function isToolPart(p: TMessageContentUnion): p is Extract<TMessageContentUnion, {type: 'tool'}> {
+    return p.type === 'tool';
+}
+
+export function collapseOrphanToolBetweenAssistantSegments(
+    messages: TChatMessage[],
+): TChatMessage[] {
+    const result = messages.map((m) =>
+        m.role === 'assistant' ? ({...m} as TAssistantMessage) : m,
+    );
+
+    for (let i = result.length - 1; i >= 1; i--) {
+        const next = result[i] as TAssistantMessage;
+        const prev = result[i - 1] as TAssistantMessage;
+        if (prev.role !== 'assistant' || next.role !== 'assistant') {
+            continue;
+        }
+
+        const nextContent = next.content;
+        if (!Array.isArray(nextContent)) {
+            continue;
+        }
+
+        const prevContent = prev.content;
+        if (!Array.isArray(prevContent)) {
+            continue;
+        }
+
+        const updatedNextParts = [...nextContent] as TMessageContentUnion[];
+        let updatedPrevParts = [...prevContent] as TMessageContentUnion[];
+        let changed = false;
+
+        for (let t = updatedNextParts.length - 1; t >= 0; t--) {
+            const part = updatedNextParts[t];
+            if (!isToolPart(part) || !part.id) {
+                continue;
+            }
+            const pIdx = updatedPrevParts.findIndex((p) => isToolPart(p) && p.id === part.id);
+            if (pIdx < 0) {
+                continue;
+            }
+            updatedPrevParts = updatedPrevParts.map((p, j) => (j === pIdx ? part : p));
+            updatedNextParts.splice(t, 1);
+            changed = true;
+        }
+
+        if (!changed) {
+            continue;
+        }
+
+        result[i - 1] = {
+            ...prev,
+            content: contentPartsToMessageContent(updatedPrevParts),
+        };
+        result[i] = {
+            ...next,
+            content: contentPartsToMessageContent(updatedNextParts),
+        };
+    }
+
+    return result;
+}
+
 function getResponseIdFromEvent(event: OpenAIStreamEventLike): string | null {
     const response = (event as {response?: unknown}).response;
     if (!response || typeof response !== 'object') {
@@ -35,12 +99,6 @@ function getResponseIdFromEvent(event: OpenAIStreamEventLike): string | null {
 export function useOpenAIResponsesAdapter(response: OpenAIResponseLike | null): TChatMessage[] {
     return useMemo(() => openAIResponseToMessages(response), [response]);
 }
-
-/**
- * Consumes OpenAI stream (fetch SSE or AsyncIterable), returns { messages, status, error }.
- * Only message output_item.done starts a new assistant message; MCP/tool/reasoning .done are ignored.
- * See README for result shape and options.
- */
 
 export function useOpenAIStreamAdapter(
     stream: OpenAIStreamSource | null,
@@ -106,14 +164,15 @@ export function useOpenAIStreamAdapter(
             getAssistantMessageId,
             onContentUpdate: (messageId, content) => {
                 if (cancelled) return;
-                setMessages((prev) =>
-                    prev.map(
+                setMessages((prev) => {
+                    const mapped = prev.map(
                         (msg): TChatMessage =>
                             msg.id === messageId && msg.role === 'assistant'
                                 ? ({...msg, content} as TAssistantMessage)
                                 : msg,
-                    ),
-                );
+                    );
+                    return collapseOrphanToolBetweenAssistantSegments(mapped);
+                });
             },
             onNewMessage: (messageId) => {
                 if (cancelled) return;
@@ -129,7 +188,8 @@ export function useOpenAIStreamAdapter(
             onEnd: (finalMessages, s, err) => {
                 setStatus(s === 'done' ? 'ready' : s);
                 setError(err ?? null);
-                onStreamEndRef.current?.(finalMessages);
+                const normalized = collapseOrphanToolBetweenAssistantSegments(finalMessages);
+                onStreamEndRef.current?.(normalized);
             },
             getIsCancelled: () => cancelled,
         };
