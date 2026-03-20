@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.2](https://github.com/gravity-ui/aikit/compare/v1.14.1...v1.14.2) (2026-03-20)
+
+
+### Bug Fixes
+
+* **OpenaiAdapter:** dedupe when message item completes before tool [DATAUI-3561] ([e0b32ff](https://github.com/gravity-ui/aikit/commit/e0b32ffa9179860e2caf71d956e963b89e31432c))
+
 ## [1.14.1](https://github.com/gravity-ui/aikit/compare/v1.14.0...v1.14.1) (2026-03-18)
 
 
