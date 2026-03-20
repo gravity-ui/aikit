@@ -41,19 +41,6 @@ export interface ActionPopupProps {
  * This component provides a flexible popup container that can be anchored to any element
  * (typically action buttons). It supports optional title and subtitle, and can contain
  * any React content as children.
- *
- * @example
- * ```tsx
- * <ActionPopup
- *   open={isOpen}
- *   onOpenChange={(open) => setIsOpen(open)}
- *   anchorElement={buttonRef.current}
- *   title="Feedback"
- *   placement="bottom-start"
- * >
- *   <FeedbackForm onSubmit={handleSubmit} />
- * </ActionPopup>
- * ```
  */
 export function ActionPopup({
     open,
@@ -97,7 +84,7 @@ export function ActionPopup({
                             size="s"
                             onClick={handleClose}
                             className={b('close-button')}
-                            qa={`${qa}-close`}
+                            qa={qa ? `${qa}-close` : undefined}
                             aria-label={i18n('close')}
                         >
                             <Icon data={Xmark} size={16} />

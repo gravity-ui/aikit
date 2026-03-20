@@ -6,8 +6,8 @@ $block: '.#{variables.$ns}action-popup';
     &__container {
         display: flex;
         flex-direction: column;
-        min-width: 280px;
-        max-width: 400px;
+        min-width: var(--g-aikit-action-popup-min-width);
+        max-width: var(--g-aikit-action-popup-max-width);
         padding: var(--g-spacing-4) var(--g-spacing-5);
         background: var(--g-color-base-background);
         border-radius: var(--g-border-radius-m);

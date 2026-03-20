@@ -1,4 +1,5 @@
 import type {
+    ActionPopupConfig,
     BaseMessageAction,
     BaseMessageActionConfig,
     DefaultMessageAction,
@@ -87,7 +88,7 @@ export function resolveMessageActions<
                 label: action.label,
                 view: action.view,
                 onClick: () => action.onClick(message),
-                popup: action.popup,
+                popup: action.popup as ActionPopupConfig<unknown>,
             }),
         );
     }

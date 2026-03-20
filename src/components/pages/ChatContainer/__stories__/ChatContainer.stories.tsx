@@ -1795,12 +1795,26 @@ export const WithActionPopup: Story = {
                 type: BaseMessageActionType.Like,
                 onClick: (message) => {
                     console.log('Like message:', message.id);
+                    setMessages((prev) =>
+                        prev.map((msg) =>
+                            msg.id === message.id && msg.role === 'assistant'
+                                ? {...msg, userRating: 'like' as const}
+                                : msg,
+                        ),
+                    );
                 },
             },
             {
                 type: BaseMessageActionType.Unlike,
                 onClick: (message) => {
                     console.log('Dislike message:', message.id);
+                    setMessages((prev) =>
+                        prev.map((msg) =>
+                            msg.id === message.id && msg.role === 'assistant'
+                                ? {...msg, userRating: 'dislike' as const}
+                                : msg,
+                        ),
+                    );
                 },
                 popup: {
                     title: 'What went wrong?',

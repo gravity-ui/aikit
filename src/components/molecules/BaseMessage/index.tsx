@@ -46,7 +46,11 @@ export const BaseMessage = (props: BaseMessageProps) => {
         if (!actionType || !knownTypes.includes(actionType)) {
             return '';
         }
-        return i18n(`action-tooltip-${actionType}` as Parameters<typeof i18n>[0]);
+        try {
+            return i18n(`action-tooltip-${actionType}` as Parameters<typeof i18n>[0]);
+        } catch {
+            return '';
+        }
     };
     const hasActions = actions && actions.length > 0;
 
@@ -107,7 +111,7 @@ export const BaseMessage = (props: BaseMessageProps) => {
                                         if ('popup' in action && action.popup && onActionPopup) {
                                             onActionPopup(action, e.currentTarget);
                                         }
-                                        // Call original onClick if exists (даже если есть popup, может быть и onClick)
+                                        // Call original onClick even when popup exists
                                         actionOnClick?.(e);
                                     }}
                                 >

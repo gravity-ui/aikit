@@ -46,19 +46,6 @@ export interface FeedbackFormProps {
  * This component provides a user-friendly way to collect feedback with multiple
  * selectable reasons (rendered as chips) and an optional comment field.
  * Can be used standalone or inside ActionPopup.
- *
- * @example
- * ```tsx
- * <FeedbackForm
- *   options={[
- *     { id: 'no-answer', label: 'No answer' },
- *     { id: 'wrong-info', label: 'Wrong information' },
- *   ]}
- *   onSubmit={(reasons, comment) => {
- *     console.log('Reasons:', reasons, 'Comment:', comment);
- *   }}
- * />
- * ```
  */
 export function FeedbackForm({
     options,
@@ -83,6 +70,8 @@ export function FeedbackForm({
 
     const handleSubmit = () => {
         onSubmit(selectedReasons, comment);
+        setSelectedReasons([]);
+        setComment('');
     };
 
     const isReasonSelected = (reasonId: string) => selectedReasons.includes(reasonId);

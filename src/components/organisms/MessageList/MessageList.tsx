@@ -1,12 +1,9 @@
-import React, {useCallback, useState} from 'react';
-
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import type {PopupPlacement} from '@gravity-ui/uikit';
 
 import {useScrollPreservation, useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
 import type {
-    BaseMessageActionConfig,
     DefaultMessageAction,
     TAssistantMessage,
     TChatMessage,
@@ -25,12 +22,13 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
-import {ActionPopup, type ActionPopupContext} from '../../molecules/ActionPopup';
+import {ActionPopup} from '../../molecules/ActionPopup';
 import {RatingBlock, type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
 import {ErrorAlert} from './ErrorAlert';
+import {usePopup} from './usePopup';
 
 import './MessageList.scss';
 
@@ -100,29 +98,11 @@ export function MessageList<TContent extends TMessageContent = never>({
     const isSubmitted = status === 'submitted';
     const showLoader = status && loaderStatuses.includes(status);
 
-    // Popup state management
-    const [popupState, setPopupState] = useState<{
-        open: boolean;
-        messageId: string | null;
-        actionType: string | null;
-        anchorElement: HTMLElement | null;
-        content: React.ReactNode | null;
-        title: string | undefined;
-        subtitle: string | undefined;
-        actionConfig:
-            | DefaultMessageAction<TUserMessage<TMessageMetadata>>
-            | DefaultMessageAction<TAssistantMessage<TContent, TMessageMetadata>>
-            | null;
-    }>({
-        open: false,
-        messageId: null,
-        actionType: null,
-        anchorElement: null,
-        content: null,
-        title: undefined,
-        subtitle: undefined,
-        actionConfig: null,
-    });
+    // Use popup hook for managing popup state
+    const {popupState, handleActionPopup, handlePopupOpenChange, showActionPopup} = usePopup<
+        TContent,
+        TMessageMetadata
+    >();
 
     const {containerRef} = useSmartScroll<HTMLDivElement>({
         isStreaming: isStreaming || isSubmitted,
@@ -132,83 +112,6 @@ export function MessageList<TContent extends TMessageContent = never>({
 
     // Preserve scroll position when older messages are loaded
     useScrollPreservation(containerRef, messages.length);
-
-    // Handler to open popup for an action
-    const handleActionPopup = useCallback(
-        (
-            message: TChatMessage<TContent, TMessageMetadata>,
-            action: BaseMessageActionConfig,
-            anchorElement: HTMLElement,
-        ) => {
-            // Type guard to check if action has popup
-            if (!('popup' in action) || !action.popup) {
-                return;
-            }
-
-            const context: ActionPopupContext = {
-                setContent: (newContent: React.ReactNode) => {
-                    setPopupState((prev) => ({
-                        ...prev,
-                        content: newContent,
-                    }));
-                },
-                setTitle: (newTitle: string | undefined) => {
-                    setPopupState((prev) => ({
-                        ...prev,
-                        title: newTitle,
-                    }));
-                },
-                setSubtitle: (newSubtitle: string | undefined) => {
-                    setPopupState((prev) => ({
-                        ...prev,
-                        subtitle: newSubtitle,
-                    }));
-                },
-                closePopup: () => {
-                    setPopupState({
-                        open: false,
-                        messageId: null,
-                        actionType: null,
-                        anchorElement: null,
-                        content: null,
-                        title: undefined,
-                        subtitle: undefined,
-                        actionConfig: null,
-                    });
-                },
-            };
-
-            const content = action.popup.getContent(message as any, context);
-
-            setPopupState({
-                open: true,
-                messageId: message.id || null,
-                actionType: action.actionType || null,
-                anchorElement,
-                content,
-                title: action.popup.title,
-                subtitle: action.popup.subtitle,
-                actionConfig: action as any,
-            });
-        },
-        [],
-    );
-
-    // Handler to handle popup open/close state
-    const handlePopupOpenChange = useCallback((open: boolean) => {
-        if (!open) {
-            setPopupState({
-                open: false,
-                messageId: null,
-                actionType: null,
-                anchorElement: null,
-                content: null,
-                title: undefined,
-                subtitle: undefined,
-                actionConfig: null,
-            });
-        }
-    }, []);
 
     const renderMessage = (message: TChatMessage<TContent, TMessageMetadata>, index: number) => {
         if (isUserMessage<TMessageMetadata, TContent>(message)) {
@@ -292,27 +195,22 @@ export function MessageList<TContent extends TMessageContent = never>({
                 />
             )}
             {/* Action Popup - renders when an action with popup config is triggered */}
-            {popupState.open &&
-                popupState.anchorElement &&
-                popupState.actionConfig?.popup &&
-                popupState.content !== null && (
-                    <ActionPopup
-                        open={popupState.open}
-                        onOpenChange={handlePopupOpenChange}
-                        anchorElement={popupState.anchorElement}
-                        title={actionPopupProps?.title || popupState.title || undefined}
-                        subtitle={actionPopupProps?.subtitle || popupState.subtitle || undefined}
-                        placement={
-                            actionPopupProps?.placement ||
-                            popupState.actionConfig.popup.placement ||
-                            'bottom-start'
-                        }
-                        className={actionPopupProps?.className}
-                        qa={qa ? `${qa}-action-popup` : 'action-popup'}
-                    >
-                        {popupState.content}
-                    </ActionPopup>
-                )}
+            {showActionPopup && popupState.actionConfig?.popup && (
+                <ActionPopup
+                    open={popupState.open}
+                    onOpenChange={handlePopupOpenChange}
+                    anchorElement={popupState.anchorElement}
+                    title={actionPopupProps?.title || popupState.title || undefined}
+                    subtitle={actionPopupProps?.subtitle || popupState.subtitle || undefined}
+                    placement={
+                        actionPopupProps?.placement || popupState.actionConfig.popup.placement
+                    }
+                    className={actionPopupProps?.className}
+                    qa={qa ? `${qa}-action-popup` : 'action-popup'}
+                >
+                    {popupState.content}
+                </ActionPopup>
+            )}
         </div>
     );
 }

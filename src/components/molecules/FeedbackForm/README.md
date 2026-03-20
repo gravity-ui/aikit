@@ -67,7 +67,7 @@ function FeedbackPopupExample() {
   return (
     <ActionPopup
       open={open}
-      onClose={() => setOpen(false)}
+      onOpenChange={setOpen}
       anchorElement={buttonRef}
       title="What went wrong?"
     >
@@ -114,17 +114,18 @@ function InteractiveExample() {
 
 ## Props
 
-| Name                 | Type                                           | Default      | Required | Description                                           |
-| -------------------- | ---------------------------------------------- | ------------ | -------- | ----------------------------------------------------- |
-| `options`            | `FeedbackOption[]`                             | -            | Yes      | Array of reason options to display                    |
-| `onSubmit`           | `(reasons: string[], comment: string) => void` | -            | Yes      | Callback when form is submitted                       |
-| `reasonsLabel`       | `string`                                       | i18n default | No       | Label text for reasons section                        |
-| `commentLabel`       | `string`                                       | -            | No       | Label text for comment field (hidden if not provided) |
-| `commentPlaceholder` | `string`                                       | i18n default | No       | Placeholder text for comment field                    |
-| `submitLabel`        | `string`                                       | i18n default | No       | Text for submit button                                |
-| `disabled`           | `boolean`                                      | `false`      | No       | Disable all form interactions                         |
-| `className`          | `string`                                       | -            | No       | Additional CSS class                                  |
-| `qa`                 | `string`                                       | -            | No       | QA/test identifier                                    |
+| Name                 | Type                                           | Default      | Required | Description                                             |
+| -------------------- | ---------------------------------------------- | ------------ | -------- | ------------------------------------------------------- |
+| `options`            | `FeedbackOption[]`                             | -            | Yes      | Array of reason options to display                      |
+| `onSubmit`           | `(reasons: string[], comment: string) => void` | -            | Yes      | Callback when form is submitted                         |
+| `reasonsLabel`       | `string`                                       | -            | No       | Label text for reasons section (hidden if not provided) |
+| `commentLabel`       | `string`                                       | -            | No       | Label text for comment field (hidden if not provided)   |
+| `commentPlaceholder` | `string`                                       | i18n default | No       | Placeholder text for comment field                      |
+| `showComment`        | `boolean`                                      | `true`       | No       | Whether to show the comment textarea                    |
+| `submitLabel`        | `string`                                       | i18n default | No       | Text for submit button                                  |
+| `disabled`           | `boolean`                                      | `false`      | No       | Disable all form interactions                           |
+| `className`          | `string`                                       | -            | No       | Additional CSS class                                    |
+| `qa`                 | `string`                                       | -            | No       | QA/test identifier                                      |
 
 ### FeedbackOption Type
 
@@ -137,17 +138,15 @@ interface FeedbackOption {
 
 ## Default i18n Labels
 
-The component provides default labels that can be overridden:
+The component provides default labels for some fields:
 
 **English:**
 
-- `reasonsLabel`: "Select reasons"
 - `commentPlaceholder`: "Tell us more..."
 - `submitLabel`: "Submit"
 
 **Russian:**
 
-- `reasonsLabel`: "Выберите причины"
 - `commentPlaceholder`: "Расскажите подробнее"
 - `submitLabel`: "Отправить"
 
@@ -177,11 +176,9 @@ The component provides default labels that can be overridden:
 The component uses BEM methodology with the block name `g-aikit-feedback-form`:
 
 - `.g-aikit-feedback-form` - Root container
-- `.g-aikit-feedback-form__section` - Each section (reasons, comment)
-- `.g-aikit-feedback-form__label` - Section labels
-- `.g-aikit-feedback-form__reasons` - Reasons chip container
-- `.g-aikit-feedback-form__reason-chip` - Individual reason chip
-- `.g-aikit-feedback-form__comment` - Comment textarea
+- `.g-aikit-feedback-form__reasons` - Reasons chips container
+- `.g-aikit-feedback-form__reason-chip` - Individual reason chip button
+- `.g-aikit-feedback-form__comment` - Comment textarea section
 - `.g-aikit-feedback-form__submit` - Submit button
 
 ## Accessibility

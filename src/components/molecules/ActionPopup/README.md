@@ -24,18 +24,18 @@ import {ActionPopup} from '@gravity-ui/aikit';
 
 function Example() {
   const [open, setOpen] = useState(false);
-  const [anchorRef, setAnchorRef] = useState<HTMLButtonElement | null>(null);
+  const anchorRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
-      <Button ref={setAnchorRef} onClick={() => setOpen(true)}>
+      <Button ref={anchorRef} onClick={() => setOpen(true)}>
         Open Popup
       </Button>
 
       <ActionPopup
         open={open}
         onOpenChange={setOpen}
-        anchorElement={anchorRef}
+        anchorElement={anchorRef.current}
         title="Popup Title"
         subtitle="Optional subtitle"
         placement="bottom-start"
@@ -54,18 +54,18 @@ import {ActionPopup, FeedbackForm} from '@gravity-ui/aikit';
 
 function FeedbackExample() {
   const [open, setOpen] = useState(false);
-  const [anchorRef, setAnchorRef] = useState<HTMLButtonElement | null>(null);
+  const anchorRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
-      <Button ref={setAnchorRef} onClick={() => setOpen(true)}>
+      <Button ref={anchorRef} onClick={() => setOpen(true)}>
         Feedback
       </Button>
 
       <ActionPopup
         open={open}
         onOpenChange={setOpen}
-        anchorElement={anchorRef}
+        anchorElement={anchorRef.current}
         title="What went wrong?"
       >
         <FeedbackForm
@@ -119,12 +119,17 @@ The `placement` prop accepts the following values:
 
 The component uses BEM methodology with the block name `g-aikit-action-popup`:
 
-- `.g-aikit-action-popup__container` - Main container
+- `.g-aikit-action-popup__container` - Main container with padding and background
 - `.g-aikit-action-popup__header` - Header section (when title or subtitle provided)
-- `.g-aikit-action-popup__title` - Title text
-- `.g-aikit-action-popup__subtitle` - Subtitle text
-- `.g-aikit-action-popup__close-button` - Close button
-- `.g-aikit-action-popup__content` - Content area
+- `.g-aikit-action-popup__header-content` - Container for title and subtitle text
+- `.g-aikit-action-popup__close-button` - Close button in header
+
+### CSS Variables
+
+| Variable                           | Default | Description         |
+| ---------------------------------- | ------- | ------------------- |
+| `--g-aikit-action-popup-min-width` | `280px` | Minimum popup width |
+| `--g-aikit-action-popup-max-width` | `400px` | Maximum popup width |
 
 ## Accessibility
 

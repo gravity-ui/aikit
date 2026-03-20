@@ -33,9 +33,9 @@ export interface ActionPopupConfig<TMessage> {
     placement?: PopupPlacement;
 }
 
-export type BaseMessageActionConfig = ActionConfig & {
+export type BaseMessageActionConfig<TMessage = unknown> = ActionConfig & {
     /** Optional popup configuration for this action */
-    popup?: ActionPopupConfig<any>;
+    popup?: ActionPopupConfig<TMessage>;
 };
 
 /**
@@ -43,7 +43,9 @@ export type BaseMessageActionConfig = ActionConfig & {
  * - BaseMessageActionConfig object with properties (including type for default icons)
  * - React.ReactNode for fully custom content
  */
-export type BaseMessageAction = BaseMessageActionConfig | React.ReactNode;
+export type BaseMessageAction<TMessage = unknown> =
+    | BaseMessageActionConfig<TMessage>
+    | React.ReactNode;
 
 export type UserRating = 'like' | 'dislike';
 
@@ -70,10 +72,10 @@ export type DefaultMessageAction<TMessage> = {
     popup?: ActionPopupConfig<TMessage>;
 };
 
-export type BaseMessageProps = {
+export type BaseMessageProps<TMessage = unknown> = {
     children: React.ReactNode;
     role: TMessageRole;
-    actions?: BaseMessageAction[];
+    actions?: BaseMessageAction<TMessage>[];
     userRating?: UserRating;
     timestamp?: string;
     showTimestamp?: boolean;
@@ -81,7 +83,7 @@ export type BaseMessageProps = {
     className?: string;
     qa?: string;
     /** Callback when action with popup config is clicked */
-    onActionPopup?: (action: BaseMessageActionConfig, anchorElement: HTMLElement) => void;
+    onActionPopup?: (action: BaseMessageActionConfig<TMessage>, anchorElement: HTMLElement) => void;
 };
 
 export type TMessageMetadata = Record<string, unknown>;

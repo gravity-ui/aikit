@@ -78,7 +78,7 @@ test.describe('FeedbackForm', {tag: '@FeedbackForm'}, () => {
         await page.getByRole('button', {name: 'Submit'}).click();
 
         await expect(page.getByText('Thank you for your feedback!')).toBeVisible();
-        await expect(page.getByText('Selected reasons: 1')).toBeVisible();
+        await expect(page.getByText('no-answer')).toBeVisible();
     });
 
     test('should toggle reason selection', async ({mount, page}) => {

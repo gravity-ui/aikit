@@ -72,4 +72,8 @@
     --g-aikit-chat-container-content-chat-background: var(--g-color-base-background);
     --g-aikit-chat-container-footer-empty-background: var(--g-color-base-background);
     --g-aikit-chat-container-footer-chat-background: var(--g-color-base-background);
+
+    /* === Action Popup === */
+    --g-aikit-action-popup-min-width: 280px;
+    --g-aikit-action-popup-max-width: 400px;
 }
