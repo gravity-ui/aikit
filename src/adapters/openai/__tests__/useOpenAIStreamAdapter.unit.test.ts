@@ -86,6 +86,60 @@ describe('useOpenAIStreamAdapter', () => {
         expect(toolPart?.data?.status).toBe('success');
     });
 
+    it('should merge lone tool update into prior assistant when message output_item.done arrives before tool completes', async () => {
+        const stream = createMockStream([
+            {type: 'response.output_text.delta', delta: 'Checking...\n'},
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'mcp_call',
+                    id: 'tool-1',
+                    name: 'validate_query',
+                    server_label: 'server',
+                },
+            },
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: 'msg-1',
+                    role: 'assistant',
+                    content: [{type: 'output_text', text: 'Checking...\n'}],
+                },
+            },
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'mcp_call',
+                    id: 'tool-1',
+                    status: 'completed',
+                    output: '{"ok":true}',
+                },
+            },
+            {type: 'response.output_text.delta', delta: 'Done.'},
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        expect(result.current.messages).toHaveLength(2);
+
+        const firstContent = result.current.messages[0].content as Array<{
+            type: string;
+            data?: Record<string, unknown>;
+        }>;
+        const toolInFirst = firstContent.find((c) => c.type === 'tool');
+        expect(toolInFirst?.data?.status).toBe('success');
+        expect(toolInFirst?.data?.bodyContent).toBe('{"ok":true}');
+
+        const secondContent = result.current.messages[1].content;
+        expect(secondContent).toBe('Done.');
+    });
+
     it('should add tool with waitingConfirmation for mcp_approval_request', async () => {
         const stream = createMockStream([
             {type: 'response.output_text.delta', delta: 'Need your approval. '},
@@ -349,7 +403,7 @@ describe('useOpenAIStreamAdapter', () => {
         const toolPart = content.find((c) => c.type === 'tool');
         expect(toolPart?.data?.toolName).toBe('Code Interpreter');
         expect(toolPart?.data?.status).toBe('success');
-        expect(toolPart?.data?.headerContent).toBe('Result');
+        expect(toolPart?.data?.bodyContent).toBe('Result');
     });
 
     it('should add tool for image_generation_call', async () => {
@@ -418,6 +472,6 @@ describe('useOpenAIStreamAdapter', () => {
         const toolPart = content.find((c) => c.type === 'tool');
         expect(toolPart?.data?.toolName).toBe('MCP List Tools');
         expect(toolPart?.data?.status).toBe('error');
-        expect(toolPart?.data?.headerContent).toBe('Server unavailable');
+        expect(toolPart?.data?.bodyContent).toBe('Server unavailable');
     });
 });
