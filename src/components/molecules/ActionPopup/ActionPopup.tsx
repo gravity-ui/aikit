@@ -41,6 +41,8 @@ export interface ActionPopupProps {
  * This component provides a flexible popup container that can be anchored to any element
  * (typically action buttons). It supports optional title and subtitle, and can contain
  * any React content as children.
+ *
+ * @returns React element with anchored popup
  */
 export function ActionPopup({
     open,

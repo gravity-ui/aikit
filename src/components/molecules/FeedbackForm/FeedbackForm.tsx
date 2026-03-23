@@ -46,6 +46,8 @@ export interface FeedbackFormProps {
  * This component provides a user-friendly way to collect feedback with multiple
  * selectable reasons (rendered as chips) and an optional comment field.
  * Can be used standalone or inside ActionPopup.
+ *
+ * @returns React element with feedback form
  */
 export function FeedbackForm({
     options,

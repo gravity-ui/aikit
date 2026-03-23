@@ -143,15 +143,7 @@ export const InteractiveDemo: Story = {
         return (
             <ShowcaseItem title="Interactive Demo">
                 <ContentWrapper width="300px">
-                    {!submitted ? (
-                        <FeedbackForm
-                            options={defaultOptions}
-                            reasonsLabel="What went wrong?"
-                            commentPlaceholder="Tell us more..."
-                            submitLabel="Submit"
-                            onSubmit={handleSubmit}
-                        />
-                    ) : (
+                    {submitted ? (
                         <div style={{textAlign: 'center', padding: '20px'}}>
                             <Text variant="header-1">Thank you for your feedback!</Text>
                             <Text variant="body-2" style={{display: 'block', marginTop: '12px'}}>
@@ -167,6 +159,14 @@ export const InteractiveDemo: Story = {
                                 </Text>
                             )}
                         </div>
+                    ) : (
+                        <FeedbackForm
+                            options={defaultOptions}
+                            reasonsLabel="What went wrong?"
+                            commentPlaceholder="Tell us more..."
+                            submitLabel="Submit"
+                            onSubmit={handleSubmit}
+                        />
                     )}
                 </ContentWrapper>
             </ShowcaseItem>
