@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {Pencil} from '@gravity-ui/icons';
