@@ -107,11 +107,9 @@ export const BaseMessage = (props: BaseMessageProps) => {
                                     tooltipTitle={tooltipTitle}
                                     view={action.view || 'flat-secondary'}
                                     onClick={(e) => {
-                                        // Check if action has popup config and callback exists
-                                        if ('popup' in action && action.popup && onActionPopup) {
+                                        if (action.popup && onActionPopup) {
                                             onActionPopup(action, e.currentTarget);
                                         }
-                                        // Call original onClick even when popup exists
                                         actionOnClick?.(e);
                                     }}
                                 >

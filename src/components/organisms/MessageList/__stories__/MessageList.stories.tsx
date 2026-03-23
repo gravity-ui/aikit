@@ -8,7 +8,12 @@ import {MessageList, type MessageListProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import type {ActionPopupContext, TAssistantMessage, TMessageContent, TUserMessage} from '../../../../types/messages';
+import type {
+    ActionPopupContext,
+    TAssistantMessage,
+    TMessageContent,
+    TUserMessage,
+} from '../../../../types/messages';
 import {BaseMessageActionType} from '../../../../types/messages';
 import {
     type MessageContentComponentProps,
