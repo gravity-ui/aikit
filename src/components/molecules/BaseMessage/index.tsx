@@ -37,17 +37,17 @@ export const BaseMessage = (props: BaseMessageProps) => {
         showTimestamp,
         timestamp = '',
         userRating,
+        onActionPopup,
     } = props;
 
     // Get tooltip text for action
     const getTooltipText = (actionType?: string): string => {
-        if (!actionType) {
+        const knownTypes: string[] = Object.values(BaseMessageActionType);
+        if (!actionType || !knownTypes.includes(actionType)) {
             return '';
         }
-        const tooltipKey = `action-tooltip-${actionType}`;
-        // Check if tooltip exists in i18n, otherwise return empty string
         try {
-            return i18n(tooltipKey as Parameters<typeof i18n>[0]);
+            return i18n(`action-tooltip-${actionType}` as Parameters<typeof i18n>[0]);
         } catch {
             return '';
         }
@@ -90,12 +90,26 @@ export const BaseMessage = (props: BaseMessageProps) => {
                                 buttonContent = action.actionType;
                             }
 
+                            // Exclude custom props that shouldn't be passed to DOM
+                            const {
+                                actionType: _actionType,
+                                popup: _popup,
+                                icon: _icon,
+                                label: _label,
+                                onClick: actionOnClick,
+                                ...buttonProps
+                            } = action;
+
                             return (
                                 <ActionButton
                                     key={action.actionType || index}
-                                    {...action}
+                                    {...buttonProps}
                                     tooltipTitle={tooltipTitle}
                                     view={action.view || 'flat-secondary'}
+                                    onClick={(e) => {
+                                        onActionPopup?.(action, e.currentTarget);
+                                        actionOnClick?.(e);
+                                    }}
                                 >
                                     {buttonContent}
                                 </ActionButton>

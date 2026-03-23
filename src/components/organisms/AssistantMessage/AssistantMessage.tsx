@@ -24,7 +24,7 @@ import './AssistantMessage.scss';
 
 type BaseMessagePick = Pick<
     BaseMessageProps,
-    'actions' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp'
+    'actions' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp' | 'onActionPopup'
 >;
 type AssistantMessagePick<TContent extends TMessageContent> = Pick<
     TAssistantMessage<TContent, TMessageMetadata>,
@@ -55,6 +55,7 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
     userRating,
     className,
     qa,
+    onActionPopup,
 }: AssistantMessageProps<TContent>) {
     const registry = useMemo<MessageRendererRegistry>(() => {
         const defaultRegistry = createDefaultMessageRegistry(
@@ -96,6 +97,7 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
             userRating={userRating}
             className={b(null, className)}
             qa={qa}
+            onActionPopup={onActionPopup}
         >
             <div className={b('content')}>
                 {parts.map((part, index) => renderPart(part, index))}

@@ -13,7 +13,7 @@ const b = block('user-message');
 
 export type UserMessageProps = Pick<
     BaseMessageProps,
-    'actions' | 'showActionsOnHover' | 'showTimestamp' | 'timestamp'
+    'actions' | 'showActionsOnHover' | 'showTimestamp' | 'timestamp' | 'onActionPopup'
 > & {
     content: React.ReactNode;
     format?: 'plain' | 'markdown';
@@ -39,6 +39,7 @@ export const UserMessage = (props: UserMessageProps) => {
         format = 'plain',
         transformOptions,
         shouldParseIncompleteMarkdown,
+        onActionPopup,
     } = props;
 
     return (
@@ -50,6 +51,7 @@ export const UserMessage = (props: UserMessageProps) => {
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 timestamp={timestamp}
+                onActionPopup={onActionPopup}
             >
                 <MessageBalloon className={modsClassName(b({format}))}>
                     {format === 'markdown' ? (

@@ -1,4 +1,5 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
+import type {PopupPlacement} from '@gravity-ui/uikit';
 
 import {useScrollPreservation, useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
@@ -21,15 +22,31 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
+import {ActionPopup} from '../../molecules/ActionPopup';
 import {RatingBlock, type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
 import {ErrorAlert} from './ErrorAlert';
+import {usePopup} from './usePopup';
 
 import './MessageList.scss';
 
 const b = block('message-list');
+
+/** Configuration for action popup behavior */
+export interface MessageListActionPopupConfig {
+    /** Override title for all popups (overrides action-specific title) */
+    title?: string;
+    /** Override subtitle for all popups (overrides action-specific subtitle) */
+    subtitle?: string;
+    /** Override placement for all popups (overrides action-specific placement) */
+    placement?: PopupPlacement;
+    /** Additional CSS class for popup */
+    className?: string;
+    /** QA/test identifier for popup */
+    qa?: string;
+}
 
 export type MessageListProps<TContent extends TMessageContent = never> = {
     messages: TChatMessage<TContent, TMessageMetadata>[];
@@ -52,6 +69,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     onLoadPreviousMessages?: () => void;
     /** Rating block configuration (for CSAT or other feedback use cases) - renders after messages list */
     ratingBlockProps?: RatingBlockProps;
+    /** Action popup configuration - applies to all action popups */
+    actionPopupProps?: MessageListActionPopupConfig;
 };
 
 export function MessageList<TContent extends TMessageContent = never>({
@@ -73,10 +92,17 @@ export function MessageList<TContent extends TMessageContent = never>({
     hasPreviousMessages = false,
     onLoadPreviousMessages,
     ratingBlockProps,
+    actionPopupProps,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
     const showLoader = status && loaderStatuses.includes(status);
+
+    // Use popup hook for managing popup state
+    const {popupState, handleActionPopup, handlePopupOpenChange, showActionPopup} = usePopup<
+        TContent,
+        TMessageMetadata
+    >();
 
     const {containerRef} = useSmartScroll<HTMLDivElement>({
         isStreaming: isStreaming || isSubmitted,
@@ -104,6 +130,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     showActionsOnHover={showActionsOnHover}
                     showTimestamp={showTimestamp}
                     showAvatar={showAvatar}
+                    onActionPopup={(action, anchor) => handleActionPopup(message, action, anchor)}
                 />
             );
         }
@@ -132,6 +159,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     showActionsOnHover={showActionsOnHover}
                     showTimestamp={showTimestamp}
                     userRating={message.userRating}
+                    onActionPopup={(action, anchor) => handleActionPopup(message, action, anchor)}
                 />
             );
         }
@@ -165,6 +193,23 @@ export function MessageList<TContent extends TMessageContent = never>({
                     {...ratingBlockProps}
                     className={b('rating-block', ratingBlockProps.className)}
                 />
+            )}
+            {/* Action Popup - renders when an action with popup config is triggered */}
+            {showActionPopup && popupState.actionConfig?.popup && (
+                <ActionPopup
+                    open={popupState.open}
+                    onOpenChange={handlePopupOpenChange}
+                    anchorElement={popupState.anchorElement}
+                    title={actionPopupProps?.title || popupState.title || undefined}
+                    subtitle={actionPopupProps?.subtitle || popupState.subtitle || undefined}
+                    placement={
+                        actionPopupProps?.placement || popupState.actionConfig.popup.placement
+                    }
+                    className={actionPopupProps?.className}
+                    qa={qa ? `${qa}-action-popup` : 'action-popup'}
+                >
+                    {popupState.content}
+                </ActionPopup>
             )}
         </div>
     );

@@ -1,4 +1,5 @@
 import type {
+    ActionPopupConfig,
     BaseMessageAction,
     BaseMessageActionConfig,
     DefaultMessageAction,
@@ -66,6 +67,9 @@ export function hasOnlyThinkingContent<TCustomMessageContent extends TMessageCon
     return parts.every((part) => part.type === 'thinking');
 }
 
+// Re-export ActionPopup types for convenience
+export type {ActionPopupContext, ActionPopupConfig} from '../types';
+
 export function resolveMessageActions<
     TMessage extends TChatMessage<TMessageContent, TMessageMetadata>,
 >(
@@ -84,6 +88,7 @@ export function resolveMessageActions<
                 label: action.label,
                 view: action.view,
                 onClick: () => action.onClick(message),
+                popup: action.popup as ActionPopupConfig<unknown>,
             }),
         );
     }

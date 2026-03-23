@@ -1,0 +1,20 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}feedback-form';
+
+#{$block} {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--g-spacing-3);
+
+    &__reasons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--g-spacing-2);
+    }
+
+    &__comment {
+        width: 100%;
+    }
+}
