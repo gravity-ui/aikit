@@ -153,33 +153,19 @@ export const InteractiveDemo: Story = {
                         />
                     ) : (
                         <div style={{textAlign: 'center', padding: '20px'}}>
-                            <Text variant="header-1" style={{marginBottom: '16px'}}>
-                                Thank you for your feedback!
+                            <Text variant="header-1">Thank you for your feedback!</Text>
+                            <Text variant="body-2" style={{display: 'block', marginTop: '12px'}}>
+                                <strong>Selected reasons:</strong>
+                                {'\n'}
+                                {result?.reasons.join(', ') || 'None'}
                             </Text>
-                            <div
-                                style={{
-                                    background: 'var(--g-color-base-generic-hover)',
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    textAlign: 'left',
-                                }}
-                            >
-                                <Text
-                                    variant="body-2"
-                                    style={{display: 'block', marginBottom: '8px'}}
-                                >
-                                    <strong>Selected reasons:</strong>
+                            {result?.comment && (
+                                <Text variant="body-2" style={{display: 'block', marginTop: '8px'}}>
+                                    <strong>Comment:</strong>
                                     {'\n'}
-                                    {result?.reasons.join(', ') || 'None'}
+                                    {result.comment}
                                 </Text>
-                                {result?.comment && (
-                                    <Text variant="body-2" style={{display: 'block'}}>
-                                        <strong>Comment:</strong>
-                                        {'\n'}
-                                        {result.comment}
-                                    </Text>
-                                )}
-                            </div>
+                            )}
                         </div>
                     )}
                 </ContentWrapper>
