@@ -107,9 +107,7 @@ export const BaseMessage = (props: BaseMessageProps) => {
                                     tooltipTitle={tooltipTitle}
                                     view={action.view || 'flat-secondary'}
                                     onClick={(e) => {
-                                        if (action.popup && onActionPopup) {
-                                            onActionPopup(action, e.currentTarget);
-                                        }
+                                        onActionPopup?.(action, e.currentTarget);
                                         actionOnClick?.(e);
                                     }}
                                 >
