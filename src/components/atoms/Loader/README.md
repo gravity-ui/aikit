@@ -4,10 +4,9 @@ A Loader visualizes loading state
 
 ## Features
 
-- **Visual loading state**: Show loading state
-- **Two View Modes**:
-  - `streaming`: Dots loader
-  - `loading`: Circle loader
+- **Two View Modes**: Supports `streaming` (animated dots) and `loading` (circle spinner) views
+- **Multiple Sizes**: Supports three sizes — `xs`, `s` (default), and `m`
+- **Animated**: Dots pulse in sequence using CSS animations to indicate an active loading state
 
 ## Usage
 
@@ -40,10 +39,7 @@ import {Loader} from '@/components/atoms/Loader';
 
 The component uses CSS variables for theming:
 
-### Background
-
-```css
-    --g-color-line-brand  /* Loading circle background */
-    --g-color-text-secondary   /* Streaming dots background */
-    --g-spacing-1 /* Streaming dots gap */
-```
+| Variable                   | Description                 |
+| -------------------------- | --------------------------- |
+| `--g-color-text-secondary` | Color of the streaming dots |
+| `--g-spacing-1`            | Gap between streaming dots  |

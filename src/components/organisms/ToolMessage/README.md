@@ -58,3 +58,13 @@ The component automatically configures footer actions and messages based on the 
 **Important**: Footer is only displayed for `waitingConfirmation` and `waitingSubmission` statuses. For other statuses, footer is hidden.
 
 If `footerActions` or `footerContent` are explicitly provided, they override the automatic generation.
+
+## Styling
+
+The component uses CSS variables for theming:
+
+| Variable               | Description                                                              |
+| ---------------------- | ------------------------------------------------------------------------ |
+| `--g-spacing-2`        | Padding and gap between content elements                                 |
+| `--g-border-radius-xl` | Border radius of the component container                                 |
+| `--g-color-line-brand` | Border color when status is `waitingConfirmation` or `waitingSubmission` |

@@ -4,8 +4,9 @@ Visual wrapper for user's message
 
 ## Features
 
-- **Visual**: Render message from user
-- **Theming**: Uses custom CSS variables with fallbacks to Gravity UI tokens
+- **Visual Wrapper**: Renders user message content with a styled balloon appearance
+- **Content Support**: Accepts any ReactNode as children
+- **Theming**: Background color and padding are customizable via CSS variables
 
 ## Usage
 
@@ -28,15 +29,8 @@ import {MessageBalloon} from '@/components/atoms/MessageBalloon';
 
 The component uses CSS variables for theming:
 
-### Background
-
-```css
---g-color-base-info-light  /* Background for user message*/
-```
-
-### Gaps
-
-```css
---g-spacing-2  /* Gap between message and border */
---g-spacing-3  /* Gap between message and border */
-```
+| Variable                    | Description                             |
+| --------------------------- | --------------------------------------- |
+| `--g-color-base-info-light` | Background color of the message balloon |
+| `--g-spacing-2`             | Vertical padding                        |
+| `--g-spacing-3`             | Horizontal padding and border radius    |

@@ -6,6 +6,7 @@ A MarkdownRenderer component for rendering Yandex Flavored Markdown (YFM) conten
 
 - **YFM Support**: Renders Yandex Flavored Markdown content
 - **HTML Output**: Converts markdown to HTML
+- **Transform Options**: Accepts custom options from the `@diplodoc/transform` package for advanced rendering control
 
 ## Usage
 
@@ -34,4 +35,10 @@ const transformOptions: OptionsType = {
 
 ## Styling
 
-The component uses CSS from [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. You can customize styles using CSS variables provided by the transform package.
+The component uses CSS variables for theming:
+
+| Variable                 | Description |
+| ------------------------ | ----------- |
+| `--g-color-text-primary` | Text color  |
+
+The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
