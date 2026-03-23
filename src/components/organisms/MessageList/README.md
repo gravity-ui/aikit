@@ -203,3 +203,14 @@ import {MessageList} from '@/components/organisms';
 | `loaderStatuses`          | `ChatStatus[]`                                                   | -        | `['submitted']` | Array of chat statuses that should display the loader                                                       |
 | `className`               | `string`                                                         | -        | -               | Additional CSS class                                                                                        |
 | `qa`                      | `string`                                                         | -        | -               | QA/test identifier                                                                                          |
+
+## Styling
+
+The component uses CSS variables for theming:
+
+| Variable                    | Description                                                |
+| --------------------------- | ---------------------------------------------------------- |
+| `--g-spacing-4`             | Gap between messages and top margin for loader/error alert |
+| `--g-spacing-2`             | Padding inside the load trigger container                  |
+| `--g-spacing-1`             | Gap between items in the retry button                      |
+| `--g-color-base-background` | Background color of the sticky rating block                |

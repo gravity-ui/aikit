@@ -1,7 +1,6 @@
 // Export all molecules
 export * from './BaseMessage';
 export * from './ButtonGroup';
-export * from './InputContext';
 export * from './PromptInputBody';
 export * from './PromptInputFooter';
 export * from './PromptInputHeader';
