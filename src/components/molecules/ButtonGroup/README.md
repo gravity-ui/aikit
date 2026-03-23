@@ -4,9 +4,9 @@ Wrapper for buttons group
 
 ## Features
 
-- **Two Orientation Modes**:
-  - `horizontal`
-  - `vertical`
+- **Two Orientation Modes**: Supports `horizontal` (default) and `vertical` layouts
+- **Flexible Wrapping**: Buttons wrap to the next line when there is not enough horizontal space
+- **Composable**: Accepts any number of child components
 
 ## Usage
 
@@ -33,8 +33,6 @@ import {ButtonGroup} from '@/components/molecules/ButtonGroup';
 
 The component uses CSS variables for theming:
 
-### Spacing
-
-```css
-    --g-spacing-1 /* Spacing between buttons */
-```
+| Variable        | Description         |
+| --------------- | ------------------- |
+| `--g-spacing-1` | Gap between buttons |

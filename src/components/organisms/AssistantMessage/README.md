@@ -177,3 +177,11 @@ registerMessageRenderer<CustomMessageContent>(registry, 'custom', {
   messageRendererRegistry={registry}
 />;
 ```
+
+## Styling
+
+The component uses CSS variables for theming:
+
+| Variable        | Description                          |
+| --------------- | ------------------------------------ |
+| `--g-spacing-3` | Gap between message content sections |

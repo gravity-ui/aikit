@@ -1,0 +1,17 @@
+name: PR Visual Tests
+
+on:
+  pull_request:
+
+jobs:
+  visual_tests:
+    name: Visual Tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-jammy
+    steps:
+      - uses: gravity-ui/component-tests-run-action@v1
+        with:
+          command: npm run playwright
+          report-path: ./playwright/report
+          node-version-file: '.nvmrc'

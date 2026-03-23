@@ -6,6 +6,7 @@ Component for displaying tool status with indicators and localized text
 
 - **Status Indicators**: Shows visual indicators for success, error, cancelled and loading states
 - **Internationalization**: Supports multiple languages (English and Russian)
+- **Lightweight**: Simple display component with no internal state management
 
 ## Usage
 

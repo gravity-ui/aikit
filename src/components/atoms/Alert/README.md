@@ -53,16 +53,9 @@ import {Alert} from '@/components/atoms/Alert';
 
 The component uses CSS variables for theming:
 
-### Colors
-
-```css
-    --g-color-text-info  /* Info color */
-    --g-color-text-warning-heavy   /* Warning color */
-    --g-color-text-danger /* Streaming dots gap */
-```
-
-### Gaps
-
-```css
-    --g-spacing-2 /* Internal gap */
-```
+| Variable                       | Description                              |
+| ------------------------------ | ---------------------------------------- |
+| `--g-color-text-danger`        | Icon color for `error` variant           |
+| `--g-color-text-warning-heavy` | Icon color for `warning` variant         |
+| `--g-color-text-info`          | Icon color for `info` variant            |
+| `--g-spacing-2`                | Gap between header elements and sections |

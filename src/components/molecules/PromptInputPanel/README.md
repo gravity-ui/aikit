@@ -66,7 +66,5 @@ The component uses CSS variables for theming:
 
 ```tsx
 /* Example: Inline styles */
-<PromptInputPanel className="custom-panel" isOpen={true} onClose={handleClose}>
-  Custom content
-</PromptInputPanel>
+<PromptInputPanel className="custom-panel">Custom content</PromptInputPanel>
 ```

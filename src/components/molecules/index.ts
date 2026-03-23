@@ -3,7 +3,6 @@ export * from './ActionPopup';
 export * from './BaseMessage';
 export * from './ButtonGroup';
 export * from './FeedbackForm';
-export * from './InputContext';
 export * from './PromptInputBody';
 export * from './PromptInputFooter';
 export * from './PromptInputHeader';
