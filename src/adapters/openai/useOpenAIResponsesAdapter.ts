@@ -162,6 +162,17 @@ export function useOpenAIStreamAdapter(
         const callbacks: ConsumeStreamCallbacks = {
             baseMessages,
             getAssistantMessageId,
+            onAssistantMessageIdResolved: (previousId, openaiItemId) => {
+                if (cancelled) return;
+                setMessages((prev) =>
+                    prev.map(
+                        (msg): TChatMessage =>
+                            msg.id === previousId && msg.role === 'assistant'
+                                ? ({...msg, id: openaiItemId} as TAssistantMessage)
+                                : msg,
+                    ),
+                );
+            },
             onContentUpdate: (messageId, content) => {
                 if (cancelled) return;
                 setMessages((prev) => {
