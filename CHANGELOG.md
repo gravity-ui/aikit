@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.4](https://github.com/gravity-ui/aikit/compare/v1.14.3...v1.14.4) (2026-03-26)
+
+
+### Bug Fixes
+
+* **OpenaiAdapter:** event loaders [DATAUI-3561] ([20ff8f0](https://github.com/gravity-ui/aikit/commit/20ff8f06bcd0214ffea2078281254ef2c9f3fcfb))
+
 ## [1.14.3](https://github.com/gravity-ui/aikit/compare/v1.14.2...v1.14.3) (2026-03-26)
 
 
