@@ -27,6 +27,11 @@ function isToolPart(p: TMessageContentUnion): p is Extract<TMessageContentUnion,
     return p.type === 'tool';
 }
 
+/**
+ * When the stream splits the reply into two consecutive assistant messages, the same tool call can
+ * appear in both. Moves matching tool parts into the earlier segment and drops the duplicate from
+ * the later one so the UI does not show orphaned repeats.
+ */
 export function collapseOrphanToolBetweenAssistantSegments(
     messages: TChatMessage[],
 ): TChatMessage[] {
@@ -84,6 +89,24 @@ export function collapseOrphanToolBetweenAssistantSegments(
     }
 
     return result;
+}
+
+/**
+ * Index of the assistant message that should receive streamed content for `messageId`.
+ * Uses an exact id match when present; otherwise the last assistant (current streaming segment),
+ * which covers events that reference an id before our list has caught up. Returns -1 if there is no assistant.
+ */
+function resolveStreamContentTargetIndex(messages: TChatMessage[], messageId: string): number {
+    const byId = messages.findIndex((m) => m.id === messageId && m.role === 'assistant');
+    if (byId >= 0) {
+        return byId;
+    }
+    for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].role === 'assistant') {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function getResponseIdFromEvent(event: OpenAIStreamEventLike): string | null {
@@ -162,15 +185,33 @@ export function useOpenAIStreamAdapter(
         const callbacks: ConsumeStreamCallbacks = {
             baseMessages,
             getAssistantMessageId,
+            // Provisional id from getAssistantMessageId → OpenAI item id once the stream provides it.
+            onAssistantMessageIdResolved: (previousId, openaiItemId) => {
+                if (cancelled) return;
+                setMessages((prev) =>
+                    collapseOrphanToolBetweenAssistantSegments(
+                        prev.map((msg): TChatMessage => {
+                            if (msg.id === previousId && msg.role === 'assistant') {
+                                return {...msg, id: openaiItemId} as TAssistantMessage;
+                            }
+                            return msg;
+                        }),
+                    ),
+                );
+            },
             onContentUpdate: (messageId, content) => {
                 if (cancelled) return;
                 setMessages((prev) => {
-                    const mapped = prev.map(
-                        (msg): TChatMessage =>
-                            msg.id === messageId && msg.role === 'assistant'
-                                ? ({...msg, content} as TAssistantMessage)
-                                : msg,
-                    );
+                    const targetIndex = resolveStreamContentTargetIndex(prev, messageId);
+                    if (targetIndex < 0) {
+                        return collapseOrphanToolBetweenAssistantSegments(prev);
+                    }
+                    const mapped = prev.map((msg, i) => {
+                        if (i !== targetIndex) {
+                            return msg;
+                        }
+                        return {...msg, content} as TAssistantMessage;
+                    });
                     return collapseOrphanToolBetweenAssistantSegments(mapped);
                 });
             },
@@ -189,6 +230,9 @@ export function useOpenAIStreamAdapter(
                 setStatus(s === 'done' ? 'ready' : s);
                 setError(err ?? null);
                 const normalized = collapseOrphanToolBetweenAssistantSegments(finalMessages);
+                if (!cancelled) {
+                    setMessages(normalized);
+                }
                 onStreamEndRef.current?.(normalized);
             },
             getIsCancelled: () => cancelled,

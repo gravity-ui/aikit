@@ -175,6 +175,21 @@ function getReasoningDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCo
     return {kind: 'thinking_done', item_id: reasoning.id, text};
 }
 
+function mcpOutputIndicatesApplicationError(output: string | undefined): boolean {
+    if (!output) return false;
+    return /\berror\s*=\s*["']true["']/.test(output);
+}
+
+function mcpTerminalToolStatus(
+    errStr: string | undefined,
+    outputStr: string | undefined,
+): 'success' | 'error' {
+    if (errStr || mcpOutputIndicatesApplicationError(outputStr)) {
+        return 'error';
+    }
+    return 'success';
+}
+
 function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventContentUpdate | null {
     if (item.type !== 'mcp_call' || typeof item.id !== 'string') return null;
     const mcp = item as {
@@ -185,9 +200,20 @@ function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCont
         output?: string;
         error?: string;
     };
+    const st = mcp.status ?? '';
+    const outputStr = typeof mcp.output === 'string' ? mcp.output : undefined;
+    const errStr = typeof mcp.error === 'string' ? mcp.error : undefined;
+
     let status: TToolStatus = 'loading';
-    if (mcp.status === 'completed') status = 'success';
-    else if (mcp.status === 'failed') status = 'error';
+    if (st === 'failed' || st === 'incomplete') {
+        status = 'error';
+    } else if (st === 'completed' || st === 'complete') {
+        status = mcpTerminalToolStatus(errStr, outputStr);
+    } else if (errStr) {
+        status = 'error';
+    } else if (outputStr !== undefined) {
+        status = mcpTerminalToolStatus(errStr, outputStr);
+    }
     let toolName: string | undefined;
     if (typeof mcp.name === 'string') toolName = mcp.name;
     else if (typeof mcp.server_label === 'string') toolName = mcp.server_label;
@@ -197,8 +223,8 @@ function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCont
         item_id: mcp.id,
         status,
         toolName,
-        output: typeof mcp.output === 'string' ? mcp.output : undefined,
-        error: typeof mcp.error === 'string' ? mcp.error : undefined,
+        output: outputStr,
+        error: errStr,
     };
 }
 

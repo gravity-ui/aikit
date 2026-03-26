@@ -474,4 +474,121 @@ describe('useOpenAIStreamAdapter', () => {
         expect(toolPart?.data?.status).toBe('error');
         expect(toolPart?.data?.bodyContent).toBe('Server unavailable');
     });
+
+    it('should set assistant message id from response.output_item.added (OpenAI msg-cc id)', async () => {
+        const openaiMsgId = 'msg-cc-b57e939d977d425c9f5d8cba584f384e';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: openaiMsgId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [{type: 'output_text', text: ''}],
+                },
+            },
+            {
+                type: 'response.output_text.delta',
+                delta: 'Hello',
+                item_id: openaiMsgId,
+                content_index: 0,
+                output_index: 0,
+            },
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() =>
+            useOpenAIStreamAdapter(stream, {
+                initialMessages: [],
+                assistantMessageId: 'client-temp',
+            }),
+        );
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        expect(result.current.messages).toHaveLength(1);
+        expect(result.current.messages[0].id).toBe(openaiMsgId);
+        expect(result.current.messages[0]).toMatchObject({
+            role: 'assistant',
+            content: 'Hello',
+        });
+    });
+
+    it('should assign distinct OpenAI message ids to successive assistant message segments', async () => {
+        const firstId = 'msg-cc-11111111111111111111111111111111';
+        const secondId = 'msg-cc-22222222222222222222222222222222';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: firstId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [{type: 'output_text', text: ''}],
+                },
+            },
+            {
+                type: 'response.output_text.delta',
+                delta: 'Part one.',
+                item_id: firstId,
+                content_index: 0,
+                output_index: 0,
+            },
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: firstId,
+                    role: 'assistant',
+                    status: 'completed',
+                    content: [{type: 'output_text', text: 'Part one.'}],
+                },
+            },
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: secondId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [{type: 'output_text', text: ''}],
+                },
+            },
+            {
+                type: 'response.output_text.delta',
+                delta: ' Part two.',
+                item_id: secondId,
+                content_index: 0,
+                output_index: 1,
+            },
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: secondId,
+                    role: 'assistant',
+                    status: 'completed',
+                    content: [{type: 'output_text', text: ' Part two.'}],
+                },
+            },
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        const assistantMessages = result.current.messages.filter((m) => m.role === 'assistant');
+        expect(assistantMessages).toHaveLength(2);
+        expect(assistantMessages[0].id).toBe(firstId);
+        expect(assistantMessages[0].content).toBe('Part one.');
+        expect(assistantMessages[1].id).toBe(secondId);
+        expect(assistantMessages[1].content).toBe(' Part two.');
+    });
 });

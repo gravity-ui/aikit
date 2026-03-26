@@ -4,6 +4,7 @@ import type {OpenAIStreamEventLike} from '../types';
 import {applyContentUpdate} from './applyContentUpdate';
 import {buildFinalMessages} from './buildFinalMessages';
 import {contentPartsToMessageContent} from './contentPartsToMessageContent';
+import {getOpenAIMessageItemIdFromOutputItemAdded} from './getOpenAIMessageItemIdFromOutputItemAdded';
 import {getStreamErrorMessage} from './getStreamErrorMessage';
 import {getStreamEventContentUpdate} from './getStreamEventContentUpdate';
 import {isMessageOutputItemDoneEvent} from './isMessageOutputItemDoneEvent';
@@ -12,6 +13,8 @@ import {isStreamEndOrErrorEvent} from './isStreamEndOrErrorEvent';
 export type ConsumeStreamCallbacks = {
     baseMessages: TChatMessage[];
     getAssistantMessageId: (index: number) => string;
+    /** When the API sends `response.output_item.added` for a message, exposes OpenAI item id (e.g. msg-cc-…) for reactions. */
+    onAssistantMessageIdResolved?: (previousId: string, openaiItemId: string) => void;
     onContentUpdate: (messageId: string, content: TAssistantMessage['content']) => void;
     onNewMessage: (messageId: string) => void;
     onEnd: (finalMessages: TChatMessage[], status: 'done' | 'error', error?: Error) => void;
@@ -27,6 +30,7 @@ export async function consumeOpenAIStream(
     const {
         baseMessages,
         getAssistantMessageId,
+        onAssistantMessageIdResolved,
         onContentUpdate,
         onNewMessage,
         onEnd,
@@ -46,6 +50,16 @@ export async function consumeOpenAIStream(
     try {
         for await (const event of stream) {
             if (getIsCancelled()) return;
+
+            const openaiMessageItemId = getOpenAIMessageItemIdFromOutputItemAdded(event);
+            if (openaiMessageItemId && openaiMessageItemId !== currentAssistantMessageId) {
+                const previousId = currentAssistantMessageId;
+                currentAssistantMessageId = openaiMessageItemId;
+                if (!getIsCancelled()) {
+                    onAssistantMessageIdResolved?.(previousId, openaiMessageItemId);
+                }
+                continue;
+            }
 
             if (isStreamEndOrErrorEvent(event)) {
                 const e = event as Record<string, unknown>;
