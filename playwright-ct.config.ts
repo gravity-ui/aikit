@@ -29,7 +29,7 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
 
     // Reporter to use
-    reporter: 'html',
+    reporter: [['html', {outputFolder: resolve(__dirname, 'playwright/report')}]],
 
     // Screenshot comparison settings
     expect: {

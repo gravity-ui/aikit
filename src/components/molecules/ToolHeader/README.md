@@ -65,3 +65,12 @@ Type: `'success' | 'error' | 'loading'`
 | `success` | Success status indicator |
 | `error`   | Error status indicator   |
 | `loading` | Loading status indicator |
+
+## Styling
+
+The component uses CSS variables for theming:
+
+| Variable        | Description                                   |
+| --------------- | --------------------------------------------- |
+| `--g-spacing-2` | Gap between main sections and left-side items |
+| `--g-spacing-3` | Gap between right-side action items           |

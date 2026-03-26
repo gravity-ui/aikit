@@ -49,3 +49,11 @@ const actions: Action[] = [
 | `onClick` | `() => void`      | -        | Handler for button click          |
 | `view`    | `ButtonView`      | -        | Button view style from Gravity UI |
 | `icon`    | `React.ReactNode` | -        | Icon to display in button         |
+
+## Styling
+
+The component uses CSS variables for theming:
+
+| Variable        | Description                           |
+| --------------- | ------------------------------------- |
+| `--g-spacing-2` | Gap between items in the left section |
