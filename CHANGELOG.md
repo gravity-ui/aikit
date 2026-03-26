@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.3](https://github.com/gravity-ui/aikit/compare/v1.14.2...v1.14.3) (2026-03-26)
+
+
+### Bug Fixes
+
+* **components:** change docs by lib's rules ([1b621ce](https://github.com/gravity-ui/aikit/commit/1b621ce6d460d96cae885a122ee6b8767b25b078))
+
 ## [1.14.2](https://github.com/gravity-ui/aikit/compare/v1.14.1...v1.14.2) (2026-03-20)
 
 
