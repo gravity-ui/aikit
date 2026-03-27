@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {ContextIndicatorStories} from './helpersPlaywright';
 
@@ -67,6 +67,34 @@ test.describe('ContextIndicator', {tag: '@ContextIndicator'}, () => {
     });
     test('should render with number at half', async ({mount, expectScreenshot}) => {
         await mount(<ContextIndicatorStories.WithNumberHalf />);
+
+        await expectScreenshot();
+    });
+    test('should render with tooltip string', async ({mount, expectScreenshot}) => {
+        await mount(<ContextIndicatorStories.WithTooltip />);
+
+        await expectScreenshot();
+    });
+    test('should show tooltip on hover', async ({mount, page, expectScreenshot}) => {
+        await mount(<ContextIndicatorStories.WithTooltip />);
+
+        await page.locator('.g-aikit-context-indicator__container').hover();
+
+        await expect(page.getByText('750 / 1000 tokens used')).toBeVisible();
+
+        await expectScreenshot();
+    });
+    test('should render with tooltip react node', async ({mount, expectScreenshot}) => {
+        await mount(<ContextIndicatorStories.WithTooltipReactNode />);
+
+        await expectScreenshot();
+    });
+    test('should show react node tooltip on hover', async ({mount, page, expectScreenshot}) => {
+        await mount(<ContextIndicatorStories.WithTooltipReactNode />);
+
+        await page.locator('.g-aikit-context-indicator__container').hover();
+
+        await expect(page.getByText('Context usage')).toBeVisible();
 
         await expectScreenshot();
     });

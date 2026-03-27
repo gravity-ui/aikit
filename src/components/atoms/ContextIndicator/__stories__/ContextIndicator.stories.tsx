@@ -1,3 +1,4 @@
+import {Text} from '@gravity-ui/uikit';
 import {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {ContextIndicator, type ContextIndicatorProps} from '..';
@@ -44,6 +45,10 @@ export default {
         qa: {
             control: 'text',
             description: 'QA/test identifier',
+        },
+        tooltipContent: {
+            control: 'text',
+            description: 'Content to show on hover in a tooltip (string or ReactNode)',
         },
     },
 } as Meta;
@@ -198,6 +203,51 @@ export const AllReversedVariants: StoryFn<ContextIndicatorProps> = (args) => (
                 </div>
             </div>
         </div>
+    </ContentWrapper>
+);
+
+export const WithTooltip: StoryFn<ContextIndicatorProps> = (args) => (
+    <ContentWrapper
+        width="150px"
+        height="150px"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+    >
+        <ContextIndicator
+            {...args}
+            type="number"
+            usedContext={750}
+            maxContext={1000}
+            tooltipContent="750 / 1000 tokens used"
+        />
+    </ContentWrapper>
+);
+
+export const WithTooltipReactNode: StoryFn<ContextIndicatorProps> = (args) => (
+    <ContentWrapper
+        width="150px"
+        height="150px"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+    >
+        <ContextIndicator
+            {...args}
+            type="number"
+            usedContext={750}
+            maxContext={1000}
+            tooltipContent={
+                <div>
+                    <Text variant="body-2" as="div">
+                        Context usage
+                    </Text>
+                    <Text color="secondary" as="div">
+                        750 / 1000 tokens used
+                    </Text>
+                </div>
+            }
+        />
     </ContentWrapper>
 );
 

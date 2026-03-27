@@ -34,6 +34,8 @@ export function ChatContainer(props: ChatContainerProps) {
         error = null,
         showActionsOnHover = false,
         contextItems = [],
+        showContextIndicator,
+        contextIndicatorProps,
         transformOptions,
         shouldParseIncompleteMarkdown,
         messageListConfig,
@@ -174,6 +176,10 @@ export function ChatContainer(props: ChatContainerProps) {
             headerProps: {
                 ...promptInputProps?.headerProps,
                 contextItems,
+                showContextIndicator:
+                    showContextIndicator ?? promptInputProps?.headerProps?.showContextIndicator,
+                contextIndicatorProps:
+                    contextIndicatorProps ?? promptInputProps?.headerProps?.contextIndicatorProps,
             },
             bodyProps: {
                 ...promptInputProps?.bodyProps,
@@ -193,6 +199,8 @@ export function ChatContainer(props: ChatContainerProps) {
             onCancel,
             status,
             contextItems,
+            showContextIndicator,
+            contextIndicatorProps,
             i18nConfig.promptInput,
             i18nConfig.submitButton,
             promptInputProps,

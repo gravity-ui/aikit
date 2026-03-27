@@ -872,6 +872,40 @@ export const WithContextItemsAndIndicator: Story = {
 };
 
 /**
+ * With context indicator and tooltip
+ */
+export const WithContextIndicatorTooltip: Story = {
+    args: {
+        messages: mockMessages,
+        showContextIndicator: true,
+        contextIndicatorProps: {
+            type: 'number',
+            usedContext: 750,
+            maxContext: 1000,
+            tooltipContent: '750 / 1000 tokens used',
+        },
+        promptInputProps: {
+            view: 'full',
+        },
+    },
+    render: (args) => {
+        const [messages, setMessages] = useState<TChatMessage[]>(args.messages || []);
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const userMessage: TChatMessage = {
+                id: Date.now().toString(),
+                role: 'user',
+                content: data.content,
+            };
+            setMessages((prev) => [...prev, userMessage]);
+        };
+
+        return <ChatContainer {...args} messages={messages} onSendMessage={handleSendMessage} />;
+    },
+    decorators: defaultDecorators,
+};
+
+/**
  * With loading state
  */
 export const LoadingState: Story = {

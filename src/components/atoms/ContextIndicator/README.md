@@ -10,6 +10,7 @@ A circular progress indicator that visualizes context usage as a percentage (0-1
   - `percent`: Direct percentage value
   - `number`: Calculates percentage from used/max context
 - **Theming**: Uses custom CSS variables with fallbacks to Gravity UI tokens
+- **Tooltip**: Optional hover tooltip supporting plain text or custom ReactNode
 
 ## Usage
 
@@ -29,19 +30,36 @@ import {ContextIndicator} from '@/components/atoms/ContextIndicator';
 // Reversed variants (value before indicator)
 <ContextIndicator type="percent" usedContext={50} orientation="horizontal" reversed />
 <ContextIndicator type="percent" usedContext={50} orientation="vertical" reversed />
+
+// With tooltip (string)
+<ContextIndicator type="number" usedContext={750} maxContext={1000} tooltipContent="750 / 1000 tokens used" />
+
+// With tooltip (ReactNode)
+<ContextIndicator
+  type="number"
+  usedContext={750}
+  maxContext={1000}
+  tooltipContent={
+    <div>
+      <div>Context usage</div>
+      <div>750 / 1000 tokens used</div>
+    </div>
+  }
+/>
 ```
 
 ## Props
 
-| Prop          | Type                         | Required                 | Default        | Description                                                                         |
-| ------------- | ---------------------------- | ------------------------ | -------------- | ----------------------------------------------------------------------------------- |
-| `type`        | `'percent' \| 'number'`      | ✓                        | -              | Input mode: `'percent'` for direct value, `'number'` to calculate from used/max     |
-| `usedContext` | `number`                     | ✓                        | -              | For `'percent'`: percentage value (0-100)<br/>For `'number'`: current context usage |
-| `maxContext`  | `number`                     | ✓ (when `type='number'`) | -              | Maximum context available (only for `type='number'`)                                |
-| `className`   | `string`                     | -                        | -              | Additional CSS class                                                                |
-| `qa`          | `string`                     | -                        | -              | QA/test identifier                                                                  |
-| `orientation` | `'horizontal' \| 'vertical'` | -                        | `'horizontal'` | Layout orientation                                                                  |
-| `reversed`    | `boolean`                    | -                        | `false`        | Reverses the order of indicator and value text                                      |
+| Prop             | Type                         | Required                 | Default        | Description                                                                         |
+| ---------------- | ---------------------------- | ------------------------ | -------------- | ----------------------------------------------------------------------------------- |
+| `type`           | `'percent' \| 'number'`      | ✓                        | -              | Input mode: `'percent'` for direct value, `'number'` to calculate from used/max     |
+| `usedContext`    | `number`                     | ✓                        | -              | For `'percent'`: percentage value (0-100)<br/>For `'number'`: current context usage |
+| `maxContext`     | `number`                     | ✓ (when `type='number'`) | -              | Maximum context available (only for `type='number'`)                                |
+| `className`      | `string`                     | -                        | -              | Additional CSS class                                                                |
+| `qa`             | `string`                     | -                        | -              | QA/test identifier                                                                  |
+| `orientation`    | `'horizontal' \| 'vertical'` | -                        | `'horizontal'` | Layout orientation                                                                  |
+| `reversed`       | `boolean`                    | -                        | `false`        | Reverses the order of indicator and value text                                      |
+| `tooltipContent` | `ReactNode`                  | -                        | -              | Content shown in a tooltip on hover; if omitted no tooltip is rendered              |
 
 ## Styling
 

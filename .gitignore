@@ -29,6 +29,7 @@ storybook-static/
 # Playwright
 test-results/
 playwright-report/
+playwright/report/
 playwright/.cache/
 
 # Misc
