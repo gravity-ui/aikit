@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/gravity-ui/aikit/compare/v1.14.4...v1.15.0) (2026-03-30)
+
+
+### Features
+
+* **ContextIndicator:** add tooltip props for context ([deb7841](https://github.com/gravity-ui/aikit/commit/deb78419b34ae7d2692243b0f3f4c837c5e27d97))
+
 ## [1.14.4](https://github.com/gravity-ui/aikit/compare/v1.14.3...v1.14.4) (2026-03-26)
 
 
