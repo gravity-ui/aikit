@@ -448,6 +448,26 @@
         "default": "./build/cjs/components/molecules/ToolStatus/index.js"
       }
     },
+    "./ActionPopup": {
+      "import": {
+        "types": "./build/esm/components/molecules/ActionPopup/index.d.ts",
+        "default": "./build/esm/components/molecules/ActionPopup/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/molecules/ActionPopup/index.d.ts",
+        "default": "./build/cjs/components/molecules/ActionPopup/index.js"
+      }
+    },
+    "./FeedbackForm": {
+      "import": {
+        "types": "./build/esm/components/molecules/FeedbackForm/index.d.ts",
+        "default": "./build/esm/components/molecules/FeedbackForm/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/molecules/FeedbackForm/index.d.ts",
+        "default": "./build/cjs/components/molecules/FeedbackForm/index.js"
+      }
+    },
     "./AssistantMessage": {
       "import": {
         "types": "./build/esm/components/organisms/AssistantMessage/index.d.ts",

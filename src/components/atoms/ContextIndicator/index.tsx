@@ -1,4 +1,6 @@
-import {CSSProperties} from '@gravity-ui/uikit';
+import {CSSProperties, ReactNode} from 'react';
+
+import {Tooltip} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
@@ -14,6 +16,8 @@ type CommonProps = {
     qa?: string;
     orientation?: 'horizontal' | 'vertical';
     reversed?: boolean;
+    /** Content to show on hover in a tooltip */
+    tooltipContent?: ReactNode;
 };
 
 type NumberProps = {
@@ -29,7 +33,7 @@ type PercentProps = {
 export type ContextIndicatorProps = NumberProps | PercentProps;
 
 export const ContextIndicator = (props: ContextIndicatorProps) => {
-    const {className, qa, orientation = 'horizontal', reversed = false} = props;
+    const {className, qa, orientation = 'horizontal', reversed = false, tooltipContent} = props;
 
     const percentage =
         props.type === 'number'
@@ -38,7 +42,7 @@ export const ContextIndicator = (props: ContextIndicatorProps) => {
 
     const clampedPercentage = Math.min(Math.max(percentage, 0), 100);
 
-    return (
+    const content = (
         <div className={b('container', {orientation, reversed}, className)} data-qa={qa}>
             <div
                 className={b('progress')}
@@ -54,4 +58,10 @@ export const ContextIndicator = (props: ContextIndicatorProps) => {
             <div className={b('value')}>{clampedPercentage}</div>
         </div>
     );
+
+    if (tooltipContent) {
+        return <Tooltip content={tooltipContent}>{content}</Tooltip>;
+    }
+
+    return content;
 };

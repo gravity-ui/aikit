@@ -4,6 +4,7 @@ import {MessageListProps} from 'src/components/organisms/MessageList';
 
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
+import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {HeaderProps} from '../../organisms/Header';
@@ -147,6 +148,10 @@ export interface ChatContainerProps {
     // Context
     /** Array of context items to display in prompt input header */
     contextItems?: ContextItemConfig[];
+    /** Show context indicator in prompt input header */
+    showContextIndicator?: boolean;
+    /** Props for the context indicator */
+    contextIndicatorProps?: ContextIndicatorProps;
     /** Transform options for markdown rendering */
     transformOptions?: OptionsType;
     /** Should parse incomplete markdown (e.g., during streaming) */
