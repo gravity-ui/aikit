@@ -671,6 +671,7 @@
     "@types/jest": "^29.5.14",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
+    "@types/sanitize-html": "^2.16.1",
     "@types/uuid": "^11.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-storybook": "^9.0.5",
