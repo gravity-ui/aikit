@@ -1,6 +1,5 @@
 'use client';
 
-import {defaultOptions} from '@diplodoc/transform/lib/sanitize';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 import {ChevronDown, ChevronUp, Copy} from '@gravity-ui/icons';
 import {Button, DOMProps, Icon, QAProps, Text} from '@gravity-ui/uikit';
@@ -25,12 +24,12 @@ export type ThinkingMessageProps = DOMProps &
     QAProps &
     ThinkingMessageContentData & {
         /**
-         * Enable markdown rendering for thinking content
-         * @default false
+         * How thinking content strings are rendered.
+         * @default 'plain'
          */
-        enableMarkdown?: boolean;
+        format?: 'plain' | 'markdown';
         /**
-         * Options for @diplodoc/transform when `enableMarkdown` is true.
+         * Options for @diplodoc/transform when `format` is `'markdown'`.
          * Shallow-merged with the component defaults (`disableCommonAnchors: true`).
          */
         transformOptions?: OptionsType;
@@ -38,15 +37,6 @@ export type ThinkingMessageProps = DOMProps &
 
 const defaultTransformOptions: OptionsType = {
     disableCommonAnchors: true,
-    needToSanitizeHtml: true,
-    sanitizeOptions: {
-        // White list to avoid elements like h1-6, etc.
-        allowedTags: ['a', 'b', 'code', 'del', 'em', 'i', 'li', 'ol', 's', 'strong', 'ul'],
-        allowedAttributes: {
-            ...defaultOptions.allowedAttributes,
-            code: ['class'],
-        },
-    },
 };
 
 /**
@@ -58,15 +48,11 @@ const defaultTransformOptions: OptionsType = {
  * @returns Rendered thinking message component
  */
 export const ThinkingMessage = (props: ThinkingMessageProps) => {
-    const {className, qa, style, enableMarkdown = false, transformOptions, ...data} = props;
+    const {className, qa, style, format = 'plain', transformOptions, ...data} = props;
 
     const markdownTransformOptions: OptionsType = {
         ...defaultTransformOptions,
         ...transformOptions,
-        sanitizeOptions: {
-            ...defaultTransformOptions.sanitizeOptions,
-            ...transformOptions?.sanitizeOptions,
-        },
     };
 
     const {
@@ -99,7 +85,7 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
             {isExpanded && (
                 <div className={b('container')}>
                     {content.map((item, index) =>
-                        enableMarkdown ? (
+                        format === 'markdown' ? (
                             <MarkdownRenderer
                                 className={b('content')}
                                 key={index}

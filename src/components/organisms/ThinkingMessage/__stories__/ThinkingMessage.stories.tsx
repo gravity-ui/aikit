@@ -34,9 +34,10 @@ export default {
             control: 'boolean',
             description: 'Show loader when status is "thinking"',
         },
-        enableMarkdown: {
-            control: 'boolean',
-            description: 'Enable markdown rendering for thinking content',
+        format: {
+            control: 'select',
+            options: ['plain', 'markdown'],
+            description: 'How thinking content strings are rendered',
         },
         className: {
             control: 'text',
@@ -163,7 +164,7 @@ export const WithMarkdown: StoryObj<ThinkingMessageProps> = {
                     {...markdownData}
                     defaultExpanded={true}
                     showStatusIndicator={false}
-                    enableMarkdown={true}
+                    format="markdown"
                 />
             </ContentWrapper>
         </ShowcaseItem>
