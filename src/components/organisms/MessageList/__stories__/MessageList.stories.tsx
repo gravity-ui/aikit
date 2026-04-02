@@ -1035,3 +1035,89 @@ export const WithMultipleActionPopups: StoryObj<MessageListProps> = {
     },
     decorators: defaultDecorators,
 };
+
+/**
+ * Demonstrates `assistantExtraInfo` — a React component that receives the message
+ * and renders contextual info alongside the action buttons.
+ * Token count comes from `message.metadata.outputTokens`, which
+ * `useOpenAIStreamAdapter` populates when `trackTokenUsage: true`.
+ */
+export const WithExtraInfo: StoryObj<MessageListProps> = {
+    render: () => {
+        type AssistantWithMeta = TAssistantMessage & {metadata?: {outputTokens?: number}};
+
+        const messages: Array<TUserMessage | TAssistantMessage> = [
+            {
+                id: 'user-1',
+                role: 'user',
+                timestamp: '2024-01-01T10:00:00Z',
+                content: 'What is the capital of France?',
+            },
+            {
+                id: 'assistant-1',
+                role: 'assistant',
+                timestamp: '2024-01-01T10:00:05Z',
+                content: 'The capital of France is Paris.',
+                metadata: {outputTokens: 42},
+            },
+            {
+                id: 'user-2',
+                role: 'user',
+                timestamp: '2024-01-01T10:00:10Z',
+                content: 'And the capital of Germany?',
+            },
+            {
+                id: 'assistant-2',
+                role: 'assistant',
+                timestamp: '2024-01-01T10:00:15Z',
+                content: 'The capital of Germany is Berlin.',
+                metadata: {outputTokens: 38},
+            },
+            {
+                id: 'assistant-no-tokens',
+                role: 'assistant',
+                timestamp: '2024-01-01T10:00:20Z',
+                content: 'This message has no token count (metadata.outputTokens is absent).',
+            },
+        ];
+
+        const assistantActions = [
+            {
+                type: BaseMessageActionType.Copy,
+                onClick: (message: TAssistantMessage) => {
+                    const text =
+                        typeof message.content === 'string'
+                            ? message.content
+                            : JSON.stringify(message.content);
+                    console.log('Copy:', text);
+                },
+            },
+        ];
+
+        const TokenCount = ({message}: {message: TAssistantMessage}) => {
+            const tokens = (message as AssistantWithMeta).metadata?.outputTokens;
+            if (tokens === null) {
+                return null;
+            }
+            return (
+                <Text variant="caption-2" color="secondary">
+                    {tokens} tokens
+                </Text>
+            );
+        };
+
+        return (
+            <ShowcaseItem title="Token count via assistantExtraInfo component">
+                <ContentWrapper width="600px" height="500px" display="flex">
+                    <MessageList
+                        messages={messages}
+                        assistantActions={assistantActions}
+                        assistantExtraInfo={TokenCount}
+                        showActionsOnHover={false}
+                    />
+                </ContentWrapper>
+            </ShowcaseItem>
+        );
+    },
+    decorators: defaultDecorators,
+};

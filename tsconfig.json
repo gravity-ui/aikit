@@ -4,8 +4,9 @@
     "declaration": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "build/esm",
+    "noEmit": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
@@ -15,5 +16,5 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.test.tsx", "src/demo/**", "src/server/**"]
+  "exclude": ["src/demo/**", "src/server/**"]
 }

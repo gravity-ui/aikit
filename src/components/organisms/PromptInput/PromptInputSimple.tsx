@@ -43,6 +43,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
         bottomContent,
         showAttachment = false,
         onAttachmentClick,
+        attachmentContent,
         showMicrophone = false,
         onMicrophoneClick,
         submitButtonTooltipSend,
@@ -76,6 +77,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                     }}
                     showAttachment={showAttachment}
                     onAttachmentClick={onAttachmentClick}
+                    attachmentContent={attachmentContent}
                     showMicrophone={showMicrophone}
                     onMicrophoneClick={onMicrophoneClick}
                     buttonSize="l"

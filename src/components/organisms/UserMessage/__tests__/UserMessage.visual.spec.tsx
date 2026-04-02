@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {test} from '~playwright/core';
 
 import {UserMessageStories} from './helpersPlaywright';
@@ -29,6 +27,18 @@ test.describe('UserMessage', {tag: '@UserMessage'}, () => {
     });
     test('should render with markdown format', async ({mount, expectScreenshot}) => {
         await mount(<UserMessageStories.MarkdownFormat />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with images and text', async ({mount, expectScreenshot}) => {
+        await mount(<UserMessageStories.WithImages />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with images only', async ({mount, expectScreenshot}) => {
+        await mount(<UserMessageStories.WithImagesOnly />);
 
         await expectScreenshot();
     });

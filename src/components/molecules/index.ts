@@ -14,3 +14,5 @@ export * from './Tabs';
 export * from './ToolFooter';
 export * from './ToolHeader';
 export * from './ToolStatus';
+export * from './FileItem';
+export * from './FileDropZone';

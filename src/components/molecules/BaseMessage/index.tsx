@@ -32,6 +32,7 @@ export const BaseMessage = (props: BaseMessageProps) => {
         qa,
         showActionsOnHover,
         actions,
+        extraInfo,
         children,
         role: variant,
         showTimestamp,
@@ -53,69 +54,76 @@ export const BaseMessage = (props: BaseMessageProps) => {
         }
     };
     const hasActions = actions && actions.length > 0;
+    const showFooter = hasActions || Boolean(extraInfo);
 
     return (
         <div className={b({variant, 'btn-hover': showActionsOnHover}, className)} data-qa={qa}>
             {children}
-            {hasActions && (
+            {showFooter && (
                 <div className={b('actions', {reverse: variant !== 'user'})}>
                     {showTimestamp ? <ChatDate date={timestamp} format="HH:mm" showTime /> : null}
-                    <ButtonGroup>
-                        {actions?.map((action, index) => {
-                            if (!isActionConfig(action)) {
-                                return <React.Fragment key={index}>{action}</React.Fragment>;
-                            }
+                    {hasActions && (
+                        <ButtonGroup>
+                            {actions?.map((action, index) => {
+                                if (!isActionConfig(action)) {
+                                    return <React.Fragment key={index}>{action}</React.Fragment>;
+                                }
 
-                            const tooltipText = getTooltipText(action.actionType);
+                                const tooltipText = getTooltipText(action.actionType);
 
-                            const defaultIcon = getDefaultIcon(action.actionType, userRating);
+                                const defaultIcon = getDefaultIcon(action.actionType, userRating);
 
-                            // Determine tooltip title
-                            let tooltipTitle: string | undefined;
-                            if (action.label) {
-                                tooltipTitle = action.label;
-                            } else if (tooltipText && action.actionType !== 'custom') {
-                                tooltipTitle = tooltipText;
-                            }
+                                // Determine tooltip title
+                                let tooltipTitle: string | undefined;
+                                if (action.label) {
+                                    tooltipTitle = action.label;
+                                } else if (tooltipText && action.actionType !== 'custom') {
+                                    tooltipTitle = tooltipText;
+                                }
 
-                            // Determine button content
-                            let buttonContent: React.ReactNode;
-                            if (action.icon) {
-                                buttonContent = action.icon;
-                            } else if (defaultIcon) {
-                                buttonContent = <Icon size={16} data={defaultIcon} />;
-                            } else if (action.label) {
-                                buttonContent = action.label;
-                            } else {
-                                buttonContent = action.actionType;
-                            }
+                                // Exclude custom props that shouldn't be passed to DOM
+                                const {
+                                    actionType: _actionType,
+                                    popup: _popup,
+                                    icon: _icon,
+                                    label: _label,
+                                    children: actionChildren,
+                                    onClick: actionOnClick,
+                                    ...buttonProps
+                                } = action;
 
-                            // Exclude custom props that shouldn't be passed to DOM
-                            const {
-                                actionType: _actionType,
-                                popup: _popup,
-                                icon: _icon,
-                                label: _label,
-                                onClick: actionOnClick,
-                                ...buttonProps
-                            } = action;
+                                // Determine button content; children takes precedence over icon
+                                let buttonContent: React.ReactNode;
+                                if (actionChildren) {
+                                    buttonContent = actionChildren;
+                                } else if (action.icon) {
+                                    buttonContent = action.icon;
+                                } else if (defaultIcon) {
+                                    buttonContent = <Icon size={16} data={defaultIcon} />;
+                                } else if (action.label) {
+                                    buttonContent = action.label;
+                                } else {
+                                    buttonContent = action.actionType;
+                                }
 
-                            return (
-                                <ActionButton
-                                    key={action.actionType || index}
-                                    {...buttonProps}
-                                    tooltipTitle={tooltipTitle}
-                                    view={action.view || 'flat-secondary'}
-                                    onClick={(e) => {
-                                        onActionPopup?.(action, e.currentTarget);
-                                        actionOnClick?.(e);
-                                    }}
-                                >
-                                    {buttonContent}
-                                </ActionButton>
-                            );
-                        })}
-                    </ButtonGroup>
+                                return (
+                                    <ActionButton
+                                        key={action.actionType || index}
+                                        {...buttonProps}
+                                        tooltipTitle={tooltipTitle}
+                                        view={action.view || 'flat-secondary'}
+                                        onClick={(e) => {
+                                            onActionPopup?.(action, e.currentTarget);
+                                            actionOnClick?.(e);
+                                        }}
+                                    >
+                                        {buttonContent}
+                                    </ActionButton>
+                                );
+                            })}
+                        </ButtonGroup>
+                    )}
+                    {extraInfo}
                 </div>
             )}
         </div>
