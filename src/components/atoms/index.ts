@@ -14,3 +14,4 @@ export * from './MessageBalloon';
 export * from './Shimmer';
 export * from './SubmitButton';
 export * from './ToolIndicator';
+export * from './FileIcon';

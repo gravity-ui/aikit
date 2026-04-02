@@ -5,6 +5,7 @@ import {useScrollPreservation, useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
 import type {
     DefaultMessageAction,
+    MessageExtraInfoComponent,
     TAssistantMessage,
     TChatMessage,
     TMessageContent,
@@ -61,6 +62,10 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     showAvatar?: boolean;
     userActions?: DefaultMessageAction<TUserMessage<TMessageMetadata>>[];
     assistantActions?: DefaultMessageAction<TAssistantMessage<TContent, TMessageMetadata>>[];
+    /** Component rendered alongside action buttons for each user message. Receives message as prop. */
+    userExtraInfo?: MessageExtraInfoComponent<TUserMessage<TMessageMetadata>>;
+    /** Component rendered alongside action buttons for each assistant message. Receives message as prop. */
+    assistantExtraInfo?: MessageExtraInfoComponent<TAssistantMessage<TContent, TMessageMetadata>>;
     /** Array of chat statuses that should display the loader */
     loaderStatuses?: ChatStatus[];
     className?: string;
@@ -83,6 +88,8 @@ export function MessageList<TContent extends TMessageContent = never>({
     showAvatar,
     userActions,
     assistantActions,
+    userExtraInfo: UserExtraInfo,
+    assistantExtraInfo: AssistantExtraInfo,
     loaderStatuses = ['submitted', 'streaming_loading'],
     className,
     qa,
@@ -122,9 +129,12 @@ export function MessageList<TContent extends TMessageContent = never>({
                     key={message.id || `message-${index}`}
                     content={message.content}
                     actions={actions}
+                    extraInfo={UserExtraInfo ? <UserExtraInfo message={message} /> : undefined}
                     timestamp={message.timestamp}
                     format={message.format}
                     avatarUrl={message.avatarUrl}
+                    images={message.images}
+                    fileAttachments={message.fileAttachments}
                     transformOptions={transformOptions}
                     shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                     showActionsOnHover={showActionsOnHover}
@@ -151,6 +161,9 @@ export function MessageList<TContent extends TMessageContent = never>({
                     key={message.id || `message-${index}`}
                     content={message.content}
                     actions={actions}
+                    extraInfo={
+                        AssistantExtraInfo ? <AssistantExtraInfo message={message} /> : undefined
+                    }
                     timestamp={message.timestamp}
                     id={message.id}
                     messageRendererRegistry={messageRendererRegistry}

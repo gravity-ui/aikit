@@ -13,13 +13,18 @@ A Disclaimer component displays informational or warning messages
 ```tsx
 import {Disclaimer} from '@/components/atoms/Disclaimer';
 
-// With text prop
+// With plain string text
 <Disclaimer text="This is a disclaimer message" />
 
-// With custom text variant
+// With custom text variant (applied only for string text)
 <Disclaimer
   text="Small disclaimer"
   variant="caption-2"
+/>
+
+// With React node as text
+<Disclaimer
+  text={<span>Text with <strong>bold</strong> part</span>}
 />
 
 // With children
@@ -42,13 +47,13 @@ import {Disclaimer} from '@/components/atoms/Disclaimer';
 
 ## Props
 
-| Prop        | Type                   | Required | Default    | Description                                                     |
-| ----------- | ---------------------- | -------- | ---------- | --------------------------------------------------------------- |
-| `text`      | `string`               | -        | -          | Disclaimer text                                                 |
-| `variant`   | `TextProps['variant']` | -        | `'body-1'` | Text variant for typography styling from @gravity-ui/uikit Text |
-| `children`  | `React.ReactNode`      | -        | -          | Custom content                                                  |
-| `className` | `string`               | -        | -          | Additional CSS class                                            |
-| `qa`        | `string`               | -        | -          | QA/test identifier                                              |
+| Prop        | Type                        | Required | Default    | Description                                                                      |
+| ----------- | --------------------------- | -------- | ---------- | -------------------------------------------------------------------------------- |
+| `text`      | `string \| React.ReactNode` | -        | -          | Disclaimer text — plain string or any React node                                 |
+| `variant`   | `TextProps['variant']`      | -        | `'body-1'` | Text variant for typography styling (applied only when `text` is a plain string) |
+| `children`  | `React.ReactNode`           | -        | -          | Custom content                                                                   |
+| `className` | `string`                    | -        | -          | Additional CSS class                                                             |
+| `qa`        | `string`                    | -        | -          | QA/test identifier                                                               |
 
 ## Text Variants
 

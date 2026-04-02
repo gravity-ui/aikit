@@ -25,9 +25,11 @@ Use for **streaming** responses: consumes an SSE stream or an `AsyncIterable` of
 - `fetch()` Response with `Content-Type: text/event-stream` (e.g. from a proxy or custom endpoint)
 - `AsyncIterable<OpenAIStreamEventLike>` (e.g. `openai.responses.create({ stream: true })`)
 
-**Options:** `initialMessages`, `assistantMessageId`, `onStreamEnd`.
+**Options:** `initialMessages`, `assistantMessageId`, `onStreamEnd`, `trackTokenUsage`.
 
 **Result:** `{ messages, status, error, responseId }` where `responseId` is populated from stream lifecycle events such as `response.created`, and `status` is `'idle' | 'streaming' | 'done' | 'error'`.
+
+**`trackTokenUsage` option (opt-in):** When `true`, the adapter listens for `response.completed` events and stores `output_tokens` from the usage data in each assistant message's `metadata.outputTokens`. Disabled by default — no metadata is added unless explicitly enabled. Use together with a `children` render function in `assistantActions` to display the count in the UI.
 
 ### useOpenAIResponsesAdapter
 
@@ -101,6 +103,41 @@ function Chat() {
 
   return <ChatContainer messages={result.messages} onSend={send} />;
 }
+```
+
+### Streaming with token count display
+
+Enable `trackTokenUsage` to store `output_tokens` in each assistant message's metadata, then render it as text via a `children` render function in `assistantActions`:
+
+```tsx
+import {Text} from '@gravity-ui/uikit';
+import {MessageList, useOpenAIStreamAdapter} from '@gravity-ui/aikit';
+import type {TAssistantMessage} from '@gravity-ui/aikit';
+
+const result = useOpenAIStreamAdapter(stream, {
+  initialMessages: history,
+  trackTokenUsage: true, // opt-in: stores outputTokens in message metadata
+  onStreamEnd: (messages) => setHistory(messages),
+});
+
+type AssistantWithMeta = TAssistantMessage & {metadata?: {outputTokens?: number}};
+
+const assistantActions = [
+  {
+    children: (message: TAssistantMessage): React.ReactNode => {
+      const tokens = (message as AssistantWithMeta).metadata?.outputTokens;
+      return tokens != null ? (
+        <Text variant="caption-2" color="secondary">
+          {tokens} tokens
+        </Text>
+      ) : null;
+    },
+    onClick: () => {},
+    view: 'flat',
+  },
+];
+
+<MessageList messages={result.messages} assistantActions={assistantActions} />;
 ```
 
 ### Streaming from fetch (SSE)

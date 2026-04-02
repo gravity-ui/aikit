@@ -127,11 +127,19 @@ export function useOpenAIStreamAdapter(
     stream: OpenAIStreamSource | null,
     options: OpenAIStreamAdapterOptions = {},
 ): OpenAIStreamAdapterResult {
-    const {initialMessages = [], assistantMessageId: optionId, onStreamEnd} = options;
+    const {
+        initialMessages = [],
+        assistantMessageId: optionId,
+        onStreamEnd,
+        trackTokenUsage = false,
+    } = options;
     const onStreamEndRef = useRef(onStreamEnd);
     onStreamEndRef.current = onStreamEnd;
     const initialMessagesRef = useRef(initialMessages);
     initialMessagesRef.current = initialMessages;
+
+    // messageId → output_tokens from response.completed event
+    const usageMapRef = useRef<Map<string, number>>(new Map());
 
     const [messages, setMessages] = useState<TChatMessage[]>(initialMessages);
     const [status, setStatus] = useState<OpenAIStreamAdapterResult['status']>('ready');
@@ -156,6 +164,7 @@ export function useOpenAIStreamAdapter(
         setStatus('streaming');
         setError(null);
         setResponseId(null);
+        usageMapRef.current = new Map();
 
         const streamToConsume: AsyncIterable<OpenAIStreamEventLike> = {
             async *[Symbol.asyncIterator]() {
@@ -164,6 +173,28 @@ export function useOpenAIStreamAdapter(
                     if (!cancelled && nextResponseId) {
                         setResponseId((prev) => (prev === nextResponseId ? prev : nextResponseId));
                     }
+
+                    // Extract token usage from response.completed (only when opt-in)
+                    if (trackTokenUsage) {
+                        const e = event as Record<string, unknown>;
+                        const eventType =
+                            (e.type as string | undefined) ?? (e.event as string | undefined);
+                        if (eventType === 'response.completed' && e.response) {
+                            const response = e.response as {
+                                usage?: {output_tokens?: number};
+                                output?: Array<{id?: string; type?: string}>;
+                            };
+                            const tokens = response.usage?.output_tokens ?? 0;
+                            if (tokens > 0) {
+                                (response.output ?? []).forEach(({id, type}) => {
+                                    if (id && type === 'message') {
+                                        usageMapRef.current.set(id, tokens);
+                                    }
+                                });
+                            }
+                        }
+                    }
+
                     yield event;
                 }
             },
@@ -181,6 +212,22 @@ export function useOpenAIStreamAdapter(
                 content: '',
             } as TAssistantMessage,
         ]);
+
+        const injectUsageMetadata = (msgs: TChatMessage[]): TChatMessage[] => {
+            if (usageMapRef.current.size === 0) return msgs;
+            return msgs.map((msg) => {
+                if (msg.role === 'assistant' && msg.id && usageMapRef.current.has(msg.id)) {
+                    return {
+                        ...msg,
+                        metadata: {
+                            ...msg.metadata,
+                            outputTokens: usageMapRef.current.get(msg.id),
+                        },
+                    } as TAssistantMessage;
+                }
+                return msg;
+            });
+        };
 
         const callbacks: ConsumeStreamCallbacks = {
             baseMessages,
@@ -229,7 +276,9 @@ export function useOpenAIStreamAdapter(
             onEnd: (finalMessages, s, err) => {
                 setStatus(s === 'done' ? 'ready' : s);
                 setError(err ?? null);
-                const normalized = collapseOrphanToolBetweenAssistantSegments(finalMessages);
+                const normalized = injectUsageMetadata(
+                    collapseOrphanToolBetweenAssistantSegments(finalMessages),
+                );
                 if (!cancelled) {
                     setMessages(normalized);
                 }

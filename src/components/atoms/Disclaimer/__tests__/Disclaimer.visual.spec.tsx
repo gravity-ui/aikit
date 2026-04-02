@@ -23,6 +23,12 @@ test.describe('Disclaimer', {tag: '@Disclaimer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with react node text', async ({mount, expectScreenshot}) => {
+        await mount(<DisclaimerStories.WithReactNodeText />);
+
+        await expectScreenshot();
+    });
+
     test('should render with caption variant', async ({mount, expectScreenshot}) => {
         await mount(<DisclaimerStories.WithCaptionVariant />);
 
