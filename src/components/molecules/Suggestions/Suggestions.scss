@@ -4,6 +4,13 @@
 $block: '.#{variables.$ns}suggestions';
 
 #{$block} {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: var(--g-spacing-2) var(--g-spacing-2);
+    align-self: stretch;
+    flex-wrap: wrap;
+
     &__container {
         display: flex;
         flex-direction: column;
@@ -13,13 +20,6 @@ $block: '.#{variables.$ns}suggestions';
     &__title {
         padding-bottom: 0;
     }
-
-    display: flex;
-    align-items: flex-start;
-    align-content: flex-start;
-    gap: var(--g-spacing-2) var(--g-spacing-2);
-    align-self: stretch;
-    flex-wrap: wrap;
 
     &_layout_grid {
         flex-direction: row;
