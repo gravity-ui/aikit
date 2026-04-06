@@ -1,5 +1,6 @@
 'use client';
 
+import {OptionsType} from '@diplodoc/transform/lib/typings';
 import {ChevronDown, ChevronUp, Copy} from '@gravity-ui/icons';
 import {Button, DOMProps, Icon, QAProps, Text} from '@gravity-ui/uikit';
 
@@ -7,6 +8,7 @@ import type {ThinkingMessageContentData} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 import {Loader} from '../../atoms/Loader';
+import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 
 import {useThinkingMessage} from './useThinkingMessage';
 
@@ -18,7 +20,24 @@ const b = block('thinking-message');
  * Props for the ThinkingMessage component.
  * Combines DOM props, QA props, and thinking message data.
  */
-export type ThinkingMessageProps = DOMProps & QAProps & ThinkingMessageContentData;
+export type ThinkingMessageProps = DOMProps &
+    QAProps &
+    ThinkingMessageContentData & {
+        /**
+         * How thinking content strings are rendered.
+         * @default 'plain'
+         */
+        format?: 'plain' | 'markdown';
+        /**
+         * Options for @diplodoc/transform when `format` is `'markdown'`.
+         * Shallow-merged with the component defaults (`disableCommonAnchors: true`).
+         */
+        transformOptions?: OptionsType;
+    };
+
+const defaultTransformOptions: OptionsType = {
+    disableCommonAnchors: true,
+};
 
 /**
  * ThinkingMessage component displays AI model's internal reasoning process.
@@ -29,7 +48,12 @@ export type ThinkingMessageProps = DOMProps & QAProps & ThinkingMessageContentDa
  * @returns Rendered thinking message component
  */
 export const ThinkingMessage = (props: ThinkingMessageProps) => {
-    const {className, qa, style, ...data} = props;
+    const {className, qa, style, format = 'plain', transformOptions, ...data} = props;
+
+    const markdownTransformOptions: OptionsType = {
+        ...defaultTransformOptions,
+        ...transformOptions,
+    };
 
     const {
         isExpanded,
@@ -60,11 +84,20 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
             </div>
             {isExpanded && (
                 <div className={b('container')}>
-                    {content.map((item, index) => (
-                        <Text className={b('content')} key={index}>
-                            {item}
-                        </Text>
-                    ))}
+                    {content.map((item, index) =>
+                        format === 'markdown' ? (
+                            <MarkdownRenderer
+                                className={b('content')}
+                                key={index}
+                                content={item}
+                                transformOptions={markdownTransformOptions}
+                            />
+                        ) : (
+                            <Text className={b('content')} key={index}>
+                                {item}
+                            </Text>
+                        ),
+                    )}
                 </div>
             )}
         </div>

@@ -29,6 +29,12 @@ test.describe('ThinkingMessage', {tag: '@ThinkingMessage'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with markdown', async ({mount, expectScreenshot}) => {
+        await mount(<ThinkingMessageStories.WithMarkdown />);
+
+        await expectScreenshot();
+    });
+
     test('should render collapsed', async ({mount, expectScreenshot}) => {
         await mount(<ThinkingMessageStories.Collapsed />);
 

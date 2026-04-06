@@ -34,6 +34,11 @@ export default {
             control: 'boolean',
             description: 'Show loader when status is "thinking"',
         },
+        format: {
+            control: 'select',
+            options: ['plain', 'markdown'],
+            description: 'How thinking content strings are rendered',
+        },
         className: {
             control: 'text',
             description: 'Class name',
@@ -80,6 +85,17 @@ const thoughtData: ThinkingMessageContentData = {
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    ],
+    status: 'thought',
+};
+
+const markdownData: ThinkingMessageContentData = {
+    content: [
+        '**Bold**, *italic*, and ~~strikethrough~~',
+        'Link: [Open documentation](https://example.com)',
+        'Inline code: `console.log("Hello, World!");`',
+        'Unordered list:\n- Alpha\n- Beta\n- Gamma',
+        'Ordered list:\n1. First\n2. Second\n3. Third',
     ],
     status: 'thought',
 };
@@ -133,6 +149,22 @@ export const SingleContent: StoryObj<ThinkingMessageProps> = {
                     content="Processing your request and analyzing possible solutions."
                     status="thinking"
                     defaultExpanded={true}
+                />
+            </ContentWrapper>
+        </ShowcaseItem>
+    ),
+    decorators: defaultDecorators,
+};
+
+export const WithMarkdown: StoryObj<ThinkingMessageProps> = {
+    render: () => (
+        <ShowcaseItem title="With Markdown Content">
+            <ContentWrapper width="600px">
+                <ThinkingMessage
+                    {...markdownData}
+                    defaultExpanded={true}
+                    showStatusIndicator={false}
+                    format="markdown"
                 />
             </ContentWrapper>
         </ShowcaseItem>
