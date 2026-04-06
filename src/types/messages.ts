@@ -102,6 +102,15 @@ export type TMessageContent<Type extends string = string, Data = unknown> = {
     data: Data;
 };
 
+// export type TCodeMessageConent<Type extends string = string> = {
+//     id?: string;
+//     type: Type;
+//     language: string;
+//     data: {
+//         text: string;
+//     };
+// };
+
 export type TextMessageContentData = {
     text: string;
 };
@@ -120,16 +129,25 @@ export type ThinkingMessageContentData = {
     qa?: string;
 };
 
+export type CodeMessageContentData = {
+    title?: string;
+    text: string;
+    language: string;
+};
+
 export type ThinkingMessageContent = TMessageContent<'thinking', ThinkingMessageContentData>;
 
 export type ToolMessageContentData = ToolMessageProps;
 
 export type ToolMessageContent = TMessageContent<'tool', ToolMessageContentData>;
 
+export type CodeMessageContent = TMessageContent<'code', CodeMessageContentData>;
+
 export type TDefaultMessageContent =
     | TextMessageContent
     | ThinkingMessageContent
-    | ToolMessageContent;
+    | ToolMessageContent
+    | CodeMessageContent;
 
 export type TMessageContentUnion<TCustomMessageContent extends TMessageContent = never> =
     | TDefaultMessageContent

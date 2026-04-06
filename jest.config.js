@@ -17,7 +17,9 @@ module.exports = {
             },
         ],
     },
-    transformIgnorePatterns: ['node_modules/(?!(@gravity-ui)/)'],
+    transformIgnorePatterns: [
+        'node_modules/(?!(@gravity-ui|remark-parse|unified|unist-util-visit|bail|devlop|is-plain-obj|trough|vfile|vfile-message|unist-util-stringify-position|mdast-util-from-markdown|mdast-util-to-string|micromark|micromark-.*|decode-named-character-reference|character-entities)/)',
+    ],
     moduleNameMapper: {
         '\\.(css|scss|sass)$': '<rootDir>/test-utils/__mocks__/styleMock.js',
     },

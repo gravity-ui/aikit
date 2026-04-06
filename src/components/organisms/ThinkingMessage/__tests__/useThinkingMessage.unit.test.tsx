@@ -3,6 +3,10 @@ import {act, renderHook} from '@testing-library/react';
 import type {ThinkingMessageContentData} from '../../../../types/messages';
 import {useThinkingMessage} from '../useThinkingMessage';
 
+jest.mock('../../../../utils/splitMarkdown', () => ({
+    splitMarkdown: jest.fn((md) => [{type: 'text', content: md}]),
+}));
+
 describe('useThinkingMessage', () => {
     const defaultProps: ThinkingMessageContentData = {
         title: 'Test Title',

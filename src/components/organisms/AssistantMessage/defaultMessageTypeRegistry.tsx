@@ -1,6 +1,7 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import type {
+    CodeMessageContent,
     TextMessageContent,
     ThinkingMessageContent,
     ToolMessageContent,
@@ -36,6 +37,21 @@ export function createDefaultMessageRegistry(
 
     registerMessageRenderer<ThinkingMessageContent>(registry, 'thinking', {
         component: ({part}) => <ThinkingMessage {...part.data} />,
+    });
+
+    registerMessageRenderer<CodeMessageContent>(registry, 'code', {
+        component: ({part}) => {
+            const {language, text} = part.data;
+            const content = `\`\`\`${language}\n${text}\n\`\`\``;
+
+            return (
+                <MarkdownRenderer
+                    content={content}
+                    transformOptions={transformOptions}
+                    shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                />
+            );
+        },
     });
 
     return registry;

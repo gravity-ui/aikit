@@ -11,6 +11,8 @@ import type {
     TUserMessage,
 } from '../types';
 
+import {splitMarkdown} from './splitMarkdown';
+
 export function isUserMessage<
     Metadata = TMessageMetadata,
     TCustomMessageContent extends TMessageContent = never,
@@ -35,14 +37,28 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
     }
 
     if (typeof content === 'string') {
-        return [
-            {
-                type: 'text',
-                data: {
-                    text: content,
-                },
-            },
-        ];
+        const markdownParts = splitMarkdown(content);
+
+        const contentParts = markdownParts.map((mb) => {
+            if (mb.type === 'code') {
+                const {type, content: markdownContent, language} = mb;
+
+                const lines = markdownContent.split('\n');
+                const codeContent = lines.slice(1, -1).join('\n');
+
+                return {
+                    type,
+                    data: {text: codeContent, language},
+                };
+            }
+
+            return {
+                type: mb.type,
+                data: {text: mb.content},
+            };
+        });
+
+        return contentParts;
     }
 
     if (Array.isArray(content)) {
