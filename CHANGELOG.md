@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/gravity-ui/aikit/compare/v1.15.0...v1.15.1) (2026-04-03)
+
+
+### Bug Fixes
+
+* SASS warnings ([d127917](https://github.com/gravity-ui/aikit/commit/d12791710dba9b41c1c00d850568817a7e66db1d))
+
 ## [1.15.0](https://github.com/gravity-ui/aikit/compare/v1.14.4...v1.15.0) (2026-03-30)
 
 
