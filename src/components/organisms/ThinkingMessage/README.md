@@ -8,6 +8,7 @@ A message component that displays AI thinking process with collapsible content a
 - **Status Indicator**: Shows loader animation when status is "thinking"
 - **Copy Action**: Optional copy button for completed thoughts with custom or default logic
 - **Flexible Content**: Supports single string or array of content strings
+- **Markdown Support**: Content is rendered as Markdown while preserving the gray text color
 - **Backward Compatible**: Supports both custom copy handlers and automatic copy functionality
 
 ## Usage
@@ -68,17 +69,19 @@ Second thinking block
 
 ## Props
 
-| Prop                  | Type                      | Required | Default | Description                                                                                       |
-| --------------------- | ------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------------- |
-| `content`             | `string \| string[]`      | ✓        | -       | Thinking content as a string or array of strings                                                  |
-| `status`              | `'thinking' \| 'thought'` | ✓        | -       | Current thinking status                                                                           |
-| `defaultExpanded`     | `boolean`                 | -        | `true`  | Initial expanded state                                                                            |
-| `showStatusIndicator` | `boolean`                 | -        | `true`  | Whether to show loader when status is "thinking"                                                  |
-| `onCopyClick`         | `() => void`              | -        | -       | Custom copy handler. Takes priority over `enabledCopy`                                            |
-| `enabledCopy`         | `boolean`                 | -        | `false` | Enable default copy functionality. Content is copied as-is (string) or joined with `\n\n` (array) |
-| `className`           | `string`                  | -        | -       | Additional CSS class name                                                                         |
-| `qa`                  | `string`                  | -        | -       | Data QA attribute for testing                                                                     |
-| `style`               | `React.CSSProperties`     | -        | -       | Inline styles                                                                                     |
+| Prop                  | Type                      | Required | Default   | Description                                                                                                            |
+| --------------------- | ------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `content`             | `string \| string[]`      | ✓        | -         | Thinking content as a string or array of strings                                                                       |
+| `status`              | `'thinking' \| 'thought'` | ✓        | -         | Current thinking status                                                                                                |
+| `defaultExpanded`     | `boolean`                 | -        | `true`    | Initial expanded state                                                                                                 |
+| `showStatusIndicator` | `boolean`                 | -        | `true`    | Whether to show loader when status is "thinking"                                                                       |
+| `format`              | `'plain' \| 'markdown'`   | -        | `'plain'` | How thinking content strings are rendered                                                                              |
+| `transformOptions`    | `OptionsType`             | -        | -         | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform); Used when `format` is `'markdown'` |
+| `onCopyClick`         | `() => void`              | -        | -         | Custom copy handler. Takes priority over `enabledCopy`                                                                 |
+| `enabledCopy`         | `boolean`                 | -        | `false`   | Enable default copy functionality. Content is copied as-is (string) or joined with `\n\n` (array)                      |
+| `className`           | `string`                  | -        | -         | Additional CSS class name                                                                                              |
+| `qa`                  | `string`                  | -        | -         | Data QA attribute for testing                                                                                          |
+| `style`               | `React.CSSProperties`     | -        | -         | Inline styles                                                                                                          |
 
 ## ThinkingMessageData Type
 
