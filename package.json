@@ -724,7 +724,7 @@
     "dayjs": "^1.11.19",
     "marked": "^17.0.1",
     "react-window": "^2.2.1",
-    "remend": "^1.0.1",
+    "remend": ">=1.0.1 <1.2.0",
     "uuid": "^13.0.0"
   },
   "optionalDependencies": {
