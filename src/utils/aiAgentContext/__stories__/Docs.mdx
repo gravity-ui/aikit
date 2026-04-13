@@ -1,0 +1,22 @@
+{/* src/utils/aiAgentContext/__stories__/Docs.mdx */}
+import {Meta, Canvas, Controls, Markdown} from '@storybook/addon-docs';
+import \* as Stories from './AIAgentContext.stories';
+
+<Meta of={Stories} />
+
+# AIAgentContext
+
+A framework for collecting contextual data from React components and exposing it to LLM agents via system prompts.
+
+## Basic Usage
+
+<Canvas of={Stories.BasicUsage} />
+
+## Multiple Data Sources
+
+<Canvas of={Stories.MultipleDataSources} />
+
+## Dynamic Data
+
+<Canvas of={Stories.DynamicData} />
+<Controls of={Stories.DynamicData} />
