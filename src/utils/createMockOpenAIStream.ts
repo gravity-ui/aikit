@@ -55,8 +55,6 @@ export const createReadableStream = () => {
         async start(controller) {
             const streamData = createStreamData();
 
-            console.log('streamData :>> ', streamData);
-
             for (const chunk of streamData) {
                 const dataString = JSON.stringify(chunk).trim();
                 controller.enqueue(new TextEncoder().encode(`data: ${dataString}\n`));
