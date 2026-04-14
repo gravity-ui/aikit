@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/gravity-ui/aikit/compare/v1.15.1...v1.16.0) (2026-04-14)
+
+
+### Features
+
+* add mock stream ([#145](https://github.com/gravity-ui/aikit/issues/145)) ([6e94b31](https://github.com/gravity-ui/aikit/commit/6e94b316a0434272f29a9c898691ba6cf0afa5cb))
+
 ## [1.15.1](https://github.com/gravity-ui/aikit/compare/v1.15.0...v1.15.1) (2026-04-03)
 
 
