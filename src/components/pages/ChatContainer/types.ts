@@ -125,7 +125,7 @@ export interface ChatContainerProps {
     /** Callback when user creates a new chat */
     onCreateChat?: () => void;
     /** Callback when user deletes a chat */
-    onDeleteChat?: (chat: ChatType) => void;
+    onDeleteChat?: (chat: ChatType) => Promise<void>;
     /** Callback when user deletes all chats */
     onDeleteAllChats?: () => Promise<void>;
     /** Callback when user folds or unfolds the chat */
