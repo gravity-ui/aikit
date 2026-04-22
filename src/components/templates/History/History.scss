@@ -54,10 +54,15 @@ $block: '.#{variables.$ns}history';
         flex: 1;
         min-width: 0;
 
-        &_active {
+        &_active,
+        &_is-delete-processing {
             #{$block}__delete-button {
                 display: block;
             }
+        }
+
+        &_is-delete-processing {
+            color: var(--g-color-text-secondary);
         }
     }
 

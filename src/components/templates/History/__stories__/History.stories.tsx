@@ -418,3 +418,27 @@ export const Loading: Story = {
     render: (args) => <HistoryWithTrigger {...args} />,
     decorators: defaultDecorators,
 };
+
+export const DeleteChat: Story = {
+    args: {
+        chats: mockChats,
+        searchable: false,
+        groupBy: 'date',
+        showActions: true,
+        onSelectChat: (chat) => {
+            // eslint-disable-next-line no-console
+            console.log('Selected chat:', chat);
+        },
+        onDeleteChat: (chat) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 1000);
+                // eslint-disable-next-line no-console
+                console.log('Delete chat:', chat);
+            });
+        },
+    },
+    render: (args) => <HistoryWithTrigger initialOpen={false} {...args} />,
+    decorators: defaultDecorators,
+};
