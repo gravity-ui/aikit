@@ -22,11 +22,18 @@ export function useChatContainer(props: ChatContainerProps) {
         showNewChat = true,
         showFolding = false,
         showClose = false,
+        promptInputProps,
     } = props;
+
+    const autoFocusOnNewChat = promptInputProps?.bodyProps?.autoFocusOnNewChat ?? true;
+    const autoFocusOnChatSelect = promptInputProps?.bodyProps?.autoFocusOnChatSelect ?? true;
 
     // Refs for History integration with Header
     const historyButtonRef = useRef<HTMLElement>(null);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+    // Key incremented on each new chat to remount PromptInput with autofocus
+    const [promptInputKey, setPromptInputKey] = useState(0);
 
     // Determine view for ChatContent (empty or chat)
     const chatContentView = useMemo(() => {
@@ -42,7 +49,10 @@ export function useChatContainer(props: ChatContainerProps) {
     // Handler for creating new chat
     const handleNewChat = useCallback(() => {
         onCreateChat?.();
-    }, [onCreateChat]);
+        if (autoFocusOnNewChat) {
+            setPromptInputKey((prev) => prev + 1);
+        }
+    }, [onCreateChat, autoFocusOnNewChat]);
 
     // Handler for toggling history
     const handleHistoryToggle = useCallback(() => {
@@ -67,9 +77,12 @@ export function useChatContainer(props: ChatContainerProps) {
             if (chat) {
                 onSelectChat?.(chat);
                 setIsHistoryOpen(false);
+                if (autoFocusOnChatSelect) {
+                    setPromptInputKey((prev) => prev + 1);
+                }
             }
         },
-        [onSelectChat],
+        [onSelectChat, autoFocusOnChatSelect],
     );
 
     // Handler for history popup state changes
@@ -105,6 +118,7 @@ export function useChatContainer(props: ChatContainerProps) {
         chatContentView,
         isHistoryOpen,
         activeChat,
+        promptInputKey,
 
         // Refs
         historyButtonRef,
