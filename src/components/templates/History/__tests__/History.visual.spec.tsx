@@ -84,4 +84,42 @@ test.describe('History', {tag: '@History'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should show trash button in loading state while deleting chat', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
+        await mount(<HistoryStories.DeleteChat />);
+
+        await page.getByRole('button').click();
+        await page.locator('.g-aikit-history__container').waitFor({state: 'visible'});
+
+        await page.locator('.g-aikit-history__chat-item').first().hover();
+        await page.locator('.g-aikit-history__delete-button').first().click();
+
+        await page
+            .locator('.g-aikit-history__chat-item_is-delete-processing')
+            .waitFor({state: 'visible'});
+
+        await expectScreenshot();
+    });
+
+    test('should remove deleted chat from list after deletion completes', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
+        await mount(<HistoryStories.DeleteChat />);
+
+        await page.getByRole('button').click();
+        await page.locator('.g-aikit-history__container').waitFor({state: 'visible'});
+
+        await page.locator('.g-aikit-history__chat-item').first().hover();
+        await page.locator('.g-aikit-history__delete-button').first().click();
+
+        await page.waitForTimeout(1500);
+
+        await expectScreenshot();
+    });
 });
