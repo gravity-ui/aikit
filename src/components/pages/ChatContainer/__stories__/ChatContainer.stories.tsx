@@ -546,6 +546,7 @@ export const WithHistory: Story = {
                 setActiveChat(null);
                 setMessages([]);
             }
+            return Promise.resolve();
         };
 
         return (
