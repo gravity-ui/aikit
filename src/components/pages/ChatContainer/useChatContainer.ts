@@ -28,6 +28,9 @@ export function useChatContainer(props: ChatContainerProps) {
     const historyButtonRef = useRef<HTMLElement>(null);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
+    // Ref for PromptInput integration with NewChat button
+    const promptInputRef = useRef<HTMLTextAreaElement>(null);
+
     // Determine view for ChatContent (empty or chat)
     const chatContentView = useMemo(() => {
         // If there is an active chat (selected from history), show chat view
@@ -42,6 +45,7 @@ export function useChatContainer(props: ChatContainerProps) {
     // Handler for creating new chat
     const handleNewChat = useCallback(() => {
         onCreateChat?.();
+        promptInputRef.current?.focus();
     }, [onCreateChat]);
 
     // Handler for toggling history
@@ -108,6 +112,7 @@ export function useChatContainer(props: ChatContainerProps) {
 
         // Refs
         historyButtonRef,
+        promptInputRef,
 
         // Handlers
         handleNewChat,

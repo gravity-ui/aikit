@@ -33,6 +33,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
     const {hookState, bodyProps = {}, footerProps = {}, className, qa} = props;
 
     const {
+        ref: bodyRef,
         placeholder = 'Plan, code, build and test anything',
         minRows = 1,
         maxRows = 15,
@@ -57,6 +58,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
         <div className={b({view: 'simple'}, className)} data-qa={qa}>
             <div className={b('content')}>
                 <PromptInputBody
+                    ref={bodyRef}
                     value={value}
                     placeholder={placeholder}
                     minRows={minRows}
