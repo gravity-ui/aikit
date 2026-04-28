@@ -183,6 +183,7 @@ export function ChatContainer(props: ChatContainerProps) {
             },
             bodyProps: {
                 ...promptInputProps?.bodyProps,
+                ref: hookState.promptInputRef,
                 placeholder:
                     i18nConfig.promptInput?.placeholder ||
                     promptInputProps?.bodyProps?.placeholder ||

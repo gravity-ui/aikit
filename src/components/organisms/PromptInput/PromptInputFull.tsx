@@ -43,6 +43,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
     } = headerProps;
 
     const {
+        ref: bodyRef,
         placeholder = 'Plan, code, build and test anything',
         minRows = 1,
         maxRows = 15,
@@ -81,6 +82,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
             )}
 
             <PromptInputBody
+                ref={bodyRef}
                 value={value}
                 placeholder={placeholder}
                 minRows={minRows}

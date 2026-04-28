@@ -32,6 +32,8 @@ export type PromptInputHeaderConfig = {
  * Props for the body/textarea section of PromptInput
  */
 export type PromptInputBodyConfig = {
+    /** Ref for the textarea element */
+    ref?: React.RefObject<HTMLTextAreaElement>;
     /** Placeholder text for textarea */
     placeholder?: string;
     /** Minimum number of textarea rows */
