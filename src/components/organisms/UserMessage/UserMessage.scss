@@ -12,3 +12,38 @@ $block: '.#{variables.$ns}user-message';
 #{$block}_format_plain {
     white-space: pre-wrap;
 }
+
+#{$block}__image {
+    display: block;
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: var(--g-border-radius-m);
+    object-fit: contain;
+}
+
+#{$block}__file-attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--g-spacing-1);
+    margin-top: var(--g-spacing-1);
+    align-self: flex-end;
+}
+
+#{$block}__file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px var(--g-spacing-2);
+    border-radius: var(--g-border-radius-s);
+    background: var(--g-color-base-simple-hover-solid);
+    max-width: 200px;
+}
+
+#{$block}__file-chip-name {
+    font-size: var(--g-text-body-1-font-size);
+    line-height: var(--g-text-body-1-line-height);
+    color: var(--g-color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

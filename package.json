@@ -308,6 +308,16 @@
         "default": "./build/cjs/components/atoms/ToolIndicator/index.js"
       }
     },
+    "./FileIcon": {
+      "import": {
+        "types": "./build/esm/components/atoms/FileIcon/index.d.ts",
+        "default": "./build/esm/components/atoms/FileIcon/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/atoms/FileIcon/index.d.ts",
+        "default": "./build/cjs/components/atoms/FileIcon/index.js"
+      }
+    },
     "./BaseMessage": {
       "import": {
         "types": "./build/esm/components/molecules/BaseMessage/index.d.ts",
@@ -326,6 +336,26 @@
       "require": {
         "types": "./build/cjs/components/molecules/ButtonGroup/index.d.ts",
         "default": "./build/cjs/components/molecules/ButtonGroup/index.js"
+      }
+    },
+    "./FileItem": {
+      "import": {
+        "types": "./build/esm/components/molecules/FileItem/index.d.ts",
+        "default": "./build/esm/components/molecules/FileItem/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/molecules/FileItem/index.d.ts",
+        "default": "./build/cjs/components/molecules/FileItem/index.js"
+      }
+    },
+    "./FileDropZone": {
+      "import": {
+        "types": "./build/esm/components/molecules/FileDropZone/index.d.ts",
+        "default": "./build/esm/components/molecules/FileDropZone/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/molecules/FileDropZone/index.d.ts",
+        "default": "./build/cjs/components/molecules/FileDropZone/index.js"
       }
     },
     "./InputContext": {
@@ -536,6 +566,26 @@
       "require": {
         "types": "./build/cjs/components/organisms/UserMessage/index.d.ts",
         "default": "./build/cjs/components/organisms/UserMessage/index.js"
+      }
+    },
+    "./FileUploadDialog": {
+      "import": {
+        "types": "./build/esm/components/organisms/FileUploadDialog/index.d.ts",
+        "default": "./build/esm/components/organisms/FileUploadDialog/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/FileUploadDialog/index.d.ts",
+        "default": "./build/cjs/components/organisms/FileUploadDialog/index.js"
+      }
+    },
+    "./AttachmentPicker": {
+      "import": {
+        "types": "./build/esm/components/organisms/AttachmentPicker/index.d.ts",
+        "default": "./build/esm/components/organisms/AttachmentPicker/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/AttachmentPicker/index.d.ts",
+        "default": "./build/cjs/components/organisms/AttachmentPicker/index.js"
       }
     },
     "./ChatContent": {

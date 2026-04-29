@@ -182,7 +182,7 @@ export function ChatContainer(props: ChatContainerProps) {
             status,
             headerProps: {
                 ...promptInputProps?.headerProps,
-                contextItems,
+                contextItems: promptInputProps?.headerProps?.contextItems ?? contextItems,
                 showContextIndicator:
                     showContextIndicator ?? promptInputProps?.headerProps?.showContextIndicator,
                 contextIndicatorProps:

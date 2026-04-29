@@ -32,4 +32,16 @@ test.describe('UserMessage', {tag: '@UserMessage'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with images and text', async ({mount, expectScreenshot}) => {
+        await mount(<UserMessageStories.WithImages />);
+
+        await expectScreenshot();
+    });
+
+    test('should render with images only', async ({mount, expectScreenshot}) => {
+        await mount(<UserMessageStories.WithImagesOnly />);
+
+        await expectScreenshot();
+    });
 });

@@ -29,6 +29,11 @@ export type PromptInputFooterProps = {
     showAttachment?: boolean;
     /** Attachment icon click handler */
     onAttachmentClick?: () => void;
+    /**
+     * Replaces the built-in attachment icon button with a custom node (e.g. AttachmentPicker).
+     * When set, `showAttachment` and `onAttachmentClick` are ignored.
+     */
+    attachmentContent?: ReactNode;
     /** Show microphone icon */
     showMicrophone?: boolean;
     /** Microphone icon click handler */
@@ -57,6 +62,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
         onSettingsClick,
         showAttachment = false,
         onAttachmentClick,
+        attachmentContent,
         showMicrophone = false,
         onMicrophoneClick,
         children,
@@ -77,6 +83,22 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
         );
     }
 
+    const renderAttachment = () => {
+        if (attachmentContent) return attachmentContent;
+        if (!showAttachment) return null;
+        return (
+            <ActionButton
+                view="flat"
+                size={buttonSize}
+                onClick={onAttachmentClick}
+                className={b('action-button')}
+                tooltipTitle={i18n('tooltip-attachment')}
+            >
+                <Icon data={Paperclip} size={16} />
+            </ActionButton>
+        );
+    };
+
     // Render default footer
     return (
         <div className={b(null, className)} data-qa={qa}>
@@ -92,19 +114,9 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
                         <Icon data={Sliders} size={16} />
                     </ActionButton>
                 )}
+                {renderAttachment()}
             </ButtonGroup>
             <ButtonGroup>
-                {showAttachment && (
-                    <ActionButton
-                        view="flat"
-                        size={buttonSize}
-                        onClick={onAttachmentClick}
-                        className={b('action-button')}
-                        tooltipTitle={i18n('tooltip-attachment')}
-                    >
-                        <Icon data={Paperclip} size={16} />
-                    </ActionButton>
-                )}
                 {showMicrophone && (
                     <ActionButton
                         view="flat"

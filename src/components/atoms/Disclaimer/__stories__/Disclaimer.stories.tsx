@@ -16,7 +16,7 @@ export default {
     argTypes: {
         text: {
             control: 'text',
-            description: 'Disclaimer text',
+            description: 'Disclaimer text — plain string or React node',
         },
         variant: {
             control: 'select',
@@ -83,6 +83,19 @@ export const WithTextAndChildren: StoryFn<DisclaimerProps> = (args) => (
         <Disclaimer {...args} text="Disclaimer text">
             <span>Additional content</span>
         </Disclaimer>
+    </ContentWrapper>
+);
+
+export const WithReactNodeText: StoryFn<DisclaimerProps> = (args) => (
+    <ContentWrapper>
+        <Disclaimer
+            {...args}
+            text={
+                <span>
+                    Text with <strong>bold</strong> and <em>italic</em> parts
+                </span>
+            }
+        />
     </ContentWrapper>
 );
 

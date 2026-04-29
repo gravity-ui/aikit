@@ -2,6 +2,7 @@ name: PR Visual Tests
 
 on:
   pull_request:
+  merge_group:
 
 jobs:
   visual_tests:
