@@ -11,6 +11,7 @@ A fully assembled chat component - the main exportable component of the library 
 - **Welcome Screen**: Configurable empty state with suggestions
 - **Streaming Support**: Built-in support for streaming responses
 - **Chat History**: Integrated popup-based chat history with search and grouping
+- **Input Autofocus**: Opt-in autofocus for the prompt input when a new chat is opened or a chat is selected from history
 
 ## Usage
 
@@ -689,6 +690,28 @@ Override PromptInput component props (view, maxLength, etc.):
 />
 ```
 
+#### bodyProps autofocus options
+
+Two opt-in flags control automatic focusing of the prompt input:
+
+| Prop                    | Type      | Default | Description                                                  |
+| ----------------------- | --------- | ------- | ------------------------------------------------------------ |
+| `autoFocusOnNewChat`    | `boolean` | `true`  | Focus the input when the user clicks the new chat (+) button |
+| `autoFocusOnChatSelect` | `boolean` | `true`  | Focus the input when the user selects a chat from history    |
+
+```tsx
+<ChatContainer
+  promptInputProps={{
+    bodyProps: {
+      autoFocusOnNewChat: true,
+      autoFocusOnChatSelect: true,
+    },
+  }}
+/>
+```
+
+Both flags default to `false`. When enabled, `ChatContainer` remounts the `PromptInput` with `autoFocus` set to `true` at the appropriate moment, so the cursor lands in the textarea without any extra user interaction.
+
 ### historyProps
 
 Override History component props (grouping, search, etc.):
@@ -939,6 +962,7 @@ The component uses the `useChatContainer` hook for state management:
 - Integrates History with Header through refs
 - Merges i18n configuration with default texts
 - Forwards all callbacks to child components
+- Tracks an internal `promptInputKey` counter that triggers a `PromptInput` remount with `autoFocus` when `autoFocusOnNewChat` or `autoFocusOnChatSelect` are enabled
 
 The component architecture follows atomic design principles:
 

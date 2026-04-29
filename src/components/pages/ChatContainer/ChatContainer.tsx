@@ -167,8 +167,15 @@ export function ChatContainer(props: ChatContainerProps) {
     );
 
     // Build props for PromptInput
-    const finalPromptInputProps = useMemo(
-        () => ({
+    const finalPromptInputProps = useMemo(() => {
+        // Strip ChatContainer-only control props before passing bodyProps to PromptInput
+        const {
+            autoFocusOnNewChat: _autoFocusOnNewChat,
+            autoFocusOnChatSelect: _autoFocusOnChatSelect,
+            ...restBodyProps
+        } = promptInputProps?.bodyProps ?? {};
+
+        return {
             ...promptInputProps,
             onSend: onSendMessage,
             onCancel,
@@ -182,30 +189,31 @@ export function ChatContainer(props: ChatContainerProps) {
                     contextIndicatorProps ?? promptInputProps?.headerProps?.contextIndicatorProps,
             },
             bodyProps: {
-                ...promptInputProps?.bodyProps,
+                ...restBodyProps,
                 placeholder:
                     i18nConfig.promptInput?.placeholder ||
-                    promptInputProps?.bodyProps?.placeholder ||
+                    restBodyProps?.placeholder ||
                     i18n('prompt-placeholder'),
+                autoFocus: hookState.promptInputKey > 0 || restBodyProps?.autoFocus,
             },
             footerProps: {
                 ...promptInputProps?.footerProps,
                 submitButtonTooltipSend: i18nConfig.submitButton?.sendTooltip,
                 submitButtonTooltipCancel: i18nConfig.submitButton?.cancelTooltip,
             },
-        }),
-        [
-            onSendMessage,
-            onCancel,
-            status,
-            contextItems,
-            showContextIndicator,
-            contextIndicatorProps,
-            i18nConfig.promptInput,
-            i18nConfig.submitButton,
-            promptInputProps,
-        ],
-    );
+        };
+    }, [
+        onSendMessage,
+        onCancel,
+        status,
+        contextItems,
+        showContextIndicator,
+        contextIndicatorProps,
+        i18nConfig.promptInput,
+        i18nConfig.submitButton,
+        promptInputProps,
+        hookState.promptInputKey,
+    ]);
 
     // Build props for Disclaimer
     const finalDisclaimerProps = useMemo(() => {
@@ -273,7 +281,9 @@ export function ChatContainer(props: ChatContainerProps) {
             </div>
             {showFooter && (
                 <div className={b('footer', {view: hookState.chatContentView}, footerClassName)}>
-                    {finalPromptInputProps && <PromptInput {...finalPromptInputProps} />}
+                    {finalPromptInputProps && (
+                        <PromptInput key={hookState.promptInputKey} {...finalPromptInputProps} />
+                    )}
                     {finalDisclaimerProps && <Disclaimer {...finalDisclaimerProps} />}
                 </div>
             )}

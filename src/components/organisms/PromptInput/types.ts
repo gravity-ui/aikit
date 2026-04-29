@@ -40,6 +40,16 @@ export type PromptInputBodyConfig = {
     maxRows?: number;
     /** Auto focus textarea on mount */
     autoFocus?: boolean;
+    /**
+     * Auto focus textarea when a new chat is opened via the plus icon.
+     * Only applies inside ChatContainer. Defaults to false.
+     */
+    autoFocusOnNewChat?: boolean;
+    /**
+     * Auto focus textarea when a chat is selected from history.
+     * Only applies inside ChatContainer. Defaults to false.
+     */
+    autoFocusOnChatSelect?: boolean;
 };
 
 /**
