@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.17.0](https://github.com/gravity-ui/aikit/compare/v1.16.0...v1.17.0) (2026-04-29)
+
+
+### Features
+
+* add deleting chats ([#155](https://github.com/gravity-ui/aikit/issues/155)) ([00512de](https://github.com/gravity-ui/aikit/commit/00512deb301f0b7b42481c6328f9cc8997a4b6e6))
+* **ChatContainer:** add autofocus for input ([#156](https://github.com/gravity-ui/aikit/issues/156)) ([262633c](https://github.com/gravity-ui/aikit/commit/262633c6e0a811a56d915951ee18ef0e84fe85b0))
+
 ## [1.16.0](https://github.com/gravity-ui/aikit/compare/v1.15.1...v1.16.0) (2026-04-14)
 
 
