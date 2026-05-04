@@ -239,23 +239,25 @@ The component uses CSS variables for theming:
 
 ### HeaderProps
 
-| Prop                  | Type                                       | Required | Default    | Description                                       |
-| --------------------- | ------------------------------------------ | -------- | ---------- | ------------------------------------------------- |
-| `icon`                | `React.ReactNode`                          | -        | -          | Icon to the left of the title                     |
-| `title`               | `string`                                   | -        | -          | Chat title                                        |
-| `preview`             | `React.ReactNode`                          | -        | -          | Preview content after the title                   |
-| `baseActions`         | `HeaderAction[]`                           | -        | `[]`       | Array of predefined base actions                  |
-| `handleNewChat`       | `() => void`                               | -        | -          | Handler for new chat action                       |
-| `handleHistoryToggle` | `() => void`                               | -        | -          | Handler for history toggle action                 |
-| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                        |
-| `handleClose`         | `() => void`                               | -        | -          | Handler for close action                          |
-| `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type) |
-| `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)    |
-| `foldingState`        | `'collapsed' \| 'opened'`                  | -        | `'opened'` | Current folding state                             |
-| `titlePosition`       | `'left' \| 'center'`                       | -        | `'left'`   | Title alignment position                          |
-| `withIcon`            | `boolean`                                  | -        | `true`     | Whether to show icon area                         |
-| `showTitle`           | `boolean`                                  | -        | `true`     | Whether to show title and preview                 |
-| `className`           | `string`                                   | -        | -          | Additional CSS class                              |
+| Prop                  | Type                                       | Required | Default    | Description                                                          |
+| --------------------- | ------------------------------------------ | -------- | ---------- | -------------------------------------------------------------------- |
+| `icon`                | `React.ReactNode`                          | -        | -          | Icon to the left of the title                                        |
+| `title`               | `string`                                   | -        | -          | Chat title                                                           |
+| `preview`             | `React.ReactNode`                          | -        | -          | Preview content after the title                                      |
+| `baseActions`         | `HeaderAction[]`                           | -        | `[]`       | Array of predefined base actions                                     |
+| `handleNewChat`       | `() => void`                               | -        | -          | Handler for new chat action                                          |
+| `handleHistoryToggle` | `() => void`                               | -        | -          | Handler for history toggle action                                    |
+| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                                           |
+| `handleClose`         | `() => void`                               | -        | -          | Handler for close action                                             |
+| `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type)                    |
+| `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)                       |
+| `foldingState`        | `'collapsed' \| 'opened'`                  | -        | `'opened'` | Current folding state                                                |
+| `titlePosition`       | `'left' \| 'center'`                       | -        | `'left'`   | Title alignment position                                             |
+| `withIcon`            | `boolean`                                  | -        | `true`     | Whether to show icon area                                            |
+| `showTitle`           | `boolean`                                  | -        | `true`     | Whether to show title and preview                                    |
+| `qa`                  | `string`                                   | -        | -          | QA/test identifier on header root                                    |
+| `actionQa`            | `Partial<Record<HeaderAction, string>>`    | -        | -          | Overrides `data-qa` for base actions (default `header-action-${id}`) |
+| `className`           | `string`                                   | -        | -          | Additional CSS class                                                 |
 
 ### HeaderAction
 

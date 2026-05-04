@@ -40,6 +40,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         contextItems = [],
         showContextIndicator = false,
         contextIndicatorProps,
+        qa: headerQa,
     } = headerProps;
 
     const {
@@ -47,6 +48,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
+        qa: bodyQa,
     } = bodyProps;
 
     const {
@@ -62,6 +64,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         submitButtonTooltipCancel,
         submitButtonCancelableText,
         submitButtonQa,
+        qa: footerQa,
     } = footerProps;
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
@@ -75,6 +78,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                     contextItems={contextItems}
                     showContextIndicator={showContextIndicator}
                     contextIndicatorProps={contextIndicatorProps}
+                    qa={headerQa}
                 >
                     {topContent}
                 </PromptInputHeader>
@@ -89,9 +93,11 @@ export function PromptInputFull(props: PromptInputFullProps) {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 inputClassName={b('textarea')}
+                qa={bodyQa}
             />
 
             <PromptInputFooter
+                qa={footerQa}
                 submitButton={{
                     onClick: handleSubmit,
                     state: submitButtonState,

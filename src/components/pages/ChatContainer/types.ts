@@ -106,6 +106,49 @@ export type MessageListConfig = Omit<
 >;
 
 /**
+ * Unified test identifiers (`data-qa`) for ChatContainer and its subtree.
+ *
+ * - Pass a **string** for backward compatibility: only the root container gets `data-qa`.
+ * - Pass **`{ prefix: 'x' }`** to opt in to `${prefix}-${suffix}` for every slot below (see README).
+ * - Pass **explicit keys** to override individual elements; they win over `prefix` and nested `*Props.qa`.
+ */
+export interface ChatContainerQa {
+    /** Applied to child slots when explicit keys are omitted; also used as root if `root` is omitted */
+    prefix?: string;
+    /** Root chat container */
+    root?: string;
+    /** Header root */
+    header?: string;
+    /** Overrides default `header-action-newChat` */
+    headerNewChat?: string;
+    /** Overrides default `header-action-history` */
+    headerHistory?: string;
+    /** Overrides default `header-action-folding` */
+    headerFolding?: string;
+    /** Overrides default `header-action-close` */
+    headerClose?: string;
+    /** ChatContent root */
+    content?: string;
+    /** Empty state (EmptyContainer) */
+    emptyState?: string;
+    /** MessageList scroll area */
+    messageList?: string;
+    /** Action popup in MessageList */
+    actionPopup?: string;
+    /** PromptInput root */
+    promptInput?: string;
+    promptInputHeader?: string;
+    promptInputBody?: string;
+    promptInputFooter?: string;
+    /** Submit button in prompt footer */
+    submitButton?: string;
+    /** Disclaimer text block */
+    disclaimer?: string;
+    /** History list (inside popup) */
+    history?: string;
+}
+
+/**
  * Props for ChatContainer component
  */
 export interface ChatContainerProps {
@@ -207,6 +250,8 @@ export interface ChatContainerProps {
     contentClassName?: string;
     /** Additional CSS class for footer section */
     footerClassName?: string;
-    /** QA/test identifier */
-    qa?: string;
+    /**
+     * QA/test identifiers. A string sets only the root `data-qa`. Use {@link ChatContainerQa} for a full map or `prefix`.
+     */
+    qa?: string | ChatContainerQa;
 }

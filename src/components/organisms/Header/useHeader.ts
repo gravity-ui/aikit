@@ -22,6 +22,8 @@ export function useHeader(props: HeaderProps): {
     showTitle: boolean;
     className?: string;
     historyButtonRef?: React.RefObject<HTMLElement>;
+    qa?: string;
+    actionQa?: HeaderProps['actionQa'];
 } {
     const {
         icon,
@@ -39,6 +41,8 @@ export function useHeader(props: HeaderProps): {
         showTitle = true,
         className,
         historyButtonRef,
+        qa,
+        actionQa,
     } = props;
 
     // Build base actions
@@ -91,5 +95,7 @@ export function useHeader(props: HeaderProps): {
         showTitle,
         className,
         historyButtonRef,
+        qa,
+        actionQa,
     };
 }
