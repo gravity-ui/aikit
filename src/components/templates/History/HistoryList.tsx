@@ -60,6 +60,8 @@ export interface HistoryListProps extends QAProps, DOMProps {
     emptyPlaceholder?: React.ReactNode;
     /** Empty filtered state placeholder (when search returns no results) */
     emptyFilteredPlaceholder?: React.ReactNode;
+    /** Placeholder text for the search/filter input (defaults to built-in i18n string) */
+    searchPlaceholder?: string;
     /** Additional CSS class */
     className?: string;
     /** Custom filter function for search */
@@ -92,6 +94,7 @@ export function HistoryList(props: HistoryListProps) {
         showActions = true,
         emptyPlaceholder,
         emptyFilteredPlaceholder,
+        searchPlaceholder,
         className,
         qa,
         style,
@@ -286,7 +289,7 @@ export function HistoryList(props: HistoryListProps) {
                             virtualized={false}
                             filterable={searchable}
                             filterItem={wrappedFilterFunction}
-                            filterPlaceholder={i18n('search-placeholder')}
+                            filterPlaceholder={searchPlaceholder ?? i18n('search-placeholder')}
                             filterClassName={b('filter')}
                             emptyPlaceholder={finalEmptyPlaceholder}
                             selectedItemIndex={selectedItemIndex}
