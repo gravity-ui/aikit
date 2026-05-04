@@ -1,9 +1,9 @@
-import {useMemo} from 'react';
+import {type ReactNode, useMemo} from 'react';
 
 import {block} from '../../../utils/cn';
 import {Disclaimer} from '../../atoms/Disclaimer';
-import {Header, HeaderAction} from '../../organisms/Header';
-import {PromptInput} from '../../organisms/PromptInput';
+import {Header, HeaderAction, type HeaderProps} from '../../organisms/Header';
+import {PromptInput, type PromptInputProps} from '../../organisms/PromptInput';
 import {ChatContent} from '../../templates/ChatContent';
 import {History} from '../../templates/History';
 
@@ -13,12 +13,114 @@ import {
     resolveChatContainerRootQa,
 } from './chatContainerQa';
 import {i18n} from './i18n';
-import type {ChatContainerProps} from './types';
+import type {ChatContainerProps, ChatContainerTexts} from './types';
 import {useChatContainer} from './useChatContainer';
 
 import './ChatContainer.scss';
 
 const b = block('chat-container');
+
+type NormalizedChatContainerQa = ReturnType<typeof normalizeChatContainerQa>;
+
+function mergePromptInputSuggestionsProps(
+    fromProps: PromptInputProps['suggestionsProps'] | undefined,
+    textsSuggestTitle: ReactNode | undefined,
+): PromptInputProps['suggestionsProps'] | undefined {
+    const hasSuggestionsFromProps = Boolean(fromProps);
+    const hasSuggestTitleFromTexts = textsSuggestTitle !== undefined;
+    if (!hasSuggestionsFromProps && !hasSuggestTitleFromTexts) {
+        return undefined;
+    }
+    return {
+        ...fromProps,
+        suggestTitle: textsSuggestTitle ?? fromProps?.suggestTitle,
+    };
+}
+
+function buildFinalPromptInputProps(args: {
+    promptInputProps: ChatContainerProps['promptInputProps'];
+    onSendMessage: ChatContainerProps['onSendMessage'];
+    onCancel: ChatContainerProps['onCancel'];
+    status: ChatContainerProps['status'];
+    contextItems: ChatContainerProps['contextItems'];
+    showContextIndicator: ChatContainerProps['showContextIndicator'];
+    contextIndicatorProps: ChatContainerProps['contextIndicatorProps'];
+    texts: ChatContainerTexts;
+    promptInputKey: number;
+    qaMap: NormalizedChatContainerQa;
+}) {
+    const {
+        promptInputProps,
+        onSendMessage,
+        onCancel,
+        status,
+        contextItems,
+        showContextIndicator,
+        contextIndicatorProps,
+        texts: textsArg,
+        promptInputKey,
+        qaMap,
+    } = args;
+
+    const texts = textsArg ?? {};
+
+    const {
+        autoFocusOnNewChat: _autoFocusOnNewChat,
+        autoFocusOnChatSelect: _autoFocusOnChatSelect,
+        ...restBodyProps
+    } = promptInputProps?.bodyProps ?? {};
+
+    const suggestionsProps = mergePromptInputSuggestionsProps(
+        promptInputProps?.suggestionsProps,
+        texts.promptSuggestTitle,
+    );
+
+    return {
+        ...promptInputProps,
+        qa: resolveChatContainerQa(qaMap, 'promptInput', 'prompt-input') ?? promptInputProps?.qa,
+        onSend: onSendMessage,
+        onCancel,
+        status,
+        suggestionsProps,
+        headerProps: {
+            ...promptInputProps?.headerProps,
+            contextItems,
+            showContextIndicator:
+                showContextIndicator ?? promptInputProps?.headerProps?.showContextIndicator,
+            contextIndicatorProps:
+                contextIndicatorProps ?? promptInputProps?.headerProps?.contextIndicatorProps,
+            qa:
+                resolveChatContainerQa(qaMap, 'promptInputHeader', 'prompt-input-header') ??
+                promptInputProps?.headerProps?.qa,
+        },
+        bodyProps: {
+            ...restBodyProps,
+            placeholder:
+                texts.promptPlaceholder || restBodyProps?.placeholder || i18n('prompt-placeholder'),
+            autoFocus: promptInputKey > 0 || restBodyProps?.autoFocus,
+            qa:
+                resolveChatContainerQa(qaMap, 'promptInputBody', 'prompt-input-body') ??
+                restBodyProps?.qa,
+        },
+        footerProps: {
+            ...promptInputProps?.footerProps,
+            submitButtonTooltipSend:
+                texts?.submitSendTooltip ?? promptInputProps?.footerProps?.submitButtonTooltipSend,
+            submitButtonTooltipCancel:
+                texts?.submitCancelTooltip ??
+                promptInputProps?.footerProps?.submitButtonTooltipCancel,
+            submitButtonCancelableText:
+                texts?.submitButtonCancelableText ??
+                promptInputProps?.footerProps?.submitButtonCancelableText,
+            qa:
+                resolveChatContainerQa(qaMap, 'promptInputFooter', 'prompt-input-footer') ??
+                promptInputProps?.footerProps?.qa,
+            submitButtonQa:
+                resolveChatContainerQa(qaMap, 'submitButton', 'submit-button') ??
+                promptInputProps?.footerProps?.submitButtonQa,
+        },
+    };
+}
 
 /**
  * ChatContainer - fully assembled chat component, the main exportable component of the library.
@@ -51,7 +153,7 @@ export function ChatContainer(props: ChatContainerProps) {
         disclaimerProps = {},
         historyProps = {},
         welcomeConfig,
-        i18nConfig = {},
+        texts = {},
         hideTitleOnEmptyChat = false,
         className,
         headerClassName,
@@ -67,11 +169,11 @@ export function ChatContainer(props: ChatContainerProps) {
     // Collect i18n texts with overrides
     const headerTitle = useMemo(
         () =>
-            i18nConfig.header?.defaultTitle ||
+            texts.headerTitle ||
             headerProps.title ||
             hookState.activeChat?.name ||
             i18n('header-default-title'),
-        [i18nConfig.header?.defaultTitle, headerProps.title, hookState.activeChat?.name],
+        [texts.headerTitle, headerProps.title, hookState.activeChat?.name],
     );
 
     // Determine if chat is empty
@@ -110,6 +212,16 @@ export function ChatContainer(props: ChatContainerProps) {
         setHeaderActionQa(HeaderAction.Folding, 'headerFolding', 'header-action-folding');
         setHeaderActionQa(HeaderAction.Close, 'headerClose', 'header-action-close');
 
+        const actionTooltips: NonNullable<HeaderProps['actionTooltips']> = {
+            newChat: texts.headerNewChatTooltip ?? headerProps.actionTooltips?.newChat,
+            history: texts.headerHistoryTooltip ?? headerProps.actionTooltips?.history,
+            close: texts.headerCloseTooltip ?? headerProps.actionTooltips?.close,
+            foldingCollapsed:
+                texts.headerFoldingCollapsedTooltip ?? headerProps.actionTooltips?.foldingCollapsed,
+            foldingOpened:
+                texts.headerFoldingOpenedTooltip ?? headerProps.actionTooltips?.foldingOpened,
+        };
+
         return {
             ...headerProps,
             title: headerTitle,
@@ -122,6 +234,7 @@ export function ChatContainer(props: ChatContainerProps) {
             historyButtonRef: hookState.historyButtonRef,
             qa: resolveChatContainerQa(qaMap, 'header', 'header') ?? headerProps.qa,
             actionQa,
+            actionTooltips,
         };
     }, [
         headerTitle,
@@ -134,6 +247,11 @@ export function ChatContainer(props: ChatContainerProps) {
         hookState.historyButtonRef,
         headerProps,
         qaMap,
+        texts.headerNewChatTooltip,
+        texts.headerHistoryTooltip,
+        texts.headerCloseTooltip,
+        texts.headerFoldingCollapsedTooltip,
+        texts.headerFoldingOpenedTooltip,
     ]);
 
     // Build props for EmptyContainer
@@ -147,29 +265,43 @@ export function ChatContainer(props: ChatContainerProps) {
                 emptyContainerProps.qa,
             image: welcomeConfig?.image,
             title:
-                welcomeConfig?.title ||
-                i18nConfig.emptyState?.title ||
+                texts.emptyStateTitle ??
+                welcomeConfig?.title ??
+                emptyContainerProps.title ??
                 (showDefaultTitle ? i18n('empty-state-title') : undefined),
             description:
-                welcomeConfig?.description ||
-                i18nConfig.emptyState?.description ||
+                texts.emptyStateDescription ??
+                welcomeConfig?.description ??
+                emptyContainerProps.description ??
                 (showDefaultDescription ? i18n('empty-state-description') : undefined),
             suggestionTitle:
-                welcomeConfig?.suggestionTitle || i18nConfig.emptyState?.suggestionsTitle,
+                texts.emptyStateSuggestionsTitle ??
+                welcomeConfig?.suggestionTitle ??
+                emptyContainerProps.suggestionTitle,
             suggestions: welcomeConfig?.suggestions,
             alignment: welcomeConfig?.alignment,
             layout: welcomeConfig?.layout,
             wrapText: welcomeConfig?.wrapText,
             showMore: welcomeConfig?.showMore,
             showMoreText:
-                welcomeConfig?.showMoreText ||
-                i18nConfig.emptyState?.showMoreText ||
+                texts.emptyStateShowMoreText ??
+                welcomeConfig?.showMoreText ??
+                emptyContainerProps.showMoreText ??
                 i18n('empty-state-show-more'),
             onSuggestionClick: async (clickedTitle: string) => {
                 await onSendMessage({content: clickedTitle});
             },
         };
-    }, [welcomeConfig, i18nConfig.emptyState, emptyContainerProps, onSendMessage, qaMap]);
+    }, [
+        welcomeConfig,
+        emptyContainerProps,
+        onSendMessage,
+        qaMap,
+        texts.emptyStateTitle,
+        texts.emptyStateDescription,
+        texts.emptyStateSuggestionsTitle,
+        texts.emptyStateShowMoreText,
+    ]);
 
     // Build props for MessageList
     const messageListProps = useMemo(
@@ -177,8 +309,9 @@ export function ChatContainer(props: ChatContainerProps) {
             ...messageListConfig,
             messages,
             status,
-            errorMessage:
-                messageListConfig?.errorMessage || (error ? {text: error.message} : undefined),
+            errorMessage: texts.errorText
+                ? {...(messageListConfig?.errorMessage ?? {}), text: texts.errorText}
+                : messageListConfig?.errorMessage || (error ? {text: error.message} : undefined),
             onRetry,
             showActionsOnHover,
             transformOptions,
@@ -203,84 +336,54 @@ export function ChatContainer(props: ChatContainerProps) {
             shouldParseIncompleteMarkdown,
             messageListConfig,
             qaMap,
+            texts.errorText,
         ],
     );
 
     // Build props for PromptInput
-    const finalPromptInputProps = useMemo(() => {
-        // Strip ChatContainer-only control props before passing bodyProps to PromptInput
-        const {
-            autoFocusOnNewChat: _autoFocusOnNewChat,
-            autoFocusOnChatSelect: _autoFocusOnChatSelect,
-            ...restBodyProps
-        } = promptInputProps?.bodyProps ?? {};
-
-        return {
-            ...promptInputProps,
-            qa:
-                resolveChatContainerQa(qaMap, 'promptInput', 'prompt-input') ??
-                promptInputProps?.qa,
-            onSend: onSendMessage,
+    const finalPromptInputProps = useMemo(
+        () =>
+            buildFinalPromptInputProps({
+                promptInputProps,
+                onSendMessage,
+                onCancel,
+                status,
+                contextItems,
+                showContextIndicator,
+                contextIndicatorProps,
+                texts,
+                promptInputKey: hookState.promptInputKey,
+                qaMap,
+            }),
+        [
+            onSendMessage,
             onCancel,
             status,
-            headerProps: {
-                ...promptInputProps?.headerProps,
-                contextItems,
-                showContextIndicator:
-                    showContextIndicator ?? promptInputProps?.headerProps?.showContextIndicator,
-                contextIndicatorProps:
-                    contextIndicatorProps ?? promptInputProps?.headerProps?.contextIndicatorProps,
-                qa:
-                    resolveChatContainerQa(qaMap, 'promptInputHeader', 'prompt-input-header') ??
-                    promptInputProps?.headerProps?.qa,
-            },
-            bodyProps: {
-                ...restBodyProps,
-                placeholder:
-                    i18nConfig.promptInput?.placeholder ||
-                    restBodyProps?.placeholder ||
-                    i18n('prompt-placeholder'),
-                autoFocus: hookState.promptInputKey > 0 || restBodyProps?.autoFocus,
-                qa:
-                    resolveChatContainerQa(qaMap, 'promptInputBody', 'prompt-input-body') ??
-                    restBodyProps?.qa,
-            },
-            footerProps: {
-                ...promptInputProps?.footerProps,
-                submitButtonTooltipSend: i18nConfig.submitButton?.sendTooltip,
-                submitButtonTooltipCancel: i18nConfig.submitButton?.cancelTooltip,
-                qa:
-                    resolveChatContainerQa(qaMap, 'promptInputFooter', 'prompt-input-footer') ??
-                    promptInputProps?.footerProps?.qa,
-                submitButtonQa:
-                    resolveChatContainerQa(qaMap, 'submitButton', 'submit-button') ??
-                    promptInputProps?.footerProps?.submitButtonQa,
-            },
-        };
-    }, [
-        onSendMessage,
-        onCancel,
-        status,
-        contextItems,
-        showContextIndicator,
-        contextIndicatorProps,
-        i18nConfig.promptInput,
-        i18nConfig.submitButton,
-        promptInputProps,
-        hookState.promptInputKey,
-        qaMap,
-    ]);
+            contextItems,
+            showContextIndicator,
+            contextIndicatorProps,
+            promptInputProps,
+            hookState.promptInputKey,
+            qaMap,
+            texts.promptPlaceholder,
+            texts.promptSuggestTitle,
+            texts.submitSendTooltip,
+            texts.submitCancelTooltip,
+            texts.submitButtonCancelableText,
+        ],
+    );
 
     // Build props for Disclaimer
     const finalDisclaimerProps = useMemo(() => {
-        const disclaimerText = i18nConfig.disclaimer?.text || i18n('disclaimer-text');
+        const disclaimerText =
+            texts.disclaimerText ?? disclaimerProps.text ?? i18n('disclaimer-text');
 
         return {
             ...disclaimerProps,
-            text: disclaimerProps.text || disclaimerText,
+            text: disclaimerText,
             qa: resolveChatContainerQa(qaMap, 'disclaimer', 'disclaimer') ?? disclaimerProps.qa,
         };
-    }, [i18nConfig.disclaimer, disclaimerProps, qaMap]);
+    }, [disclaimerProps, qaMap, texts.disclaimerText]);
 
     // Build props for ChatContent
     const finalContentProps = useMemo(
@@ -313,13 +416,14 @@ export function ChatContainer(props: ChatContainerProps) {
             onOpenChange: hookState.handleHistoryOpenChange,
             anchorElement: hookState.historyButtonRef.current,
             emptyPlaceholder:
-                i18nConfig.history?.emptyPlaceholder ||
-                historyProps.emptyPlaceholder ||
+                texts.historyEmptyPlaceholder ??
+                historyProps.emptyPlaceholder ??
                 i18n('history-empty'),
             emptyFilteredPlaceholder:
-                i18nConfig.history?.emptyFilteredPlaceholder ||
-                historyProps.emptyFilteredPlaceholder ||
+                texts.historyEmptyFilteredPlaceholder ??
+                historyProps.emptyFilteredPlaceholder ??
                 i18n('history-empty-filtered'),
+            searchPlaceholder: texts.historySearchPlaceholder ?? historyProps.searchPlaceholder,
         }),
         [
             chats,
@@ -329,9 +433,11 @@ export function ChatContainer(props: ChatContainerProps) {
             hookState.isHistoryOpen,
             hookState.handleHistoryOpenChange,
             hookState.historyButtonRef,
-            i18nConfig.history,
             historyProps,
             qaMap,
+            texts.historyEmptyPlaceholder,
+            texts.historyEmptyFilteredPlaceholder,
+            texts.historySearchPlaceholder,
         ],
     );
 

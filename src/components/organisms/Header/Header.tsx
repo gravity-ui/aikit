@@ -59,6 +59,7 @@ export function Header(props: HeaderProps) {
         historyButtonRef,
         qa,
         actionQa,
+        actionTooltips,
     } = useHeader(props);
 
     // Determine class for title positioning
@@ -86,8 +87,19 @@ export function Header(props: HeaderProps) {
 
             // Get tooltip text
             let tooltipKey = `action-tooltip-${action.id}`;
+            let tooltipOverride: string | undefined;
             if (action.id === HeaderAction.Folding && action.foldingState) {
                 tooltipKey = `action-tooltip-folding-${action.foldingState}`;
+                tooltipOverride =
+                    action.foldingState === 'collapsed'
+                        ? actionTooltips?.foldingCollapsed
+                        : actionTooltips?.foldingOpened;
+            } else if (action.id === HeaderAction.NewChat) {
+                tooltipOverride = actionTooltips?.newChat;
+            } else if (action.id === HeaderAction.History) {
+                tooltipOverride = actionTooltips?.history;
+            } else if (action.id === HeaderAction.Close) {
+                tooltipOverride = actionTooltips?.close;
             }
 
             // Determine ref for history button
@@ -97,7 +109,7 @@ export function Header(props: HeaderProps) {
                 <ActionButton
                     key={action.id}
                     ref={buttonRef as React.Ref<HTMLButtonElement>}
-                    tooltipTitle={i18n(tooltipKey as Parameters<typeof i18n>[0])}
+                    tooltipTitle={tooltipOverride ?? i18n(tooltipKey as Parameters<typeof i18n>[0])}
                     size="m"
                     view="flat"
                     onClick={action.onClick}
@@ -108,7 +120,7 @@ export function Header(props: HeaderProps) {
                 </ActionButton>
             );
         },
-        [actionQa],
+        [actionQa, actionTooltips],
     );
 
     // Render additional action

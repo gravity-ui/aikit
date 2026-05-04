@@ -157,17 +157,11 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
   showNewChat={true}
   showFolding={false}
   showClose={false}
-  i18nConfig={{
-    header: {
-      defaultTitle: "My AI Assistant",
-    },
-    emptyState: {
-      title: "Start Chatting",
-      description: "Ask me anything!",
-    },
-    promptInput: {
-      placeholder: "Type your question...",
-    },
+  texts={{
+    headerTitle: "My AI Assistant",
+    emptyStateTitle: "Start Chatting",
+    emptyStateDescription: "Ask me anything!",
+    promptPlaceholder: "Type your question...",
   }}
 />
 
@@ -298,6 +292,59 @@ Nested `*Props.qa` (e.g. `promptInputProps.qa`, `messageListConfig.qa`) still wo
 />
 ```
 
+## Texts (copy overrides)
+
+Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user-visible strings that `ChatContainer` wires into its subtree.
+
+**`texts.*` always wins** when set. After that, each area uses the fallback order in the table below (then built-in `i18n()` defaults where applicable):
+
+| Area                                                    | Order after `texts.*`                                      |
+| ------------------------------------------------------- | ---------------------------------------------------------- |
+| Header title                                            | `headerProps.title` → active chat name → default `i18n()`  |
+| Header action tooltips                                  | `headerProps.actionTooltips` → Header built-in `i18n()`    |
+| Empty / welcome copy                                    | `welcomeConfig` → `emptyContainerProps` → default `i18n()` |
+| Prompt placeholder / submit tooltips / cancelable label | `promptInputProps.*` → PromptInput defaults                |
+| Prompt suggestions title (above input chips)            | `promptInputProps.suggestionsProps.suggestTitle`           |
+| Message list error text                                 | `messageListConfig.errorMessage` or `error.message`        |
+| Disclaimer                                              | `disclaimerProps.text` → default `i18n()`                  |
+| History empty / filtered / search placeholder           | `historyProps` → HistoryList built-in `i18n()`             |
+
+| Key                               | Description                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------------- |
+| `headerTitle`                     | Header title (before `headerProps.title` / active chat name)                     |
+| `headerNewChatTooltip`            | Tooltip on the new-chat header action                                            |
+| `headerHistoryTooltip`            | Tooltip on the history header action                                             |
+| `headerCloseTooltip`              | Tooltip on the close header action                                               |
+| `headerFoldingCollapsedTooltip`   | Tooltip when folding is collapsed (expand)                                       |
+| `headerFoldingOpenedTooltip`      | Tooltip when folding is opened (collapse)                                        |
+| `emptyStateTitle`                 | Welcome / empty state title (`ReactNode`)                                        |
+| `emptyStateDescription`           | Welcome description (`ReactNode`)                                                |
+| `emptyStateSuggestionsTitle`      | Title above suggestions (`ReactNode`)                                            |
+| `emptyStateShowMoreText`          | "Show more" button label                                                         |
+| `promptPlaceholder`               | Prompt textarea placeholder                                                      |
+| `promptSuggestTitle`              | Title above PromptInput inline suggestions (`promptInputProps.suggestionsProps`) |
+| `submitSendTooltip`               | Submit button tooltip (ready / send)                                             |
+| `submitCancelTooltip`             | Submit button tooltip (streaming / cancel)                                       |
+| `submitButtonCancelableText`      | Visible label next to the stop icon in cancelable submit state                   |
+| `errorText`                       | Message list error alert main text                                               |
+| `historySearchPlaceholder`        | History list search/filter field placeholder                                     |
+| `historyEmptyPlaceholder`         | History list when there are no chats (`ReactNode`)                               |
+| `historyEmptyFilteredPlaceholder` | History list when search has no results (`ReactNode`)                            |
+| `disclaimerText`                  | Disclaimer body (string; matches `DisclaimerProps.text`)                         |
+
+```tsx
+<ChatContainer
+  messages={messages}
+  onSendMessage={onSendMessage}
+  texts={{
+    headerTitle: 'My AI',
+    promptPlaceholder: 'Ask anything...',
+    submitSendTooltip: 'Send',
+    disclaimerText: 'AI may be wrong.',
+  }}
+/>
+```
+
 ## Props
 
 | Prop                   | Type                                   | Required           | Default   | Description                                                                    |
@@ -327,7 +374,7 @@ Nested `*Props.qa` (e.g. `promptInputProps.qa`, `messageListConfig.qa`) still wo
 | `disclaimerProps`      | `Partial<DisclaimerProps>`             | -                  | -         | Props override for Disclaimer component                                        |
 | `historyProps`         | `Partial<HistoryProps>`                | -                  | -         | Props override for History component                                           |
 | `welcomeConfig`        | `WelcomeConfig`                        | -                  | -         | Welcome screen configuration for empty state                                   |
-| `i18nConfig`           | `ChatContainerI18nConfig`              | -                  | -         | I18n configuration for all text labels                                         |
+| `texts`                | `ChatContainerTexts`                   | -                  | -         | Flat unified copy overrides (see **Texts**)                                    |
 | `showHistory`          | `boolean`                              | -                  | `true`    | Show chat history feature                                                      |
 | `showNewChat`          | `boolean`                              | -                  | `true`    | Show new chat button                                                           |
 | `showFolding`          | `boolean`                              | -                  | `false`   | Show folding button                                                            |
@@ -344,6 +391,10 @@ Nested `*Props.qa` (e.g. `promptInputProps.qa`, `messageListConfig.qa`) still wo
 ### ChatContainerQa
 
 See **QA (test identifiers)**. Exported as `ChatContainerQa` from `@gravity-ui/aikit`.
+
+### ChatContainerTexts
+
+See **Texts (copy overrides)**. Exported as `ChatContainerTexts` from `@gravity-ui/aikit`.
 
 ### WelcomeConfig
 
@@ -375,8 +426,8 @@ interface WelcomeConfig {
 - **`alignment`**: Alignment configuration for image, title, and description (see Alignment section)
 - **`layout`**: Layout orientation for suggestions - `'grid'` for horizontal (default), `'list'` for vertical
 - **`wrapText`**: Enable text wrapping inside suggestion buttons instead of ellipsis (default: `false`)
-- **`showDefaultTitle`**: Enable default title when neither `title` nor `i18nConfig.emptyState.title` are provided (default: `true`)
-- **`showDefaultDescription`**: Enable default description when neither `description` nor `i18nConfig.emptyState.description` are provided (default: `true`)
+- **`showDefaultTitle`**: Enable default title when neither `title` nor `texts.emptyStateTitle` / `emptyContainerProps.title` are provided (default: `true`)
+- **`showDefaultDescription`**: Enable default description when neither `description` nor `texts.emptyStateDescription` / `emptyContainerProps.description` are provided (default: `true`)
 - **`showMore`**: Callback function for "Show More" button
 - **`showMoreText`**: Custom text for the "Show More" button
 
@@ -472,39 +523,6 @@ interface MessageListConfig {
     loaderStatuses: ['submitted', 'streaming'],
   }}
 />
-```
-
-### ChatContainerI18nConfig
-
-I18n configuration for customizing all text labels:
-
-```tsx
-interface ChatContainerI18nConfig {
-  header?: {
-    defaultTitle?: string;
-    newChatTooltip?: string;
-    historyTooltip?: string;
-    closeTooltip?: string;
-  };
-  emptyState?: {
-    title?: string;
-    description?: string;
-    suggestionsTitle?: string;
-    showMoreText?: string;
-  };
-  promptInput?: {
-    placeholder?: string;
-    sendTooltip?: string;
-    cancelTooltip?: string;
-  };
-  history?: {
-    emptyPlaceholder?: string;
-    searchPlaceholder?: string;
-  };
-  disclaimer?: {
-    text?: string;
-  };
-}
 ```
 
 ## States
@@ -834,31 +852,7 @@ alignment: {
 
 ## Internationalization
 
-The component supports i18n through the `i18nConfig` prop:
-
-```tsx
-<ChatContainer
-  i18nConfig={{
-    header: {
-      defaultTitle: 'AI Assistant',
-    },
-    emptyState: {
-      title: 'Welcome!',
-      description: 'Start a conversation',
-      suggestionsTitle: 'Try these:',
-    },
-    promptInput: {
-      placeholder: 'Type here...',
-    },
-    history: {
-      emptyPlaceholder: 'No chats yet',
-    },
-    disclaimer: {
-      text: 'AI can make mistakes. Verify important info.',
-    },
-  }}
-/>
-```
+Default copy comes from the ChatContainer locale JSON (`i18n('…')`). Override any visible string with the **`texts`** prop (`ChatContainerTexts`); see **Texts (copy overrides)** above.
 
 ## Streaming Example
 
