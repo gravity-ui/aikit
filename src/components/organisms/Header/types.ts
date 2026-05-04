@@ -33,4 +33,9 @@ export type HeaderProps = {
     showTitle?: boolean; // default: true - controls visibility of title and preview
 
     className?: string;
+
+    /** QA/test identifier on header root */
+    qa?: string;
+    /** Per base action `data-qa` (defaults to `header-action-${id}`) */
+    actionQa?: Partial<Record<HeaderAction, string>>;
 };

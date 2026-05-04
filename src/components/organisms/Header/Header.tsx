@@ -57,6 +57,8 @@ export function Header(props: HeaderProps) {
         showTitle = true,
         className,
         historyButtonRef,
+        qa,
+        actionQa,
     } = useHeader(props);
 
     // Determine class for title positioning
@@ -100,13 +102,13 @@ export function Header(props: HeaderProps) {
                     view="flat"
                     onClick={action.onClick}
                     className={b('action-button')}
-                    qa={`header-action-${action.id}`}
+                    qa={actionQa?.[action.id as HeaderAction] ?? `header-action-${action.id}`}
                 >
                     <Icon data={IconComponent} size={16} />
                 </ActionButton>
             );
         },
-        [],
+        [actionQa],
     );
 
     // Render additional action
@@ -125,7 +127,7 @@ export function Header(props: HeaderProps) {
     }, []);
 
     return (
-        <div className={b('', className)}>
+        <div className={b('', className)} data-qa={qa}>
             {/* Left part: icon */}
             {withIcon && iconElement}
 

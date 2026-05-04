@@ -775,6 +775,67 @@ export const WithComponentPropsOverride: Story = {
 };
 
 /**
+ * Unified `qa`: string sets root only (backward compatible).
+ */
+export const WithQaString: Story = {
+    args: {
+        messages: mockMessages,
+        promptInputProps: {
+            view: 'full',
+        },
+        qa: 'integration-chat-root',
+    },
+    render: (args) => <ChatContainer {...args} onSendMessage={async () => {}} />,
+    decorators: defaultDecorators,
+};
+
+/**
+ * Unified `qa`: `{ prefix }` opt-in for `${prefix}-${slot}` on major slots.
+ */
+export const WithQaPrefix: Story = {
+    args: {
+        messages: mockMessages,
+        promptInputProps: {
+            view: 'full',
+        },
+        qa: {prefix: 'chat-pre'},
+    },
+    render: (args) => <ChatContainer {...args} onSendMessage={async () => {}} />,
+    decorators: defaultDecorators,
+};
+
+/**
+ * Unified `qa`: explicit map for integration tests.
+ */
+export const WithQaExplicit: Story = {
+    args: {
+        messages: mockMessages,
+        chats: mockChats,
+        activeChat: mockChats[0],
+        showHistory: true,
+        contextItems: [{id: 'qa-demo', content: 'Context', onRemove: () => {}}],
+        promptInputProps: {
+            view: 'full',
+        },
+        qa: {
+            root: 'qa-chat-root',
+            header: 'qa-chat-header',
+            content: 'qa-chat-content',
+            messageList: 'qa-chat-message-list',
+            promptInput: 'qa-chat-prompt',
+            promptInputHeader: 'qa-chat-prompt-header',
+            promptInputBody: 'qa-chat-prompt-body',
+            promptInputFooter: 'qa-chat-prompt-footer',
+            submitButton: 'qa-chat-submit',
+            disclaimer: 'qa-chat-disclaimer',
+            history: 'qa-chat-history',
+        },
+    },
+    render: (args) => <ChatContainer {...args} onSendMessage={async () => {}} />,
+    decorators: defaultDecorators,
+};
+
+/**
  * With context items
  */
 export const WithContextItems: Story = {

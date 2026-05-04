@@ -2,11 +2,16 @@ import {useMemo} from 'react';
 
 import {block} from '../../../utils/cn';
 import {Disclaimer} from '../../atoms/Disclaimer';
-import {Header} from '../../organisms/Header';
+import {Header, HeaderAction} from '../../organisms/Header';
 import {PromptInput} from '../../organisms/PromptInput';
 import {ChatContent} from '../../templates/ChatContent';
 import {History} from '../../templates/History';
 
+import {
+    normalizeChatContainerQa,
+    resolveChatContainerQa,
+    resolveChatContainerRootQa,
+} from './chatContainerQa';
 import {i18n} from './i18n';
 import type {ChatContainerProps} from './types';
 import {useChatContainer} from './useChatContainer';
@@ -57,6 +62,8 @@ export function ChatContainer(props: ChatContainerProps) {
 
     const hookState = useChatContainer(props);
 
+    const qaMap = useMemo(() => normalizeChatContainerQa(qa), [qa]);
+
     // Collect i18n texts with overrides
     const headerTitle = useMemo(
         () =>
@@ -84,8 +91,26 @@ export function ChatContainer(props: ChatContainerProps) {
     }, [hideTitleOnEmptyChat, isChatEmpty, headerProps.showTitle]);
 
     // Build props for Header
-    const finalHeaderProps = useMemo(
-        () => ({
+    const finalHeaderProps = useMemo(() => {
+        const actionQa: Partial<Record<HeaderAction, string>> = {
+            ...headerProps.actionQa,
+        };
+        const setHeaderActionQa = (
+            action: HeaderAction,
+            key: 'headerNewChat' | 'headerHistory' | 'headerFolding' | 'headerClose',
+            suffix: string,
+        ) => {
+            const resolved = resolveChatContainerQa(qaMap, key, suffix);
+            if (resolved !== undefined) {
+                actionQa[action] = resolved;
+            }
+        };
+        setHeaderActionQa(HeaderAction.NewChat, 'headerNewChat', 'header-action-newChat');
+        setHeaderActionQa(HeaderAction.History, 'headerHistory', 'header-action-history');
+        setHeaderActionQa(HeaderAction.Folding, 'headerFolding', 'header-action-folding');
+        setHeaderActionQa(HeaderAction.Close, 'headerClose', 'header-action-close');
+
+        return {
             ...headerProps,
             title: headerTitle,
             showTitle,
@@ -95,19 +120,21 @@ export function ChatContainer(props: ChatContainerProps) {
             handleFolding: hookState.handleFolding,
             handleClose: hookState.handleClose,
             historyButtonRef: hookState.historyButtonRef,
-        }),
-        [
-            headerTitle,
-            showTitle,
-            hookState.baseActions,
-            hookState.handleNewChat,
-            hookState.handleHistoryToggle,
-            hookState.handleFolding,
-            hookState.handleClose,
-            hookState.historyButtonRef,
-            headerProps,
-        ],
-    );
+            qa: resolveChatContainerQa(qaMap, 'header', 'header') ?? headerProps.qa,
+            actionQa,
+        };
+    }, [
+        headerTitle,
+        showTitle,
+        hookState.baseActions,
+        hookState.handleNewChat,
+        hookState.handleHistoryToggle,
+        hookState.handleFolding,
+        hookState.handleClose,
+        hookState.historyButtonRef,
+        headerProps,
+        qaMap,
+    ]);
 
     // Build props for EmptyContainer
     const finalEmptyContainerProps = useMemo(() => {
@@ -115,6 +142,9 @@ export function ChatContainer(props: ChatContainerProps) {
 
         return {
             ...emptyContainerProps,
+            qa:
+                resolveChatContainerQa(qaMap, 'emptyState', 'empty-state') ??
+                emptyContainerProps.qa,
             image: welcomeConfig?.image,
             title:
                 welcomeConfig?.title ||
@@ -139,7 +169,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 await onSendMessage({content: clickedTitle});
             },
         };
-    }, [welcomeConfig, i18nConfig.emptyState, emptyContainerProps, onSendMessage]);
+    }, [welcomeConfig, i18nConfig.emptyState, emptyContainerProps, onSendMessage, qaMap]);
 
     // Build props for MessageList
     const messageListProps = useMemo(
@@ -153,6 +183,15 @@ export function ChatContainer(props: ChatContainerProps) {
             showActionsOnHover,
             transformOptions,
             shouldParseIncompleteMarkdown,
+            qa:
+                resolveChatContainerQa(qaMap, 'messageList', 'message-list') ??
+                messageListConfig?.qa,
+            actionPopupProps: {
+                ...messageListConfig?.actionPopupProps,
+                qa:
+                    resolveChatContainerQa(qaMap, 'actionPopup', 'action-popup') ??
+                    messageListConfig?.actionPopupProps?.qa,
+            },
         }),
         [
             messages,
@@ -163,6 +202,7 @@ export function ChatContainer(props: ChatContainerProps) {
             transformOptions,
             shouldParseIncompleteMarkdown,
             messageListConfig,
+            qaMap,
         ],
     );
 
@@ -177,6 +217,9 @@ export function ChatContainer(props: ChatContainerProps) {
 
         return {
             ...promptInputProps,
+            qa:
+                resolveChatContainerQa(qaMap, 'promptInput', 'prompt-input') ??
+                promptInputProps?.qa,
             onSend: onSendMessage,
             onCancel,
             status,
@@ -187,6 +230,9 @@ export function ChatContainer(props: ChatContainerProps) {
                     showContextIndicator ?? promptInputProps?.headerProps?.showContextIndicator,
                 contextIndicatorProps:
                     contextIndicatorProps ?? promptInputProps?.headerProps?.contextIndicatorProps,
+                qa:
+                    resolveChatContainerQa(qaMap, 'promptInputHeader', 'prompt-input-header') ??
+                    promptInputProps?.headerProps?.qa,
             },
             bodyProps: {
                 ...restBodyProps,
@@ -195,11 +241,20 @@ export function ChatContainer(props: ChatContainerProps) {
                     restBodyProps?.placeholder ||
                     i18n('prompt-placeholder'),
                 autoFocus: hookState.promptInputKey > 0 || restBodyProps?.autoFocus,
+                qa:
+                    resolveChatContainerQa(qaMap, 'promptInputBody', 'prompt-input-body') ??
+                    restBodyProps?.qa,
             },
             footerProps: {
                 ...promptInputProps?.footerProps,
                 submitButtonTooltipSend: i18nConfig.submitButton?.sendTooltip,
                 submitButtonTooltipCancel: i18nConfig.submitButton?.cancelTooltip,
+                qa:
+                    resolveChatContainerQa(qaMap, 'promptInputFooter', 'prompt-input-footer') ??
+                    promptInputProps?.footerProps?.qa,
+                submitButtonQa:
+                    resolveChatContainerQa(qaMap, 'submitButton', 'submit-button') ??
+                    promptInputProps?.footerProps?.submitButtonQa,
             },
         };
     }, [
@@ -213,6 +268,7 @@ export function ChatContainer(props: ChatContainerProps) {
         i18nConfig.submitButton,
         promptInputProps,
         hookState.promptInputKey,
+        qaMap,
     ]);
 
     // Build props for Disclaimer
@@ -222,24 +278,33 @@ export function ChatContainer(props: ChatContainerProps) {
         return {
             ...disclaimerProps,
             text: disclaimerProps.text || disclaimerText,
+            qa: resolveChatContainerQa(qaMap, 'disclaimer', 'disclaimer') ?? disclaimerProps.qa,
         };
-    }, [i18nConfig.disclaimer, disclaimerProps]);
+    }, [i18nConfig.disclaimer, disclaimerProps, qaMap]);
 
     // Build props for ChatContent
     const finalContentProps = useMemo(
         () => ({
             ...contentProps,
+            qa: resolveChatContainerQa(qaMap, 'content', 'content') ?? contentProps.qa,
             view: hookState.chatContentView as 'empty' | 'chat',
             emptyContainerProps: finalEmptyContainerProps,
             messageListProps,
         }),
-        [hookState.chatContentView, finalEmptyContainerProps, messageListProps, contentProps],
+        [
+            hookState.chatContentView,
+            finalEmptyContainerProps,
+            messageListProps,
+            contentProps,
+            qaMap,
+        ],
     );
 
     // Build props for History
     const finalHistoryProps = useMemo(
         () => ({
             ...historyProps,
+            qa: resolveChatContainerQa(qaMap, 'history', 'history') ?? historyProps.qa,
             chats,
             selectedChat: hookState.activeChat,
             onSelectChat: hookState.handleSelectChat,
@@ -266,13 +331,14 @@ export function ChatContainer(props: ChatContainerProps) {
             hookState.historyButtonRef,
             i18nConfig.history,
             historyProps,
+            qaMap,
         ],
     );
 
     const showFooter = finalPromptInputProps || finalDisclaimerProps;
 
     return (
-        <div className={b(null, className)} data-qa={qa}>
+        <div className={b(null, className)} data-qa={resolveChatContainerRootQa(qaMap)}>
             <div className={b('header', headerClassName)}>
                 <Header {...finalHeaderProps} />
             </div>

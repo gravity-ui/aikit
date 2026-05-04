@@ -177,9 +177,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     <Loader view="loading" />
                 </IntersectionContainer>
             )}
-            <div className={b('messages')} data-qa={qa}>
-                {messages.map(renderMessage)}
-            </div>
+            <div className={b('messages')}>{messages.map(renderMessage)}</div>
             {showLoader && <Loader className={b('loader')} />}
             {status === 'error' && (
                 <ErrorAlert
@@ -206,7 +204,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                         actionPopupProps?.placement || popupState.actionConfig.popup.placement
                     }
                     className={actionPopupProps?.className}
-                    qa={qa ? `${qa}-action-popup` : 'action-popup'}
+                    qa={actionPopupProps?.qa ?? (qa ? `${qa}-action-popup` : 'action-popup')}
                 >
                     {popupState.content}
                 </ActionPopup>

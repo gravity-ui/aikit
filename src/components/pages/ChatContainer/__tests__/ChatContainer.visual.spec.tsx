@@ -50,6 +50,24 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should apply unified qa config from ChatContainerQa', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithQaExplicit />);
+
+        await expect(page.locator('[data-qa="qa-chat-root"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-header"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-content"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-message-list"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt-header"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt-body"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt-footer"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-submit"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-disclaimer"]')).toBeVisible();
+
+        await page.locator('[data-qa="header-action-history"]').click();
+        await expect(page.locator('[data-qa="qa-chat-history"]')).toBeVisible();
+    });
+
     test('should render loading state', async ({mount, expectScreenshot}) => {
         await mount(<ChatContainerStories.LoadingState />);
 
