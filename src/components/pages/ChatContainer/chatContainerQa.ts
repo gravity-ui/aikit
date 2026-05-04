@@ -2,6 +2,9 @@ import type {ChatContainerQa} from './types';
 
 /**
  * Normalizes ChatContainer `qa` prop: string maps to root only (backward compatible).
+ *
+ * @param qa - Raw `qa` from props: string (root only), full map, or undefined.
+ * @returns Always a {@link ChatContainerQa} object (`{}`, `{root}`, or the given map).
  */
 export function normalizeChatContainerQa(
     qa: string | ChatContainerQa | undefined,
@@ -17,6 +20,11 @@ export function normalizeChatContainerQa(
 
 /**
  * Resolves a single qa value: explicit key wins, then `prefix-suffix`, else undefined.
+ *
+ * @param qaMap - Normalized QA map (see {@link normalizeChatContainerQa}).
+ * @param key - Which QA slot to resolve (`prefix` always yields undefined).
+ * @param suffixForPrefix - Suffix appended when only `prefix` is set.
+ * @returns Resolved `data-qa` string, or undefined when nothing applies.
  */
 export function resolveChatContainerQa(
     qaMap: ChatContainerQa,
@@ -36,7 +44,12 @@ export function resolveChatContainerQa(
     return undefined;
 }
 
-/** Root `data-qa`: explicit `root`, else `prefix` when only prefix is set. */
+/**
+ * Root `data-qa`: explicit `root`, else `prefix` when only prefix is set.
+ *
+ * @param qaMap - Normalized QA map.
+ * @returns Value for the container root element, or undefined.
+ */
 export function resolveChatContainerRootQa(qaMap: ChatContainerQa): string | undefined {
     return qaMap.root ?? qaMap.prefix;
 }

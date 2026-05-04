@@ -74,6 +74,9 @@ export interface HistoryListProps extends QAProps, DOMProps {
 
 /**
  * HistoryList component - displays a list of chats with search, grouping, and actions
+ *
+ * @param props - {@link HistoryListProps}
+ * @returns Rendered history list (search, grouping, lazy/full load, chat rows).
  */
 export function HistoryList(props: HistoryListProps) {
     const {

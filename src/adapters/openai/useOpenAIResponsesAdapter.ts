@@ -31,6 +31,9 @@ function isToolPart(p: TMessageContentUnion): p is Extract<TMessageContentUnion,
  * When the stream splits the reply into two consecutive assistant messages, the same tool call can
  * appear in both. Moves matching tool parts into the earlier segment and drops the duplicate from
  * the later one so the UI does not show orphaned repeats.
+ *
+ * @param messages - Chat messages (possibly with duplicate tool parts across adjacent assistants).
+ * @returns A shallow-copied message list with orphan duplicates collapsed.
  */
 export function collapseOrphanToolBetweenAssistantSegments(
     messages: TChatMessage[],
@@ -94,7 +97,11 @@ export function collapseOrphanToolBetweenAssistantSegments(
 /**
  * Index of the assistant message that should receive streamed content for `messageId`.
  * Uses an exact id match when present; otherwise the last assistant (current streaming segment),
- * which covers events that reference an id before our list has caught up. Returns -1 if there is no assistant.
+ * which covers events that reference an id before our list has caught up.
+ *
+ * @param messages - Current chat messages while streaming.
+ * @param messageId - Target assistant id from the stream event.
+ * @returns Index of the assistant to update, or `-1` if there is no assistant.
  */
 function resolveStreamContentTargetIndex(messages: TChatMessage[], messageId: string): number {
     const byId = messages.findIndex((m) => m.id === messageId && m.role === 'assistant');
