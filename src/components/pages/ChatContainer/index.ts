@@ -1,7 +1,8 @@
 export {ChatContainer} from './ChatContainer';
 export type {
     ChatContainerProps,
-    ChatContainerI18nConfig,
+    ChatContainerQa,
+    ChatContainerTexts,
     WelcomeConfig,
     MessageListConfig,
 } from './types';

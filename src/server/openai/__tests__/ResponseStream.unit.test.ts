@@ -3,6 +3,9 @@ import {Stream} from 'openai/streaming';
 
 import {ResponseStream} from '../ResponseStream';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyType = any;
+
 describe('ResponseStream', () => {
     it('onEventChunk() pass event chunks', () => {
         const stream = ['chunk1', 'chunk2', 'chunk3', 'chunk4'];
@@ -22,7 +25,7 @@ describe('ResponseStream', () => {
             stream as unknown as Stream<Responses.ResponseStreamEvent>,
         );
 
-        const expectedChunks: any[] = [];
+        const expectedChunks: AnyType[] = [];
 
         service.start();
         service.onEventChunk((chunk) => {
@@ -59,7 +62,7 @@ describe('ResponseStream', () => {
             stream as unknown as Stream<Responses.ResponseStreamEvent>,
         );
 
-        const expectedChunks: any[] = [];
+        const expectedChunks: AnyType[] = [];
 
         service.start();
         service.onBufferChunk((chunk) => {
@@ -88,7 +91,7 @@ describe('ResponseStream', () => {
             stream as unknown as Stream<Responses.ResponseStreamEvent>,
         );
 
-        const recordedChunks: any[] = [];
+        const recordedChunks: AnyType[] = [];
 
         service.start();
         service.onEventChunk((chunk) => {

@@ -33,4 +33,25 @@ export type HeaderProps = {
     showTitle?: boolean; // default: true - controls visibility of title and preview
 
     className?: string;
+
+    /** QA/test identifier on header root */
+    qa?: string;
+    /** Per base action `data-qa` (defaults to `header-action-${id}`) */
+    actionQa?: Partial<Record<HeaderAction, string>>;
+    /**
+     * Override tooltip text per base action. When a value is undefined, the built-in
+     * localized string is used (e.g. `i18n('action-tooltip-newChat')`).
+     */
+    actionTooltips?: {
+        /** Tooltip for {@link HeaderAction.NewChat} */
+        newChat?: string;
+        /** Tooltip for {@link HeaderAction.History} */
+        history?: string;
+        /** Tooltip for {@link HeaderAction.Close} */
+        close?: string;
+        /** Tooltip for {@link HeaderAction.Folding} when `foldingState === 'collapsed'` (expand action) */
+        foldingCollapsed?: string;
+        /** Tooltip for {@link HeaderAction.Folding} when `foldingState === 'opened'` (collapse action) */
+        foldingOpened?: string;
+    };
 };

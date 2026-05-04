@@ -38,8 +38,8 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
-    test('should render with i18n config', async ({mount, expectScreenshot}) => {
-        await mount(<ChatContainerStories.WithI18nConfig />);
+    test('should render with custom texts config', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContainerStories.WithCustomTexts />);
 
         await expectScreenshot();
     });
@@ -48,6 +48,58 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await mount(<ChatContainerStories.WithComponentPropsOverride />);
 
         await expectScreenshot();
+    });
+
+    test('should apply unified qa config from ChatContainerQa', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithQaExplicit />);
+
+        await expect(page.locator('[data-qa="qa-chat-root"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-header"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-content"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-message-list"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt-header"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt-body"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-prompt-footer"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-submit"]')).toBeVisible();
+        await expect(page.locator('[data-qa="qa-chat-disclaimer"]')).toBeVisible();
+
+        await page.locator('[data-qa="header-action-history"]').click();
+        await expect(page.locator('[data-qa="qa-chat-history"]')).toBeVisible();
+    });
+
+    test('should apply unified texts config from ChatContainerTexts', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithTexts />);
+
+        await expect(page.getByText('E2E Header Title')).toBeVisible();
+        await expect(page.getByText('E2E Welcome Title')).toBeVisible();
+        await expect(page.getByText('E2E Welcome description')).toBeVisible();
+        await expect(page.getByText('E2E Suggestions header')).toBeVisible();
+        await expect(page.getByText('E2E Prompt suggests title')).toBeVisible();
+        await expect(page.getByText('E2E Suggestion chip')).toBeVisible();
+        await expect(page.getByText('E2E Disclaimer copy')).toBeVisible();
+
+        const textarea = page.locator('textarea');
+        await expect(textarea).toHaveAttribute('placeholder', 'E2E Placeholder text');
+
+        await page.locator('[data-qa="header-action-history"]').click();
+        await expect(page.getByText('E2E No chats yet')).toBeVisible();
+        await expect(page.getByPlaceholder('E2E History search ph')).toBeVisible();
+    });
+
+    test('should apply texts.submitButtonCancelableText in streaming state', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<ChatContainerStories.WithTextsStreaming />);
+
+        await expect(page.getByRole('button', {name: /E2E Stop streaming/i})).toBeVisible();
+    });
+
+    test('should apply texts.errorText in error state', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithTextsError />);
+
+        await expect(page.getByText('E2E Custom error surface')).toBeVisible();
     });
 
     test('should render loading state', async ({mount, expectScreenshot}) => {
@@ -172,8 +224,8 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await page.waitForTimeout(500);
     });
 
-    test('should display custom i18n texts', async ({mount, page}) => {
-        await mount(<ChatContainerStories.WithI18nConfig />);
+    test('should display custom texts', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithCustomTexts />);
 
         // Check custom title
         await expect(page.getByText('My Custom AI Assistant')).toBeVisible();
