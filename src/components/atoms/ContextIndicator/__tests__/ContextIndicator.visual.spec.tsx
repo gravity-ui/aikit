@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {expect, test} from '~playwright/core';
 
 import {ContextIndicatorStories} from './helpersPlaywright';

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import type {TextProps} from '@gravity-ui/uikit';
 import {Text} from '@gravity-ui/uikit';
 
@@ -11,9 +13,9 @@ import './Disclaimer.scss';
 export type DisclaimerProps = React.PropsWithChildren<{
     /** Additional CSS class */
     className?: string;
-    /** Disclaimer text to display */
-    text?: string;
-    /** Text variant for typography styling */
+    /** Disclaimer text — plain string or a React node */
+    text?: string | React.ReactNode;
+    /** Text variant for typography styling (applied only when text is a string) */
     variant?: TextProps['variant'];
     /** QA/test identifier */
     qa?: string;
@@ -30,13 +32,25 @@ const b = block('disclaimer');
 export function Disclaimer(props: DisclaimerProps) {
     const {className, qa, children, text, variant} = props;
 
-    return (
-        <div className={b('container', className)} data-qa={qa}>
-            {text && (
+    let textContent: React.ReactNode | null = null;
+
+    if (text) {
+        if (typeof text === 'string') {
+            textContent = (
                 <Text color="secondary" variant={variant}>
                     {text}
                 </Text>
-            )}
+            );
+        } else {
+            textContent = text;
+        }
+    } else {
+        textContent = null;
+    }
+
+    return (
+        <div className={b('container', className)} data-qa={qa}>
+            {textContent}
             {children}
         </div>
     );

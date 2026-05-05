@@ -1,0 +1,20 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}attachment-picker';
+
+#{$block} {
+    display: inline-flex;
+
+    &__button-wrapper {
+        position: relative;
+        display: inline-flex;
+    }
+
+    &__button {
+        color: var(--g-color-text-secondary);
+
+        &:hover {
+            color: var(--g-color-text-primary);
+        }
+    }
+}

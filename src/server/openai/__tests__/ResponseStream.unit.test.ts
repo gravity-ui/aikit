@@ -22,6 +22,7 @@ describe('ResponseStream', () => {
             stream as unknown as Stream<Responses.ResponseStreamEvent>,
         );
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const expectedChunks: any[] = [];
 
         service.start();
@@ -59,6 +60,7 @@ describe('ResponseStream', () => {
             stream as unknown as Stream<Responses.ResponseStreamEvent>,
         );
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const expectedChunks: any[] = [];
 
         service.start();
@@ -88,6 +90,7 @@ describe('ResponseStream', () => {
             stream as unknown as Stream<Responses.ResponseStreamEvent>,
         );
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const recordedChunks: any[] = [];
 
         service.start();
