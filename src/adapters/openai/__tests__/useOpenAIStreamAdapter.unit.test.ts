@@ -517,6 +517,223 @@ describe('useOpenAIStreamAdapter', () => {
         });
     });
 
+    // ─── trackTokenUsage ────────────────────────────────────────────────────────
+
+    it('should not set outputTokens in metadata when trackTokenUsage is false (default)', async () => {
+        const msgId = 'msg-tok-default';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: msgId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [],
+                },
+            },
+            {type: 'response.output_text.delta', delta: 'Hello', item_id: msgId},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: msgId,
+                    role: 'assistant',
+                    status: 'completed',
+                    content: [{type: 'output_text', text: 'Hello'}],
+                },
+            },
+            {
+                type: 'response.completed',
+                response: {
+                    usage: {output_tokens: 42},
+                    output: [{id: msgId, type: 'message'}],
+                },
+            },
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        expect(result.current.messages[0]).toMatchObject({role: 'assistant', id: msgId});
+        expect((result.current.messages[0] as {metadata?: unknown}).metadata).toBeUndefined();
+    });
+
+    it('should inject outputTokens into message metadata when trackTokenUsage is true', async () => {
+        const msgId = 'msg-tok-inject';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: msgId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [],
+                },
+            },
+            {type: 'response.output_text.delta', delta: 'Hi', item_id: msgId},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: msgId,
+                    role: 'assistant',
+                    status: 'completed',
+                    content: [{type: 'output_text', text: 'Hi'}],
+                },
+            },
+            {
+                type: 'response.completed',
+                response: {
+                    usage: {output_tokens: 99},
+                    output: [{id: msgId, type: 'message'}],
+                },
+            },
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() =>
+            useOpenAIStreamAdapter(stream, {initialMessages: [], trackTokenUsage: true}),
+        );
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        expect(result.current.messages[0]).toMatchObject({role: 'assistant', id: msgId});
+        expect(
+            (result.current.messages[0] as {metadata?: {outputTokens?: number}}).metadata
+                ?.outputTokens,
+        ).toBe(99);
+    });
+
+    it('should not inject tokens when output_tokens is zero', async () => {
+        const msgId = 'msg-tok-zero';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: msgId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [],
+                },
+            },
+            {type: 'response.output_text.delta', delta: 'Zero', item_id: msgId},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: msgId,
+                    role: 'assistant',
+                    status: 'completed',
+                    content: [{type: 'output_text', text: 'Zero'}],
+                },
+            },
+            {
+                type: 'response.completed',
+                response: {
+                    usage: {output_tokens: 0},
+                    output: [{id: msgId, type: 'message'}],
+                },
+            },
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() =>
+            useOpenAIStreamAdapter(stream, {initialMessages: [], trackTokenUsage: true}),
+        );
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        expect((result.current.messages[0] as {metadata?: unknown}).metadata).toBeUndefined();
+    });
+
+    it('should match tokens to the correct message by id when multiple messages exist', async () => {
+        const firstId = 'msg-tok-first';
+        const secondId = 'msg-tok-second';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: firstId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [],
+                },
+            },
+            {type: 'response.output_text.delta', delta: 'First', item_id: firstId},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: firstId,
+                    role: 'assistant',
+                    status: 'completed',
+                    content: [{type: 'output_text', text: 'First'}],
+                },
+            },
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'message',
+                    id: secondId,
+                    role: 'assistant',
+                    status: 'in_progress',
+                    content: [],
+                },
+            },
+            {type: 'response.output_text.delta', delta: 'Second', item_id: secondId},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: secondId,
+                    role: 'assistant',
+                    status: 'completed',
+                    content: [{type: 'output_text', text: 'Second'}],
+                },
+            },
+            {
+                type: 'response.completed',
+                response: {
+                    usage: {output_tokens: 55},
+                    output: [
+                        {id: firstId, type: 'message'},
+                        {id: secondId, type: 'message'},
+                    ],
+                },
+            },
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() =>
+            useOpenAIStreamAdapter(stream, {initialMessages: [], trackTokenUsage: true}),
+        );
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        const assistants = result.current.messages.filter((m) => m.role === 'assistant');
+        expect(assistants).toHaveLength(2);
+        expect((assistants[0] as {metadata?: {outputTokens?: number}}).metadata?.outputTokens).toBe(
+            55,
+        );
+        expect((assistants[1] as {metadata?: {outputTokens?: number}}).metadata?.outputTokens).toBe(
+            55,
+        );
+    });
+
     it('should assign distinct OpenAI message ids to successive assistant message segments', async () => {
         const firstId = 'msg-cc-11111111111111111111111111111111';
         const secondId = 'msg-cc-22222222222222222222222222222222';

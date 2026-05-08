@@ -1,6 +1,6 @@
 import type {ClientOptions} from 'openai/client';
 import {OpenAI} from 'openai/client';
-import type {ResponseCreateParamsBase} from 'openai/resources/responses/responses';
+import type {ResponseCreateParamsStreaming} from 'openai/resources/responses/responses';
 
 import {ResponseStream} from './ResponseStream';
 import {checkOpenaiPackage} from './checkOpenaiPackage';
@@ -18,7 +18,7 @@ type BaseSummarizePayload = {
     conversation: string;
     promptForSummarization?: string;
     joinItems?: (items: ConversationItemsPage) => string;
-    metadata?: ResponseCreateParamsBase['metadata'];
+    metadata?: ResponseCreateParamsStreaming['metadata'];
 };
 
 type SummarizeConversationPayload =
@@ -46,7 +46,7 @@ export class OpenAIService extends OpenAI {
         this.model = model;
     }
 
-    async createResponseStream(payload: ResponseCreateParamsBase) {
+    async createResponseStream(payload: ResponseCreateParamsStreaming) {
         const metadata = this.getMetadataForResponse(payload.metadata);
 
         const stream = await this.responses.create({
@@ -56,9 +56,7 @@ export class OpenAIService extends OpenAI {
             metadata,
         });
 
-        const responseStream = new ResponseStream(stream);
-
-        return responseStream;
+        return new ResponseStream(stream as Exclude<typeof stream, OpenAI.Responses.Response>);
     }
 
     async getAllConvItems(convId: string, fetchBy = 100, order: 'asc' | 'desc' = 'asc') {
@@ -156,7 +154,7 @@ export class OpenAIService extends OpenAI {
             .join('\n');
     }
 
-    private getMetadataForResponse(payloadMetadata: ResponseCreateParamsBase['metadata']) {
+    private getMetadataForResponse(payloadMetadata: ResponseCreateParamsStreaming['metadata']) {
         if (payloadMetadata) return payloadMetadata;
 
         if (this.agent) return {agent: this.agent};

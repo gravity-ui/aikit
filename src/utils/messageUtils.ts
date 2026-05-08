@@ -85,6 +85,10 @@ export function resolveMessageActions<
             (action): BaseMessageActionConfig => ({
                 actionType: action.type,
                 icon: action.icon,
+                children:
+                    typeof action.children === 'function'
+                        ? action.children(message)
+                        : action.children,
                 label: action.label,
                 view: action.view,
                 onClick: () => action.onClick(message),

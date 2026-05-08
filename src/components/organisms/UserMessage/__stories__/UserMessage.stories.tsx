@@ -145,3 +145,31 @@ function calculateTotal(items) {
 Can it be improved?`,
     actions: buttons,
 };
+
+// Small SVG images used as fixtures for the WithImages story
+const mockImages = [
+    'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iODAiPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iODAiIGZpbGw9IiM0QTkwRTIiLz48dGV4dCB4PSI2MCIgeT0iNDUiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZSAxPC90ZXh0Pjwvc3ZnPg==',
+    'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iODAiPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iODAiIGZpbGw9IiM1MEMxNzgiLz48dGV4dCB4PSI2MCIgeT0iNDUiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZSAyPC90ZXh0Pjwvc3ZnPg==',
+];
+
+export const WithImages: StoryFn<UserMessageProps> = (args) => (
+    <ContentWrapper>
+        <UserMessage {...args} />
+    </ContentWrapper>
+);
+WithImages.args = {
+    content: 'What is wrong with these screenshots?',
+    images: mockImages,
+    actions: buttons,
+};
+
+export const WithImagesOnly: StoryFn<UserMessageProps> = (args) => (
+    <ContentWrapper>
+        <UserMessage {...args} />
+    </ContentWrapper>
+);
+WithImagesOnly.args = {
+    content: '',
+    images: [mockImages[0]],
+    actions: buttons,
+};
