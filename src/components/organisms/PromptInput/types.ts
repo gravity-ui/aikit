@@ -66,6 +66,11 @@ export type PromptInputFooterConfig = {
     showAttachment?: boolean;
     /** Attachment icon click handler */
     onAttachmentClick?: () => void;
+    /**
+     * Replaces the built-in attachment icon button with a custom node (e.g. AttachmentPicker).
+     * When set, `showAttachment` and `onAttachmentClick` are ignored.
+     */
+    attachmentContent?: ReactNode;
     /** Show microphone icon in footer */
     showMicrophone?: boolean;
     /** Microphone icon click handler */

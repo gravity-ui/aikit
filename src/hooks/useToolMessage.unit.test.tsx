@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {act, renderHook} from '@testing-library/react';
 
 import type {ToolMessageProps} from '../types/tool';
@@ -55,8 +53,8 @@ describe('useToolMessage', () => {
         );
 
         expect(result.current.footerActions).toHaveLength(2);
-        expect(result.current.footerActions[0]?.label).toBe('Reject');
-        expect(result.current.footerActions[1]?.label).toBe('Accept');
+        expect((result.current.footerActions[0] as {label?: string})?.label).toBe('Reject');
+        expect((result.current.footerActions[1] as {label?: string})?.label).toBe('Accept');
     });
 
     it('should add expand action when bodyContent is provided', () => {
@@ -68,7 +66,7 @@ describe('useToolMessage', () => {
         );
 
         expect(result.current.headerActions).toHaveLength(1);
-        expect(result.current.headerActions[0]?.label).toBe('Expand');
+        expect((result.current.headerActions[0] as {label?: string})?.label).toBe('Expand');
     });
 
     it('should initialize expanded for waiting statuses', () => {
