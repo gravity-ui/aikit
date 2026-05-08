@@ -24,7 +24,7 @@ export function useHeader(props: HeaderProps): {
     historyButtonRef?: React.RefObject<HTMLElement>;
     qa?: string;
     actionQa?: HeaderProps['actionQa'];
-    actionTooltips?: HeaderProps['actionTooltips'];
+    actionTooltipTexts?: HeaderProps['actionTooltipTexts'];
 } {
     const {
         icon,
@@ -44,7 +44,7 @@ export function useHeader(props: HeaderProps): {
         historyButtonRef,
         qa,
         actionQa,
-        actionTooltips,
+        actionTooltipTexts,
     } = props;
 
     // Build base actions
@@ -99,6 +99,6 @@ export function useHeader(props: HeaderProps): {
         historyButtonRef,
         qa,
         actionQa,
-        actionTooltips,
+        actionTooltipTexts,
     };
 }

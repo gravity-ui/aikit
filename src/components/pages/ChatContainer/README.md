@@ -298,16 +298,16 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 
 **`texts.*` always wins** when set. After that, each area uses the fallback order in the table below (then built-in `i18n()` defaults where applicable):
 
-| Area                                                    | Order after `texts.*`                                      |
-| ------------------------------------------------------- | ---------------------------------------------------------- |
-| Header title                                            | `headerProps.title` → active chat name → default `i18n()`  |
-| Header action tooltips                                  | `headerProps.actionTooltips` → Header built-in `i18n()`    |
-| Empty / welcome copy                                    | `welcomeConfig` → `emptyContainerProps` → default `i18n()` |
-| Prompt placeholder / submit tooltips / cancelable label | `promptInputProps.*` → PromptInput defaults                |
-| Prompt suggestions title (above input chips)            | `promptInputProps.suggestionsProps.suggestTitle`           |
-| Message list error text                                 | `messageListConfig.errorMessage` or `error.message`        |
-| Disclaimer                                              | `disclaimerProps.text` → default `i18n()`                  |
-| History empty / filtered / search placeholder           | `historyProps` → HistoryList built-in `i18n()`             |
+| Area                                                    | Order after `texts.*`                                       |
+| ------------------------------------------------------- | ----------------------------------------------------------- |
+| Header title                                            | `headerProps.title` → active chat name → default `i18n()`   |
+| Header action tooltips                                  | `headerProps.actionTooltipTexts` → Header built-in `i18n()` |
+| Empty / welcome copy                                    | `welcomeConfig` → `emptyContainerProps` → default `i18n()`  |
+| Prompt placeholder / submit tooltips / cancelable label | `promptInputProps.*` → PromptInput defaults                 |
+| Prompt suggestions title (above input chips)            | `promptInputProps.suggestionsProps.suggestTitle`            |
+| Message list error text                                 | `messageListConfig.errorMessage` or `error.message`         |
+| Disclaimer                                              | `disclaimerProps.text` → default `i18n()`                   |
+| History empty / filtered / search placeholder           | `historyProps` → HistoryList built-in `i18n()`              |
 
 | Key                               | Description                                                                      |
 | --------------------------------- | -------------------------------------------------------------------------------- |

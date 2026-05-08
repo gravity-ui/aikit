@@ -35,6 +35,11 @@ import './MessageList.scss';
 
 const b = block('message-list');
 
+export enum MessageListQa {
+    Root = 'message-list',
+    Messages = 'message-list-messages',
+}
+
 /** Configuration for action popup behavior */
 export interface MessageListActionPopupConfig {
     /** Override title for all popups (overrides action-specific title) */
@@ -181,7 +186,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     };
 
     return (
-        <div ref={containerRef} className={b(null, className)} data-qa={qa}>
+        <div ref={containerRef} className={b(null, className)} data-qa={qa ?? MessageListQa.Root}>
             {hasPreviousMessages && (
                 <IntersectionContainer
                     onIntersect={onLoadPreviousMessages}
@@ -190,7 +195,9 @@ export function MessageList<TContent extends TMessageContent = never>({
                     <Loader view="loading" />
                 </IntersectionContainer>
             )}
-            <div className={b('messages')}>{messages.map(renderMessage)}</div>
+            <div className={b('messages')} data-qa={qa ? `${qa}-messages` : MessageListQa.Messages}>
+                {messages.map(renderMessage)}
+            </div>
             {showLoader && <Loader className={b('loader')} />}
             {status === 'error' && (
                 <ErrorAlert

@@ -212,14 +212,23 @@ export function ChatContainer(props: ChatContainerProps) {
         setHeaderActionQa(HeaderAction.Folding, 'headerFolding', 'header-action-folding');
         setHeaderActionQa(HeaderAction.Close, 'headerClose', 'header-action-close');
 
-        const actionTooltips: NonNullable<HeaderProps['actionTooltips']> = {
-            newChat: texts.headerNewChatTooltip ?? headerProps.actionTooltips?.newChat,
-            history: texts.headerHistoryTooltip ?? headerProps.actionTooltips?.history,
-            close: texts.headerCloseTooltip ?? headerProps.actionTooltips?.close,
-            foldingCollapsed:
-                texts.headerFoldingCollapsedTooltip ?? headerProps.actionTooltips?.foldingCollapsed,
-            foldingOpened:
-                texts.headerFoldingOpenedTooltip ?? headerProps.actionTooltips?.foldingOpened,
+        const actionTooltipTexts: NonNullable<HeaderProps['actionTooltipTexts']> = {
+            [HeaderAction.NewChat]:
+                texts.headerNewChatTooltip ??
+                headerProps.actionTooltipTexts?.[HeaderAction.NewChat],
+            [HeaderAction.History]:
+                texts.headerHistoryTooltip ??
+                headerProps.actionTooltipTexts?.[HeaderAction.History],
+            [HeaderAction.Close]:
+                texts.headerCloseTooltip ?? headerProps.actionTooltipTexts?.[HeaderAction.Close],
+            [HeaderAction.Folding]: {
+                collapsed:
+                    texts.headerFoldingCollapsedTooltip ??
+                    headerProps.actionTooltipTexts?.[HeaderAction.Folding]?.collapsed,
+                opened:
+                    texts.headerFoldingOpenedTooltip ??
+                    headerProps.actionTooltipTexts?.[HeaderAction.Folding]?.opened,
+            },
         };
 
         return {
@@ -234,7 +243,7 @@ export function ChatContainer(props: ChatContainerProps) {
             historyButtonRef: hookState.historyButtonRef,
             qa: resolveChatContainerQa(qaMap, 'header', 'header') ?? headerProps.qa,
             actionQa,
-            actionTooltips,
+            actionTooltipTexts,
         };
     }, [
         headerTitle,

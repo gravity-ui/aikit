@@ -257,6 +257,7 @@ The component uses CSS variables for theming:
 | `showTitle`           | `boolean`                                  | -        | `true`     | Whether to show title and preview                                    |
 | `qa`                  | `string`                                   | -        | -          | QA/test identifier on header root                                    |
 | `actionQa`            | `Partial<Record<HeaderAction, string>>`    | -        | -          | Overrides `data-qa` for base actions (default `header-action-${id}`) |
+| `actionTooltipTexts`  | `HeaderActionTooltipTexts`                 | -        | -          | Overrides tooltip texts for base actions                             |
 | `className`           | `string`                                   | -        | -          | Additional CSS class                                                 |
 
 ### HeaderAction

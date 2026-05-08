@@ -7,6 +7,13 @@ export enum HeaderAction {
     Close = 'close',
 }
 
+export type HeaderActionTooltipTexts = Partial<
+    Record<Exclude<HeaderAction, HeaderAction.Folding>, string>
+> & {
+    /** Tooltip texts for {@link HeaderAction.Folding}. */
+    [HeaderAction.Folding]?: Partial<Record<'collapsed' | 'opened', string>>;
+};
+
 export type HeaderProps = {
     // Content
     icon?: React.ReactNode;
@@ -39,19 +46,8 @@ export type HeaderProps = {
     /** Per base action `data-qa` (defaults to `header-action-${id}`) */
     actionQa?: Partial<Record<HeaderAction, string>>;
     /**
-     * Override tooltip text per base action. When a value is undefined, the built-in
+     * Override tooltip texts per base action. When a value is undefined, the built-in
      * localized string is used (e.g. `i18n('action-tooltip-newChat')`).
      */
-    actionTooltips?: {
-        /** Tooltip for {@link HeaderAction.NewChat} */
-        newChat?: string;
-        /** Tooltip for {@link HeaderAction.History} */
-        history?: string;
-        /** Tooltip for {@link HeaderAction.Close} */
-        close?: string;
-        /** Tooltip for {@link HeaderAction.Folding} when `foldingState === 'collapsed'` (expand action) */
-        foldingCollapsed?: string;
-        /** Tooltip for {@link HeaderAction.Folding} when `foldingState === 'opened'` (collapse action) */
-        foldingOpened?: string;
-    };
+    actionTooltipTexts?: HeaderActionTooltipTexts;
 };

@@ -59,7 +59,7 @@ export function Header(props: HeaderProps) {
         historyButtonRef,
         qa,
         actionQa,
-        actionTooltips,
+        actionTooltipTexts,
     } = useHeader(props);
 
     // Determine class for title positioning
@@ -90,16 +90,10 @@ export function Header(props: HeaderProps) {
             let tooltipOverride: string | undefined;
             if (action.id === HeaderAction.Folding && action.foldingState) {
                 tooltipKey = `action-tooltip-folding-${action.foldingState}`;
+                tooltipOverride = actionTooltipTexts?.[HeaderAction.Folding]?.[action.foldingState];
+            } else {
                 tooltipOverride =
-                    action.foldingState === 'collapsed'
-                        ? actionTooltips?.foldingCollapsed
-                        : actionTooltips?.foldingOpened;
-            } else if (action.id === HeaderAction.NewChat) {
-                tooltipOverride = actionTooltips?.newChat;
-            } else if (action.id === HeaderAction.History) {
-                tooltipOverride = actionTooltips?.history;
-            } else if (action.id === HeaderAction.Close) {
-                tooltipOverride = actionTooltips?.close;
+                    actionTooltipTexts?.[action.id as Exclude<HeaderAction, HeaderAction.Folding>];
             }
 
             // Determine ref for history button
@@ -120,7 +114,7 @@ export function Header(props: HeaderProps) {
                 </ActionButton>
             );
         },
-        [actionQa, actionTooltips],
+        [actionQa, actionTooltipTexts],
     );
 
     // Render additional action
