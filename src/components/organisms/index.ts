@@ -6,3 +6,5 @@ export * from './PromptInput';
 export * from './ThinkingMessage';
 export * from './ToolMessage';
 export * from './UserMessage';
+export * from './FileUploadDialog';
+export * from './AttachmentPicker';

@@ -168,6 +168,33 @@ const messages = [
 ];
 ```
 
+### With Dynamic Action Content (render functions)
+
+`children` in `DefaultMessageAction` accept a render function `(message) => ReactNode`, enabling dynamic button content based on message data.
+
+Use `children` for text or composite content (e.g. badges). Use `icon` for SVG icon nodes. When both are provided, `children` takes precedence.
+
+### With Extra Info
+
+Use `assistantExtraInfo` / `userExtraInfo` to render contextual metadata alongside action buttons — for example, token count. These props accept a React component that receives `{message}` as a prop.
+
+```tsx
+type AssistantWithMeta = TAssistantMessage & {metadata?: {outputTokens?: number}};
+
+// Renders token count next to action buttons.
+// metadata.outputTokens is populated by useOpenAIStreamAdapter when trackTokenUsage: true.
+const TokenCount = ({message}: {message: TAssistantMessage}) => {
+  const tokens = (message as AssistantWithMeta).metadata?.outputTokens;
+  return tokens != null ? <Text variant="caption-2">{tokens} tokens</Text> : null;
+};
+
+<MessageList
+  messages={messages}
+  assistantActions={assistantActions}
+  assistantExtraInfo={TokenCount}
+/>;
+```
+
 ### With Action Popups
 
 Actions can have associated popups that open when the action button is clicked. This is useful for collecting feedback, confirmations, or any additional information.
@@ -290,24 +317,26 @@ import {MessageList} from '@/components/organisms';
 
 ## Props
 
-| Prop                            | Type                                                             | Required | Default                              | Description                                                                                                                                   |
-| ------------------------------- | ---------------------------------------------------------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `messages`                      | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -                                    | Array of messages to render                                                                                                                   |
-| `status`                        | `ChatStatus`                                                     | -        | -                                    | Current chat status: `'submitted'` \| `'streaming'` \| `'streaming_loading'` \| `'ready'` \| `'error'`                                        |
-| `errorMessage`                  | `AlertProps`                                                     | -        | -                                    | Error message to display when status is `'error'`                                                                                             |
-| `onRetry`                       | `() => void`                                                     | -        | -                                    | Callback when user clicks retry button in error state                                                                                         |
-| `messageRendererRegistry`       | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -                                    | Custom message renderer registry                                                                                                              |
-| `transformOptions`              | `OptionsType`                                                    | -        | -                                    | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                    |
-| `shouldParseIncompleteMarkdown` | `boolean`                                                        | -        | -                                    | Parse incomplete markdown (useful during streaming)                                                                                           |
-| `showActionsOnHover`            | `boolean`                                                        | -        | -                                    | Show message actions on hover                                                                                                                 |
-| `showTimestamp`                 | `boolean`                                                        | -        | -                                    | Show message timestamp                                                                                                                        |
-| `showAvatar`                    | `boolean`                                                        | -        | -                                    | Show avatar for user messages                                                                                                                 |
-| `userActions`                   | `DefaultMessageAction<TUserMessage>[]`                           | -        | -                                    | Array of default actions for user messages. Each action's onClick receives the message as a parameter. Actions can include popup config.      |
-| `assistantActions`              | `DefaultMessageAction<TAssistantMessage>[]`                      | -        | -                                    | Array of default actions for assistant messages. Each action's onClick receives the message as a parameter. Actions can include popup config. |
-| `loaderStatuses`                | `ChatStatus[]`                                                   | -        | `['submitted', 'streaming_loading']` | Array of chat statuses that should display the loader                                                                                         |
-| `ratingBlockProps`              | `RatingBlockProps`                                               | -        | -                                    | Rating block configuration (for CSAT or other feedback use cases) - renders after messages list                                               |
-| `actionPopupProps`              | `MessageListActionPopupConfig`                                   | -        | -                                    | Global configuration for action popups (title, subtitle, placement, className, qa)                                                            |
-| `hasPreviousMessages`           | `boolean`                                                        | -        | `false`                              | Whether there are older messages to load (shows scroll trigger with loader)                                                                   |
-| `onLoadPreviousMessages`        | `() => void`                                                     | -        | -                                    | Callback to load previous messages when user scrolls to the top                                                                               |
-| `className`                     | `string`                                                         | -        | -                                    | Additional CSS class                                                                                                                          |
-| `qa`                            | `string`                                                         | -        | -                                    | QA/test identifier                                                                                                                            |
+| Prop                            | Type                                                             | Required | Default                              | Description                                                                                                                                                |
+| ------------------------------- | ---------------------------------------------------------------- | -------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `messages`                      | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -                                    | Array of messages to render                                                                                                                                |
+| `status`                        | `ChatStatus`                                                     | -        | -                                    | Current chat status: `'submitted'` \| `'streaming'` \| `'streaming_loading'` \| `'ready'` \| `'error'`                                                     |
+| `errorMessage`                  | `AlertProps`                                                     | -        | -                                    | Error message to display when status is `'error'`                                                                                                          |
+| `onRetry`                       | `() => void`                                                     | -        | -                                    | Callback when user clicks retry button in error state                                                                                                      |
+| `messageRendererRegistry`       | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -                                    | Custom message renderer registry                                                                                                                           |
+| `transformOptions`              | `OptionsType`                                                    | -        | -                                    | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                 |
+| `shouldParseIncompleteMarkdown` | `boolean`                                                        | -        | -                                    | Parse incomplete markdown (useful during streaming)                                                                                                        |
+| `showActionsOnHover`            | `boolean`                                                        | -        | -                                    | Show message actions on hover                                                                                                                              |
+| `showTimestamp`                 | `boolean`                                                        | -        | -                                    | Show message timestamp                                                                                                                                     |
+| `showAvatar`                    | `boolean`                                                        | -        | -                                    | Show avatar for user messages                                                                                                                              |
+| `userActions`                   | `DefaultMessageAction<TUserMessage>[]`                           | -        | -                                    | Array of default actions for user messages. `icon` and `children` accept render functions `(message) => ReactNode`. Actions can include popup config.      |
+| `assistantActions`              | `DefaultMessageAction<TAssistantMessage>[]`                      | -        | -                                    | Array of default actions for assistant messages. `icon` and `children` accept render functions `(message) => ReactNode`. Actions can include popup config. |
+| `userExtraInfo`                 | `React.ComponentType<{message: TUserMessage}>`                   | -        | -                                    | Component rendered alongside action buttons for each user message. Receives the full message object.                                                       |
+| `assistantExtraInfo`            | `React.ComponentType<{message: TAssistantMessage}>`              | -        | -                                    | Component rendered alongside action buttons for each assistant message. Receives the full message object (e.g. for displaying token count from metadata).  |
+| `loaderStatuses`                | `ChatStatus[]`                                                   | -        | `['submitted', 'streaming_loading']` | Array of chat statuses that should display the loader                                                                                                      |
+| `ratingBlockProps`              | `RatingBlockProps`                                               | -        | -                                    | Rating block configuration (for CSAT or other feedback use cases) - renders after messages list                                                            |
+| `actionPopupProps`              | `MessageListActionPopupConfig`                                   | -        | -                                    | Global configuration for action popups (title, subtitle, placement, className, qa)                                                                         |
+| `hasPreviousMessages`           | `boolean`                                                        | -        | `false`                              | Whether there are older messages to load (shows scroll trigger with loader)                                                                                |
+| `onLoadPreviousMessages`        | `() => void`                                                     | -        | -                                    | Callback to load previous messages when user scrolls to the top                                                                                            |
+| `className`                     | `string`                                                         | -        | -                                    | Additional CSS class                                                                                                                                       |
+| `qa`                            | `string`                                                         | -        | -                                    | QA/test identifier                                                                                                                                         |

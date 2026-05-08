@@ -15,6 +15,12 @@ export type OpenAIStreamAdapterOptions = {
     initialMessages?: TChatMessage[];
     assistantMessageId?: string;
     onStreamEnd?: (messages: TChatMessage[]) => void;
+    /**
+     * When true, extracts token usage from `response.completed` events and stores
+     * `outputTokens` in each assistant message's metadata.
+     * Disabled by default — opt-in to avoid unexpected metadata on messages.
+     */
+    trackTokenUsage?: boolean;
 };
 
 /** Status from useOpenAIStreamAdapter. Subset of ChatStatus (no 'submitted'); safe to pass to ChatContainer. */

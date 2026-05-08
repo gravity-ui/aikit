@@ -1,0 +1,8 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}file-icon';
+
+#{$block} {
+    display: inline-flex;
+    color: var(--g-color-text-secondary);
+}
