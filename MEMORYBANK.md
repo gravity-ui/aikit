@@ -372,6 +372,25 @@ test.describe('ComponentName', {tag: '@ComponentName'}, () => {
    });
    ```
 
+   **Capturing full-screen dialogs / overlays**
+
+   When a story opens a dialog (or any element) that renders **on top of the whole viewport via a React portal** (e.g. `FileUploadDialog`, modal pickers, full-screen sheets), the default mount root does not contain the portal — `expectScreenshot()` without options will miss the overlay. In that case pass the full `page` as the component and enable `fullPage`:
+
+   ```tsx
+   test('should render dialog open state', async ({mount, page, expectScreenshot}) => {
+     await mount(<ComponentNameStories.WithDialog />);
+
+     const trigger = page.locator('[data-qa="open-trigger"]');
+     await trigger.click();
+     await expect(page.getByRole('dialog')).toBeVisible();
+
+     // Required for portal-mounted dialogs that cover the entire viewport.
+     await expectScreenshot({component: page, fullPage: true});
+   });
+   ```
+
+   Use `{component: page, fullPage: true}` **only** when the meaningful UI is rendered outside the component's mount root (portal / fixed overlay covering the viewport). For inline components keep `expectScreenshot()` without arguments.
+
 3. **Interaction Testing**
 
    Test user interactions like clicks, hovers, and input:

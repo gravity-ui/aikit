@@ -3,7 +3,6 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
 import {useOpenAIStreamAdapter} from '../../../adapters/openai';
-import {useFileUploadStore} from '../../../hooks/useFileUploadStore';
 import type {
     ChatStatus,
     ChatType,
@@ -13,8 +12,7 @@ import type {
     TSubmitData,
     TUserMessage,
 } from '../../../types';
-import {FileIcon} from '../../atoms/FileIcon';
-import {AttachmentPicker} from '../../organisms/AttachmentPicker';
+import {InputContextProvider, useInputContext} from '../../molecules/InputContext';
 import {ChatContainer} from '../ChatContainer';
 
 import type {AIStudioChatProps} from './types';
@@ -89,17 +87,7 @@ function deriveChatName(content: string): string {
     return trimmed.length > 40 ? `${trimmed.slice(0, 40)}...` : trimmed || 'New chat';
 }
 
-/**
- * Converts a File to a base64 data URL.
- */
-function fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-    });
-}
+type AIStudioChatInnerProps = Omit<AIStudioChatProps, 'fileUpload' | 'fileDialogTitle'>;
 
 /**
  * AIStudioChat - a ready-to-use chat component with built-in OpenAI streaming support.
@@ -111,6 +99,15 @@ function fileToBase64(file: File): Promise<string> {
  * @returns React component
  */
 export function AIStudioChat(props: AIStudioChatProps) {
+    const {fileUpload, fileDialogTitle, ...rest} = props;
+    return (
+        <InputContextProvider fileUpload={fileUpload} fileDialogTitle={fileDialogTitle}>
+            <AIStudioChatInner {...rest} />
+        </InputContextProvider>
+    );
+}
+
+function AIStudioChatInner(props: AIStudioChatInnerProps) {
     const {
         apiUrl,
         initialMessages = [],
@@ -123,6 +120,8 @@ export function AIStudioChat(props: AIStudioChatProps) {
         onBeforeSend,
         ...chatContainerProps
     } = props;
+
+    const {prepareFilesForSend, reset, contextItems, attachmentContent} = useInputContext();
 
     // Current chat messages
     const [messages, setMessages] = useState<TChatMessage[]>(initialMessages);
@@ -200,17 +199,6 @@ export function AIStudioChat(props: AIStudioChatProps) {
         if (streamResult.status === 'error') return 'error';
         return 'ready';
     }, [hasResponse, isFetching, streamResult.status]);
-
-    const {entries, addFiles, removeFile, reset, uploadedMetas} = useFileUploadStore<{
-        id: string;
-        name: string;
-        mimeType?: string;
-    }>({
-        upload: async (file) => {
-            await new Promise((r) => setTimeout(r, 300));
-            return {id: file.name, name: file.name, mimeType: file.type || undefined};
-        },
-    });
 
     /**
      * Core send function. Takes an already-resolved set of previous messages and
@@ -349,24 +337,7 @@ export function AIStudioChat(props: AIStudioChatProps) {
                 if (result) perSendParams = result;
             }
 
-            const storeFiles = entries.map((e) => e.file);
-            const inputAttachments = data.attachments ?? [];
-            const allFiles = [...storeFiles, ...inputAttachments];
-
-            const imageFiles = allFiles.filter((f) => f.type.startsWith('image/'));
-            const otherFiles = allFiles.filter((f) => !f.type.startsWith('image/'));
-            const base64Images = await Promise.all(imageFiles.map(fileToBase64));
-
-            const metaByName = new Map(uploadedMetas.map((m) => [m.name, m]));
-            const fileAttachments: FileAttachment[] = otherFiles.map((f) => {
-                const meta = metaByName.get(f.name);
-                return {
-                    id: meta?.id ?? f.name,
-                    name: meta?.name ?? f.name,
-                    mimeType: meta?.mimeType ?? (f.type || undefined),
-                };
-            });
-            const fileIds = fileAttachments.map((f) => f.id);
+            const {base64Images, perSendFileParams} = await prepareFilesForSend(data.attachments);
 
             await performSend({
                 previousMessages: messages,
@@ -374,15 +345,13 @@ export function AIStudioChat(props: AIStudioChatProps) {
                 base64Images,
                 perSendParams: {
                     ...perSendParams,
-                    ...(fileIds.length > 0 ? {fileIds} : {}),
-                    fileAttachments,
-                    fileNames: allFiles.map((f) => f.name),
+                    ...perSendFileParams,
                 },
             });
 
             reset();
         },
-        [entries, messages, onBeforeSend, performSend, reset, uploadedMetas],
+        [messages, onBeforeSend, performSend, prepareFilesForSend, reset],
     );
 
     const handleCancel = useCallback(async () => {
@@ -408,53 +377,6 @@ export function AIStudioChat(props: AIStudioChatProps) {
         });
     }, [messages, performSend]);
 
-    const attachmentPicker = useMemo(
-        () => (
-            <AttachmentPicker
-                uploadOnly
-                fileDialogProps={{
-                    title: 'Attach files',
-                    multiple: true,
-                    onCancel: reset,
-                    onAdd: addFiles,
-                    files: entries.map((entry) => ({
-                        id: entry.id,
-                        name: entry.file.name,
-                        size: entry.file.size,
-                        mimeType: entry.file.type || undefined,
-                        status: (() => {
-                            if (entry.status === 'uploading') return 'loading';
-                            if (entry.status === 'done') return 'success';
-                            if (entry.status === 'error') return 'error';
-                            return undefined;
-                        })(),
-                        onRemove: () => removeFile(entry.id),
-                    })),
-                }}
-            />
-        ),
-        [addFiles, entries, removeFile, reset],
-    );
-
-    const inputContextItems = useMemo(
-        () =>
-            entries.map((entry) => ({
-                id: entry.id,
-                content: (
-                    <span style={{display: 'inline-flex', alignItems: 'center', gap: 4}}>
-                        <FileIcon
-                            fileName={entry.file.name}
-                            mimeType={entry.file.type || undefined}
-                            size="s"
-                        />
-                        {entry.file.name}
-                    </span>
-                ),
-                onRemove: () => removeFile(entry.id),
-            })),
-        [entries, removeFile],
-    );
-
     const handleCreateChat = useCallback(() => {
         const current = activeChatRef.current;
         if (current) {
@@ -472,7 +394,8 @@ export function AIStudioChat(props: AIStudioChatProps) {
         setChats((prev) => [newChat, ...prev]);
         setActiveChat(newChat);
         setMessages([]);
-    }, [messages]);
+        reset();
+    }, [messages, reset]);
 
     const handleSelectChat = useCallback(
         (chat: ChatType) => {
@@ -484,20 +407,25 @@ export function AIStudioChat(props: AIStudioChatProps) {
             responseIdRef.current = null;
             setActiveChat(chat);
             setMessages(chatMessagesRef.current[chat.id] ?? []);
+            reset();
         },
-        [messages],
+        [messages, reset],
     );
 
-    const handleDeleteChat = useCallback(async (chat: ChatType) => {
-        delete chatMessagesRef.current[chat.id];
-        setChats((prev) => prev.filter((c) => c.id !== chat.id));
+    const handleDeleteChat = useCallback(
+        async (chat: ChatType) => {
+            delete chatMessagesRef.current[chat.id];
+            setChats((prev) => prev.filter((c) => c.id !== chat.id));
 
-        if (activeChatRef.current?.id === chat.id) {
-            responseIdRef.current = null;
-            setActiveChat(null);
-            setMessages([]);
-        }
-    }, []);
+            if (activeChatRef.current?.id === chat.id) {
+                responseIdRef.current = null;
+                setActiveChat(null);
+                setMessages([]);
+                reset();
+            }
+        },
+        [reset],
+    );
 
     return (
         <ChatContainer
@@ -522,13 +450,13 @@ export function AIStudioChat(props: AIStudioChatProps) {
                     ...chatContainerProps.promptInputProps?.headerProps,
                     contextItems:
                         chatContainerProps.promptInputProps?.headerProps?.contextItems ??
-                        inputContextItems,
+                        contextItems,
                 },
                 footerProps: {
                     ...chatContainerProps.promptInputProps?.footerProps,
                     attachmentContent:
                         chatContainerProps.promptInputProps?.footerProps?.attachmentContent ??
-                        attachmentPicker,
+                        attachmentContent,
                 },
             }}
         />

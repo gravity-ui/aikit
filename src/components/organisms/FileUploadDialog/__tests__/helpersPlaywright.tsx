@@ -1,5 +1,14 @@
 import {composeStories} from '@storybook/react';
 
-import * as DefaultFileUploadDialogStories from '../__stories__/FileUploadDialog.stories';
+import * as StoriesModule from '../__stories__/FileUploadDialog.stories';
 
-export const FileUploadDialogStories = composeStories(DefaultFileUploadDialogStories);
+const composed = composeStories(StoriesModule);
+
+/**
+ * Portable stories for CT. `Default` matches `Playground` in CSF (same `Controlled` shell);
+ * some Storybook versions compose `Default` incorrectly, so we pin it to `Playground`.
+ */
+export const FileUploadDialogStories = {
+    ...composed,
+    Default: composed.Playground,
+};

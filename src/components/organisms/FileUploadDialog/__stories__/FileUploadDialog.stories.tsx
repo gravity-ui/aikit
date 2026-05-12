@@ -31,7 +31,9 @@ const Controlled = (props: Partial<React.ComponentProps<typeof FileUploadDialog>
     const [open, setOpen] = useState(false);
     return (
         <ContentWrapper>
-            <Button onClick={() => setOpen(true)}>Open dialog</Button>
+            <div data-qa="file-upload-dialog-open-trigger">
+                <Button onClick={() => setOpen(true)}>Open dialog</Button>
+            </div>
             <FileUploadDialog
                 open={open}
                 onClose={() => setOpen(false)}

@@ -5,7 +5,10 @@ import {expect, test} from '~playwright/core';
 import {FileUploadDialogStories} from './helpersPlaywright';
 
 const openDialog = async (page: Page) => {
-    await page.getByRole('button', {name: 'Open dialog'}).click();
+    const root = page.locator('.playwright-wrapper-test');
+    const trigger = root.locator('[data-qa="file-upload-dialog-open-trigger"]');
+    await expect(trigger).toBeVisible();
+    await trigger.getByRole('button', {name: 'Open dialog'}).click();
     await expect(page.getByRole('dialog')).toBeVisible();
 };
 
