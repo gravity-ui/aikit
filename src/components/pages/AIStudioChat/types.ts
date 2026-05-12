@@ -1,4 +1,6 @@
+import type {UseFileUploadStoreOptions} from '../../../hooks/useFileUploadStore';
 import type {TChatMessage} from '../../../types';
+import type {InputContextMeta} from '../../molecules/InputContext';
 import type {ChatContainerProps} from '../ChatContainer';
 
 /**
@@ -63,4 +65,13 @@ export interface AIStudioChatProps extends Omit<ChatContainerProps, ManagedChatC
     onBeforeSend?: (params: {
         content: string;
     }) => Promise<Record<string, unknown> | false | null | void>;
+
+    /**
+     * File upload options for prompt `InputContext` (`useFileUploadStore`).
+     * The consumer fully owns the upload pipeline — no default is provided.
+     */
+    fileUpload: UseFileUploadStoreOptions<InputContextMeta>;
+
+    /** Title of the attachment file dialog (`InputContextProvider`). */
+    fileDialogTitle?: string;
 }

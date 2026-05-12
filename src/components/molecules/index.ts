@@ -16,3 +16,4 @@ export * from './ToolHeader';
 export * from './ToolStatus';
 export * from './FileItem';
 export * from './FileDropZone';
+export * from './InputContext';
