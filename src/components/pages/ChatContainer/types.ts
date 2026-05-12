@@ -14,60 +14,6 @@ import type {AlignmentConfig, EmptyContainerProps} from '../../templates/EmptyCo
 import type {HistoryProps} from '../../templates/History';
 
 /**
- * I18n configuration for all text labels in ChatContainer
- */
-export interface ChatContainerI18nConfig {
-    /** Header texts */
-    header?: {
-        /** Default header title */
-        defaultTitle?: string;
-        /** Tooltip for new chat button */
-        newChatTooltip?: string;
-        /** Tooltip for history button */
-        historyTooltip?: string;
-        /** Tooltip for close button */
-        closeTooltip?: string;
-    };
-    /** Empty state texts */
-    emptyState?: {
-        /** Welcome title */
-        title?: string;
-        /** Welcome description */
-        description?: string;
-        /** Suggestions section title */
-        suggestionsTitle?: string;
-        /** Show more suggestions button text */
-        showMoreText?: string;
-    };
-    /** Prompt input texts */
-    promptInput?: {
-        /** Placeholder text */
-        placeholder?: string;
-    };
-    /** Submit button tooltips */
-    submitButton?: {
-        /** Send button tooltip (enabled state) */
-        sendTooltip?: string;
-        /** Cancel button tooltip (cancelable state) */
-        cancelTooltip?: string;
-    };
-    /** History texts */
-    history?: {
-        /** Empty state placeholder */
-        emptyPlaceholder?: string;
-        /** Empty filtered state placeholder (when search returns no results) */
-        emptyFilteredPlaceholder?: string;
-        /** Search placeholder */
-        searchPlaceholder?: string;
-    };
-    /** Disclaimer text */
-    disclaimer?: {
-        /** Disclaimer text content */
-        text?: string;
-    };
-}
-
-/**
  * Welcome screen configuration
  */
 export interface WelcomeConfig {
@@ -87,9 +33,9 @@ export interface WelcomeConfig {
     layout?: 'grid' | 'list';
     /** Enable text wrapping inside suggestion buttons instead of ellipsis */
     wrapText?: boolean;
-    /** Show default title when neither title nor i18nConfig.emptyState.title are provided */
+    /** Show default title when neither title nor `texts.emptyStateTitle` / `emptyContainerProps.title` are provided */
     showDefaultTitle?: boolean;
-    /** Show default description when neither description nor i18nConfig.emptyState.description are provided */
+    /** Show default description when neither description nor `texts.emptyStateDescription` / `emptyContainerProps.description` are provided */
     showDefaultDescription?: boolean;
     /** Show more suggestions callback */
     showMore?: () => void;
@@ -104,6 +50,98 @@ export type MessageListConfig = Omit<
     MessageListProps,
     'messages' | 'status' | 'onRetry' | 'showActionsOnHover' | 'transformOptions'
 >;
+
+/**
+ * Unified visible strings for ChatContainer and its subtree.
+ *
+ * `texts.*` always wins. Below that, each area uses `welcomeConfig`, per-section `*Props` text fields,
+ * then built-in defaults from `i18n()`.
+ */
+export interface ChatContainerTexts {
+    /** Default header title when not using `headerProps.title` or active chat name */
+    headerTitle?: string;
+    /** Tooltip for the "new chat" header button */
+    headerNewChatTooltip?: string;
+    /** Tooltip for the "history" header button */
+    headerHistoryTooltip?: string;
+    /** Tooltip for the "close" header button */
+    headerCloseTooltip?: string;
+    /** Tooltip for the folding header button when collapsed (expand action) */
+    headerFoldingCollapsedTooltip?: string;
+    /** Tooltip for the folding header button when opened (collapse action) */
+    headerFoldingOpenedTooltip?: string;
+    /** Empty state / welcome title */
+    emptyStateTitle?: React.ReactNode;
+    /** Empty state / welcome description */
+    emptyStateDescription?: React.ReactNode;
+    /** Title above suggestions on welcome screen */
+    emptyStateSuggestionsTitle?: React.ReactNode;
+    /** "Show more" button label on welcome screen */
+    emptyStateShowMoreText?: string;
+    /** Prompt textarea placeholder */
+    promptPlaceholder?: string;
+    /** Title above suggestions rendered inside PromptInput (`promptInputProps.suggestionsProps.suggestTitle`) */
+    promptSuggestTitle?: React.ReactNode;
+    /** Submit button tooltip (send / ready state) */
+    submitSendTooltip?: string;
+    /** Submit button tooltip (cancel / streaming state) */
+    submitCancelTooltip?: string;
+    /** Label rendered next to the submit button in cancelable state (`submitButtonCancelableText`) */
+    submitButtonCancelableText?: string;
+    /** Message list error alert main text */
+    errorText?: string;
+    /** History search/filter placeholder */
+    historySearchPlaceholder?: string;
+    /** History panel empty state when there are no chats */
+    historyEmptyPlaceholder?: React.ReactNode;
+    /** History panel empty state when search has no results */
+    historyEmptyFilteredPlaceholder?: React.ReactNode;
+    /** Disclaimer body text (must be a string; use `disclaimerProps.children` for custom nodes) */
+    disclaimerText?: string;
+}
+
+/**
+ * Unified test identifiers (`data-qa`) for ChatContainer and its subtree.
+ *
+ * - Pass a **string** for backward compatibility: only the root container gets `data-qa`.
+ * - Pass **`{ prefix: 'x' }`** to opt in to `${prefix}-${suffix}` for every slot below (see README).
+ * - Pass **explicit keys** to override individual elements; they win over `prefix` and nested `*Props.qa`.
+ */
+export interface ChatContainerQa {
+    /** Applied to child slots when explicit keys are omitted; also used as root if `root` is omitted */
+    prefix?: string;
+    /** Root chat container */
+    root?: string;
+    /** Header root */
+    header?: string;
+    /** Overrides default `header-action-newChat` */
+    headerNewChat?: string;
+    /** Overrides default `header-action-history` */
+    headerHistory?: string;
+    /** Overrides default `header-action-folding` */
+    headerFolding?: string;
+    /** Overrides default `header-action-close` */
+    headerClose?: string;
+    /** ChatContent root */
+    content?: string;
+    /** Empty state (EmptyContainer) */
+    emptyState?: string;
+    /** MessageList scroll area */
+    messageList?: string;
+    /** Action popup in MessageList */
+    actionPopup?: string;
+    /** PromptInput root */
+    promptInput?: string;
+    promptInputHeader?: string;
+    promptInputBody?: string;
+    promptInputFooter?: string;
+    /** Submit button in prompt footer */
+    submitButton?: string;
+    /** Disclaimer text block */
+    disclaimer?: string;
+    /** History list (inside popup) */
+    history?: string;
+}
 
 /**
  * Props for ChatContainer component
@@ -185,8 +223,8 @@ export interface ChatContainerProps {
     // Configuration
     /** Welcome screen configuration for empty state */
     welcomeConfig?: WelcomeConfig;
-    /** I18n configuration for all text labels */
-    i18nConfig?: ChatContainerI18nConfig;
+    /** Unified flat text overrides for ChatContainer subtree */
+    texts?: ChatContainerTexts;
     /** Show chat history feature */
     showHistory?: boolean;
     /** Show new chat button */
@@ -207,6 +245,8 @@ export interface ChatContainerProps {
     contentClassName?: string;
     /** Additional CSS class for footer section */
     footerClassName?: string;
-    /** QA/test identifier */
-    qa?: string;
+    /**
+     * QA/test identifiers. A string sets only the root `data-qa`. Use {@link ChatContainerQa} for a full map or `prefix`.
+     */
+    qa?: string | ChatContainerQa;
 }

@@ -33,6 +33,8 @@ interface PopupState {
  * Hook for managing action popup state in MessageList.
  * Handles opening, closing, and dynamic content/title updates for popups
  * triggered by message action buttons.
+ *
+ * @returns Popup state, open/close handlers, and whether the action popup should render.
  */
 export function usePopup<TContent extends TMessageContent, TMessageMetadata>() {
     const [popupState, setPopupState] = useState<PopupState>(INITIAL_POPUP_STATE);

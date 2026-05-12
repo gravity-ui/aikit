@@ -13,7 +13,7 @@ A ready-to-use chat component with built-in OpenAI streaming support. Wraps `Cha
 - **Extra request params** — inject arbitrary fields (e.g., `assistantId`, `promptVariables`) into every request body via `extraRequestParams`
 - **Pre-send hook** — use `onBeforeSend` to add per-request params dynamically or cancel a send
 - **Fetch customization** — pass auth headers or other fetch options via `requestInit`
-- **Full ChatContainer API** — all `ChatContainer` display props (`welcomeConfig`, `i18nConfig`, `promptInputProps`, etc.) are passed through
+- **Full ChatContainer API** — all `ChatContainer` display props (`welcomeConfig`, `texts`, `promptInputProps`, etc.) are passed through
 
 ## Usage
 
@@ -125,7 +125,7 @@ data: {"type":"response.output_text.delta","delta":"Hello"}
 | `extraRequestParams`            | `Record<string, unknown>`                                                                  | -        | -             | Extra fields merged into the request body on every send (e.g., `assistantId`, `promptVariables`)          |
 | `onBeforeSend`                  | `(params: {content: string}) => Promise<Record<string, unknown> \| false \| null \| void>` | -        | -             | Called before each request. Return an object to merge into the body, or `false`/`null` to cancel the send |
 | `welcomeConfig`                 | `WelcomeConfig`                                                                            | -        | -             | Welcome screen configuration                                                                              |
-| `i18nConfig`                    | `ChatContainerI18nConfig`                                                                  | -        | -             | Text label overrides                                                                                      |
+| `texts`                         | `ChatContainerTexts`                                                                       | -        | -             | Flat text label overrides                                                                                 |
 | `showActionsOnHover`            | `boolean`                                                                                  | -        | `false`       | Show message copy/like actions on hover                                                                   |
 | `promptInputProps`              | `Partial<PromptInputProps>`                                                                | -        | -             | Props passed to the prompt input                                                                          |
 | `messageListConfig`             | `MessageListConfig`                                                                        | -        | -             | MessageList configuration                                                                                 |

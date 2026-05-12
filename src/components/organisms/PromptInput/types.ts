@@ -18,6 +18,8 @@ export type PromptInputPanelConfig = {
  * Props for the header section of PromptInput
  */
 export type PromptInputHeaderConfig = {
+    /** QA/test identifier for header wrapper */
+    qa?: string;
     /** Custom content for header area */
     topContent?: ReactNode;
     /** Array of context items to display on the left */
@@ -32,6 +34,8 @@ export type PromptInputHeaderConfig = {
  * Props for the body/textarea section of PromptInput
  */
 export type PromptInputBodyConfig = {
+    /** QA/test identifier for body wrapper */
+    qa?: string;
     /** Placeholder text for textarea */
     placeholder?: string;
     /** Minimum number of textarea rows */
@@ -56,6 +60,8 @@ export type PromptInputBodyConfig = {
  * Props for the footer section of PromptInput
  */
 export type PromptInputFooterConfig = {
+    /** QA/test identifier for footer wrapper */
+    qa?: string;
     /** Custom content for footer area (SubmitButton will still be shown) */
     bottomContent?: ReactNode;
     /** Show settings icon in footer */
