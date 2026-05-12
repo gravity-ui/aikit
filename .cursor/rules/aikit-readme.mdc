@@ -1,0 +1,7 @@
+---
+description: AIKit component README structure
+globs: src/components/**/README.md
+alwaysApply: false
+---
+
+Follow `docs/guidelines/readme.md` when writing or editing a component README.
