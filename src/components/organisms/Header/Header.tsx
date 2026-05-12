@@ -57,6 +57,9 @@ export function Header(props: HeaderProps) {
         showTitle = true,
         className,
         historyButtonRef,
+        qa,
+        actionQa,
+        actionTooltipTexts,
     } = useHeader(props);
 
     // Determine class for title positioning
@@ -84,8 +87,13 @@ export function Header(props: HeaderProps) {
 
             // Get tooltip text
             let tooltipKey = `action-tooltip-${action.id}`;
+            let tooltipOverride: string | undefined;
             if (action.id === HeaderAction.Folding && action.foldingState) {
                 tooltipKey = `action-tooltip-folding-${action.foldingState}`;
+                tooltipOverride = actionTooltipTexts?.[HeaderAction.Folding]?.[action.foldingState];
+            } else {
+                tooltipOverride =
+                    actionTooltipTexts?.[action.id as Exclude<HeaderAction, HeaderAction.Folding>];
             }
 
             // Determine ref for history button
@@ -95,18 +103,18 @@ export function Header(props: HeaderProps) {
                 <ActionButton
                     key={action.id}
                     ref={buttonRef as React.Ref<HTMLButtonElement>}
-                    tooltipTitle={i18n(tooltipKey as Parameters<typeof i18n>[0])}
+                    tooltipTitle={tooltipOverride ?? i18n(tooltipKey as Parameters<typeof i18n>[0])}
                     size="m"
                     view="flat"
                     onClick={action.onClick}
                     className={b('action-button')}
-                    qa={`header-action-${action.id}`}
+                    qa={actionQa?.[action.id as HeaderAction] ?? `header-action-${action.id}`}
                 >
                     <Icon data={IconComponent} size={16} />
                 </ActionButton>
             );
         },
-        [],
+        [actionQa, actionTooltipTexts],
     );
 
     // Render additional action
@@ -125,7 +133,7 @@ export function Header(props: HeaderProps) {
     }, []);
 
     return (
-        <div className={b('', className)}>
+        <div className={b('', className)} data-qa={qa}>
             {/* Left part: icon */}
             {withIcon && iconElement}
 

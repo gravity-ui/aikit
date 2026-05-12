@@ -245,7 +245,7 @@ export const WithFileAttachments: Story = {
 };
 
 /**
- * Chat configured with a system prompt and custom i18n labels.
+ * Chat configured with a system prompt and custom text labels.
  */
 export const WithSystemPrompt: Story = {
     args: {
@@ -254,13 +254,9 @@ export const WithSystemPrompt: Story = {
             'You are a helpful coding assistant. Always include code examples in your answers.',
         initialMessages: mockMessages,
         showActionsOnHover: true,
-        i18nConfig: {
-            header: {
-                defaultTitle: 'Code Assistant',
-            },
-            promptInput: {
-                placeholder: 'Ask a coding question...',
-            },
+        texts: {
+            headerTitle: 'Code Assistant',
+            promptPlaceholder: 'Ask a coding question...',
         },
     },
     decorators: defaultDecorators,

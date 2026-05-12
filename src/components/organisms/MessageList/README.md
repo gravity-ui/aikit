@@ -340,3 +340,14 @@ import {MessageList} from '@/components/organisms';
 | `onLoadPreviousMessages`        | `() => void`                                                     | -        | -                                    | Callback to load previous messages when user scrolls to the top                                                                                            |
 | `className`                     | `string`                                                         | -        | -                                    | Additional CSS class                                                                                                                                       |
 | `qa`                            | `string`                                                         | -        | -                                    | QA/test identifier                                                                                                                                         |
+
+### MessageListQa
+
+Exported QA identifiers for MessageList internals:
+
+```tsx
+enum MessageListQa {
+  Root = 'message-list',
+  Messages = 'message-list-messages',
+}
+```
