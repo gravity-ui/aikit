@@ -1,0 +1,9 @@
+---
+description: AIKit checklist when adding a new component or editing package.json exports
+globs: src/components/*/index.ts, package.json
+alwaysApply: false
+---
+
+When creating a new component under `src/components/<level>/<Name>/` or editing a level barrel / `package.json#exports`, follow `docs/guidelines/new-component.md`.
+
+Critical: every public component MUST appear in **all three** places — the level barrel, `package.json#exports`, and the docs catalog (`docs/COMPONENTS.md` + `llms.txt`). After touching docs or `llms.txt`, run `npm run generate:llms`.

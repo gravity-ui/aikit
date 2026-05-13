@@ -1,285 +1,198 @@
-# Aikit Project Structure
+# AIKit Project Structure
+
+This document describes the layout of the `@gravity-ui/aikit` source tree.
 
 ## File Tree
 
 ```
 aikit/
-├── 📁 .storybook/              # Storybook configuration
-│   ├── main.ts
-│   └── preview.ts
+├── .storybook/              # Storybook configuration
+├── .claude/                 # Claude Code skills for contributors
+├── .cursor/                 # Cursor rules for contributors
+├── docs/                    # Documentation (this directory)
+│   ├── README.md
+│   ├── GETTING_STARTED.md
+│   ├── ARCHITECTURE.md
+│   ├── PROJECT_STRUCTURE.md
+│   ├── COMPONENTS.md
+│   ├── THEMING.md
+│   ├── HOOKS.md
+│   ├── I18N.md
+│   ├── EXAMPLES.md
+│   ├── TROUBLESHOOTING.md
+│   ├── AI_AGENTS.md
+│   ├── TESTING.md
+│   ├── PLAYWRIGHT.md
+│   ├── assets/              # Logos and cover image
+│   └── guidelines/          # Internal contributor guidelines (storybook, testing, readme, code-style)
 │
-├── 📁 docs/                    # Documentation
-│   ├── ARCHITECTURE.md         # Library architecture
-│   ├── GETTING_STARTED.md      # Quick start guide
-│   ├── TESTING.md              # Testing guide
-│   ├── PLAYWRIGHT.md           # Playwright commands reference
-│   └── PROJECT_STRUCTURE.md    # This file
-│
-├── 📁 src/                     # Library source code
-│   ├── 📁 components/          # All components
-│   │   │
-│   │   ├── 📁 atoms/           # ⚛️ Atoms - basic elements
-│   │   │   ├── 📁 Loader/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 ContextIndicator/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 ToolIndicator/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 MessageBalloon/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 SubmitButton/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 DiffStat/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 Shimmer/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 InlineCitation/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 ChatDate/
-│   │   │   │   └── index.ts
-│   │   │   └── index.ts
-│   │   │
-│   │   ├── 📁 molecules/       # 🧩 Molecules - groups of atoms
-│   │   │   ├── 📁 ButtonGroup/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 Tabs/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 Suggestions/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 InputContext/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 BaseMessage/
-│   │   │   │   └── index.ts
-│   │   │   └── index.ts
-│   │   │
-│   │   ├── 📁 organisms/       # 🦠 Organisms - complex components
-│   │   │   ├── 📁 Header/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 Footer/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 UserMessage/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 ThinkingMessage/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 ToolMessage/
-│   │   │   │   ├── 📁 ToolHeader/
-│   │   │   │   │   └── index.ts
-│   │   │   │   ├── 📁 ToolFooter/
-│   │   │   │   │   └── index.ts
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 PromptBox/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 MessageList/
-│   │   │   │   └── index.ts
-│   │   │   └── index.ts
-│   │   │
-│   │   ├── 📁 templates/       # 📄 Templates - complete layouts
-│   │   │   ├── 📁 History/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 EmptyContainer/
-│   │   │   │   └── index.ts
-│   │   │   ├── 📁 ChatContent/
-│   │   │   │   └── index.ts
-│   │   │   └── index.ts
-│   │   │
-│   │   ├── 📁 pages/           # 📱 Pages - full integrations
-│   │   │   ├── 📁 ChatContainer/
-│   │   │   │   └── index.ts
-│   │   │   └── index.ts
-│   │   │
-│   │   └── index.ts
+├── src/
+│   ├── adapters/            # SDK adapters (OpenAI)
+│   │   └── openai/
 │   │
-│   ├── 📁 hooks/               # 🪝 General purpose hooks
-│   │   └── index.ts
+│   ├── components/
+│   │   ├── atoms/           # 16 atoms
+│   │   │   ├── ActionButton/   ChatDate/         ContextItem/
+│   │   │   ├── Alert/          ContextIndicator/ DiffStat/
+│   │   │   ├── Disclaimer/     FileIcon/         InlineCitation/
+│   │   │   ├── IntersectionContainer/  Loader/   MarkdownRenderer/
+│   │   │   ├── MessageBalloon/ Shimmer/          SubmitButton/
+│   │   │   └── ToolIndicator/
+│   │   │
+│   │   ├── molecules/       # 19 molecules
+│   │   │   ├── ActionPopup/    BaseMessage/      ButtonGroup/
+│   │   │   ├── FeedbackForm/   FileDropZone/     FileItem/
+│   │   │   ├── InputContext/   PromptInputBody/  PromptInputFooter/
+│   │   │   ├── PromptInputHeader/  PromptInputPanel/   RatingBlock/
+│   │   │   ├── StarRating/     Suggestions/      Tabs/
+│   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
+│   │   │
+│   │   ├── organisms/       # 9 organisms
+│   │   │   ├── AssistantMessage/   AttachmentPicker/
+│   │   │   ├── FileUploadDialog/   Header/        MessageList/
+│   │   │   ├── PromptInput/        ThinkingMessage/
+│   │   │   ├── ToolMessage/        UserMessage/
+│   │   │
+│   │   ├── templates/       # 3 templates
+│   │   │   ├── ChatContent/        EmptyContainer/   History/
+│   │   │
+│   │   └── pages/           # 2 pages
+│   │       ├── AIStudioChat/       ChatContainer/
 │   │
-│   ├── 📁 types/               # 📝 TypeScript types
-│   │   ├── index.ts
-│   │   ├── messages.ts
-│   │   ├── atoms.ts
-│   │   ├── molecules.ts
-│   │   ├── organisms.ts
-│   │   ├── templates.ts
-│   │   └── pages.ts
+│   ├── hooks/               # 7 public hooks (see docs/HOOKS.md)
+│   │   ├── useDateFormatter/
+│   │   ├── useToolMessage.tsx
+│   │   ├── useSmartScroll.tsx
+│   │   ├── useScrollPreservation.ts
+│   │   ├── useAutoCollapseOnSuccess.ts
+│   │   ├── useAutoCollapseOnCancelled.ts
+│   │   └── useFileUploadStore.ts
 │   │
-│   ├── 📁 utils/               # 🛠️ Utilities
-│   │   ├── index.ts
+│   ├── types/               # TypeScript type definitions
+│   │   ├── messages.ts      # TUserMessage, TAssistantMessage, TChatMessage, content types
+│   │   ├── chat.ts          # ChatType, ChatStatus, list items
+│   │   ├── tool.ts          # ToolMessageProps, statuses
+│   │   └── common.ts        # ActionConfig, SuggestionsItem, shared types
+│   │
+│   ├── utils/               # Public utility modules
 │   │   ├── chatUtils.ts
 │   │   ├── messageUtils.ts
-│   │   └── validation.ts
+│   │   ├── validation.ts
+│   │   ├── messageTypeRegistry.ts   # MessageRendererRegistry + helpers
+│   │   ├── clipboardUtils.ts
+│   │   ├── actionUtils.ts
+│   │   └── cn.ts            # bem-react classname wrapper
 │   │
-│   ├── 📁 themes/              # 🎨 CSS themes and variables
-│   │   ├── variables.css
-│   │   ├── light.css
-│   │   └── dark.css
+│   ├── themes/              # Compiled CSS themes
+│   │   ├── common.css       # Base CSS variables (always import)
+│   │   ├── light.css        # [data-theme='light'] overrides
+│   │   ├── dark.css         # [data-theme='dark'] overrides
+│   │   └── variables.css    # Deprecated — use common.css
 │   │
-│   ├── 📁 server/              # 🗄️ Server utilites for interacting with neural network services
-│   │   └── openai
+│   ├── server/              # Server-only code (Node.js)
+│   │   └── openai/          # OpenAIService — Responses API wrapper, streaming, summarization
 │   │
-│   └── index.ts                # Main export
+│   └── index.ts             # Main barrel export
 │
-├── 📄 .gitignore
-├── 📄 commitlint.config.js
-├── 📄 jest.config.js
-├── 📄 package.json
-├── 📄 tsconfig.json
-├── 📄 playwright-ct.config.ts
-├── 📄 README.md
-├── 📄 CONTRIBUTING.md
-├── 📄 LICENSE
-└── 📄 plan.md                  # Full specification
+├── playwright/              # Docker-backed Playwright runner
+├── test-utils/              # Shared test helpers
+├── build-utils/             # Build scripts (gulp tasks)
+├── build/                   # Compiled output (esm/, cjs/, types)
+├── llms.txt                 # LLM agent index (Mantine-style)
+├── llms-full.txt            # Concatenated docs for LLM context
+├── package.json
+├── tsconfig.json
+├── playwright-ct.config.ts
+├── gulpfile.js
+├── README.md / README-ru.md / CLAUDE.md / CONTRIBUTING.md
+└── .gitignore / .eslintrc / .prettierrc / …
 ```
 
-## Directory Description
+## Source Code: `src/`
 
-### 📁 `.storybook/`
+### `src/components/`
 
-Storybook configuration for interactive component documentation.
-
-### 📁 `docs/`
-
-Project documentation:
-
-- `ARCHITECTURE.md` — architectural decisions and principles
-- `GETTING_STARTED.md` — quick start guide
-- `TESTING.md` — testing guide with Playwright
-- `PLAYWRIGHT.md` — Playwright commands quick reference
-- `PROJECT_STRUCTURE.md` — this file
-
-### 📁 `src/components/`
-
-All library components organized by Atomic Design levels:
-
-#### ⚛️ `atoms/`
-
-Basic indivisible UI elements without business logic:
-
-- **Loader** — loading indicator
-- **ContextIndicator** — context usage indicator
-- **ToolIndicator** — tool execution status
-- **MessageBalloon** — message wrapper
-- **SubmitButton** — submit button
-- **DiffStat** — code change statistics
-- **Shimmer** — loading animation
-- **InlineCitation** — text citations
-- **ChatDate** — date formatting
-
-#### 🧩 `molecules/`
-
-Simple combinations of atoms:
-
-- **ButtonGroup** — button group
-- **Tabs** — navigation tabs
-- **Suggestions** — input suggestions
-- **InputContext** — input context management
-- **BaseMessage** — base wrapper for all messages
-
-#### 🦠 `organisms/`
-
-Complex self-sufficient components with internal logic:
-
-- **Header** — chat header with navigation
-- **Footer** — footer with links
-- **UserMessage** — user message
-- **ThinkingMessage** — AI thinking process
-- **ToolMessage** — tool execution
-  - **ToolHeader** — tool message header
-  - **ToolFooter** — footer with confirmation buttons
-- **PromptBox** — message input field
-- **MessageList** — message list
-
-#### 📄 `templates/`
-
-Complete layouts:
-
-- **History** — chat history
-- **EmptyContainer** — empty chat state
-- **ChatContent** — main chat content
-
-#### 📱 `pages/`
-
-Full integrations with data:
-
-- **ChatContainer** — fully assembled chat
-
-### 📁 `src/hooks/`
-
-General purpose hooks:
-
-- `useChat` — chat and message management
-- `useMessages` — message operations
-
-### 📁 `src/types/`
-
-TypeScript types and interfaces:
-
-- `messages.ts` — message types
-- `atoms.ts` — atom types
-- `molecules.ts` — molecule types
-- `organisms.ts` — organism types
-- `templates.ts` — template types
-- `pages.ts` — page types
-
-### 📁 `src/utils/`
-
-Utility functions:
-
-- `chatUtils.ts` — chat utilities
-- `messageUtils.ts` — message utilities
-- `validation.ts` — validation functions
-
-### 📁 `src/themes/`
-
-CSS themes and variables:
-
-- `variables.css` — base CSS variables
-- `light.css` — light theme
-- `dark.css` — dark theme
-
-## Organization Principles
-
-### 1. Each Component in Its Own Folder
-
-Each component has its own folder with an `index.ts` file for export.
-
-### 2. Export Hierarchy
-
-```
-Component/index.ts → atoms/index.ts → components/index.ts → src/index.ts
-```
-
-### 3. Naming Conventions
-
-- Component folders: `PascalCase`
-- Component files: `ComponentName.tsx`
-- Style files: `ComponentName.scss`
-- Type files: `camelCase.ts`
-- Hooks: `useHookName.ts`
-
-### 4. Component Structure
+Components organized by Atomic Design level. Each component lives in its own directory and follows the structure:
 
 ```
 ComponentName/
-├── ComponentName.tsx       # Main component
-├── ComponentName.scss      # Styles
-├── ComponentName.test.tsx  # Tests
-├── ComponentName.stories.tsx # Storybook
-├── useComponentName.ts     # Hook (for organisms)
-└── index.ts               # Export
+├── ComponentName.tsx        # Implementation
+├── ComponentName.scss       # Styles (optional)
+├── types.ts                 # Component types (optional)
+├── README.md                # Public API documentation
+├── i18n/                    # Localization (optional)
+│   ├── index.ts
+│   ├── en.json
+│   └── ru.json
+├── __stories__/
+│   ├── ComponentName.stories.tsx
+│   └── Docs.mdx
+├── __tests__/
+│   ├── ComponentName.visual.spec.tsx
+│   ├── helpersPlaywright.tsx
+│   └── __snapshots__/
+└── index.ts                 # Barrel export
 ```
 
-## Next Steps
+Full component catalog: [COMPONENTS.md](./COMPONENTS.md).
 
-1. **Atom Implementation** — start with the simplest components
-2. **Molecule Creation** — combine atoms
-3. **Organism Development** — add logic and hooks
-4. **Template Assembly** — create complete layouts
-5. **Page Integration** — bring everything together
+### `src/hooks/`
+
+Public hooks exported through both the root entry (`from '@gravity-ui/aikit'`) and the subpath `from '@gravity-ui/aikit/hooks'`. Internal helpers like `useMarkdownTransform` and `useRemend` live in `src/hooks/` but are not re-exported.
+
+Full hooks reference: [HOOKS.md](./HOOKS.md).
+
+### `src/types/`
+
+Type definitions split by concern: messages, chats, tool messages, common (action configs, suggestions). All re-exported from the root via `src/types/index.ts` and accessible as `import type {…} from '@gravity-ui/aikit'` or `from '@gravity-ui/aikit/types'`.
+
+### `src/utils/`
+
+Each utility is exposed both via the root barrel and a dedicated subpath: `@gravity-ui/aikit/utils/chatUtils`, `/messageUtils`, `/validation`, `/messageTypeRegistry`, `/clipboardUtils`.
+
+### `src/themes/`
+
+CSS theming files. Import via subpaths:
+
+```typescript
+import '@gravity-ui/aikit/themes/common';
+import '@gravity-ui/aikit/themes/light'; // or '/dark'
+```
+
+`variables.css` is deprecated — keep `common.css` only.
+
+### `src/server/openai/`
+
+Server-side only code, builds into a separate CommonJS/ESM target via `tsconfig.{esm,cjs}.json` and is exposed as the subpath `@gravity-ui/aikit/server/openai`. Pulls in `openai` and `semver` from `optionalDependencies`.
+
+## Naming Conventions
+
+- Component folders & files: `PascalCase` (e.g. `PromptInput/PromptInput.tsx`)
+- Hooks: `useThing.ts` (or `.tsx` when JSX is present)
+- Types files: `camelCase.ts`
+- Test files: `<Name>.visual.spec.tsx` (Playwright), `<Name>.unit.test.ts` (Jest)
+- Story files: `<Name>.stories.tsx`
+
+## Export Hierarchy
+
+```
+ComponentName/index.ts
+  → src/components/<level>/index.ts
+    → src/components/index.ts (implicit via src/index.ts re-exports each level)
+      → src/index.ts
+```
+
+Each component additionally has a dedicated subpath in `package.json#exports` (`@gravity-ui/aikit/ComponentName`) for tree-shaken imports.
 
 ## Useful Links
 
-- [Full Specification](../plan.md)
-- [Architecture](./ARCHITECTURE.md)
 - [Quick Start](./GETTING_STARTED.md)
+- [Architecture](./ARCHITECTURE.md)
+- [Component Catalog](./COMPONENTS.md)
+- [Theming](./THEMING.md)
+- [Hooks](./HOOKS.md)
+- [Examples](./EXAMPLES.md)
+- [Troubleshooting](./TROUBLESHOOTING.md)
+- [AI Agent Integration](./AI_AGENTS.md)
 - [Testing Guide](./TESTING.md)
-- [Playwright Commands](./PLAYWRIGHT.md)
-- [Contributing](../CONTRIBUTING.md)
+- [Contributor Guidelines](./guidelines/)

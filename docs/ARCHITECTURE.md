@@ -1,4 +1,4 @@
-# Aikit Library Architecture
+# AIKit Library Architecture
 
 ## Atomic Design Principles
 
@@ -22,7 +22,7 @@ Minimal indivisible UI elements without business logic.
 - Unaware of usage context
 - Accept data only through props
 
-**Examples:** `Loader`, `Button`, `Icon`
+**Examples:** `ActionButton`, `Alert`, `Loader`, `Shimmer`, `MarkdownRenderer`
 
 ### 2. Molecules
 
@@ -34,7 +34,7 @@ Simple groups of atoms forming basic UI blocks.
 - Minimal internal logic
 - Reusable blocks
 
-**Examples:** `ButtonGroup`, `Tabs`, `Suggestions`
+**Examples:** `ButtonGroup`, `Tabs`, `Suggestions`, `BaseMessage`, `PromptInputBody`
 
 ### 3. Organisms
 
@@ -44,10 +44,9 @@ Complex self-sufficient components with internal logic.
 
 - Contain business logic
 - Have internal state
-- Provide ready component + hook
 - Can be used independently
 
-**Examples:** `Header`, `MessageList`, `PromptBox`
+**Examples:** `Header`, `MessageList`, `PromptInput`, `UserMessage`, `AssistantMessage`, `ToolMessage`, `ThinkingMessage`, `FileUploadDialog`
 
 ### 4. Templates
 
@@ -71,7 +70,7 @@ Full integrations with specific data.
 - Manage data and state
 - Connect all components together
 
-**Examples:** `ChatContainer`
+**Examples:** `ChatContainer`, `AIStudioChat`
 
 ### 6. Server
 
@@ -83,197 +82,210 @@ Code that runs exclusively on the server side and is responsible for interacting
 - Contains no UI and is not involved in component rendering
 - Serves as a middleware layer between the application and external services (such as neural network APIs)
 
-**Examples:** `OpenAIService`
+**Examples:** `OpenAIService` (`@gravity-ui/aikit/server/openai`)
 
 ## Two-Level Approach
 
-Each organism provides two ways of usage:
+The library offers two ways to integrate a chat:
 
-### 1. Ready Component
+### 1. Ready Page Component
 
-Fully assembled component with UI and logic:
+`ChatContainer` (or `AIStudioChat`) — a fully assembled chat with header, history, message list, and prompt input:
 
-```typescript
-import { PromptBox } from 'aikit';
+```tsx
+import {ChatContainer} from '@gravity-ui/aikit';
 
-<PromptBox
-    onSend={handleSend}
-    placeholder="Enter message..."
-/>
+<ChatContainer
+  chats={chats}
+  activeChat={activeChat}
+  messages={messages}
+  onSendMessage={handleSend}
+  onSelectChat={setActiveChat}
+  onCreateChat={createChat}
+  onDeleteChat={deleteChat}
+/>;
 ```
 
-### 2. Hook with Logic
+### 2. Compose from Organisms
 
-Hook for creating custom view:
+Drop down to individual organisms when you need a custom layout:
 
-```typescript
-import { usePromptBox } from 'aikit';
+```tsx
+import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
 
-function CustomPromptBox() {
-    const {
-        value,
-        setValue,
-        handleSubmit,
-        canSubmit
-    } = usePromptBox({
-        onSend: handleSend
-    });
-
-    return (
-        <div className="custom-prompt">
-            {/* Your custom implementation */}
-        </div>
-    );
+function CustomChat() {
+  return (
+    <div className="custom-chat">
+      <Header title="AI Assistant" onNewChat={createChat} />
+      <MessageList messages={messages} status="ready" />
+      <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
+    </div>
+  );
 }
 ```
+
+Composition-level hooks (`useToolMessage`, `useSmartScroll`, `useFileUploadStore`, etc.) are documented in [HOOKS.md](./HOOKS.md).
 
 ## State Management
 
 ### Data Handling Principle
 
-- Library doesn't manage data directly
-- All data is passed through props
-- State is managed on the client side
-- Library provides callback interfaces
+- The library is **state-agnostic**: it does not own messages, chats, or upload state
+- All data flows through props
+- The library invokes callbacks (`onSendMessage`, `onSelectChat`, `onCreateChat`, `onDeleteChat`, …) and lets the host application manage requests, persistence, and errors
 
 ### Data Flow Example
 
-```typescript
-// Client code manages data
-const [messages, setMessages] = useState<MessageType[]>([]);
-const [isLoading, setIsLoading] = useState(false);
+```tsx
+const [messages, setMessages] = useState<TChatMessage[]>([]);
+const [status, setStatus] = useState<ChatStatus>('ready');
 
-// Library receives data through props
 <ChatContainer
-    messages={messages}
-    isLoading={isLoading}
-    onSendMessage={async (content) => {
-        // Client manages requests
-        setIsLoading(true);
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            body: JSON.stringify({ content })
-        });
-        const data = await response.json();
-        setMessages(prev => [...prev, data]);
-        setIsLoading(false);
-    }}
-/>
+  messages={messages}
+  status={status}
+  onSendMessage={async (data) => {
+    setStatus('streaming');
+    const reply = await fetchAssistantReply(data.content);
+    setMessages((prev) => [...prev, reply]);
+    setStatus('ready');
+  }}
+/>;
 ```
 
 ## Type System
 
-### Base Message Structure
+### Message Types
 
 ```typescript
-export type BaseMessage<TData = any> = {
-  id: string; // Unique identifier
-  type: string; // Message type
-  author: string; // Author
-  timestamp: string; // Timestamp
-  state?: MessageState; // State
-  data: TData; // Display data
-  metadata?: Record<string, any>; // Metadata
+export type TMessageRole = 'user' | 'assistant' | 'system';
+
+export type TUserMessage = {
+  role: 'user';
+  content: string;
+  timestamp?: string;
+  format?: 'plain' | 'markdown';
+  images?: string[];
+  fileAttachments?: FileAttachment[];
 };
+
+export type TAssistantMessage<TCustomContent = never> = {
+  role: 'assistant';
+  content: string | TMessageContent | TMessageContent[];
+  timestamp?: string;
+  userRating?: 'like' | 'dislike';
+};
+
+export type TChatMessage<TCustomContent = never> = TUserMessage | TAssistantMessage<TCustomContent>;
 ```
 
-### Data Separation Principle
+Assistant content can be a plain string, a single typed part (`'text'` | `'thinking'` | `'tool'`), or an array of parts. Custom part types extend via the `TCustomContent` generic.
 
-- Common metadata at the top level
-- Specific data in `data` field
-- Type safety through generics
-- Easy validation and serialization
+### Chat Types
+
+```typescript
+export type ChatType = {
+  id: string;
+  name: string;
+  createTime: string | null;
+  lastMessage?: string;
+  metadata?: Record<string, unknown>;
+};
+
+export type ChatStatus = 'submitted' | 'streaming' | 'streaming_loading' | 'ready' | 'error';
+```
+
+Full type catalog: `src/types/{messages,chat,tool,common}.ts`.
 
 ## Extensibility
 
-### Custom Type Registration
+### Custom Message Content Renderers
 
-```typescript
-const customTypes: MessageTypeRegistry = {
-    chart: {
-        component: ChartMessageView,
-        validator: (msg) => msg.type === 'chart',
-        metadata: {
-            name: 'Chart Message',
-            description: 'Interactive chart',
-        }
-    }
+Register custom content types via `MessageRendererRegistry`:
+
+```tsx
+import {
+  createMessageRendererRegistry,
+  registerMessageRenderer,
+  type MessageRendererRegistry,
+} from '@gravity-ui/aikit';
+
+type ChartMessageContent = {
+  type: 'chart';
+  data: {points: number[]};
 };
 
-<ChatContainer
-    messages={messages}
-    messageTypeRegistry={customTypes}
-/>
+const renderers: MessageRendererRegistry = createMessageRendererRegistry();
+registerMessageRenderer<ChartMessageContent>(renderers, 'chart', {
+  render: ({content}) => <Chart points={content.data.points} />,
+});
+
+<MessageList messages={messages} messageRendererRegistry={renderers} />;
 ```
+
+See [src/components/organisms/MessageList/README.md](../src/components/organisms/MessageList/README.md) for the full registry API and validators.
+
+### Adapters
+
+`src/adapters/` houses pre-built integrations (e.g. `openai`). They are imported through the main package entry: `import {…} from '@gravity-ui/aikit'`.
 
 ## Theming
 
 ### CSS Variables
 
-All styles are controlled through CSS variables:
+All styles are controlled through CSS variables in the `--g-aikit-*` namespace, with fallbacks to Gravity UI's `--g-color-*` system:
 
 ```css
 .g-root {
-  --g-aikit-color-bg-primary: #ffffff;
-  /* ... */
+  --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-float));
 }
 
 [data-theme='dark'] {
-  --g-aikit-bg-primary: #1a1a1a;
-  /* ... */
+  --g-aikit-bg-message-user: #0066cc;
 }
 ```
 
-### Applying Theme
+### Applying a Theme
 
-```typescript
-<ChatContainer
-    theme="dark"  // 'light' | 'dark' | 'auto'
-    // ...
-/>
+Wrap the application in Gravity UI's `<ThemeProvider>` and import the matching theme CSS:
+
+```tsx
+import {ThemeProvider} from '@gravity-ui/uikit';
+import '@gravity-ui/aikit/themes/common';
+import '@gravity-ui/aikit/themes/dark';
+
+<ThemeProvider theme="dark">
+    <ChatContainer …/>
+</ThemeProvider>;
 ```
+
+Full CSS variable reference: [THEMING.md](./THEMING.md).
 
 ## Performance
 
 ### Optimizations
 
-- `React.memo` for all components
-- Virtualization for large lists
-- Lazy loading for custom types
-- Memoization for heavy computations
-
-### Code Splitting
-
-```typescript
-// Automatic code splitting for custom types
-const ChartMessage = lazy(() => import('./ChartMessage'));
-```
+- `React.memo` on heavy renderers
+- `react-window` virtualization for long message lists
+- Lazy hooks (`useSmartScroll`, `useScrollPreservation`) to avoid layout thrash
+- Markdown transform cache (`useMarkdownTransform`)
 
 ## Accessibility
 
 ### ARIA Attributes
 
-All interactive elements have:
+All interactive elements expose:
 
 - `aria-label` for screen readers
 - `role` for semantics
-- `aria-live` for dynamic changes
+- `aria-live` for streaming/loading regions
 
 ### Keyboard Navigation
 
 - `Enter` — send message
-- `Escape` — cancel
+- `Shift+Enter` — newline
+- `Escape` — cancel / close
 - `Tab` — navigation
-- `↑/↓` — prompt history
 
 ## Testing
 
-### Unit Tests
-
-- Tests for each atom and molecule
-- Mock data for isolation
-
-### Integration Tests
-
-- Component interaction tests
-- User scenario verification
+Component tests run under Playwright Component Testing — see [TESTING.md](./TESTING.md). For developer guidelines specific to writing components, stories, and tests inside this repo, see [guidelines/](./guidelines/).

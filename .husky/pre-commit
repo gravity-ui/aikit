@@ -2,3 +2,8 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx nano-staged
+
+# Verify package.json#exports is in sync with src/components/.
+# If a component was added/removed without running `npm run generate:exports`,
+# this check fails the commit and tells the developer what to do.
+node scripts/generate-exports.js --check

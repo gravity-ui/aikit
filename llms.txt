@@ -1,0 +1,108 @@
+# @gravity-ui/aikit
+
+> React component library for building AI assistant chats. Built on Gravity UI design system, follows Atomic Design (atoms → molecules → organisms → templates → pages). Two-level approach: drop in the ready `ChatContainer` page or compose your own from organisms (`PromptInput`, `MessageList`, `Header`).
+
+Install: `npm i @gravity-ui/aikit`
+Peer deps: `@gravity-ui/uikit ^7.25`, `@gravity-ui/icons ^2.16`, `@gravity-ui/i18n ^1.8`, `@diplodoc/transform ^4.63`, `highlight.js ^11.11`, `react >=18`, `react-dom >=18`
+Theme CSS (required at app root): import `@gravity-ui/aikit/themes/common` plus one of `/light`, `/dark`
+Wrap your tree in `<ThemeProvider>` from `@gravity-ui/uikit` (sets `data-theme` and `.g-root`).
+Starter: `<ChatContainer chats activeChat messages onSendMessage onSelectChat onCreateChat onDeleteChat />`
+Customize: drop down to `<MessageList>` + `<PromptInput>` + `<Header>` from organisms.
+Custom message content: `createMessageRendererRegistry()` + `registerMessageRenderer<T>(reg, 'type', {render})` → pass via `messageRendererRegistry` prop on `MessageList`.
+Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`, … one subpath per component.
+
+## Getting Started
+
+- [Quick Start](https://github.com/gravity-ui/aikit/blob/main/docs/GETTING_STARTED.md): install, render `ChatContainer`, basic usage patterns
+- [Architecture](https://github.com/gravity-ui/aikit/blob/main/docs/ARCHITECTURE.md): atomic-design layers, two-level approach, type system, extensibility
+- [Examples](https://github.com/gravity-ui/aikit/blob/main/docs/EXAMPLES.md): streaming, file upload, custom message types, OpenAI integration
+
+## Components — Atoms
+
+- [ActionButton](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/ActionButton/README.md): button with integrated tooltip
+- [Alert](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/Alert/README.md): alert message with type indicator and optional button
+- [ChatDate](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/ChatDate/README.md): formatted date with time and locale support
+- [ContextIndicator](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/ContextIndicator/README.md): circular progress indicator for context usage (0–100%)
+- [ContextItem](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/ContextItem/README.md): label for a context chip
+- [DiffStat](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/DiffStat/README.md): diff statistics — added/deleted line counts
+- [Disclaimer](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/Disclaimer/README.md): informational or warning message block
+- [FileIcon](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/FileIcon/README.md): icon for a file based on MIME or extension
+- [IntersectionContainer](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/IntersectionContainer/README.md): Intersection Observer wrapper for infinite scroll
+- [Loader](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/Loader/README.md): loading-state indicator
+- [MarkdownRenderer](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/MarkdownRenderer/README.md): Yandex Flavored Markdown → HTML renderer
+- [MessageBalloon](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/MessageBalloon/README.md): visual wrapper for a user message
+- [Shimmer](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/Shimmer/README.md): shimmer animation overlay
+- [SubmitButton](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/SubmitButton/README.md): submit button with send/cancel state switching
+- [ToolIndicator](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/ToolIndicator/README.md): tool-execution status icon
+
+## Components — Molecules
+
+- [ActionPopup](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ActionPopup/README.md): anchored popup container for action-button content
+- [BaseMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/BaseMessage/README.md): base wrapper with action buttons support
+- [ButtonGroup](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ButtonGroup/README.md): button group with orientation support
+- [FeedbackForm](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/FeedbackForm/README.md): feedback form with reason selection and comment
+- [FileDropZone](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/FileDropZone/README.md): drag-and-drop area with hidden file input
+- [FileItem](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/FileItem/README.md): file row — icon, name, size, status, remove
+- [InputContext](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/InputContext/README.md): React context for prompt-input attachments and chips
+- [PromptInputBody](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/PromptInputBody/README.md): textarea body with auto-grow
+- [PromptInputFooter](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/PromptInputFooter/README.md): footer with action icons and submit button
+- [PromptInputHeader](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/PromptInputHeader/README.md): header with context items or context indicator
+- [PromptInputPanel](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/PromptInputPanel/README.md): panel container for custom prompt content
+- [RatingBlock](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/RatingBlock/README.md): rating block with title and star rating
+- [StarRating](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/StarRating/README.md): 1–5 star rating component
+- [Suggestions](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/Suggestions/README.md): clickable suggestion buttons in grid or list
+- [Tabs](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/Tabs/README.md): section tabs with optional delete
+- [ToolFooter](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ToolFooter/README.md): tool-message footer with actions and status
+- [ToolHeader](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ToolHeader/README.md): tool-message header — icon, name, actions, indicators
+- [ToolStatus](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ToolStatus/README.md): tool-status indicator with localized text
+
+## Components — Organisms
+
+- [AssistantMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/AssistantMessage/README.md): assistant message with multi-part content and custom renderers
+- [AttachmentPicker](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/AttachmentPicker/README.md): paperclip button that opens the file upload dialog
+- [FileUploadDialog](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/FileUploadDialog/README.md): dialog with drag-and-drop and queued/uploaded files list
+- [Header](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/Header/README.md): chat header with navigation and actions
+- [MessageList](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/MessageList/README.md): message list with custom renderer registry support
+- [PromptInput](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/PromptInput/README.md): flexible chat input — simple/full views, panels, suggestions, attachments
+- [ThinkingMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/ThinkingMessage/README.md): AI thinking process — collapsible content with status
+- [ToolMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/ToolMessage/README.md): tool message — auto expand/collapse based on status
+- [UserMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/UserMessage/README.md): user message renderer
+
+## Components — Templates
+
+- [ChatContent](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/ChatContent/README.md): chat content container — empty state vs message list switching
+- [EmptyContainer](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/EmptyContainer/README.md): welcome screen with image, title, description, suggestions
+- [History](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/History/README.md): chat history popup with search, grouping, and actions
+
+## Components — Pages
+
+- [AIStudioChat](https://github.com/gravity-ui/aikit/blob/main/src/components/pages/AIStudioChat/README.md): ready-to-use chat with built-in OpenAI streaming — needs only an API URL
+- [ChatContainer](https://github.com/gravity-ui/aikit/blob/main/src/components/pages/ChatContainer/README.md): fully assembled chat — integrates Header, ChatContent, and History
+
+## Hooks
+
+- [useDateFormatter](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useDateFormatter/index.ts): format dates with locale and relative-date thresholding
+- [useToolMessage](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useToolMessage.tsx): tool-message state (expand/collapse based on status)
+- [useSmartScroll](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useSmartScroll.tsx): auto-scroll to bottom while respecting user scroll-up
+- [useScrollPreservation](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useScrollPreservation.ts): preserve scroll position when items are prepended
+- [useAutoCollapseOnSuccess](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useAutoCollapseOnSuccess.ts): auto-collapse a section on success status
+- [useAutoCollapseOnCancelled](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useAutoCollapseOnCancelled.ts): auto-collapse a section on cancelled status
+- [useFileUploadStore](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useFileUploadStore.ts): headless file-upload store with progress/error states
+
+## Theming & i18n
+
+- [Theming Guide](https://github.com/gravity-ui/aikit/blob/main/docs/THEMING.md): `--g-aikit-*` CSS variables, light/dark themes, fallback chain to `--g-color-*`
+- [I18N](https://github.com/gravity-ui/aikit/blob/main/docs/I18N.md): per-component localization (en, ru) via `@gravity-ui/i18n`
+
+## Troubleshooting
+
+- [FAQ & common issues](https://github.com/gravity-ui/aikit/blob/main/docs/TROUBLESHOOTING.md): peer deps, dark mode not applying, markdown rendering, server-only code
+
+## Optional
+
+- [Live Storybook](https://preview.gravity-ui.com/aikit/): interactive component playground
+- [Project Structure](https://github.com/gravity-ui/aikit/blob/main/docs/PROJECT_STRUCTURE.md): source tree (for contributors)
+- [Components Catalog](https://github.com/gravity-ui/aikit/blob/main/docs/COMPONENTS.md): same component list as above, with table-style reference
+- [Hooks Reference](https://github.com/gravity-ui/aikit/blob/main/docs/HOOKS.md): detailed signatures for the 7 public hooks
+- [AI Agent Integration](https://github.com/gravity-ui/aikit/blob/main/docs/AI_AGENTS.md): drop-in Cursor rule and Claude Code skill for consumer projects
+- [Issue tracker](https://github.com/gravity-ui/aikit/issues)
