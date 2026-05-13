@@ -11,6 +11,7 @@ import {MarkdownRenderer, MarkdownRendererProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
+import {BaseMessage} from '../../../molecules/BaseMessage';
 
 import MDXDocs from './Docs.mdx';
 
@@ -142,5 +143,24 @@ function StreamingMarkdownComparison() {
 
 export const WithParsingIncompleteMarkdown: StoryObj<typeof MarkdownRenderer> = {
     render: () => <StreamingMarkdownComparison />,
+    decorators: defaultDecorators,
+};
+
+const MARKDOWN_TABLE = `| Full name | Code | Joined | Units | Score | Status | Location | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Anna Morgan | XM-901 | 2023-06-12 | 12 | 4.7 | Active | New York | Priority user |
+| Wei Chen | BR-204 | 2024-01-08 | 3 | 3.2 | Pending | Singapore | Verification needed |
+| Olivia Nielsen | DK-771 | 2022-11-30 | 48 | 5.0 | Active | Copenhagen | Premium tier |
+| James O'Brien | PT-015 | 2024-09-01 | 0 | — | On hold | Dublin | Awaiting payment |
+| Maria García-López | FL-888 | 2023-03-22 | 7 | 4.1 | Active | Barcelona | Standard plan |`;
+
+export const WithMarkdownTableInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => (
+        <ContentWrapper width="380px">
+            <BaseMessage role="assistant">
+                <MarkdownRenderer content={MARKDOWN_TABLE} />
+            </BaseMessage>
+        </ContentWrapper>
+    ),
     decorators: defaultDecorators,
 };
