@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/gravity-ui/aikit/compare/v1.17.0...v1.17.1) (2026-05-13)
+
+
+### Bug Fixes
+
+* **MarkdownRenderer:** stabilize markdown tables inside BaseMessage ([#161](https://github.com/gravity-ui/aikit/issues/161)) ([c62c05d](https://github.com/gravity-ui/aikit/commit/c62c05d4fc59cd5e71dde843bd1e30ccd6e1b383))
+
 ## [1.17.0](https://github.com/gravity-ui/aikit/compare/v1.16.0...v1.17.0) (2026-04-29)
 
 
