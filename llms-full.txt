@@ -1,0 +1,1814 @@
+# @gravity-ui/aikit — full documentation
+
+This file concatenates the project README and all docs/*.md files for LLM agents that prefer one-shot context over following links.
+
+Sections are delimited by lines like: --- file: <path> ---
+
+
+--- file: README.md ---
+
+# AIKit &middot; [![npm package](https://img.shields.io/npm/v/@gravity-ui/aikit?logo=npm)](https://www.npmjs.com/package/@gravity-ui/aikit) [![CI](https://img.shields.io/github/actions/workflow/status/gravity-ui/aikit/.github/workflows/ci.yml?branch=main&label=CI&logo=github)](https://github.com/gravity-ui/aikit/actions/workflows/ci.yml?query=branch:main) [![storybook](https://img.shields.io/badge/Storybook-deployed-ff4685?logo=storybook)](https://preview.gravity-ui.com/aikit/?path=/docs/pages-chatcontainer--docs)
+
+UI component library for AI chats built with Atomic Design principles.
+
+<!--GITHUB_BLOCK-->
+
+![Cover image](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/aikit_cover.png)
+
+## Resources
+
+### ![Globe Logo Light](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/globe_light.svg#gh-light-mode-only) ![Globe Logo Dark](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/globe_dark.svg#gh-dark-mode-only) [Website](https://gravity-ui.com/libraries/aikit)
+
+### ![Storybook Logo Light](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/storybook_light.svg#gh-light-mode-only) ![Storybook Logo Dark](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/storybook_dark.svg#gh-dark-mode-only) [Storybook](https://preview.gravity-ui.com/aikit/)
+
+### ![Community Logo Light](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/telegram_light.svg#gh-light-mode-only) ![Community Logo Dark](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/telegram_dark.svg#gh-dark-mode-only) [Community](https://t.me/gravity_ui)
+
+<!--/GITHUB_BLOCK-->
+
+## Description
+
+**@gravity-ui/aikit** is a flexible and extensible React component library for building AI chats of any complexity. The library provides a set of ready-made components that can be used as-is or customized to fit your needs.
+
+### Key Features
+
+- 🎨 **Atomic Design** — clear component hierarchy from atoms to pages
+- 🔧 **SDK Agnostic** — independent of specific AI SDKs
+- 🎭 **Two-Level Approach** — ready-made components + hooks for customization
+- 🎨 **CSS Variables** — easy theming without component overrides
+- 📦 **TypeScript** — full type safety out of the box
+- 🔌 **Extensible** — custom message type registration system
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── atoms/          # Basic indivisible UI elements
+│   ├── molecules/      # Simple groups of atoms
+│   ├── organisms/      # Complex components with logic
+│   ├── templates/      # Complete layouts
+│   └── pages/          # Full integrations with data
+├── hooks/              # General purpose hooks
+├── types/              # TypeScript types
+├── utils/              # Utilities
+└── themes/             # CSS themes and variables
+```
+
+## Installation
+
+```bash
+npm install @gravity-ui/aikit
+```
+
+## Quick Start
+
+```typescript
+import { ChatContainer } from '@gravity-ui/aikit';
+import type { ChatType, TChatMessage } from '@gravity-ui/aikit';
+
+function App() {
+    const [messages, setMessages] = useState<TChatMessage[]>([]);
+    const [chats, setChats] = useState<ChatType[]>([]);
+    const [activeChat, setActiveChat] = useState<ChatType | null>(null);
+
+    return (
+        <ChatContainer
+            chats={chats}
+            activeChat={activeChat}
+            messages={messages}
+            onSendMessage={async (data) => {
+                // Your sending logic
+                console.log('Message:', data.content);
+            }}
+            onSelectChat={setActiveChat}
+            onCreateChat={() => {
+                // Create new chat
+            }}
+            onDeleteChat={(chat) => {
+                // Delete chat
+            }}
+        />
+    );
+}
+```
+
+## Architecture
+
+The library is built on **Atomic Design** principles:
+
+### 🔹 Atoms
+
+Basic indivisible UI elements without business logic:
+
+- `ActionButton` — button with integrated tooltip
+- `Alert` — alert messages with variants
+- `ChatDate` — date formatting with relative dates
+- `ContextIndicator` — token context usage indicator
+- `ContextItem` — context label with remove action
+- `DiffStat` — code change statistics display
+- `Disclaimer` — disclaimer text component
+- `InlineCitation` — text citations
+- `Loader` — loading indicator
+- `MarkdownRenderer` — Yandex Flavored Markdown renderer
+- `MessageBalloon` — message wrapper
+- `Shimmer` — loading animation effect
+- `SubmitButton` — submit button with states
+- `ToolIndicator` — tool execution status indicator
+
+### 🔸 Molecules
+
+Simple combinations of atoms:
+
+- `BaseMessage` — base wrapper for all message types
+- `ButtonGroup` — button group with orientation support
+- `InputContext` — context management
+- `PromptInputBody` — textarea with auto-growing
+- `PromptInputFooter` — footer with action icons and submit button
+- `PromptInputHeader` — header with context items and indicator
+- `PromptInputPanel` — panel container for custom content
+- `Suggestions` — clickable suggestion buttons
+- `Tabs` — navigation tabs with delete functionality
+- `ToolFooter` — tool message footer with actions
+- `ToolHeader` — tool message header with icon and actions
+
+### 🔶 Organisms
+
+Complex components with internal logic:
+
+- `AssistantMessage` — AI assistant message
+- `Header` — chat header
+- `MessageList` — message list
+- `PromptInput` — message input field
+- `ThinkingMessage` — AI thinking process
+- `ToolMessage` — tool execution
+- `UserMessage` — user message
+
+### 📄 Templates
+
+Complete layouts:
+
+- `ChatContent` — main chat content
+- `EmptyContainer` — empty state
+- `History` — chat history
+
+### 📱 Pages
+
+Full integrations:
+
+- `ChatContainer` — fully assembled chat
+
+## Documentation
+
+- [Quick Start Guide](./docs/GETTING_STARTED.md)
+- [Architecture](./docs/ARCHITECTURE.md)
+- [Project Structure](./docs/PROJECT_STRUCTURE.md)
+- [Testing Guide](./docs/TESTING.md)
+- [Playwright Guide](./playwright/README.md)
+
+## Testing
+
+The project uses Playwright Component Testing for visual regression testing.
+
+### Run tests
+
+**Important**: All tests must be run via Docker to ensure consistent screenshots across different environments.
+
+```bash
+# Run all component tests in Docker (recommended)
+npm run playwright:docker
+
+# Update screenshot baselines in Docker
+npm run playwright:docker:update
+
+# Run specific test by grep pattern in Docker
+npm run playwright:docker -- --grep "@ComponentName"
+
+# Clear Docker cache if needed
+npm run playwright:docker:clear-cache
+```
+
+### Local testing (Linux only)
+
+If you're on Linux, you can run tests locally:
+
+```bash
+# Install Playwright browsers (run once)
+npm run playwright:install
+# Run all component tests
+npm run playwright
+# Update screenshot baselines
+npm run playwright:update
+```
+
+For detailed testing documentation, see [Playwright Guide](./playwright/README.md).
+
+## Development
+
+Development and contribution instructions are available in [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## License
+
+MIT
+
+
+--- file: docs/GETTING_STARTED.md ---
+
+# Quick Start
+
+This guide walks you through installing `@gravity-ui/aikit` and rendering your first chat.
+
+## Installation
+
+```bash
+npm install @gravity-ui/aikit
+```
+
+You also need to install the peer dependencies (most likely already in your app if you use Gravity UI):
+
+```bash
+npm install @gravity-ui/uikit @gravity-ui/icons @gravity-ui/i18n @diplodoc/transform highlight.js react react-dom
+```
+
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) if `Module not found` errors appear after install.
+
+## Theme CSS
+
+AIKit ships compiled CSS that you must import once at the application root:
+
+```typescript
+import '@gravity-ui/aikit/themes/common';
+import '@gravity-ui/aikit/themes/light'; // or '/dark'
+```
+
+The component tree must be rendered inside Gravity UI's `<ThemeProvider>` (from `@gravity-ui/uikit`) so that `data-theme="light"` / `data-theme="dark"` is set on the root.
+
+## 1. Simple Chat Out of the Box
+
+The fastest path is the `ChatContainer` page component:
+
+```tsx
+import {useState} from 'react';
+import {ChatContainer} from '@gravity-ui/aikit';
+import type {ChatType, TChatMessage, TSubmitData} from '@gravity-ui/aikit';
+
+function App() {
+    const [chats, setChats] = useState<ChatType[]>([]);
+    const [activeChat, setActiveChat] = useState<ChatType | null>(null);
+    const [messages, setMessages] = useState<TChatMessage[]>([]);
+
+    const handleSendMessage = async (data: TSubmitData) => {
+        // Append the user message immediately
+        setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
+
+        // Call your backend, then append the assistant message
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            body: JSON.stringify({message: data.content}),
+        });
+        const assistant = await response.json();
+        setMessages((prev) => [...prev, {role: 'assistant', content: assistant.content}]);
+    };
+
+    return (
+        <ChatContainer
+            chats={chats}
+            activeChat={activeChat}
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            onSelectChat={setActiveChat}
+            onCreateChat={() => {
+                /* create chat */
+            }}
+            onDeleteChat={(chat) => {
+                /* delete chat */
+            }}
+        />
+    );
+}
+```
+
+## 2. Composing from Organisms
+
+For more control, compose `Header`, `MessageList`, and `PromptInput` directly:
+
+```tsx
+import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
+
+function CustomChat() {
+    return (
+        <div className="custom-chat">
+            <Header title="AI Assistant" onNewChat={() => {/* ... */}} />
+            <MessageList messages={messages} status="ready" />
+            <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
+        </div>
+    );
+}
+```
+
+Each organism has its own README in `src/components/organisms/<Name>/README.md` with the full props table.
+
+## 3. Hooks
+
+AIKit exports a small set of hooks for advanced composition (date formatting, smart scrolling, tool-message state, file-upload store, etc.). See [HOOKS.md](./HOOKS.md) for the catalog and signatures.
+
+## Working with Message Types
+
+Messages are typed by `role` (`'user'` | `'assistant'` | `'system'`). Assistant content supports multi-part rendering — a string, a single `TMessageContent` object, or an array of parts.
+
+### Built-in content types
+
+| Type | Description |
+| --- | --- |
+| `text` | Plain text or markdown |
+| `thinking` | AI thinking process (collapsible) |
+| `tool` | Tool execution with status |
+
+```tsx
+import type {TAssistantMessage} from '@gravity-ui/aikit';
+
+const message: TAssistantMessage = {
+    role: 'assistant',
+    timestamp: new Date().toISOString(),
+    content: [
+        {type: 'text', data: {text: 'Let me think…'}},
+        {type: 'thinking', data: {content: 'Analyzing the request', status: 'thinking'}},
+        {type: 'text', data: {text: 'Here is the answer.'}},
+    ],
+};
+```
+
+### Custom message content types
+
+Register a custom renderer with `MessageRendererRegistry`:
+
+```tsx
+import {
+    createMessageRendererRegistry,
+    registerMessageRenderer,
+    type MessageRendererRegistry,
+} from '@gravity-ui/aikit';
+
+type ChartMessageContent = {
+    type: 'chart';
+    data: {points: number[]};
+};
+
+const renderers: MessageRendererRegistry = createMessageRendererRegistry();
+registerMessageRenderer<ChartMessageContent>(renderers, 'chart', {
+    render: ({content}) => <Chart points={content.data.points} />,
+});
+
+<MessageList messages={messages} messageRendererRegistry={renderers} />;
+```
+
+See [src/components/organisms/MessageList/README.md](../src/components/organisms/MessageList/README.md) for the full registry API.
+
+## Theming
+
+Theme switching is done via Gravity UI's `<ThemeProvider>` (sets `data-theme` on the root). AIKit ships per-theme CSS files; import them at the application root.
+
+CSS variables follow the `--g-aikit-*` convention and are documented in [THEMING.md](./THEMING.md).
+
+## Streaming Responses
+
+Stream tokens by mutating an in-flight assistant message with `status: 'streaming'` on `MessageList`:
+
+```tsx
+const handleSendMessage = async (data: TSubmitData) => {
+    setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
+
+    const response = await fetch('/api/chat/stream', {
+        method: 'POST',
+        body: JSON.stringify({message: data.content}),
+    });
+    const reader = response.body!.getReader();
+    let accumulated = '';
+
+    // Insert a placeholder assistant message
+    setMessages((prev) => [...prev, {role: 'assistant', content: ''}]);
+
+    while (true) {
+        const {done, value} = await reader.read();
+        if (done) break;
+        accumulated += new TextDecoder().decode(value);
+        setMessages((prev) => {
+            const next = [...prev];
+            next[next.length - 1] = {role: 'assistant', content: accumulated};
+            return next;
+        });
+    }
+};
+```
+
+For an end-to-end working example with OpenAI on the server side, see [EXAMPLES.md](./EXAMPLES.md).
+
+## Server-Side: OpenAI Adapter
+
+A server-side helper (`@gravity-ui/aikit/server/openai`) wraps the OpenAI Responses API:
+
+```typescript
+const service = new OpenAIService({/* config */});
+
+const stream = await service.createResponseStream({input: 'Hello world'});
+stream.start();
+stream.onEventChunk(console.log);    // typed event chunks
+stream.onBufferChunk(console.log);   // raw chunks (e.g. to forward over HTTP)
+stream.abort();                       // cancel
+```
+
+`openai` and `semver` are listed as `optionalDependencies` — install them only if you use the server adapter.
+
+## Next Steps
+
+- Component catalog: [COMPONENTS.md](./COMPONENTS.md)
+- Theming and CSS variables: [THEMING.md](./THEMING.md)
+- Hooks reference: [HOOKS.md](./HOOKS.md)
+- Real-world examples: [EXAMPLES.md](./EXAMPLES.md)
+- Architecture deep dive: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- AI agent integration in your project: [AI_AGENTS.md](./AI_AGENTS.md)
+
+
+--- file: docs/ARCHITECTURE.md ---
+
+# AIKit Library Architecture
+
+## Atomic Design Principles
+
+The library is built on **Atomic Design** principles, which ensure:
+
+- Clear component hierarchy
+- Element reusability
+- Easy maintenance
+- Flexible customization
+
+## Component Levels
+
+### 1. Atoms
+
+Minimal indivisible UI elements without business logic.
+
+**Characteristics:**
+
+- Do not contain business logic
+- Stateless
+- Unaware of usage context
+- Accept data only through props
+
+**Examples:** `ActionButton`, `Alert`, `Loader`, `Shimmer`, `MarkdownRenderer`
+
+### 2. Molecules
+
+Simple groups of atoms forming basic UI blocks.
+
+**Characteristics:**
+
+- Combine multiple atoms
+- Minimal internal logic
+- Reusable blocks
+
+**Examples:** `ButtonGroup`, `Tabs`, `Suggestions`, `BaseMessage`, `PromptInputBody`
+
+### 3. Organisms
+
+Complex self-sufficient components with internal logic.
+
+**Characteristics:**
+
+- Contain business logic
+- Have internal state
+- Can be used independently
+
+**Examples:** `Header`, `MessageList`, `PromptInput`, `UserMessage`, `AssistantMessage`, `ToolMessage`, `ThinkingMessage`, `FileUploadDialog`
+
+### 4. Templates
+
+Complete layouts combining organisms.
+
+**Characteristics:**
+
+- Define page structure
+- Coordinate organism interactions
+- Work with abstract data
+
+**Examples:** `History`, `EmptyContainer`, `ChatContent`
+
+### 5. Pages
+
+Full integrations with specific data.
+
+**Characteristics:**
+
+- Highest level of abstraction
+- Manage data and state
+- Connect all components together
+
+**Examples:** `ChatContainer`, `AIStudioChat`
+
+### 6. Server
+
+Code that runs exclusively on the server side and is responsible for interacting with external APIs, primarily neural network services.
+
+**Characteristics:**
+
+- Runs only on the server
+- Contains no UI and is not involved in component rendering
+- Serves as a middleware layer between the application and external services (such as neural network APIs)
+
+**Examples:** `OpenAIService` (`@gravity-ui/aikit/server/openai`)
+
+## Two-Level Approach
+
+The library offers two ways to integrate a chat:
+
+### 1. Ready Page Component
+
+`ChatContainer` (or `AIStudioChat`) — a fully assembled chat with header, history, message list, and prompt input:
+
+```tsx
+import {ChatContainer} from '@gravity-ui/aikit';
+
+<ChatContainer
+    chats={chats}
+    activeChat={activeChat}
+    messages={messages}
+    onSendMessage={handleSend}
+    onSelectChat={setActiveChat}
+    onCreateChat={createChat}
+    onDeleteChat={deleteChat}
+/>;
+```
+
+### 2. Compose from Organisms
+
+Drop down to individual organisms when you need a custom layout:
+
+```tsx
+import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
+
+function CustomChat() {
+    return (
+        <div className="custom-chat">
+            <Header title="AI Assistant" onNewChat={createChat} />
+            <MessageList messages={messages} status="ready" />
+            <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
+        </div>
+    );
+}
+```
+
+Composition-level hooks (`useToolMessage`, `useSmartScroll`, `useFileUploadStore`, etc.) are documented in [HOOKS.md](./HOOKS.md).
+
+## State Management
+
+### Data Handling Principle
+
+- The library is **state-agnostic**: it does not own messages, chats, or upload state
+- All data flows through props
+- The library invokes callbacks (`onSendMessage`, `onSelectChat`, `onCreateChat`, `onDeleteChat`, …) and lets the host application manage requests, persistence, and errors
+
+### Data Flow Example
+
+```tsx
+const [messages, setMessages] = useState<TChatMessage[]>([]);
+const [status, setStatus] = useState<ChatStatus>('ready');
+
+<ChatContainer
+    messages={messages}
+    status={status}
+    onSendMessage={async (data) => {
+        setStatus('streaming');
+        const reply = await fetchAssistantReply(data.content);
+        setMessages((prev) => [...prev, reply]);
+        setStatus('ready');
+    }}
+/>;
+```
+
+## Type System
+
+### Message Types
+
+```typescript
+export type TMessageRole = 'user' | 'assistant' | 'system';
+
+export type TUserMessage = {
+    role: 'user';
+    content: string;
+    timestamp?: string;
+    format?: 'plain' | 'markdown';
+    images?: string[];
+    fileAttachments?: FileAttachment[];
+};
+
+export type TAssistantMessage<TCustomContent = never> = {
+    role: 'assistant';
+    content: string | TMessageContent | TMessageContent[];
+    timestamp?: string;
+    userRating?: 'like' | 'dislike';
+};
+
+export type TChatMessage<TCustomContent = never> =
+    | TUserMessage
+    | TAssistantMessage<TCustomContent>;
+```
+
+Assistant content can be a plain string, a single typed part (`'text'` | `'thinking'` | `'tool'`), or an array of parts. Custom part types extend via the `TCustomContent` generic.
+
+### Chat Types
+
+```typescript
+export type ChatType = {
+    id: string;
+    name: string;
+    createTime: string | null;
+    lastMessage?: string;
+    metadata?: Record<string, unknown>;
+};
+
+export type ChatStatus = 'submitted' | 'streaming' | 'streaming_loading' | 'ready' | 'error';
+```
+
+Full type catalog: `src/types/{messages,chat,tool,common}.ts`.
+
+## Extensibility
+
+### Custom Message Content Renderers
+
+Register custom content types via `MessageRendererRegistry`:
+
+```tsx
+import {
+    createMessageRendererRegistry,
+    registerMessageRenderer,
+    type MessageRendererRegistry,
+} from '@gravity-ui/aikit';
+
+type ChartMessageContent = {
+    type: 'chart';
+    data: {points: number[]};
+};
+
+const renderers: MessageRendererRegistry = createMessageRendererRegistry();
+registerMessageRenderer<ChartMessageContent>(renderers, 'chart', {
+    render: ({content}) => <Chart points={content.data.points} />,
+});
+
+<MessageList messages={messages} messageRendererRegistry={renderers} />;
+```
+
+See [src/components/organisms/MessageList/README.md](../src/components/organisms/MessageList/README.md) for the full registry API and validators.
+
+### Adapters
+
+`src/adapters/` houses pre-built integrations (e.g. `openai`). They are imported through the main package entry: `import {…} from '@gravity-ui/aikit'`.
+
+## Theming
+
+### CSS Variables
+
+All styles are controlled through CSS variables in the `--g-aikit-*` namespace, with fallbacks to Gravity UI's `--g-color-*` system:
+
+```css
+.g-root {
+    --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-float));
+}
+
+[data-theme='dark'] {
+    --g-aikit-bg-message-user: #0066cc;
+}
+```
+
+### Applying a Theme
+
+Wrap the application in Gravity UI's `<ThemeProvider>` and import the matching theme CSS:
+
+```tsx
+import {ThemeProvider} from '@gravity-ui/uikit';
+import '@gravity-ui/aikit/themes/common';
+import '@gravity-ui/aikit/themes/dark';
+
+<ThemeProvider theme="dark">
+    <ChatContainer …/>
+</ThemeProvider>;
+```
+
+Full CSS variable reference: [THEMING.md](./THEMING.md).
+
+## Performance
+
+### Optimizations
+
+- `React.memo` on heavy renderers
+- `react-window` virtualization for long message lists
+- Lazy hooks (`useSmartScroll`, `useScrollPreservation`) to avoid layout thrash
+- Markdown transform cache (`useMarkdownTransform`)
+
+## Accessibility
+
+### ARIA Attributes
+
+All interactive elements expose:
+
+- `aria-label` for screen readers
+- `role` for semantics
+- `aria-live` for streaming/loading regions
+
+### Keyboard Navigation
+
+- `Enter` — send message
+- `Shift+Enter` — newline
+- `Escape` — cancel / close
+- `Tab` — navigation
+
+## Testing
+
+Component tests run under Playwright Component Testing — see [TESTING.md](./TESTING.md). For developer guidelines specific to writing components, stories, and tests inside this repo, see [guidelines/](./guidelines/).
+
+
+--- file: docs/COMPONENTS.md ---
+
+# Components
+
+49 components organized by Atomic Design level. Each component lives in `src/components/<level>/<Name>/` and ships with its own README and Storybook stories.
+
+Each component also has a dedicated subpath export for tree-shaking — `import {ComponentName} from '@gravity-ui/aikit/ComponentName'` — except `AIStudioChat` (use the main entry).
+
+## Atoms (16)
+
+| Component | Description |
+| --- | --- |
+| [ActionButton](../src/components/atoms/ActionButton/README.md) | Button with integrated tooltip (Button + ActionTooltip from Gravity UI). |
+| [Alert](../src/components/atoms/Alert/README.md) | Alert message with type indicator and optional button. |
+| [ChatDate](../src/components/atoms/ChatDate/README.md) | Formatted date with time and locale support. |
+| [ContextIndicator](../src/components/atoms/ContextIndicator/README.md) | Circular progress indicator for context usage (0–100%). |
+| [ContextItem](../src/components/atoms/ContextItem/README.md) | Label for rendering a context chip. |
+| [DiffStat](../src/components/atoms/DiffStat/README.md) | Diff statistics — added/deleted line counts. |
+| [Disclaimer](../src/components/atoms/Disclaimer/README.md) | Informational or warning message block. |
+| [FileIcon](../src/components/atoms/FileIcon/README.md) | Icon for a file based on MIME type or extension. |
+| InlineCitation | Citation link rendered inline in markdown. |
+| [IntersectionContainer](../src/components/atoms/IntersectionContainer/README.md) | Intersection Observer wrapper (used by `MessageList` for infinite scroll). |
+| [Loader](../src/components/atoms/Loader/README.md) | Loading-state indicator. |
+| [MarkdownRenderer](../src/components/atoms/MarkdownRenderer/README.md) | Yandex Flavored Markdown (YFM) → HTML renderer. |
+| [MessageBalloon](../src/components/atoms/MessageBalloon/README.md) | Visual wrapper for a user message. |
+| [Shimmer](../src/components/atoms/Shimmer/README.md) | Shimmer animation overlay for loading state. |
+| [SubmitButton](../src/components/atoms/SubmitButton/README.md) | Submit button with send/cancel state switching. |
+| [ToolIndicator](../src/components/atoms/ToolIndicator/README.md) | Tool-execution status icon. |
+
+## Molecules (19)
+
+| Component | Description |
+| --- | --- |
+| [ActionPopup](../src/components/molecules/ActionPopup/README.md) | Anchored popup container for action-button content. |
+| [BaseMessage](../src/components/molecules/BaseMessage/README.md) | Base wrapper with support for action buttons. |
+| [ButtonGroup](../src/components/molecules/ButtonGroup/README.md) | Wrapper for a button group with orientation support. |
+| [FeedbackForm](../src/components/molecules/FeedbackForm/README.md) | Reusable feedback form with reason selection and comment. |
+| [FileDropZone](../src/components/molecules/FileDropZone/README.md) | Drag-and-drop area with hidden file input (native HTML5). |
+| [FileItem](../src/components/molecules/FileItem/README.md) | File row: icon, name, size, status, remove button. |
+| [InputContext](../src/components/molecules/InputContext/README.md) | React context for prompt-input attachments and chips. |
+| [PromptInputBody](../src/components/molecules/PromptInputBody/README.md) | Textarea body for prompt input with auto-grow. |
+| [PromptInputFooter](../src/components/molecules/PromptInputFooter/README.md) | Footer with action icons and submit button. |
+| [PromptInputHeader](../src/components/molecules/PromptInputHeader/README.md) | Header with context items / context indicator. |
+| [PromptInputPanel](../src/components/molecules/PromptInputPanel/README.md) | Panel container for custom prompt content. |
+| [RatingBlock](../src/components/molecules/RatingBlock/README.md) | Rating block with title and star rating. |
+| [StarRating](../src/components/molecules/StarRating/README.md) | 1–5 star rating component. |
+| [Suggestions](../src/components/molecules/Suggestions/README.md) | Clickable suggestion buttons in grid or list layout. |
+| [Tabs](../src/components/molecules/Tabs/README.md) | Section tabs with optional delete (built on uikit `Label`). |
+| [ToolFooter](../src/components/molecules/ToolFooter/README.md) | Tool-message footer with action buttons and status. |
+| [ToolHeader](../src/components/molecules/ToolHeader/README.md) | Tool-message header with icon, name, actions, indicators. |
+| [ToolStatus](../src/components/molecules/ToolStatus/README.md) | Tool-status indicator with localized text. |
+
+## Organisms (9)
+
+| Component | Description |
+| --- | --- |
+| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md) | Assistant message with multi-part content and custom renderers. |
+| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md) | Paperclip button that opens the file upload dialog. |
+| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md) | Dialog with drag-and-drop and queued/uploaded files list. |
+| [Header](../src/components/organisms/Header/README.md) | Chat header with navigation and actions. |
+| [MessageList](../src/components/organisms/MessageList/README.md) | Message list with custom renderer registry support. |
+| [PromptInput](../src/components/organisms/PromptInput/README.md) | Flexible chat input — simple/full views, panels, suggestions, attachments. |
+| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md) | AI thinking process with collapsible content and status. |
+| [ToolMessage](../src/components/organisms/ToolMessage/README.md) | Tool message with automatic expand/collapse and status behavior. |
+| [UserMessage](../src/components/organisms/UserMessage/README.md) | User message renderer. |
+
+## Templates (3)
+
+| Component | Description |
+| --- | --- |
+| [ChatContent](../src/components/templates/ChatContent/README.md) | Chat content container — empty state vs message list switching. |
+| [EmptyContainer](../src/components/templates/EmptyContainer/README.md) | Welcome screen with image, title, description, suggestions. |
+| [History](../src/components/templates/History/README.md) | Chat history popup — list, search, grouping, actions. |
+
+## Pages (2)
+
+| Component | Description |
+| --- | --- |
+| [AIStudioChat](../src/components/pages/AIStudioChat/README.md) | Ready-to-use chat with built-in OpenAI streaming — needs only an API URL. |
+| [ChatContainer](../src/components/pages/ChatContainer/README.md) | Fully assembled chat — integrates Header, ChatContent, and History. |
+
+
+--- file: docs/THEMING.md ---
+
+# Theming
+
+AIKit uses CSS variables for theming, in the `--g-aikit-*` namespace. Values fall back to Gravity UI's `--g-color-*` system so AIKit picks up your existing uikit theme automatically.
+
+## CSS Setup
+
+Always import `common.css`, plus the matching theme variant:
+
+```typescript
+import '@gravity-ui/aikit/themes/common';
+import '@gravity-ui/aikit/themes/light'; // or '/dark'
+```
+
+Switching between themes is done via `@gravity-ui/uikit`'s `<ThemeProvider>`, which writes `data-theme="light"` or `data-theme="dark"` onto a root element:
+
+```tsx
+import {ThemeProvider} from '@gravity-ui/uikit';
+
+<ThemeProvider theme="dark">
+    <ChatContainer …/>
+</ThemeProvider>;
+```
+
+`variables.css` is **deprecated** — keep importing `common.css` only.
+
+## Common Variables (`common.css`)
+
+Defined under `.g-root`, applied regardless of theme.
+
+### Colors
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-color-bg-primary` | `var(--g-aikit-bg-primary, var(--g-color-base-float))` | Primary background |
+| `--g-aikit-color-bg-secondary` | `#f5f5f5` | Secondary background |
+| `--g-aikit-color-bg-message-user` | `#0077ff` | User message bubble background |
+| `--g-aikit-color-bg-message-assistant` | `#f0f0f0` | Assistant message bubble background |
+
+### Layout
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-layout-base-padding-m` | `12px` | Base medium padding |
+
+### Disclaimer / Suggestions / Header
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-disclaimer-gap` | `10px` | Gap inside `Disclaimer` |
+| `--g-aikit-suggestions-box-shadow` | `0 3px 10px rgba(198,172,255,.52)` | Shadow on `Suggestions` items |
+| `--g-aikit-header-background` | `none` | Header background |
+
+### Context Indicator
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-ci-color-progress-1` | green | Low-usage segment |
+| `--g-aikit-ci-color-progress-2` | orange | Mid-usage segment |
+| `--g-aikit-ci-color-progress-3` | red | High-usage segment |
+
+### Shimmer
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-shimmer-color-from` | `rgba(0,0,0,.35)` | Shimmer gradient start |
+| `--g-aikit-shimmer-color-to` | `rgba(0,0,0,.85)` | Shimmer gradient end |
+| `--g-aikit-shimmer-duration` | `2.5s` | Animation duration |
+| `--g-aikit-shimmer-gradient-size` | `200%` | Gradient size |
+
+### History
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-history-width` | `360px` | History popup width |
+| `--g-aikit-history-max-height` | `605px` | History popup max height |
+| `--g-aikit-history-item-height` | `24px` | Row height |
+
+### Prompt Input
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-prompt-input-panel-max-height` | `500px` | Max height of expandable panel |
+
+### Empty Container
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-empty-container-background` | `var(--g-color-base-background)` | Empty-state background |
+| `--g-aikit-empty-container-content-gap` | `48px` | Gap between content blocks |
+| `--g-aikit-empty-container-padding` | `48px 32px` | Empty-state padding |
+
+### Chat Content / Container
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--g-aikit-chat-content-background` | `var(--g-color-base-background)` | Content area background |
+| `--g-aikit-chat-content-padding` | derived | Content area padding |
+| `--g-aikit-chat-container-background` | `var(--g-color-base-background)` | Container background |
+| `--g-aikit-chat-container-header-background` | `var(--g-color-base-background)` | Header band background |
+| `--g-aikit-chat-container-content-background` | `var(--g-color-base-background)` | Content band background |
+| `--g-aikit-chat-container-footer-background` | `var(--g-color-base-background)` | Footer band background |
+| `--g-aikit-chat-container-content-empty-background` | `var(--g-color-base-background)` | Empty-state content background |
+| `--g-aikit-chat-container-content-chat-background` | `var(--g-color-base-background)` | Active-chat content background |
+| `--g-aikit-chat-container-footer-empty-background` | `var(--g-color-base-background)` | Empty-state footer background |
+| `--g-aikit-chat-container-footer-chat-background` | `var(--g-color-base-background)` | Active-chat footer background |
+
+## Light Theme Overrides (`light.css`)
+
+Applied under `[data-theme='light']`:
+
+| Variable | Value |
+| --- | --- |
+| `--g-aikit-bg-secondary` | `#f5f5f5` |
+| `--g-aikit-bg-message-user` | `#0077ff` |
+| `--g-aikit-bg-message-assistant` | `#f0f0f0` |
+| `--g-aikit-text-primary` | `#000000` |
+| `--g-aikit-text-secondary` | `#666666` |
+| `--g-aikit-text-message-user` | `#ffffff` |
+| `--g-aikit-text-message-assistant` | `#000000` |
+| `--g-aikit-border-color` | `#e0e0e0` |
+| `--g-aikit-accent-color` | `#0077ff` |
+| `--g-aikit-line-brand` | `var(--g-aikit-accent-color)` |
+
+## Dark Theme Overrides (`dark.css`)
+
+Applied under `[data-theme='dark']`:
+
+| Variable | Value |
+| --- | --- |
+| `--g-aikit-bg-secondary` | `#2a2a2a` |
+| `--g-aikit-bg-message-user` | `#0066cc` |
+| `--g-aikit-bg-message-assistant` | `#2a2a2a` |
+| `--g-aikit-text-primary` | `#ffffff` |
+| `--g-aikit-text-secondary` | `#999999` |
+| `--g-aikit-text-message-user` | `#ffffff` |
+| `--g-aikit-text-message-assistant` | `#ffffff` |
+| `--g-aikit-border-color` | `#404040` |
+| `--g-aikit-accent-color` | `#0077ff` |
+| `--g-aikit-line-brand` | `var(--g-aikit-accent-color)` |
+| `--g-aikit-shimmer-color-from` | `rgba(255,255,255,.35)` |
+| `--g-aikit-shimmer-color-to` | `rgba(255,255,255,.85)` |
+
+## Overriding Variables
+
+Override at any selector level. Per-component scope is preferred:
+
+```css
+.my-chat .g-root {
+    --g-aikit-color-bg-message-user: #6c5ce7;
+    --g-aikit-color-bg-message-assistant: #2d3436;
+}
+```
+
+For one-off overrides inline:
+
+```tsx
+<ChatContainer
+    className="my-chat"
+    style={{'--g-aikit-history-width': '480px'} as React.CSSProperties}
+    …
+/>
+```
+
+## Fallback Chain
+
+Each `--g-aikit-color-*` variable falls back to a `--g-aikit-*` "raw" variable, then to a `--g-color-*` variable from Gravity UI:
+
+```
+--g-aikit-color-bg-primary
+  → var(--g-aikit-bg-primary,
+        var(--g-color-base-float))
+```
+
+This means: if you already set `--g-color-base-float` via `@gravity-ui/uikit`'s theming, AIKit picks it up automatically.
+
+
+--- file: docs/HOOKS.md ---
+
+# Hooks
+
+AIKit exports 7 public hooks. All are re-exported from the package root and from the `@gravity-ui/aikit/hooks` subpath.
+
+| Hook | Purpose |
+| --- | --- |
+| [`useDateFormatter`](#usedateformatter) | Format chat timestamps with locale and relative-date logic |
+| [`useToolMessage`](#usetoolmessage) | Tool-message state machine (expand/collapse based on status) |
+| [`useSmartScroll`](#usesmartscroll) | Auto-scroll to bottom while respecting user scroll-up |
+| [`useScrollPreservation`](#usescrollpreservation) | Preserve scroll position when items are prepended |
+| [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess) | Collapse a section when its async operation succeeds |
+| [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled) | Collapse a section when its async operation is cancelled |
+| [`useFileUploadStore`](#usefileuploadstore) | Standalone file-upload store with progress/error states |
+
+## `useDateFormatter`
+
+Formats a single date with locale support and relative-date thresholding.
+
+```typescript
+function useDateFormatter(options: UseDateFormatterOptions): UseDateFormatterResult;
+
+interface UseDateFormatterOptions {
+    date: string | Date | number;
+    format?: string; // dayjs format token; defaults to library config
+}
+
+interface UseDateFormatterResult {
+    formattedDate: string;       // 'Today' | 'Yesterday' | 'Mar 12, 2026'
+    formattedTime: string;       // '15:42'
+    fullDate: string;            // combined date + time
+    dateObject: Dayjs | null;    // parsed dayjs instance
+    isValid: boolean;
+    diffDays: number | null;     // signed days from now (negative = past)
+}
+```
+
+Powered by `dayjs`. Used inside `ChatDate`, `History`, and message components.
+
+## `useToolMessage`
+
+Computes display state for a tool message (expanded/collapsed, status icon, etc.).
+
+```typescript
+function useToolMessage(options: ToolMessageProps): ToolMessageState;
+```
+
+`ToolMessageProps` is defined in `src/types/tool.ts` and includes the tool's status (`'loading' | 'success' | 'error' | 'cancelled'`), title, args, result, and a `defaultExpanded` flag. The hook handles auto-collapse on success and cancellation (internally uses [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess) and [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled)).
+
+## `useSmartScroll`
+
+Keeps the scroll container pinned to the bottom while messages stream in, but yields to the user as soon as they scroll up. Used by `MessageList`.
+
+```typescript
+function useSmartScroll<T extends HTMLElement>(options?: {
+    threshold?: number;   // px from bottom to be "at bottom" — default 50
+    enabled?: boolean;
+}): {
+    ref: React.RefObject<T>;
+    isAtBottom: boolean;
+    scrollToBottom: () => void;
+};
+```
+
+## `useScrollPreservation`
+
+Preserves a container's visual scroll position when items are prepended (typical for infinite-scroll-up message history).
+
+```typescript
+function useScrollPreservation<T extends HTMLElement>(
+    deps: React.DependencyList,
+): React.RefObject<T>;
+```
+
+Attach the returned ref to the scrollable container. When `deps` change (e.g. messages array grows at the top), the hook captures pre-update scroll metrics and restores them post-update.
+
+## `useAutoCollapseOnSuccess`
+
+Collapses a section automatically after its status transitions into a "success" state.
+
+```typescript
+function useAutoCollapseOnSuccess(options: {
+    status: string;
+    successStatuses: string[];     // statuses that should trigger collapse
+    isExpanded: boolean;
+    setIsExpanded: (v: boolean) => void;
+    delay?: number;                 // ms; default 0
+}): void;
+```
+
+## `useAutoCollapseOnCancelled`
+
+Same as [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess) but triggered on a "cancelled" status.
+
+```typescript
+function useAutoCollapseOnCancelled(options: {
+    status: string;
+    cancelledStatuses: string[];
+    isExpanded: boolean;
+    setIsExpanded: (v: boolean) => void;
+    delay?: number;
+}): void;
+```
+
+## `useFileUploadStore`
+
+A standalone, headless store for file uploads. Tracks queued / uploading / uploaded / errored entries with progress, supports cancel and remove. Used by `FileUploadDialog` and `AttachmentPicker`, but you can use it independently to build your own upload UI.
+
+```typescript
+function useFileUploadStore<Meta = {id: string; name: string}>(
+    options: UseFileUploadStoreOptions<Meta>,
+): UseFileUploadStoreReturn<Meta>;
+
+type FileUploadEntry<Meta> = {
+    file: File;
+    status: 'queued' | 'uploading' | 'uploaded' | 'error' | 'cancelled';
+    progress: number;
+    error?: unknown;
+    meta?: Meta;
+};
+
+type UseFileUploadStoreReturn<Meta> = {
+    files: FileUploadEntry<Meta>[];
+    add: (files: File[]) => void;
+    remove: (id: string) => void;
+    cancel: (id: string) => void;
+    clear: () => void;
+    // …additional helpers
+};
+```
+
+See `src/hooks/useFileUploadStore.ts` for the complete type signature.
+
+
+--- file: docs/I18N.md ---
+
+# Internationalization (i18n)
+
+AIKit localizes user-facing strings on a **per-component** basis using `@gravity-ui/i18n`. There is no global i18n provider — each component bundles its own keyset.
+
+Out-of-the-box languages: **English (`en`)** and **Russian (`ru`)**.
+
+## How It Works
+
+Each localized component contains an `i18n/` directory:
+
+```
+ComponentName/
+├── i18n/
+│   ├── index.ts      # registers the keyset with @gravity-ui/i18n
+│   ├── en.json
+│   └── ru.json
+```
+
+The keyset is registered under a namespace derived from the component's name. At runtime, `@gravity-ui/i18n` resolves strings against the active language (set via `configure({lang})`).
+
+## Setting the Language
+
+```typescript
+import {configure} from '@gravity-ui/i18n';
+
+configure({lang: 'ru'}); // or 'en'
+```
+
+Call this once at application bootstrap, before rendering AIKit components.
+
+## Overriding Strings
+
+Every component that has user-visible text also exposes a `texts` prop (or per-feature prop like `headerProps.texts`) for per-instance overrides. `ChatContainer` aggregates these via a single `texts` prop on the page level. The resolution order is:
+
+1. `texts.<key>` on the component (or on `ChatContainer`)
+2. Custom keyset registered with `@gravity-ui/i18n` (if you override the bundled one)
+3. AIKit's bundled `i18n/<lang>.json` defaults
+
+## Adding a Custom Language
+
+Re-register the bundled keysets with your translations:
+
+```typescript
+import {addKeysets} from '@gravity-ui/i18n';
+import esTabs from './my-translations/Tabs.es.json';
+
+addKeysets('es', {
+    'aikit.Tabs': esTabs,
+    // …repeat for each component you localize
+});
+
+configure({lang: 'es'});
+```
+
+Namespace prefixes match the component name (e.g. `aikit.Header`, `aikit.MessageList`). Inspect `src/components/.../i18n/index.ts` for the exact key.
+
+## Localized Components
+
+22 components ship with built-in translations:
+
+### Atoms
+
+- `ChatDate`
+- `SubmitButton`
+
+### Molecules
+
+- `ActionPopup`, `BaseMessage`, `FeedbackForm`, `FileDropZone`, `FileItem`, `InputContext`,
+- `PromptInputFooter`, `PromptInputPanel`, `StarRating`, `Tabs`, `ToolStatus`
+
+### Organisms
+
+- `AttachmentPicker`, `FileUploadDialog`, `Header`, `MessageList`, `ThinkingMessage`, `ToolMessage`
+
+### Templates
+
+- `EmptyContainer`, `History`
+
+### Pages
+
+- `ChatContainer`
+
+Components not listed above either have no visible text or take all text through props.
+
+## See Also
+
+- `@gravity-ui/i18n` documentation: <https://github.com/gravity-ui/i18n>
+- `ChatContainer`'s aggregated `texts` prop: [src/components/pages/ChatContainer/types.ts](../src/components/pages/ChatContainer/types.ts) (`ChatContainerTexts` interface)
+
+
+--- file: docs/EXAMPLES.md ---
+
+# Examples
+
+Practical patterns for common AIKit integrations.
+
+## 1. Streaming Assistant Responses
+
+Append a placeholder assistant message and mutate it as tokens arrive.
+
+```tsx
+import {useState} from 'react';
+import {ChatContainer} from '@gravity-ui/aikit';
+import type {ChatStatus, TChatMessage, TSubmitData} from '@gravity-ui/aikit';
+
+function StreamingChat() {
+    const [messages, setMessages] = useState<TChatMessage[]>([]);
+    const [status, setStatus] = useState<ChatStatus>('ready');
+
+    const handleSend = async (data: TSubmitData) => {
+        setMessages((prev) => [
+            ...prev,
+            {role: 'user', content: data.content, timestamp: new Date().toISOString()},
+            {role: 'assistant', content: '', timestamp: new Date().toISOString()},
+        ]);
+        setStatus('streaming');
+
+        const response = await fetch('/api/chat/stream', {
+            method: 'POST',
+            body: JSON.stringify({message: data.content}),
+        });
+
+        const reader = response.body!.getReader();
+        const decoder = new TextDecoder();
+        let accumulated = '';
+
+        while (true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+            accumulated += decoder.decode(value, {stream: true});
+            setMessages((prev) => {
+                const next = [...prev];
+                next[next.length - 1] = {...next[next.length - 1], content: accumulated};
+                return next;
+            });
+        }
+
+        setStatus('ready');
+    };
+
+    return (
+        <ChatContainer
+            chats={[]}
+            activeChat={null}
+            messages={messages}
+            status={status}
+            onSendMessage={handleSend}
+            onSelectChat={() => {}}
+            onCreateChat={() => {}}
+            onDeleteChat={() => {}}
+        />
+    );
+}
+```
+
+Server-side: AIKit ships an OpenAI streaming wrapper — see [§4](#4-server-side-openai-via-server-openai).
+
+## 2. File Upload with `FileUploadDialog` + `AttachmentPicker`
+
+`AttachmentPicker` is a button that opens `FileUploadDialog`. State is managed by `useFileUploadStore`:
+
+```tsx
+import {AttachmentPicker, FileUploadDialog, useFileUploadStore} from '@gravity-ui/aikit';
+
+function PromptWithAttachments() {
+    const upload = useFileUploadStore({
+        async uploader(file, onProgress) {
+            // POST to your backend, return some metadata
+            const form = new FormData();
+            form.append('file', file);
+            const res = await fetch('/api/upload', {method: 'POST', body: form});
+            return await res.json(); // {id, name}
+        },
+    });
+
+    return (
+        <>
+            <AttachmentPicker store={upload} />
+            <FileUploadDialog store={upload} />
+        </>
+    );
+}
+```
+
+`store.files` lists every queued / uploading / uploaded / errored entry; pass it down or read from it when constructing the user message's `fileAttachments`.
+
+## 3. Custom Message Content Renderer
+
+Add a custom assistant content part (e.g. interactive chart) via `MessageRendererRegistry`:
+
+```tsx
+import {
+    createMessageRendererRegistry,
+    registerMessageRenderer,
+    MessageList,
+    type MessageRendererRegistry,
+    type TMessageContent,
+} from '@gravity-ui/aikit';
+
+type ChartContent = TMessageContent<'chart', {points: number[]; label?: string}>;
+
+const renderers: MessageRendererRegistry = createMessageRendererRegistry();
+registerMessageRenderer<ChartContent>(renderers, 'chart', {
+    render: ({content}) => <Chart points={content.data.points} title={content.data.label} />,
+});
+
+function ChatView({messages}: {messages: TChatMessage<ChartContent>[]}) {
+    return <MessageList messages={messages} messageRendererRegistry={renderers} status="ready" />;
+}
+```
+
+A produced assistant message may now mix text and custom parts:
+
+```typescript
+const msg: TAssistantMessage<ChartContent> = {
+    role: 'assistant',
+    content: [
+        {type: 'text', data: {text: 'Here is the trend:'}},
+        {type: 'chart', data: {points: [1, 4, 9, 16, 25], label: 'Squares'}},
+    ],
+};
+```
+
+## 4. Server-Side OpenAI via `server/openai`
+
+A Node-only wrapper for OpenAI's Responses API. Install the optional `openai` dependency:
+
+```bash
+npm install openai
+```
+
+```typescript
+import {OpenAIService} from '@gravity-ui/aikit/server/openai';
+
+const service = new OpenAIService({
+    apiKey: process.env.OPENAI_API_KEY!,
+    // Other OpenAI client options
+});
+
+// Streaming response
+app.post('/api/chat/stream', async (req, res) => {
+    const stream = await service.createResponseStream({input: req.body.message});
+
+    stream.onBufferChunk((chunk) => res.write(chunk));
+    stream.onEventChunk((event) => {
+        if (event.type === 'response.completed') res.end();
+    });
+
+    stream.start();
+
+    req.on('close', () => stream.abort());
+});
+
+// Conversation title summarization
+app.post('/api/chat/title', async (req, res) => {
+    const title = await service.summarizeConversationTitle({
+        conversation: req.body.conversationId,
+        byLastItems: 5, // or `byFirstItems`
+    });
+    res.json({title});
+});
+```
+
+The `optionalDependencies` field in `package.json` lists `openai` and `semver` — install them only on the server side.
+
+## 5. Drop-in `AIStudioChat`
+
+If you have an AI Studio compatible endpoint, `AIStudioChat` wraps `ChatContainer` and handles streaming/state internally:
+
+```tsx
+import {AIStudioChat} from '@gravity-ui/aikit';
+
+<AIStudioChat apiUrl="https://api.example.com/ai-studio" />;
+```
+
+See `src/components/pages/AIStudioChat/README.md` for the full prop list.
+
+## 6. Custom Composition: Header + MessageList + PromptInput
+
+When `ChatContainer` is too opinionated, build your own layout from organisms:
+
+```tsx
+import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
+
+function MyChat() {
+    return (
+        <div className="my-chat">
+            <Header title="AI Assistant" onNewChat={createChat} onHistory={openHistory} />
+            <MessageList messages={messages} status={status} />
+            <PromptInput onSubmit={handleSend} placeholder="Ask me anything…" />
+        </div>
+    );
+}
+```
+
+Each organism exposes its full prop surface through its own README; combine them however you need.
+
+
+--- file: docs/TROUBLESHOOTING.md ---
+
+# Troubleshooting
+
+Common issues when integrating `@gravity-ui/aikit`.
+
+## Peer Dependencies
+
+AIKit declares the following peer dependencies. Your app must install them:
+
+```bash
+npm install \
+  @gravity-ui/uikit@^7.25 \
+  @gravity-ui/icons@^2.16 \
+  @gravity-ui/i18n@^1.8 \
+  @diplodoc/transform@^4.63 \
+  highlight.js@^11.11 \
+  react@^18 react-dom@^18
+```
+
+If you see `Module not found: @gravity-ui/uikit` (or similar) after installing AIKit, you're missing one of the peers above.
+
+## Themes / Dark Mode Not Applying
+
+Three things must all be in place:
+
+1. **Theme CSS imported once at app root:**
+   ```typescript
+   import '@gravity-ui/aikit/themes/common';
+   import '@gravity-ui/aikit/themes/dark';
+   ```
+2. **`<ThemeProvider>` wrapping AIKit components** (from `@gravity-ui/uikit`). It writes `data-theme="dark"` onto the root element.
+3. **`.g-root` class on a parent**, which is added automatically by `<ThemeProvider>`. If you bypass `<ThemeProvider>`, you must set `class="g-root"` manually.
+
+```tsx
+import {ThemeProvider} from '@gravity-ui/uikit';
+
+<ThemeProvider theme="dark">
+    <ChatContainer …/>
+</ThemeProvider>;
+```
+
+## Markdown Not Rendering
+
+`MarkdownRenderer` requires `@diplodoc/transform` and `highlight.js` (both are peer deps). If they're missing, markdown content falls back to plain text without errors. Re-install peers if so.
+
+Code blocks specifically need `highlight.js` styles. If syntax highlighting is missing, also import a highlight.js theme:
+
+```typescript
+import 'highlight.js/styles/github.css'; // or your preferred theme
+```
+
+## Server-Side Code Won't Build
+
+`@gravity-ui/aikit/server/openai` depends on the optional `openai` and `semver` packages, which are **not installed by default**:
+
+```bash
+npm install openai semver
+```
+
+The server code is shipped in a separate target (`build/server/`); make sure your bundler treats this subpath as Node-only.
+
+## Portal-Mounted Dialogs Missing from Component Screenshots
+
+If you're writing Playwright Component Tests for a component that opens `FileUploadDialog` (or any portal-mounted dialog), `expectScreenshot()` without options won't capture the dialog. Use full-page mode:
+
+```tsx
+await expectScreenshot({component: page, fullPage: true});
+```
+
+See [TESTING.md](./TESTING.md) and the [Playwright dialog testing notes](./guidelines/testing.md).
+
+## `usePromptBox` / `PromptBox` Imports Failing
+
+These were renamed. Use the current API:
+
+| Old | New |
+| --- | --- |
+| `PromptBox` | `PromptInput` |
+| `usePromptBox` | no direct equivalent; compose `PromptInput` or build with `PromptInputBody/Header/Footer` |
+
+## `import {…} from 'aikit'` Fails
+
+The package name is `@gravity-ui/aikit`, not `aikit`. Use:
+
+```typescript
+import {ChatContainer} from '@gravity-ui/aikit';
+```
+
+## TypeScript: `Cannot find module '@gravity-ui/aikit/X'`
+
+Subpath imports (`@gravity-ui/aikit/Header`, `/themes/dark`, etc.) require either `moduleResolution: "Bundler"` or `"NodeNext"` in your `tsconfig.json`. If you're on the legacy `"Node"` resolution, switch to one of the above or use the main entry only.
+
+## Bundle Size
+
+The main entry (`@gravity-ui/aikit`) re-exports everything. For smaller bundles, import individual components via their subpaths:
+
+```typescript
+// Tree-shakable
+import {Header} from '@gravity-ui/aikit/Header';
+
+// Pulls in the whole library (still tree-shakes with a modern bundler, but slower)
+import {Header} from '@gravity-ui/aikit';
+```
+
+## Where to Report Issues
+
+<https://github.com/gravity-ui/aikit/issues>
+
+
+--- file: docs/AI_AGENTS.md ---
+
+# Using AIKit with AI Agents (Claude Code / Cursor)
+
+When you install `@gravity-ui/aikit` in a downstream project, you can teach Claude Code and Cursor about it so they write correct code without you spelling out the API every time.
+
+After install, two files are available locally:
+
+- `node_modules/@gravity-ui/aikit/llms.txt` — concise index (component catalog + key links)
+- `node_modules/@gravity-ui/aikit/llms-full.txt` — full documentation concatenated
+
+The patterns below point your agent at those files.
+
+## Cursor: drop-in rule
+
+Create `.cursor/rules/aikit.mdc` in your project:
+
+```
+---
+description: Gravity UI AIKit (@gravity-ui/aikit) component library
+globs: src/**/*.{ts,tsx,jsx,js}
+alwaysApply: false
+---
+
+The project uses @gravity-ui/aikit for AI chat components.
+
+Reference:
+- `node_modules/@gravity-ui/aikit/llms.txt` — catalog of components, hooks, peer deps, theming
+- `node_modules/@gravity-ui/aikit/llms-full.txt` — full docs (read on demand)
+
+Conventions when using @gravity-ui/aikit:
+- Prefer the page-level `ChatContainer` for quick integration; drop to organisms (`PromptInput`, `MessageList`, `Header`) for custom layouts.
+- Custom assistant content parts go through `MessageRendererRegistry` via `createMessageRendererRegistry` + `registerMessageRenderer<T>`. There is no `messageTypeRegistry` prop.
+- Theme CSS must be imported at the app root: `@gravity-ui/aikit/themes/common` + one of `/light` or `/dark`. Render inside `<ThemeProvider>` from `@gravity-ui/uikit`.
+- Subpath imports (`@gravity-ui/aikit/Header`, etc.) are tree-shakable and preferred over the barrel entry for production code.
+- Peer deps required: @gravity-ui/uikit, @gravity-ui/icons, @gravity-ui/i18n, @diplodoc/transform, highlight.js, react>=18.
+```
+
+This rule auto-attaches when you edit anything under `src/`. The agent reads `llms.txt` on first use and consults `llms-full.txt` for deeper questions.
+
+## Claude Code: drop-in skill
+
+Create `.claude/skills/aikit/SKILL.md` in your project:
+
+```markdown
+---
+name: aikit
+description: Gravity UI AIKit (@gravity-ui/aikit) React component library for building AI chats. Use when the user works with @gravity-ui/aikit components, hooks, types, theming, or examples.
+---
+
+Read `node_modules/@gravity-ui/aikit/llms.txt` for the component catalog and `node_modules/@gravity-ui/aikit/llms-full.txt` for full documentation.
+
+Key conventions:
+- `ChatContainer` is the quickest integration; drop to organisms (`PromptInput`, `MessageList`, `Header`) for custom layouts.
+- Custom message content parts: `createMessageRendererRegistry` + `registerMessageRenderer<T>(reg, 'type', {render: …})`; pass via `messageRendererRegistry` prop on `MessageList`.
+- Theme CSS at app root: `@gravity-ui/aikit/themes/common` plus `/light` or `/dark`. Wrap tree in `<ThemeProvider>` from `@gravity-ui/uikit`.
+- Subpath imports (`@gravity-ui/aikit/Header`, etc.) for tree-shaking.
+- Peer deps required: @gravity-ui/uikit, @gravity-ui/icons, @gravity-ui/i18n, @diplodoc/transform, highlight.js, react>=18.
+```
+
+Claude Code surfaces the skill in its registry; it will load it when your prompts touch AIKit.
+
+## Without npm install (raw GitHub access)
+
+If the agent can fetch URLs and you don't have the package installed locally yet, point at the raw files on GitHub:
+
+```
+https://raw.githubusercontent.com/gravity-ui/aikit/main/llms.txt
+https://raw.githubusercontent.com/gravity-ui/aikit/main/llms-full.txt
+```
+
+## Verifying the setup
+
+After dropping in the snippet:
+
+- **Cursor**: open any `src/**/*.tsx` file; in the chat panel the rule `aikit` should appear in the attached-rules list. Ask "what's the right way to render a streaming assistant message with @gravity-ui/aikit?" — the agent should cite the streaming example from `llms-full.txt`.
+- **Claude Code**: start a new session and ask "give me a minimal `ChatContainer` usage example." The agent should invoke the `aikit` skill and reproduce the code from the docs.
+
+If neither happens, double-check that the rule/skill file is in the right location and that `node_modules/@gravity-ui/aikit/llms.txt` actually exists (run `cat node_modules/@gravity-ui/aikit/llms.txt | head` to verify).
+
+
+--- file: docs/PROJECT_STRUCTURE.md ---
+
+# AIKit Project Structure
+
+This document describes the layout of the `@gravity-ui/aikit` source tree.
+
+## File Tree
+
+```
+aikit/
+├── .storybook/              # Storybook configuration
+├── .claude/                 # Claude Code skills for contributors
+├── .cursor/                 # Cursor rules for contributors
+├── docs/                    # Documentation (this directory)
+│   ├── README.md
+│   ├── GETTING_STARTED.md
+│   ├── ARCHITECTURE.md
+│   ├── PROJECT_STRUCTURE.md
+│   ├── COMPONENTS.md
+│   ├── THEMING.md
+│   ├── HOOKS.md
+│   ├── I18N.md
+│   ├── EXAMPLES.md
+│   ├── TROUBLESHOOTING.md
+│   ├── AI_AGENTS.md
+│   ├── TESTING.md
+│   ├── PLAYWRIGHT.md
+│   ├── assets/              # Logos and cover image
+│   └── guidelines/          # Internal contributor guidelines (storybook, testing, readme, code-style)
+│
+├── src/
+│   ├── adapters/            # SDK adapters (OpenAI)
+│   │   └── openai/
+│   │
+│   ├── components/
+│   │   ├── atoms/           # 16 atoms
+│   │   │   ├── ActionButton/   ChatDate/         ContextItem/
+│   │   │   ├── Alert/          ContextIndicator/ DiffStat/
+│   │   │   ├── Disclaimer/     FileIcon/         InlineCitation/
+│   │   │   ├── IntersectionContainer/  Loader/   MarkdownRenderer/
+│   │   │   ├── MessageBalloon/ Shimmer/          SubmitButton/
+│   │   │   └── ToolIndicator/
+│   │   │
+│   │   ├── molecules/       # 19 molecules
+│   │   │   ├── ActionPopup/    BaseMessage/      ButtonGroup/
+│   │   │   ├── FeedbackForm/   FileDropZone/     FileItem/
+│   │   │   ├── InputContext/   PromptInputBody/  PromptInputFooter/
+│   │   │   ├── PromptInputHeader/  PromptInputPanel/   RatingBlock/
+│   │   │   ├── StarRating/     Suggestions/      Tabs/
+│   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
+│   │   │
+│   │   ├── organisms/       # 9 organisms
+│   │   │   ├── AssistantMessage/   AttachmentPicker/
+│   │   │   ├── FileUploadDialog/   Header/        MessageList/
+│   │   │   ├── PromptInput/        ThinkingMessage/
+│   │   │   ├── ToolMessage/        UserMessage/
+│   │   │
+│   │   ├── templates/       # 3 templates
+│   │   │   ├── ChatContent/        EmptyContainer/   History/
+│   │   │
+│   │   └── pages/           # 2 pages
+│   │       ├── AIStudioChat/       ChatContainer/
+│   │
+│   ├── hooks/               # 7 public hooks (see docs/HOOKS.md)
+│   │   ├── useDateFormatter/
+│   │   ├── useToolMessage.tsx
+│   │   ├── useSmartScroll.tsx
+│   │   ├── useScrollPreservation.ts
+│   │   ├── useAutoCollapseOnSuccess.ts
+│   │   ├── useAutoCollapseOnCancelled.ts
+│   │   └── useFileUploadStore.ts
+│   │
+│   ├── types/               # TypeScript type definitions
+│   │   ├── messages.ts      # TUserMessage, TAssistantMessage, TChatMessage, content types
+│   │   ├── chat.ts          # ChatType, ChatStatus, list items
+│   │   ├── tool.ts          # ToolMessageProps, statuses
+│   │   └── common.ts        # ActionConfig, SuggestionsItem, shared types
+│   │
+│   ├── utils/               # Public utility modules
+│   │   ├── chatUtils.ts
+│   │   ├── messageUtils.ts
+│   │   ├── validation.ts
+│   │   ├── messageTypeRegistry.ts   # MessageRendererRegistry + helpers
+│   │   ├── clipboardUtils.ts
+│   │   ├── actionUtils.ts
+│   │   └── cn.ts            # bem-react classname wrapper
+│   │
+│   ├── themes/              # Compiled CSS themes
+│   │   ├── common.css       # Base CSS variables (always import)
+│   │   ├── light.css        # [data-theme='light'] overrides
+│   │   ├── dark.css         # [data-theme='dark'] overrides
+│   │   └── variables.css    # Deprecated — use common.css
+│   │
+│   ├── server/              # Server-only code (Node.js)
+│   │   └── openai/          # OpenAIService — Responses API wrapper, streaming, summarization
+│   │
+│   └── index.ts             # Main barrel export
+│
+├── playwright/              # Docker-backed Playwright runner
+├── test-utils/              # Shared test helpers
+├── build-utils/             # Build scripts (gulp tasks)
+├── build/                   # Compiled output (esm/, cjs/, types)
+├── llms.txt                 # LLM agent index (Mantine-style)
+├── llms-full.txt            # Concatenated docs for LLM context
+├── package.json
+├── tsconfig.json
+├── playwright-ct.config.ts
+├── gulpfile.js
+├── README.md / README-ru.md / CLAUDE.md / CONTRIBUTING.md
+└── .gitignore / .eslintrc / .prettierrc / …
+```
+
+## Source Code: `src/`
+
+### `src/components/`
+
+Components organized by Atomic Design level. Each component lives in its own directory and follows the structure:
+
+```
+ComponentName/
+├── ComponentName.tsx        # Implementation
+├── ComponentName.scss       # Styles (optional)
+├── types.ts                 # Component types (optional)
+├── README.md                # Public API documentation
+├── i18n/                    # Localization (optional)
+│   ├── index.ts
+│   ├── en.json
+│   └── ru.json
+├── __stories__/
+│   ├── ComponentName.stories.tsx
+│   └── Docs.mdx
+├── __tests__/
+│   ├── ComponentName.visual.spec.tsx
+│   ├── helpersPlaywright.tsx
+│   └── __snapshots__/
+└── index.ts                 # Barrel export
+```
+
+Full component catalog: [COMPONENTS.md](./COMPONENTS.md).
+
+### `src/hooks/`
+
+Public hooks exported through both the root entry (`from '@gravity-ui/aikit'`) and the subpath `from '@gravity-ui/aikit/hooks'`. Internal helpers like `useMarkdownTransform` and `useRemend` live in `src/hooks/` but are not re-exported.
+
+Full hooks reference: [HOOKS.md](./HOOKS.md).
+
+### `src/types/`
+
+Type definitions split by concern: messages, chats, tool messages, common (action configs, suggestions). All re-exported from the root via `src/types/index.ts` and accessible as `import type {…} from '@gravity-ui/aikit'` or `from '@gravity-ui/aikit/types'`.
+
+### `src/utils/`
+
+Each utility is exposed both via the root barrel and a dedicated subpath: `@gravity-ui/aikit/utils/chatUtils`, `/messageUtils`, `/validation`, `/messageTypeRegistry`, `/clipboardUtils`.
+
+### `src/themes/`
+
+CSS theming files. Import via subpaths:
+
+```typescript
+import '@gravity-ui/aikit/themes/common';
+import '@gravity-ui/aikit/themes/light'; // or '/dark'
+```
+
+`variables.css` is deprecated — keep `common.css` only.
+
+### `src/server/openai/`
+
+Server-side only code, builds into a separate CommonJS/ESM target via `tsconfig.{esm,cjs}.json` and is exposed as the subpath `@gravity-ui/aikit/server/openai`. Pulls in `openai` and `semver` from `optionalDependencies`.
+
+## Naming Conventions
+
+- Component folders & files: `PascalCase` (e.g. `PromptInput/PromptInput.tsx`)
+- Hooks: `useThing.ts` (or `.tsx` when JSX is present)
+- Types files: `camelCase.ts`
+- Test files: `<Name>.visual.spec.tsx` (Playwright), `<Name>.unit.test.ts` (Jest)
+- Story files: `<Name>.stories.tsx`
+
+## Export Hierarchy
+
+```
+ComponentName/index.ts
+  → src/components/<level>/index.ts
+    → src/components/index.ts (implicit via src/index.ts re-exports each level)
+      → src/index.ts
+```
+
+Each component additionally has a dedicated subpath in `package.json#exports` (`@gravity-ui/aikit/ComponentName`) for tree-shaken imports.
+
+## Useful Links
+
+- [Quick Start](./GETTING_STARTED.md)
+- [Architecture](./ARCHITECTURE.md)
+- [Component Catalog](./COMPONENTS.md)
+- [Theming](./THEMING.md)
+- [Hooks](./HOOKS.md)
+- [Examples](./EXAMPLES.md)
+- [Troubleshooting](./TROUBLESHOOTING.md)
+- [AI Agent Integration](./AI_AGENTS.md)
+- [Testing Guide](./TESTING.md)
+- [Contributor Guidelines](./guidelines/)
+

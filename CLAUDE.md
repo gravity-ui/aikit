@@ -8,8 +8,9 @@ Detailed guidelines live in `docs/guidelines/`:
 - [`docs/guidelines/storybook.md`](./docs/guidelines/storybook.md) — `Docs.mdx` + `*.stories.tsx` templates
 - [`docs/guidelines/testing.md`](./docs/guidelines/testing.md) — Playwright Component Testing (Docker)
 - [`docs/guidelines/readme.md`](./docs/guidelines/readme.md) — component README structure
+- [`docs/guidelines/new-component.md`](./docs/guidelines/new-component.md) — checklist when adding a new component (level barrel + `package.json#exports` + docs catalog)
 
-Read the relevant file before working on a component, its `__stories__/`, `__tests__/`, or `README.md`. Claude skills (`aikit-storybook`, `aikit-testing`, `aikit-readme`) and Cursor rules under `.cursor/rules/aikit-*` are thin pointers to the same files.
+Read the relevant file before working on a component, its `__stories__/`, `__tests__/`, or `README.md`. Claude skills (`aikit-storybook`, `aikit-testing`, `aikit-readme`, `aikit-new-component`) and Cursor rules under `.cursor/rules/aikit-*` are thin pointers to the same files.
 
 ## Running Tests
 

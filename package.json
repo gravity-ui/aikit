@@ -228,6 +228,16 @@
         "default": "./build/cjs/components/atoms/Disclaimer/index.js"
       }
     },
+    "./FileIcon": {
+      "import": {
+        "types": "./build/esm/components/atoms/FileIcon/index.d.ts",
+        "default": "./build/esm/components/atoms/FileIcon/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/atoms/FileIcon/index.d.ts",
+        "default": "./build/cjs/components/atoms/FileIcon/index.js"
+      }
+    },
     "./InlineCitation": {
       "import": {
         "types": "./build/esm/components/atoms/InlineCitation/index.d.ts",
@@ -308,14 +318,14 @@
         "default": "./build/cjs/components/atoms/ToolIndicator/index.js"
       }
     },
-    "./FileIcon": {
+    "./ActionPopup": {
       "import": {
-        "types": "./build/esm/components/atoms/FileIcon/index.d.ts",
-        "default": "./build/esm/components/atoms/FileIcon/index.js"
+        "types": "./build/esm/components/molecules/ActionPopup/index.d.ts",
+        "default": "./build/esm/components/molecules/ActionPopup/index.js"
       },
       "require": {
-        "types": "./build/cjs/components/atoms/FileIcon/index.d.ts",
-        "default": "./build/cjs/components/atoms/FileIcon/index.js"
+        "types": "./build/cjs/components/molecules/ActionPopup/index.d.ts",
+        "default": "./build/cjs/components/molecules/ActionPopup/index.js"
       }
     },
     "./BaseMessage": {
@@ -338,14 +348,14 @@
         "default": "./build/cjs/components/molecules/ButtonGroup/index.js"
       }
     },
-    "./FileItem": {
+    "./FeedbackForm": {
       "import": {
-        "types": "./build/esm/components/molecules/FileItem/index.d.ts",
-        "default": "./build/esm/components/molecules/FileItem/index.js"
+        "types": "./build/esm/components/molecules/FeedbackForm/index.d.ts",
+        "default": "./build/esm/components/molecules/FeedbackForm/index.js"
       },
       "require": {
-        "types": "./build/cjs/components/molecules/FileItem/index.d.ts",
-        "default": "./build/cjs/components/molecules/FileItem/index.js"
+        "types": "./build/cjs/components/molecules/FeedbackForm/index.d.ts",
+        "default": "./build/cjs/components/molecules/FeedbackForm/index.js"
       }
     },
     "./FileDropZone": {
@@ -356,6 +366,16 @@
       "require": {
         "types": "./build/cjs/components/molecules/FileDropZone/index.d.ts",
         "default": "./build/cjs/components/molecules/FileDropZone/index.js"
+      }
+    },
+    "./FileItem": {
+      "import": {
+        "types": "./build/esm/components/molecules/FileItem/index.d.ts",
+        "default": "./build/esm/components/molecules/FileItem/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/molecules/FileItem/index.d.ts",
+        "default": "./build/cjs/components/molecules/FileItem/index.js"
       }
     },
     "./InputContext": {
@@ -478,26 +498,6 @@
         "default": "./build/cjs/components/molecules/ToolStatus/index.js"
       }
     },
-    "./ActionPopup": {
-      "import": {
-        "types": "./build/esm/components/molecules/ActionPopup/index.d.ts",
-        "default": "./build/esm/components/molecules/ActionPopup/index.js"
-      },
-      "require": {
-        "types": "./build/cjs/components/molecules/ActionPopup/index.d.ts",
-        "default": "./build/cjs/components/molecules/ActionPopup/index.js"
-      }
-    },
-    "./FeedbackForm": {
-      "import": {
-        "types": "./build/esm/components/molecules/FeedbackForm/index.d.ts",
-        "default": "./build/esm/components/molecules/FeedbackForm/index.js"
-      },
-      "require": {
-        "types": "./build/cjs/components/molecules/FeedbackForm/index.d.ts",
-        "default": "./build/cjs/components/molecules/FeedbackForm/index.js"
-      }
-    },
     "./AssistantMessage": {
       "import": {
         "types": "./build/esm/components/organisms/AssistantMessage/index.d.ts",
@@ -506,6 +506,26 @@
       "require": {
         "types": "./build/cjs/components/organisms/AssistantMessage/index.d.ts",
         "default": "./build/cjs/components/organisms/AssistantMessage/index.js"
+      }
+    },
+    "./AttachmentPicker": {
+      "import": {
+        "types": "./build/esm/components/organisms/AttachmentPicker/index.d.ts",
+        "default": "./build/esm/components/organisms/AttachmentPicker/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/AttachmentPicker/index.d.ts",
+        "default": "./build/cjs/components/organisms/AttachmentPicker/index.js"
+      }
+    },
+    "./FileUploadDialog": {
+      "import": {
+        "types": "./build/esm/components/organisms/FileUploadDialog/index.d.ts",
+        "default": "./build/esm/components/organisms/FileUploadDialog/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/FileUploadDialog/index.d.ts",
+        "default": "./build/cjs/components/organisms/FileUploadDialog/index.js"
       }
     },
     "./Header": {
@@ -568,26 +588,6 @@
         "default": "./build/cjs/components/organisms/UserMessage/index.js"
       }
     },
-    "./FileUploadDialog": {
-      "import": {
-        "types": "./build/esm/components/organisms/FileUploadDialog/index.d.ts",
-        "default": "./build/esm/components/organisms/FileUploadDialog/index.js"
-      },
-      "require": {
-        "types": "./build/cjs/components/organisms/FileUploadDialog/index.d.ts",
-        "default": "./build/cjs/components/organisms/FileUploadDialog/index.js"
-      }
-    },
-    "./AttachmentPicker": {
-      "import": {
-        "types": "./build/esm/components/organisms/AttachmentPicker/index.d.ts",
-        "default": "./build/esm/components/organisms/AttachmentPicker/index.js"
-      },
-      "require": {
-        "types": "./build/cjs/components/organisms/AttachmentPicker/index.d.ts",
-        "default": "./build/cjs/components/organisms/AttachmentPicker/index.js"
-      }
-    },
     "./ChatContent": {
       "import": {
         "types": "./build/esm/components/templates/ChatContent/index.d.ts",
@@ -618,6 +618,16 @@
         "default": "./build/cjs/components/templates/History/index.js"
       }
     },
+    "./AIStudioChat": {
+      "import": {
+        "types": "./build/esm/components/pages/AIStudioChat/index.d.ts",
+        "default": "./build/esm/components/pages/AIStudioChat/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/pages/AIStudioChat/index.d.ts",
+        "default": "./build/cjs/components/pages/AIStudioChat/index.js"
+      }
+    },
     "./ChatContainer": {
       "import": {
         "types": "./build/esm/components/pages/ChatContainer/index.d.ts",
@@ -646,7 +656,10 @@
     }
   },
   "files": [
-    "build"
+    "build",
+    "docs",
+    "llms.txt",
+    "llms-full.txt"
   ],
   "engines": {
     "node": ">= 20",
@@ -678,6 +691,9 @@
     "lint:prettier": "prettier --check '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "lint:prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx,css,scss,json,yaml,yml,md,mdx}'",
     "test": "npm run test:unit && npm run test:server:unit",
+    "generate:llms": "node scripts/generate-llms-full.js",
+    "generate:exports": "node scripts/generate-exports.js",
+    "generate:exports:check": "node scripts/generate-exports.js --check",
     "clean": "gulp clean",
     "build": "gulp && npm run build:server",
     "build:server": "tsc -p src/server/tsconfig.esm.json && tsc -p src/server/tsconfig.cjs.json",

@@ -337,12 +337,12 @@ style={{
 ```markdown
 ## Implementation Details
 
-The component uses the `usePromptBox` hook for state management. The hook:
+The component uses the `useToolMessage` hook for state management. The hook:
 
-- Manages textarea value and validation
-- Handles keyboard shortcuts (Enter, Shift+Enter)
-- Coordinates between header, body, and footer components
-- Provides submit and cancel callbacks
+- Derives display state from the tool's status (`loading` / `success` / `error` / `cancelled`)
+- Coordinates auto-collapse on success and cancellation
+- Returns expand/collapse state for the message body
+- Provides icon and label resolvers based on current status
 ```
 
 ## README Best Practices
