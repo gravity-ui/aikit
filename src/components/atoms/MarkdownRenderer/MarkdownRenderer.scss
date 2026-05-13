@@ -6,5 +6,20 @@ $block: '.#{variables.$ns}markdown-renderer';
 
 #{$block} {
     max-width: 100%;
+    overflow-x: auto;
     color: var(--g-color-text-primary);
+
+    /* Tables inside message wrappers: reset inherited word-break; scroll on this root when wide */
+    table {
+        table-layout: auto;
+        word-break: normal;
+        min-width: 100%;
+        width: max-content;
+    }
+
+    th,
+    td {
+        word-break: normal;
+        white-space: nowrap;
+    }
 }

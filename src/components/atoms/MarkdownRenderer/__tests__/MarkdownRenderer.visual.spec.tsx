@@ -19,4 +19,13 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render markdown table inside BaseMessage without broken layout', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<MarkdownRendererStories.WithMarkdownTableInMessage />);
+
+        await expectScreenshot();
+    });
 });
