@@ -20,7 +20,7 @@ import {InputContextProvider, useInputContext} from '../../molecules/InputContex
 import type {MessageListConfig} from '../ChatContainer';
 import {ChatContainer} from '../ChatContainer';
 
-import {normalizeMcpCallIds} from './normalizeMcpCallIds';
+import {normalizeMcpCallIds, omitMcpListToolsEvents} from './transforms';
 import type {AIStudioChatProps} from './types';
 
 function isFileAttachment(value: unknown): value is FileAttachment {
@@ -307,7 +307,11 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                     throw new Error(`API error: ${response.status} ${response.statusText}`);
                 }
 
-                setStreamSource(normalizeMcpCallIds(fetchResponseToStreamEvents(response)));
+                setStreamSource(
+                    normalizeMcpCallIds(
+                        omitMcpListToolsEvents(fetchResponseToStreamEvents(response)),
+                    ),
+                );
                 setStreamOptions({initialMessages: messagesWithUser, assistantMessageId});
             } catch (error) {
                 if ((error as Error).name !== 'AbortError') {

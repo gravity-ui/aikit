@@ -1,4 +1,4 @@
-import type {OpenAIStreamEventLike} from '../../../../adapters/openai';
+import type {OpenAIStreamEventLike} from '../../../../../adapters/openai';
 import {normalizeMcpCallIds} from '../normalizeMcpCallIds';
 
 async function* fromArray<T>(items: T[]): AsyncIterable<T> {

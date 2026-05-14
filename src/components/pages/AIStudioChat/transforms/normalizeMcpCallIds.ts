@@ -1,4 +1,4 @@
-import type {OpenAIStreamEventLike} from '../../../adapters/openai';
+import type {OpenAIStreamEventLike} from '../../../../adapters/openai';
 
 type EventRecord = Record<string, unknown>;
 type ItemRecord = {type?: string; id?: string} & Record<string, unknown>;
