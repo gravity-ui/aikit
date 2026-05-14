@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.0.2](https://github.com/gravity-ui/aikit/compare/v2.0.1...v2.0.2) (2026-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **BaseMessage:** the default action type `unlike` is renamed to `dislike` for consistency with the existing `UserRating = 'like' | 'dislike'` type. This affects the `BaseMessageActionType` enum, the action `actionType`/`type` string value, and the i18n keyset.
+
+  **Migration:**
+
+  ```diff
+  - {actionType: 'unlike', onClick: handleDislike}
+  + {actionType: 'dislike', onClick: handleDislike}
+
+  - {type: BaseMessageActionType.Unlike, onClick: handleDislike}
+  + {type: BaseMessageActionType.Dislike, onClick: handleDislike}
+  ```
+
+  If you override `action-tooltip-*` strings via `@gravity-ui/i18n` keysets, rename the key:
+
+  ```diff
+  - "action-tooltip-unlike": "Dislike"
+  + "action-tooltip-dislike": "Dislike"
+  ```
+
+### Bug Fixes
+
+* **AIStudioChat:** add watcher for feedback ([#166](https://github.com/gravity-ui/aikit/issues/166)) ([350a8af](https://github.com/gravity-ui/aikit/commit/350a8af7c8dafe9e31601356f0a86f4449d94ba5))
+
 ## [2.0.1](https://github.com/gravity-ui/aikit/compare/v2.0.0...v2.0.1) (2026-05-14)
 
 
