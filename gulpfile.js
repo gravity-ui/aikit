@@ -22,6 +22,9 @@ async function compileTs(modules = false) {
             declaration: true,
             module: modules ? 'esnext' : 'nodenext',
             moduleResolution: modules ? 'bundler' : 'nodenext',
+            // Override `noEmit: true` from tsconfig.json (set there for `tsc --noEmit` typecheck).
+            // Without this, gulp's TS pipeline silently produces no .js/.d.ts files.
+            noEmit: false,
         },
     });
 
