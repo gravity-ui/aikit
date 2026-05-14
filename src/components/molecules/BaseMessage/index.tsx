@@ -142,7 +142,7 @@ function getDefaultIcon(actionType?: string, userRating?: UserRating) {
             return TrashBin;
         case BaseMessageActionType.Like:
             return userRating === 'like' ? ThumbsUpFill : ThumbsUp;
-        case BaseMessageActionType.Unlike:
+        case BaseMessageActionType.Dislike:
             return userRating === 'dislike' ? ThumbsDownFill : ThumbsDown;
         default:
             return undefined;

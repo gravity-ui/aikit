@@ -84,7 +84,7 @@ Available action types with default icons and tooltips:
 - `edit` - Pencil icon, "Edit" / "Редактировать"
 - `retry` - ArrowRotateLeft icon, "Retry" / "Повторить"
 - `like` - ThumbsUp icon (ThumbsUpFill when `userRating === 'like'`), "Like" / "Нравится"
-- `unlike` - ThumbsDown icon (ThumbsDownFill when `userRating === 'dislike'`), "Dislike" / "Не нравится"
+- `dislike` - ThumbsDown icon (ThumbsDownFill when `userRating === 'dislike'`), "Dislike" / "Не нравится"
 - `delete` - TrashBin icon, "Delete" / "Удалить"
 
 ### 2. Using custom actions with explicit properties
@@ -130,17 +130,17 @@ Each action config object supports the following properties (extends `ActionConf
 
 ## Props
 
-| Prop                 | Type                  | Required | Default | Description                                                                                       |
-| -------------------- | --------------------- | -------- | ------- | ------------------------------------------------------------------------------------------------- |
-| `children`           | `React.ReactNode`     | ✓        | -       | Message content                                                                                   |
-| `role`               | `TMessageRole`        | ✓        | -       | Message role: 'user', 'assistant', or 'system'                                                    |
-| `actions`            | `BaseMessageAction[]` | -        | -       | Array of action buttons                                                                           |
-| `showActionsOnHover` | `boolean`             | -        | `false` | Show actions only on hover                                                                        |
-| `showTimestamp`      | `boolean`             | -        | `false` | Show timestamp in actions area                                                                    |
-| `timestamp`          | `string`              | -        | -       | Message timestamp (displayed if showTimestamp=true)                                               |
-| `userRating`         | `'like' \| 'dislike'` | -        | -       | Current user rating; switches like/unlike icons to filled variant (ThumbsUpFill / ThumbsDownFill) |
-| `className`          | `string`              | -        | -       | Additional CSS class                                                                              |
-| `qa`                 | `string`              | -        | -       | QA/test identifier                                                                                |
+| Prop                 | Type                  | Required | Default | Description                                                                                        |
+| -------------------- | --------------------- | -------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `children`           | `React.ReactNode`     | ✓        | -       | Message content                                                                                    |
+| `role`               | `TMessageRole`        | ✓        | -       | Message role: 'user', 'assistant', or 'system'                                                     |
+| `actions`            | `BaseMessageAction[]` | -        | -       | Array of action buttons                                                                            |
+| `showActionsOnHover` | `boolean`             | -        | `false` | Show actions only on hover                                                                         |
+| `showTimestamp`      | `boolean`             | -        | `false` | Show timestamp in actions area                                                                     |
+| `timestamp`          | `string`              | -        | -       | Message timestamp (displayed if showTimestamp=true)                                                |
+| `userRating`         | `'like' \| 'dislike'` | -        | -       | Current user rating; switches like/dislike icons to filled variant (ThumbsUpFill / ThumbsDownFill) |
+| `className`          | `string`              | -        | -       | Additional CSS class                                                                               |
+| `qa`                 | `string`              | -        | -       | QA/test identifier                                                                                 |
 
 ## Styling
 

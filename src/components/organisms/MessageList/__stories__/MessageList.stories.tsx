@@ -446,10 +446,10 @@ export const WithUserRating: StoryObj<MessageListProps> = {
                 },
             },
             {
-                type: BaseMessageActionType.Unlike,
+                type: BaseMessageActionType.Dislike,
                 onClick: (message: TAssistantMessage) => {
                     // eslint-disable-next-line no-console
-                    console.log('Unlike:', message.id);
+                    console.log('Dislike:', message.id);
                 },
             },
         ];
@@ -786,7 +786,7 @@ Do you confirm the creation?`,
                 },
             },
             {
-                type: BaseMessageActionType.Unlike,
+                type: BaseMessageActionType.Dislike,
                 onClick: (_message: TAssistantMessage) => {
                     setUserRating('dislike');
                 },
@@ -925,7 +925,7 @@ export const WithMultipleActionPopups: StoryObj<MessageListProps> = {
                 },
             },
             {
-                type: BaseMessageActionType.Unlike,
+                type: BaseMessageActionType.Dislike,
                 onClick: () => {
                     console.log('Dislike clicked');
                     setUserRating('dislike');

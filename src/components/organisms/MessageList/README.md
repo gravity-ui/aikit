@@ -9,7 +9,7 @@ Component for displaying a list of messages. Supports custom message renderers t
 - **Extensible**: Supports custom message renderers through MessageRendererRegistry
 - **Customizable**: Supports custom className, QA attributes, and display options
 - **Smart Action Filtering**: Automatically excludes assistantActions for thinking messages
-- **User rating**: `userRating` on assistant messages sets filled state of like/unlike icons
+- **User rating**: `userRating` on assistant messages sets filled state of like/dislike icons
 
 ## Usage
 
@@ -31,7 +31,7 @@ const messages: TChatMessage[] = [
     role: 'assistant',
     timestamp: '2024-01-01T00:01:00Z',
     content: 'Hi there!',
-    userRating: 'like', // optional: 'like' | 'dislike' — affects like/unlike button icons
+    userRating: 'like', // optional: 'like' | 'dislike' — affects like/dislike button icons
   },
 ];
 
@@ -212,7 +212,7 @@ const assistantActions = [
     },
   },
   {
-    type: 'unlike',
+    type: 'dislike',
     icon: <ThumbsDown />,
     onClick: (message) => {
       submitRating(message.id, 'dislike');
