@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/gravity-ui/aikit/compare/v2.0.0...v2.0.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* **build:** fix ts config for build ([9c7beae](https://github.com/gravity-ui/aikit/commit/9c7beaebd375e1da3469370f5cff783a6866ae3b))
+
 ## [2.0.0](https://github.com/gravity-ui/aikit/compare/v1.17.1...v2.0.0) (2026-05-14)
 
 
