@@ -4,16 +4,20 @@ import {v4 as uuidv4} from 'uuid';
 
 import {fetchResponseToStreamEvents, useOpenAIStreamAdapter} from '../../../adapters/openai';
 import type {OpenAIStreamSource} from '../../../adapters/openai';
+import {BaseMessageActionType} from '../../../types';
 import type {
     ChatStatus,
     ChatType,
+    DefaultMessageAction,
     FileAttachment,
     TAssistantMessage,
     TChatMessage,
     TSubmitData,
     TUserMessage,
+    UserRating,
 } from '../../../types';
 import {InputContextProvider, useInputContext} from '../../molecules/InputContext';
+import type {MessageListConfig} from '../ChatContainer';
 import {ChatContainer} from '../ChatContainer';
 
 import {normalizeMcpCallIds} from './normalizeMcpCallIds';
@@ -429,9 +433,68 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         [reset],
     );
 
+    /**
+     * Update `userRating` on an assistant message inside the internal store.
+     * Mirrors the change into the per-chat history map so it survives chat switches.
+     */
+    const setUserRating = useCallback((messageId: string, rating: UserRating | undefined) => {
+        const updateRating = (msgs: TChatMessage[]): TChatMessage[] =>
+            msgs.map((msg) =>
+                msg.role === 'assistant' && msg.id === messageId
+                    ? {...msg, userRating: rating}
+                    : msg,
+            );
+
+        setMessages(updateRating);
+
+        const chat = activeChatRef.current;
+        if (chat && chatMessagesRef.current[chat.id]) {
+            chatMessagesRef.current[chat.id] = updateRating(chatMessagesRef.current[chat.id]);
+        }
+    }, []);
+
+    /**
+     * Wrap consumer-provided Like/Unlike actions so the library toggles `userRating`
+     * automatically before delegating to the original `onClick`. Other actions and
+     * non-default (ReactNode) entries pass through unchanged.
+     */
+    const messageListConfig = useMemo<MessageListConfig | undefined>(() => {
+        const original = chatContainerProps.messageListConfig;
+        const originalAssistantActions = original?.assistantActions;
+        if (!originalAssistantActions) return original;
+
+        const wrappedAssistantActions = originalAssistantActions.map((action) => {
+            const typed = action as DefaultMessageAction<TAssistantMessage>;
+            const isLike = typed.type === BaseMessageActionType.Like;
+            const isDislike = typed.type === BaseMessageActionType.Dislike;
+            if (!isLike && !isDislike) return action;
+
+            const targetRating: UserRating = isLike ? 'like' : 'dislike';
+            const originalOnClick = typed.onClick;
+
+            return {
+                ...typed,
+                onClick: (message: TAssistantMessage) => {
+                    if (message.id) {
+                        const nextRating =
+                            message.userRating === targetRating ? undefined : targetRating;
+                        setUserRating(message.id, nextRating);
+                    }
+                    originalOnClick(message);
+                },
+            };
+        });
+
+        return {
+            ...original,
+            assistantActions: wrappedAssistantActions,
+        };
+    }, [chatContainerProps.messageListConfig, setUserRating]);
+
     return (
         <ChatContainer
             {...chatContainerProps}
+            messageListConfig={messageListConfig}
             messages={displayMessages}
             status={status}
             error={streamResult.error}
