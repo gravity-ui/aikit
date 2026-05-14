@@ -1,5 +1,47 @@
 # Changelog
 
+## [2.0.0](https://github.com/gravity-ui/aikit/compare/v1.17.1...v2.0.0) (2026-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ChatContainer / AIStudioChat:** the nested `i18nConfig` prop (typed `ChatContainerI18nConfig`) is removed and replaced with a flat `texts` prop (typed `ChatContainerTexts`). Keys are flattened with section prefixes — e.g. `i18nConfig.header.defaultTitle` → `texts.headerTitle`, `i18nConfig.promptInput.placeholder` → `texts.promptPlaceholder`. See `ChatContainerTexts` in `src/components/pages/ChatContainer/types.ts` for the full key list (covers header, empty state, prompt input, submit button, history, error, disclaimer).
+
+  **Migration:**
+
+  ```diff
+  - <AIStudioChat
+  -   i18nConfig={{
+  -     header: {defaultTitle: 'Code Assistant'},
+  -     promptInput: {placeholder: 'Ask a coding question...'},
+  -   }}
+  - />
+  + <AIStudioChat
+  +   texts={{
+  +     headerTitle: 'Code Assistant',
+  +     promptPlaceholder: 'Ask a coding question...',
+  +   }}
+  + />
+  ```
+
+  The same applies when passing `i18nConfig`/`texts` through to `ChatContainer` directly. Global `@gravity-ui/i18n` keysets still work as the fallback layer beneath `texts`.
+
+### Non-breaking additions (worth knowing)
+
+* **Header:** new optional `qa`, `actionQa`, and `actionTooltipTexts` props for per-instance test identifiers and tooltip text overrides. `actionQa` partially overrides the default `header-action-${id}` `data-qa`; `actionTooltipTexts` overrides the bundled i18n strings per action (including a `{collapsed, opened}` subobject for `HeaderAction.Folding`).
+* **MessageList:** exports a new `MessageListQa` enum (`Root`, `Messages`) used as default `data-qa` values; the `qa` prop on `MessageList` still wins.
+* **PromptInput:** `PromptInputHeaderConfig`, `PromptInputBodyConfig`, and `PromptInputFooterConfig` each gain an optional `qa` field for wrapper-level test identifiers.
+* **InputContext (new molecule):** React context for prompt-input attachments and chips — paired with `useInputContext()` hook for consumers inside the provider tree.
+* **AIStudioChat (new page):** ready-to-use chat with built-in OpenAI streaming support — wraps `ChatContainer` and manages internal state, requires only an API URL.
+
+### Features
+
+* **AIStudioChat:** add new pages for easy integrate ai-studio agent ([#160](https://github.com/gravity-ui/aikit/issues/160)) ([27fc1ab](https://github.com/gravity-ui/aikit/commit/27fc1ab382d516c68bfbe965a982c27ac12ad661))
+* **docs:** updating docs, add generate exports, add llms rules for use lib ([6a251e7](https://github.com/gravity-ui/aikit/commit/6a251e73592e2a41aafa1f8ec217317d61ef6b33))
+* **Header:** add QA props and unified texts customization ([#159](https://github.com/gravity-ui/aikit/issues/159)) ([8b09fd8](https://github.com/gravity-ui/aikit/commit/8b09fd8540144f262c2302f5e915b296d44ef8b1))
+* **InputContext:** refactor AIStudioChat and create new moclecule ([cff8f16](https://github.com/gravity-ui/aikit/commit/cff8f16e7f5d49669f537dbd38888e9d8fa7816b))
+* **skills:** add skills for cursor and claude ([7b90fc5](https://github.com/gravity-ui/aikit/commit/7b90fc5cb16f1429c08533e6991db99cef540afc))
+
 ## [1.17.1](https://github.com/gravity-ui/aikit/compare/v1.17.0...v1.17.1) (2026-05-13)
 
 
