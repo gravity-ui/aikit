@@ -54,7 +54,7 @@ export enum BaseMessageActionType {
     Edit = 'edit',
     Retry = 'retry',
     Like = 'like',
-    Unlike = 'unlike',
+    Dislike = 'dislike',
     Delete = 'delete',
 }
 

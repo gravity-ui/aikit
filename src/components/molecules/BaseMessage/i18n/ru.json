@@ -3,6 +3,6 @@
   "action-tooltip-edit": "Редактировать",
   "action-tooltip-retry": "Повторить",
   "action-tooltip-like": "Нравится",
-  "action-tooltip-unlike": "Не нравится",
+  "action-tooltip-dislike": "Не нравится",
   "action-tooltip-delete": "Удалить"
 }

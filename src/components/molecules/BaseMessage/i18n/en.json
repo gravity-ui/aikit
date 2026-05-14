@@ -3,6 +3,6 @@
   "action-tooltip-edit": "Edit",
   "action-tooltip-retry": "Retry",
   "action-tooltip-like": "Like",
-  "action-tooltip-unlike": "Dislike",
+  "action-tooltip-dislike": "Dislike",
   "action-tooltip-delete": "Delete"
 }

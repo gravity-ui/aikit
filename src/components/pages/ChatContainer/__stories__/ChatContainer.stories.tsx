@@ -231,8 +231,8 @@ const createMessageActions = (messageId: string, role: 'user' | 'assistant') => 
                 onClick: () => console.log(`Like message ${messageId}`),
             },
             {
-                actionType: 'unlike',
-                onClick: () => console.log(`Unlike message ${messageId}`),
+                actionType: 'dislike',
+                onClick: () => console.log(`Dislike message ${messageId}`),
             },
         );
     }
@@ -1366,8 +1366,8 @@ const customAssistantActions = [
         onClick: () => console.log('Like assistant message'),
     },
     {
-        actionType: 'unlike',
-        onClick: () => console.log('Unlike assistant message'),
+        actionType: 'dislike',
+        onClick: () => console.log('Dislike assistant message'),
     },
     {
         actionType: 'custom',
@@ -1611,10 +1611,10 @@ export const WithAdditionalActions: Story = {
 };
 
 /**
- * Like / Unlike actions with local rating state.
- * Only like and unlike actions; rating toggles on repeated click (like → clear, dislike → clear).
+ * Like / Dislike actions with local rating state.
+ * Only like and dislike actions; rating toggles on repeated click (like → clear, dislike → clear).
  */
-export const WithLikeUnlikeActions: Story = {
+export const WithLikeDislikeActions: Story = {
     args: {
         chats: mockChats,
         activeChat: mockChats[0],
@@ -1650,7 +1650,7 @@ export const WithLikeUnlikeActions: Story = {
                 },
             },
             {
-                type: BaseMessageActionType.Unlike,
+                type: BaseMessageActionType.Dislike,
                 onClick: (message: TAssistantMessage) => {
                     setMessages((prev) =>
                         prev.map((m) =>
@@ -1688,7 +1688,7 @@ export const WithLikeUnlikeActions: Story = {
             const assistantMessage: TChatMessage = {
                 id: assistantMessageId,
                 role: 'assistant',
-                content: `Response to: "${data.content}". Use like/unlike below — they toggle on second click.`,
+                content: `Response to: "${data.content}". Use like/dislike below — they toggle on second click.`,
                 timestamp: new Date().toISOString(),
             };
 
@@ -2092,7 +2092,7 @@ export const WithActionPopup: Story = {
                 },
             },
             {
-                type: BaseMessageActionType.Unlike,
+                type: BaseMessageActionType.Dislike,
                 onClick: (message) => {
                     console.log('Dislike message:', message.id);
                     setMessages((prev) =>

@@ -355,7 +355,7 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
     });
 
     test('should toggle like on assistant message', async ({mount, page, expectScreenshot}) => {
-        await mount(<ChatContainerStories.WithLikeUnlikeActions />);
+        await mount(<ChatContainerStories.WithLikeDislikeActions />);
 
         const assistantMessage = page.locator('.g-aikit-assistant-message').last();
         await assistantMessage.hover();
@@ -460,8 +460,8 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
             await assistantMessage.hover();
 
             const actionsContainer = assistantMessage.locator('.g-aikit-base-message__actions');
-            const unlikeButton = actionsContainer.getByRole('button').nth(2);
-            await unlikeButton.click();
+            const dislikeButton = actionsContainer.getByRole('button').nth(2);
+            await dislikeButton.click();
 
             await expect(page.getByText('What went wrong?')).toBeVisible();
             await expect(page.getByText('No answer')).toBeVisible();

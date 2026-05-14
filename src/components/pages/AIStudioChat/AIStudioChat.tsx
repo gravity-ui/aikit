@@ -2,7 +2,8 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {v4 as uuidv4} from 'uuid';
 
-import {useOpenAIStreamAdapter} from '../../../adapters/openai';
+import {fetchResponseToStreamEvents, useOpenAIStreamAdapter} from '../../../adapters/openai';
+import type {OpenAIStreamSource} from '../../../adapters/openai';
 import type {
     ChatStatus,
     ChatType,
@@ -15,6 +16,7 @@ import type {
 import {InputContextProvider, useInputContext} from '../../molecules/InputContext';
 import {ChatContainer} from '../ChatContainer';
 
+import {normalizeMcpCallIds} from './normalizeMcpCallIds';
 import type {AIStudioChatProps} from './types';
 
 function isFileAttachment(value: unknown): value is FileAttachment {
@@ -144,7 +146,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
     // Streaming state
     const [controller, setController] = useState<AbortController | null>(null);
     const [isFetching, setIsFetching] = useState(false);
-    const [streamResponse, setStreamResponse] = useState<Response | null>(null);
+    const [streamSource, setStreamSource] = useState<OpenAIStreamSource | null>(null);
     const [streamOptions, setStreamOptions] = useState<StreamOptions | null>(null);
 
     const handleStreamEnd = useCallback((finalMessages: TChatMessage[]) => {
@@ -153,7 +155,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         );
 
         setMessages(committed);
-        setStreamResponse(null);
+        setStreamSource(null);
         setStreamOptions(null);
 
         // Persist messages and update the last message preview in history
@@ -172,7 +174,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         }
     }, []);
 
-    const streamResult = useOpenAIStreamAdapter(streamResponse, {
+    const streamResult = useOpenAIStreamAdapter(streamSource, {
         initialMessages: streamOptions?.initialMessages ?? [],
         assistantMessageId: streamOptions?.assistantMessageId ?? 'assistant-idle',
         onStreamEnd: handleStreamEnd,
@@ -186,19 +188,19 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         }
     }, [streamResult.responseId]);
 
-    const hasResponse = Boolean(streamResponse);
+    const hasSource = Boolean(streamSource);
 
     const displayMessages =
-        hasResponse && streamResult.messages.length > 0 ? streamResult.messages : messages;
+        hasSource && streamResult.messages.length > 0 ? streamResult.messages : messages;
 
     const status = useMemo((): ChatStatus => {
-        if (!hasResponse) {
+        if (!hasSource) {
             return isFetching ? 'submitted' : 'ready';
         }
         if (streamResult.status === 'streaming') return 'streaming';
         if (streamResult.status === 'error') return 'error';
         return 'ready';
-    }, [hasResponse, isFetching, streamResult.status]);
+    }, [hasSource, isFetching, streamResult.status]);
 
     /**
      * Core send function. Takes an already-resolved set of previous messages and
@@ -301,7 +303,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                     throw new Error(`API error: ${response.status} ${response.statusText}`);
                 }
 
-                setStreamResponse(response);
+                setStreamSource(normalizeMcpCallIds(fetchResponseToStreamEvents(response)));
                 setStreamOptions({initialMessages: messagesWithUser, assistantMessageId});
             } catch (error) {
                 if ((error as Error).name !== 'AbortError') {
@@ -317,7 +319,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                         return [...filtered, errorMessage];
                     });
                 }
-                setStreamResponse(null);
+                setStreamSource(null);
                 setStreamOptions(null);
             } finally {
                 setIsFetching(false);
@@ -356,7 +358,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
 
     const handleCancel = useCallback(async () => {
         controller?.abort();
-        setStreamResponse(null);
+        setStreamSource(null);
         setStreamOptions(null);
     }, [controller]);
 

@@ -201,9 +201,9 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
         icon: LikeIcon,
       },
       {
-        type: 'unlike',
-        onClick: (message) => handleUnlike(message.id),
-        icon: UnlikeIcon,
+        type: 'dislike',
+        onClick: (message) => handleDislike(message.id),
+        icon: DislikeIcon,
       },
     ],
     loaderStatuses: ['submitted', 'streaming'],
@@ -609,7 +609,7 @@ const messages: TMessage[] = [
     actions: [
       {type: 'copy', onClick: () => handleCopy('2')},
       {type: 'like', onClick: () => handleLike('2')},
-      {type: 'unlike', onClick: () => handleUnlike('2')},
+      {type: 'dislike', onClick: () => handleDislike('2')},
     ],
   },
 ];
@@ -658,11 +658,11 @@ Use `messageListConfig` prop with `userActions` and `assistantActions` to provid
         icon: LikeIcon,
       },
       {
-        type: 'unlike',
+        type: 'dislike',
         onClick: (message) => {
-          handleRating(message.id, 'unlike');
+          handleRating(message.id, 'dislike');
         },
-        icon: UnlikeIcon,
+        icon: DislikeIcon,
       },
     ],
   }}
@@ -694,7 +694,7 @@ Built-in action types with predefined icons:
 - `edit` - Edit message (typically for user messages)
 - `retry` - Retry sending/generating
 - `like` - Like the message (typically for assistant messages)
-- `unlike` - Dislike the message (typically for assistant messages)
+- `dislike` - Dislike the message (typically for assistant messages)
 - `delete` - Delete message
 
 You can also provide custom actions with your own icons:

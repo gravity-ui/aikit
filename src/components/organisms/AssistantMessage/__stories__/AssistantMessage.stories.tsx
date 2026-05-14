@@ -58,7 +58,7 @@ export default {
         userRating: {
             control: 'radio',
             options: [undefined, 'like', 'dislike'],
-            description: 'Current user rating (filled like/unlike icons when set)',
+            description: 'Current user rating (filled like/dislike icons when set)',
         },
         className: {
             control: 'text',
@@ -115,7 +115,7 @@ const actions = [
     // eslint-disable-next-line no-console
     {actionType: 'like', onClick: () => console.log('Like clicked')},
     // eslint-disable-next-line no-console
-    {actionType: 'unlike', onClick: () => console.log('Unlike clicked')},
+    {actionType: 'dislike', onClick: () => console.log('Dislike clicked')},
 ];
 
 export const Playground: StoryFn<AssistantMessageProps> = (args) => (
