@@ -1,0 +1,15 @@
+@forward '@gravity-ui/uikit/styles/mixins';
+
+@mixin link {
+    color: var(--g-color-text-link);
+    text-decoration: none;
+    border-radius: var(--g-focus-border-radius);
+
+    &:hover {
+        color: var(--g-color-text-link-hover);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--g-color-line-focus);
+    }
+}

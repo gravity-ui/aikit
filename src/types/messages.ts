@@ -137,7 +137,12 @@ export type ThinkingMessageContentData = {
 
 export type ThinkingMessageContent = TMessageContent<'thinking', ThinkingMessageContentData>;
 
-export type ToolMessageContentData = ToolMessageProps;
+export type ToolMessageContentData = ToolMessageProps & {
+    /** MCP arguments, pretty-printed JSON. Read by AIStudioChat's tool renderer. */
+    mcpRequest?: string;
+    /** MCP output (or error), pretty-printed JSON. Read by AIStudioChat's tool renderer. */
+    mcpResponse?: string;
+};
 
 export type ToolMessageContent = TMessageContent<'tool', ToolMessageContentData>;
 

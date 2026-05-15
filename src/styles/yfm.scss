@@ -1,0 +1,95 @@
+@use './mixins' as *;
+
+@import '@diplodoc/transform/dist/css/yfm.css';
+
+/**
+ * YFM theming.
+ *
+ * @diplodoc/transform ships a single (light) set of `--yfm-color-*` values.
+ * Here we re-map them onto Gravity UI tokens (`--g-color-*`) so the markdown
+ * content follows the active Gravity theme (`.g-root_theme_light` /
+ * `.g-root_theme_dark`) automatically — no dedicated dark-theme block needed.
+ */
+
+.yfm {
+    // Base / text
+    --yfm-color-base: var(--g-color-base-background);
+    --yfm-color-text: var(--g-color-text-primary);
+    --yfm-color-link: var(--g-color-text-link);
+    --yfm-color-link-hover: var(--g-color-text-link-hover);
+    --yfm-color-border: var(--g-color-line-generic);
+    --yfm-color-accent: var(--g-color-base-brand);
+
+    // Inline / block code
+    --yfm-color-inline-code: var(--g-color-text-misc);
+    --yfm-color-inline-code-background: var(--g-color-base-misc-light);
+    --yfm-color-code-background: var(--g-color-base-misc-light);
+    --yfm-color-code-hovered-background: var(--g-color-base-misc-light-hover);
+
+    // Syntax highlighting (highlight.js).
+    // The package defaults are tuned for a light background only, so every token
+    // color is re-mapped onto a Gravity text token to stay readable in both themes.
+    --yfm-color-hljs-background: var(--g-color-base-generic);
+    --yfm-color-hljs-subst: var(--g-color-text-primary); // base text, punctuation, keys
+    --yfm-color-hljs-comment: var(--g-color-text-hint);
+    --yfm-color-hljs-section: var(--g-color-text-info-heavy); // titles, sections
+    --yfm-color-hljs-deletion: var(--g-color-text-positive); // strings, numbers, types
+    --yfm-color-hljs-addition: var(--g-color-text-positive);
+    --yfm-color-hljs-literal: var(--g-color-text-warning); // true / false / null
+    --yfm-color-hljs-pseudo: var(--g-color-text-utility); // variables, symbols
+    --yfm-color-hljs-meta: var(--g-color-text-info);
+    --yfm-color-hljs-meta-string: var(--g-color-text-positive);
+
+    // Notes / callouts
+    --yfm-color-note-tip: var(--g-color-text-positive);
+    --yfm-color-note-tip-background: var(--g-color-base-positive-light);
+    --yfm-color-note-info: var(--g-color-text-info);
+    --yfm-color-note-info-background: var(--g-color-base-info-light);
+    --yfm-color-note-warning: var(--g-color-text-warning);
+    --yfm-color-note-warning-background: var(--g-color-base-warning-light);
+    --yfm-color-note-important: var(--g-color-text-danger);
+    --yfm-color-note-important-background: var(--g-color-base-danger-light);
+
+    // Tables
+    --yfm-color-table: var(--g-color-text-primary);
+    --yfm-color-table-border: var(--g-color-line-generic);
+    --yfm-color-table-background: var(--g-color-base-background);
+    --yfm-color-table-row-background: var(--g-color-base-generic);
+
+    color: var(--g-color-text-primary);
+
+    a {
+        @include link;
+    }
+
+    b,
+    strong {
+        @include text-accent;
+    }
+
+    hr {
+        background-color: var(--g-color-base-background);
+    }
+
+    blockquote {
+        border-left-color: var(--g-color-base-brand);
+    }
+
+    code {
+        background: var(--g-color-base-misc-light);
+        color: var(--g-color-text-misc);
+    }
+
+    .yfm-note {
+        background-color: var(--g-color-base-float);
+        border-color: var(--g-color-line-generic);
+    }
+
+    .yfm-tab.active {
+        border-bottom-color: var(--g-color-base-brand);
+    }
+
+    a.yfm-anchor {
+        display: none;
+    }
+}

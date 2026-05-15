@@ -1,0 +1,20 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}aistudio-mcp-tool';
+
+#{$block} {
+    display: flex;
+    flex-direction: column;
+    gap: var(--g-spacing-2);
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--g-spacing-1);
+    }
+
+    &__section-label {
+        color: var(--g-color-text-secondary);
+        font-weight: 500;
+    }
+}
