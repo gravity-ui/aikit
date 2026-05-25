@@ -115,6 +115,7 @@ test.describe('History', {tag: '@History'}, () => {
 
         await page.locator('.g-aikit-history__chat-item').first().hover();
         await page.locator('.g-aikit-history__delete-button').first().click();
+        await page.mouse.move(0, 0);
 
         await page.waitForTimeout(1500);
 
