@@ -136,4 +136,4 @@
 - `npm run playwright:docker` - run tests using docker
 - `npm run playwright:docker:update` - update screenshots using docker
 - `npm run playwright:docker:clear-cache` - clear node_modules cache for docker container and clear cache vite
-- `npx playwright show-report ./playwright-report-docker` - show report
+- `npx playwright show-report ./playwright-report` - show report
