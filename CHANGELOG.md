@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/gravity-ui/aikit/compare/v2.0.2...v2.0.3) (2026-05-26)
+
+
+### Bug Fixes
+
+* add padding-bottom in history list ([#169](https://github.com/gravity-ui/aikit/issues/169)) ([d7094b9](https://github.com/gravity-ui/aikit/commit/d7094b9b2bea3d27967846bcfd16f1c9a92cd4b0))
+
 ## [2.0.2](https://github.com/gravity-ui/aikit/compare/v2.0.1...v2.0.2) (2026-05-14)
 
 
