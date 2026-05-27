@@ -5,10 +5,18 @@ import {applyContentUpdate} from './applyContentUpdate';
 import {buildFinalMessages} from './buildFinalMessages';
 import {contentPartsToMessageContent} from './contentPartsToMessageContent';
 import {getOpenAIMessageItemIdFromOutputItemAdded} from './getOpenAIMessageItemIdFromOutputItemAdded';
-import {getStreamErrorMessage} from './getStreamErrorMessage';
+import {getStreamEndResult} from './getStreamEndResult';
 import {getStreamEventContentUpdate} from './getStreamEventContentUpdate';
 import {isMessageOutputItemDoneEvent} from './isMessageOutputItemDoneEvent';
 import {isStreamEndOrErrorEvent} from './isStreamEndOrErrorEvent';
+
+function waitForNextTask(): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
+function shouldYieldAfterUpdate(update: ReturnType<typeof getStreamEventContentUpdate>): boolean {
+    return update?.kind === 'tool_add' && (update.status ?? 'loading') === 'loading';
+}
 
 export type ConsumeStreamCallbacks = {
     baseMessages: TChatMessage[];
@@ -62,20 +70,19 @@ export async function consumeOpenAIStream(
             }
 
             if (isStreamEndOrErrorEvent(event)) {
-                const e = event as Record<string, unknown>;
                 const finalMessages = buildFinalMessages({
                     baseMessages,
                     completedAssistantMessages,
                     currentAssistantMessageId,
                     contentParts,
                 });
-                if (e.type === 'error' || e.event === 'error' || e.error) {
-                    if (getIsCancelled()) return;
-                    onEnd(finalMessages, 'error', new Error(getStreamErrorMessage(e)));
-                } else {
-                    if (getIsCancelled()) return;
-                    onEnd(finalMessages, 'done');
-                }
+                const endResult = getStreamEndResult(event);
+                if (getIsCancelled()) return;
+                onEnd(
+                    finalMessages,
+                    endResult.status,
+                    endResult.status === 'error' ? endResult.error : undefined,
+                );
                 return;
             }
 
@@ -99,6 +106,10 @@ export async function consumeOpenAIStream(
             if (nextParts !== null) {
                 contentParts = nextParts;
                 applyContentToCurrentMessage(contentParts);
+                if (shouldYieldAfterUpdate(update)) {
+                    await waitForNextTask();
+                    if (getIsCancelled()) return;
+                }
             }
         }
 
