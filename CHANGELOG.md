@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.4](https://github.com/gravity-ui/aikit/compare/v2.0.3...v2.0.4) (2026-05-27)
+
+
+### Bug Fixes
+
+* **OpenaiAdapter:** tool loading state [DATAUI-3561] ([#171](https://github.com/gravity-ui/aikit/issues/171)) ([3885df5](https://github.com/gravity-ui/aikit/commit/3885df5d4ef103d156596db3709fd0bf3a96638d))
+
 ## [2.0.3](https://github.com/gravity-ui/aikit/compare/v2.0.2...v2.0.3) (2026-05-26)
 
 
