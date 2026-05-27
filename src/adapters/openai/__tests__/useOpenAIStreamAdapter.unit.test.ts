@@ -1,4 +1,4 @@
-import {renderHook, waitFor} from '@testing-library/react';
+import {act, renderHook, waitFor} from '@testing-library/react';
 
 import type {OpenAIStreamEventLike} from '../types';
 import {useOpenAIStreamAdapter} from '../useOpenAIResponsesAdapter';
@@ -84,6 +84,72 @@ describe('useOpenAIStreamAdapter', () => {
         expect(toolPart?.id).toBe('mcp-1');
         expect(toolPart?.data?.toolName).toBe('file_search');
         expect(toolPart?.data?.status).toBe('success');
+    });
+
+    it('should expose loading MCP tool state when the stream starts with a tool call', async () => {
+        jest.useFakeTimers();
+        try {
+            const stream = createMockStream([
+                {
+                    type: 'response.output_item.added',
+                    item: {
+                        type: 'mcp_call',
+                        id: 'mcp-first',
+                        name: 'search_docs',
+                        server_label: 'server',
+                    },
+                },
+                {type: 'response.mcp_call.completed', item_id: 'mcp-first'},
+                {
+                    type: 'response.output_item.done',
+                    item: {
+                        type: 'mcp_call',
+                        id: 'mcp-first',
+                        name: 'search_docs',
+                        server_label: 'server',
+                        status: 'completed',
+                        output: '{"ok":true}',
+                    },
+                },
+                {type: 'response.done'},
+            ]);
+
+            const {result} = renderHook(() =>
+                useOpenAIStreamAdapter(stream, {initialMessages: []}),
+            );
+
+            await act(async () => {
+                await Promise.resolve();
+                await Promise.resolve();
+            });
+
+            const loadingContent = result.current.messages[0]?.content as Array<{
+                type: string;
+                id?: string;
+                data?: Record<string, unknown>;
+            }>;
+            const loadingToolPart = loadingContent.find((c) => c.type === 'tool');
+            expect(loadingToolPart?.id).toBe('mcp-first');
+            expect(loadingToolPart?.data?.toolName).toBe('search_docs');
+            expect(loadingToolPart?.data?.status).toBe('loading');
+
+            await act(async () => {
+                jest.runOnlyPendingTimers();
+                await Promise.resolve();
+                await Promise.resolve();
+            });
+
+            expect(result.current.status).toBe('ready');
+            const finalContent = result.current.messages[0].content as Array<{
+                type: string;
+                data?: Record<string, unknown>;
+            }>;
+            const finalToolPart = finalContent.find((c) => c.type === 'tool');
+            expect(finalToolPart?.data?.status).toBe('success');
+            expect(finalToolPart?.data?.bodyContent).toBe('{"ok":true}');
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it('should merge lone tool update into prior assistant when message output_item.done arrives before tool completes', async () => {
