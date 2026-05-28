@@ -76,6 +76,55 @@ describe('toYamlLike', () => {
             });
             expect(result).toBe('name: Alice\ntags:\n  - admin\n  - active');
         });
+
+        it('should serialize array of objects with nested array fields', () => {
+            const result = toYamlLike({
+                products: [
+                    {
+                        category: 'Open Source',
+                        products: [
+                            {id: 1, name: 'Product 1', price: 100},
+                            {id: 2, name: 'Product 2', price: 200},
+                        ],
+                    },
+                ],
+            });
+            expect(result).toBe(
+                'products:\n' +
+                    '  - category: Open Source\n' +
+                    '    products:\n' +
+                    '      - id: 1\n' +
+                    '        name: Product 1\n' +
+                    '        price: 100\n' +
+                    '      - id: 2\n' +
+                    '        name: Product 2\n' +
+                    '        price: 200',
+            );
+        });
+    });
+
+    describe('circular references', () => {
+        it('should handle self-referencing object', () => {
+            const obj: Record<string, unknown> = {name: 'Alice'};
+            obj.self = obj;
+
+            expect(toYamlLike(obj)).toBe('name: Alice\nself: [Circular]');
+        });
+
+        it('should handle circular references between objects', () => {
+            const a: Record<string, unknown> = {id: 'a'};
+            const b: Record<string, unknown> = {id: 'b', ref: a};
+            a.ref = b;
+
+            expect(toYamlLike(a)).toBe('id: a\nref:\n  id: b\n  ref: [Circular]');
+        });
+
+        it('should handle circular array reference', () => {
+            const arr: unknown[] = [1];
+            arr.push(arr);
+
+            expect(toYamlLike(arr)).toBe('- 1\n- [Circular]');
+        });
     });
 
     describe('unsupported types', () => {
