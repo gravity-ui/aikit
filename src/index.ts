@@ -23,6 +23,9 @@ export * from './components/pages';
 // === Adapters ===
 export * from './adapters';
 
+// === Generative UI ===
+export * from './genui';
+
 // === Hooks ===
 export * from './hooks';
 

@@ -141,10 +141,56 @@ export type ToolMessageContentData = ToolMessageProps;
 
 export type ToolMessageContent = TMessageContent<'tool', ToolMessageContentData>;
 
+/**
+ * Generative UI tool-call lifecycle status.
+ *
+ * - `input-streaming` — the model is still emitting argument tokens
+ * - `input-available` — args fully parsed, component may render
+ * - `output-available` — a matching `tool-result` is present in the message
+ * - `output-error` — execution / validation failed
+ */
+export type ToolCallStatus =
+    | 'input-streaming'
+    | 'input-available'
+    | 'output-available'
+    | 'output-error';
+
+export type ToolCallErrorData = {
+    message: string;
+    cause?: unknown;
+};
+
+export type ToolCallMessageContentData<TArgs = unknown> = {
+    toolCallId: string;
+    toolName: string;
+    args?: TArgs;
+    partialArgsText?: string;
+    status: ToolCallStatus;
+    error?: ToolCallErrorData;
+};
+
+export type ToolCallMessageContent<TArgs = unknown> = TMessageContent<
+    'tool-call',
+    ToolCallMessageContentData<TArgs>
+>;
+
+export type ToolResultMessageContentData<TResult = unknown> = {
+    toolCallId: string;
+    toolName: string;
+    result: TResult;
+};
+
+export type ToolResultMessageContent<TResult = unknown> = TMessageContent<
+    'tool-result',
+    ToolResultMessageContentData<TResult>
+>;
+
 export type TDefaultMessageContent =
     | TextMessageContent
     | ThinkingMessageContent
-    | ToolMessageContent;
+    | ToolMessageContent
+    | ToolCallMessageContent
+    | ToolResultMessageContent;
 
 export type TMessageContentUnion<TCustomMessageContent extends TMessageContent = never> =
     | TDefaultMessageContent

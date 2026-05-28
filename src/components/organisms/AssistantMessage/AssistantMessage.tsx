@@ -1,19 +1,29 @@
-import {useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import {
+    type GenUIErrorEvent,
+    type GenUIToolRegistry,
+    type ToolResultEvent,
+    createToolCallRenderer,
+    createToolResultRenderer,
+} from '../../../genui';
 import type {
     BaseMessageProps,
     TAssistantMessage,
     TMessageContent,
     TMessageContentUnion,
     TMessageMetadata,
+    ToolCallMessageContent,
+    ToolResultMessageContent,
 } from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {
     type MessageRendererRegistry,
     getMessageRenderer,
     mergeMessageRendererRegistries,
+    registerMessageRenderer,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
 import {BaseMessage} from '../../molecules/BaseMessage';
@@ -38,6 +48,18 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
         shouldParseIncompleteMarkdown?: boolean;
         className?: string;
         qa?: string;
+        /**
+         * Generative-UI tool registry. When provided, `tool-call` parts are
+         * routed through the registered components and `tool-result` parts are
+         * collapsed by default. Opt-in: zero overhead when omitted.
+         */
+        genUIRegistry?: GenUIToolRegistry;
+        /** Called when a GenUI component invokes `submitResult(...)`. */
+        onToolResult?: (event: ToolResultEvent) => void;
+        /** Called on unknown tools, validation failures, render crashes and model-reported errors. */
+        onGenUIError?: (event: GenUIErrorEvent) => void;
+        /** Opaque payload forwarded to every GenUI component via `context.consumerContext`. */
+        genUIConsumerContext?: unknown;
     };
 
 const b = block('assistant-message');
@@ -57,20 +79,79 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
     className,
     qa,
     onActionPopup,
+    genUIRegistry,
+    onToolResult,
+    onGenUIError,
+    genUIConsumerContext,
 }: AssistantMessageProps<TContent>) {
+    const parts = normalizeContent<TContent>(content);
+
+    // Accessor over sibling parts for Phase-2 result re-hydration (ST6, T6).
+    // Closure captures the current parts array; stable inside this render pass.
+    const findSiblingResult = useCallback(
+        (toolCallId: string): ToolResultMessageContent | undefined => {
+            for (const candidate of parts) {
+                if (
+                    candidate &&
+                    typeof candidate === 'object' &&
+                    'type' in candidate &&
+                    candidate.type === 'tool-result'
+                ) {
+                    const data = (candidate as ToolResultMessageContent).data;
+                    if (data && data.toolCallId === toolCallId) {
+                        return candidate as ToolResultMessageContent;
+                    }
+                }
+            }
+            return undefined;
+        },
+        [parts],
+    );
+
     const registry = useMemo<MessageRendererRegistry>(() => {
         const defaultRegistry = createDefaultMessageRegistry(
             transformOptions,
             shouldParseIncompleteMarkdown,
         );
+
+        // Register GenUI defaults before applying consumer overrides so
+        // consumers can still replace the `tool-call` renderer wholesale.
+        if (genUIRegistry) {
+            registerMessageRenderer<ToolCallMessageContent>(
+                defaultRegistry,
+                'tool-call',
+                createToolCallRenderer({
+                    genUIRegistry,
+                    onToolResult,
+                    onGenUIError,
+                    consumerContext: genUIConsumerContext,
+                    messageId: id,
+                    findSiblingResult,
+                }),
+            );
+            registerMessageRenderer<ToolResultMessageContent>(
+                defaultRegistry,
+                'tool-result',
+                createToolResultRenderer(),
+            );
+        }
+
         if (messageRendererRegistry) {
             return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
         }
 
         return defaultRegistry;
-    }, [messageRendererRegistry, transformOptions, shouldParseIncompleteMarkdown]);
-
-    const parts = normalizeContent<TContent>(content);
+    }, [
+        messageRendererRegistry,
+        transformOptions,
+        shouldParseIncompleteMarkdown,
+        genUIRegistry,
+        onToolResult,
+        onGenUIError,
+        genUIConsumerContext,
+        id,
+        findSiblingResult,
+    ]);
 
     if (parts.length === 0) {
         return null;

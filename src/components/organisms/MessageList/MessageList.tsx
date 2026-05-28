@@ -1,6 +1,7 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import type {PopupPlacement} from '@gravity-ui/uikit';
 
+import type {GenUIErrorEvent, GenUIToolRegistry, ToolResultEvent} from '../../../genui';
 import {useScrollPreservation, useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
 import type {
@@ -81,6 +82,17 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     ratingBlockProps?: RatingBlockProps;
     /** Action popup configuration - applies to all action popups */
     actionPopupProps?: MessageListActionPopupConfig;
+    /**
+     * Generative-UI tool registry. Forwarded to each {@link AssistantMessage}
+     * so registered components can render `tool-call` parts.
+     */
+    genUIRegistry?: GenUIToolRegistry;
+    /** Called when a GenUI component invokes `submitResult(...)`. */
+    onToolResult?: (event: ToolResultEvent) => void;
+    /** Called on unknown tools, validation failures, render crashes and model-reported errors. */
+    onGenUIError?: (event: GenUIErrorEvent) => void;
+    /** Opaque payload forwarded to every GenUI component via `context.consumerContext`. */
+    genUIConsumerContext?: unknown;
 };
 
 export function MessageList<TContent extends TMessageContent = never>({
@@ -105,6 +117,10 @@ export function MessageList<TContent extends TMessageContent = never>({
     onLoadPreviousMessages,
     ratingBlockProps,
     actionPopupProps,
+    genUIRegistry,
+    onToolResult,
+    onGenUIError,
+    genUIConsumerContext,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
@@ -178,6 +194,10 @@ export function MessageList<TContent extends TMessageContent = never>({
                     showTimestamp={showTimestamp}
                     userRating={message.userRating}
                     onActionPopup={(action, anchor) => handleActionPopup(message, action, anchor)}
+                    genUIRegistry={genUIRegistry}
+                    onToolResult={onToolResult}
+                    onGenUIError={onGenUIError}
+                    genUIConsumerContext={genUIConsumerContext}
                 />
             );
         }
