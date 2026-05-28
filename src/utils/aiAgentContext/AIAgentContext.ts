@@ -1,5 +1,3 @@
-// src/utils/aiAgentContext/AIAgentContext.ts
-
 import React, {createContext, useCallback, useContext, useMemo, useRef} from 'react';
 
 import type {AIAgentContextAPI, AIAgentContextValue, AIDataEntry, AIDataProps} from './types';
@@ -40,6 +38,10 @@ export function AIAgentContextProvider({children}: {children: React.ReactNode}) 
  * Hook for consumers to access registered AI data.
  * Returns { getData } where getData() returns the current list of all entries.
  * If no AIAgentContextProvider exists above, getData() returns [].
+ *
+ * Generic `T` is the **expected** shape of `data` for this consumer — not validated
+ * or guaranteed at runtime. The registry is populated by arbitrary `AIData`
+ * registrations; entries may not match `T`.
  */
 export function useAIAgentContext<T = unknown>(): AIAgentContextAPI<T> {
     const ctx = useContext(AIAgentContext);
