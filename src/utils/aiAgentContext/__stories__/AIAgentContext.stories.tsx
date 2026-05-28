@@ -77,7 +77,28 @@ function BasicUsageExample() {
 
 function MultipleDataSourcesExample() {
     const user = {name: 'Alice', email: 'alice@example.com', role: 'admin'};
-    const page = {title: 'Product Dashboard', section: 'Analytics'};
+    const page = {
+        title: 'Product Dashboard',
+        section: 'Analytics',
+        products: [
+            {
+                category: 'Open Source',
+                products: [
+                    {id: 1, name: 'Product 1', price: 100},
+                    {id: 2, name: 'Product 2', price: 200},
+                    {id: 3, name: 'Product 3', price: 300},
+                ],
+            },
+            {
+                products: [
+                    {id: 1, name: 'Product 1', price: 100},
+                    {id: 2, name: 'Product 2', price: 200},
+                    {id: 3, name: 'Product 3', price: 300},
+                ],
+                category: 'NDA',
+            },
+        ],
+    };
     const filters = {dateRange: '2026-01-01 to 2026-04-13', status: 'active'};
 
     return (
