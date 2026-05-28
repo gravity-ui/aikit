@@ -1,5 +1,3 @@
-// src/utils/aiAgentContext/AIData.ts
-
 import {useContext, useEffect, useId, useRef} from 'react';
 
 import {_AIAgentContext} from './AIAgentContext';
@@ -18,7 +16,7 @@ export function useProvideAIData<T>(props: AIDataProps<T>): void {
     useEffect(() => {
         if (!ctx) {
             // eslint-disable-next-line no-console
-            console.warn('AIAgentContext, but you are trying to register data without it');
+            console.warn('useProvideAIData must be used inside AIAgentContextProvider');
 
             return;
         }
