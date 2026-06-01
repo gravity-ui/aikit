@@ -563,6 +563,9 @@ export const WithHistory: Story = {
                 onSelectChat={handleSelectChat}
                 onCreateChat={handleCreateChat}
                 onDeleteChat={handleDeleteChat}
+                headerProps={{
+                    onHistoryToggle: (open) => console.log(`onHistoryToggle: ${open}`),
+                }}
             />
         );
     },

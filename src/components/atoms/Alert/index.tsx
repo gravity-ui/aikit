@@ -66,10 +66,12 @@ export function Alert({
     return (
         <div className={b(null, className)} data-qa={qa}>
             <div className={b('header')}>
-                {statusIcon}
-                <Text variant="body-1" className={b('text')}>
-                    {text}
-                </Text>
+                <div className={b('icon-with-text-wrapper')}>
+                    <div className={b('icon-wrapper')}>{statusIcon}</div>
+                    <Text variant="body-1" className={b('text')}>
+                        {text}
+                    </Text>
+                </div>
                 {content && (
                     <Button
                         onClick={toggleExpanded}

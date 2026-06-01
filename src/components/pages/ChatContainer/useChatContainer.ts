@@ -23,14 +23,24 @@ export function useChatContainer(props: ChatContainerProps) {
         showFolding = false,
         showClose = false,
         promptInputProps,
+        headerProps,
     } = props;
+
+    const onHistoryToggle = headerProps?.onHistoryToggle;
 
     const autoFocusOnNewChat = promptInputProps?.bodyProps?.autoFocusOnNewChat ?? true;
     const autoFocusOnChatSelect = promptInputProps?.bodyProps?.autoFocusOnChatSelect ?? true;
 
     // Refs for History integration with Header
     const historyButtonRef = useRef<HTMLElement>(null);
-    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+    const [isHistoryOpen, setIsHistoryOpenState] = useState(false);
+    // Mirror of `isHistoryOpen` for synchronous reads between renders (e.g. back-to-back toggle clicks)
+    const isHistoryOpenRef = useRef(false);
+
+    const setIsHistoryOpen = useCallback((open: boolean) => {
+        isHistoryOpenRef.current = open;
+        setIsHistoryOpenState(open);
+    }, []);
 
     // Key incremented on each new chat to remount PromptInput with autofocus
     const [promptInputKey, setPromptInputKey] = useState(0);
@@ -56,8 +66,10 @@ export function useChatContainer(props: ChatContainerProps) {
 
     // Handler for toggling history
     const handleHistoryToggle = useCallback(() => {
-        setIsHistoryOpen((prev) => !prev);
-    }, []);
+        const next = !isHistoryOpenRef.current;
+        setIsHistoryOpen(next);
+        onHistoryToggle?.(next);
+    }, [setIsHistoryOpen, onHistoryToggle]);
 
     const handleFolding = useCallback(
         (value: 'collapsed' | 'opened') => {

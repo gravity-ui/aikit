@@ -786,6 +786,18 @@ Override History component props (grouping, search, etc.):
 />
 ```
 
+Pass `onOpenChange` to observe when the history popup opens or closes. Your handler runs before the internal state update, so the internal popup behavior is preserved:
+
+```tsx
+<ChatContainer
+  historyProps={{
+    onOpenChange: (open) => {
+      analytics.track('chat_history_toggle', {open});
+    },
+  }}
+/>
+```
+
 ## Welcome Screen Alignment
 
 The welcome screen supports custom alignment for the image, title, and description elements through the `alignment` property in `welcomeConfig`:

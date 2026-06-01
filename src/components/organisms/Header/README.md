@@ -98,6 +98,26 @@ import {Header, HeaderAction} from '@gravity-ui/aikit';
 />;
 ```
 
+### History toggle notification
+
+When `Header` is rendered inside `ChatContainer`, you can observe history popup toggles via the Header button by passing `onHistoryToggle` through `headerProps`. The callback receives the next open state — i.e. the state the chat will be in after the toggle:
+
+```tsx
+import {ChatContainer} from '@gravity-ui/aikit';
+
+<ChatContainer
+  headerProps={{
+    onHistoryToggle: (open) => {
+      // open === true  → popup is about to open
+      // open === false → popup is about to close
+    },
+  }}
+  // ...other props
+/>;
+```
+
+The callback fires only for the Header action button. To also catch outside-click / Escape closes, listen via `historyProps.onOpenChange`.
+
 ### History button ref
 
 You can get a reference to the history button to anchor popups to it (e.g., `History`):
@@ -239,26 +259,27 @@ The component uses CSS variables for theming:
 
 ### HeaderProps
 
-| Prop                  | Type                                       | Required | Default    | Description                                                          |
-| --------------------- | ------------------------------------------ | -------- | ---------- | -------------------------------------------------------------------- |
-| `icon`                | `React.ReactNode`                          | -        | -          | Icon to the left of the title                                        |
-| `title`               | `string`                                   | -        | -          | Chat title                                                           |
-| `preview`             | `React.ReactNode`                          | -        | -          | Preview content after the title                                      |
-| `baseActions`         | `HeaderAction[]`                           | -        | `[]`       | Array of predefined base actions                                     |
-| `handleNewChat`       | `() => void`                               | -        | -          | Handler for new chat action                                          |
-| `handleHistoryToggle` | `() => void`                               | -        | -          | Handler for history toggle action                                    |
-| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                                           |
-| `handleClose`         | `() => void`                               | -        | -          | Handler for close action                                             |
-| `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type)                    |
-| `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)                       |
-| `foldingState`        | `'collapsed' \| 'opened'`                  | -        | `'opened'` | Current folding state                                                |
-| `titlePosition`       | `'left' \| 'center'`                       | -        | `'left'`   | Title alignment position                                             |
-| `withIcon`            | `boolean`                                  | -        | `true`     | Whether to show icon area                                            |
-| `showTitle`           | `boolean`                                  | -        | `true`     | Whether to show title and preview                                    |
-| `qa`                  | `string`                                   | -        | -          | QA/test identifier on header root                                    |
-| `actionQa`            | `Partial<Record<HeaderAction, string>>`    | -        | -          | Overrides `data-qa` for base actions (default `header-action-${id}`) |
-| `actionTooltipTexts`  | `HeaderActionTooltipTexts`                 | -        | -          | Overrides tooltip texts for base actions                             |
-| `className`           | `string`                                   | -        | -          | Additional CSS class                                                 |
+| Prop                  | Type                                       | Required | Default    | Description                                                                                                                                |
+| --------------------- | ------------------------------------------ | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `icon`                | `React.ReactNode`                          | -        | -          | Icon to the left of the title                                                                                                              |
+| `title`               | `string`                                   | -        | -          | Chat title                                                                                                                                 |
+| `preview`             | `React.ReactNode`                          | -        | -          | Preview content after the title                                                                                                            |
+| `baseActions`         | `HeaderAction[]`                           | -        | `[]`       | Array of predefined base actions                                                                                                           |
+| `handleNewChat`       | `() => void`                               | -        | -          | Handler for new chat action                                                                                                                |
+| `handleHistoryToggle` | `() => void`                               | -        | -          | Handler for history toggle action                                                                                                          |
+| `onHistoryToggle`     | `(open: boolean) => void`                  | -        | -          | Notification callback consumed by `ChatContainer`; fires with the next open state after the history popup is toggled via the Header button |
+| `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                                                                                                                 |
+| `handleClose`         | `() => void`                               | -        | -          | Handler for close action                                                                                                                   |
+| `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type)                                                                                          |
+| `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)                                                                                             |
+| `foldingState`        | `'collapsed' \| 'opened'`                  | -        | `'opened'` | Current folding state                                                                                                                      |
+| `titlePosition`       | `'left' \| 'center'`                       | -        | `'left'`   | Title alignment position                                                                                                                   |
+| `withIcon`            | `boolean`                                  | -        | `true`     | Whether to show icon area                                                                                                                  |
+| `showTitle`           | `boolean`                                  | -        | `true`     | Whether to show title and preview                                                                                                          |
+| `qa`                  | `string`                                   | -        | -          | QA/test identifier on header root                                                                                                          |
+| `actionQa`            | `Partial<Record<HeaderAction, string>>`    | -        | -          | Overrides `data-qa` for base actions (default `header-action-${id}`)                                                                       |
+| `actionTooltipTexts`  | `HeaderActionTooltipTexts`                 | -        | -          | Overrides tooltip texts for base actions                                                                                                   |
+| `className`           | `string`                                   | -        | -          | Additional CSS class                                                                                                                       |
 
 ### HeaderAction
 
