@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.5](https://github.com/gravity-ui/aikit/compare/v2.0.4...v2.0.5) (2026-06-01)
+
+
+### Bug Fixes
+
+* **Alert:** fix icon position ([#174](https://github.com/gravity-ui/aikit/issues/174)) ([997be4e](https://github.com/gravity-ui/aikit/commit/997be4e9857752a196851e34624bcd55de40162e))
+
 ## [2.0.4](https://github.com/gravity-ui/aikit/compare/v2.0.3...v2.0.4) (2026-05-27)
 
 
