@@ -28,6 +28,13 @@ export type HeaderProps = {
     handleClose?: () => void;
     additionalActions?: Action[];
 
+    /**
+     * Notification callback fired by ChatContainer when the history popup is toggled
+     * via the Header action button. Receives the next open state (the value the chat
+     * will be in after the toggle).
+     */
+    onHistoryToggle?: (open: boolean) => void;
+
     // Refs
     historyButtonRef?: React.RefObject<HTMLElement>;
 

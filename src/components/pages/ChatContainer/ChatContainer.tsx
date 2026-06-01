@@ -422,7 +422,10 @@ export function ChatContainer(props: ChatContainerProps) {
             onSelectChat: hookState.handleSelectChat,
             onDeleteChat,
             open: hookState.isHistoryOpen,
-            onOpenChange: hookState.handleHistoryOpenChange,
+            onOpenChange: (open: boolean) => {
+                historyProps.onOpenChange?.(open);
+                hookState.handleHistoryOpenChange(open);
+            },
             anchorElement: hookState.historyButtonRef.current,
             emptyPlaceholder:
                 texts.historyEmptyPlaceholder ??
