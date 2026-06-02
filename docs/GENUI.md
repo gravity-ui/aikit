@@ -1,82 +1,193 @@
-# Live LLM Integration Example
+# Generative UI (toolset)
 
-> End-to-end example showing how to wire `defineTool` + `useToolset`
-> (from `@gravity-ui/aikit`) into a real chat that talks to an
-> OpenAI-compatible Chat Completions endpoint. The example is preserved as a
-> reference; the storybook story it used to ship as (`ElegantLive`) has been
-> removed from the codebase because it required an external proxy.
+> Render LLM `tool_calls` as typed React components using the existing assistant
+> `tool` content type. AIKit ships `defineTool`, `createToolsetRenderer`,
+> `applyToolResult`, and `useToolset` — no separate GenUI package.
 
-**Date:** 2026-06-02
-**Status:** Reference implementation. Not part of the library — copy into your app.
+**Date:** 2026-06-02  
+**Status:** Shipped in `@gravity-ui/aikit`. Live-model wiring stays in your app.
 
 ---
 
-## What this covers
+## What ships in the library
 
-- Defining typed tools with `defineTool<TArgs, TResult>`
-- Wiring them with `useToolset(toolset, setMessages, {onAfterResult})`
-- Converting between aikit message parts and OpenAI Chat Completions format
-- Running a turn: send → receive `tool_calls` → render → submit result → resend
-- Cancellation via `AbortController`
+| Export                                                          | Module                                                         |
+| --------------------------------------------------------------- | -------------------------------------------------------------- |
+| `defineTool`, `createToolsetRenderer`, `applyToolResult`, types | `src/utils/toolset.tsx` (re-exported from `@gravity-ui/aikit`) |
+| `useToolset`                                                    | `src/hooks/useToolset.ts`                                      |
 
-The library helpers (`defineTool`, `createToolsetRenderer`, `applyToolResult`,
-`useToolset`) do all the registry/merge/dispatch plumbing. The LLM adapter
-(`messagesToChatCompletions` / `chatCompletionsToAssistantMessage`) is
-provider-specific and lives in app code.
+**Storybook (no network):** `CustomToolRenderer` → `ProofOfConcept` in  
+`src/components/organisms/AssistantMessage/__stories__/CustomToolRenderer.stories.tsx`  
+— static tool parts, approve/reject, JSON preview of what you would send back to the agent.
+
+Removed from the repo (do not look for them): `src/genui/*`, `ElegantLive` stories,
+`examples/genui-live-proxy/`.
 
 ---
 
-## Architecture
+## Mental model
+
+1. The model (or your backend) emits assistant messages whose `content` includes
+   `{ type: 'tool', data: { toolName, toolCallId, args, status, ... } }` parts.
+2. A **toolset** maps `toolName` → validator + React component + optional `execute`
+   (shape the payload returned to the model).
+3. `createToolsetRenderer` / `useToolset` register a `tool` dispatcher on
+   `MessageRendererRegistry` so `AssistantMessage` renders your components.
+4. On `submitResult`, the renderer runs `execute`, merges the result into history
+   (`applyToolResult`), and optionally calls `onAfterResult` / `onToolResult` so
+   you can POST the updated transcript to your chat API.
+
+---
+
+## Minimal wiring (Storybook-style)
+
+Same pattern as the in-repo story — one message, manual history updates:
+
+```tsx
+import {useCallback, useMemo, useState} from 'react';
+import {
+  AssistantMessage,
+  createToolsetRenderer,
+  defineTool,
+  type ToolComponentProps,
+  type ToolPartContent,
+  type Toolset,
+} from '@gravity-ui/aikit';
+
+type ApprovalArgs = {summary: string};
+type ApprovalResult = {approved: boolean; auditText: string};
+
+function ApprovalCard({
+  args,
+  result,
+  submitResult,
+}: ToolComponentProps<ApprovalArgs, ApprovalResult>) {
+  if (result) return <div>{result.auditText}</div>;
+  return (
+    <div>
+      <p>{args.summary}</p>
+      <button type="button" onClick={() => submitResult({approved: true, auditText: ''})}>
+        Approve
+      </button>
+    </div>
+  );
+}
+
+const toolset: Toolset = {
+  'approval.request': defineTool<ApprovalArgs, ApprovalResult>({
+    name: 'approval.request',
+    description: 'Ask the user to approve or reject an action.',
+    parameters: {
+      type: 'object',
+      properties: {summary: {type: 'string'}},
+      required: ['summary'],
+    },
+    schema: {
+      validate: (input) => {
+        if (
+          !input ||
+          typeof input !== 'object' ||
+          typeof (input as ApprovalArgs).summary !== 'string'
+        ) {
+          return {success: false, error: {message: 'Expected args.summary to be a string'}};
+        }
+        return {success: true, data: input as ApprovalArgs};
+      },
+    },
+    component: ApprovalCard,
+    execute: ({args, result}) => ({
+      approved: result.approved,
+      auditText: `${result.approved ? 'Approved' : 'Rejected'} "${args.summary}".`,
+    }),
+  }),
+};
+
+// Pass messageRendererRegistry into AssistantMessage or ChatContainer messageListConfig.
+const registry = createToolsetRenderer(toolset, {
+  onToolResult: (event) => {
+    // Merge result into parts, then forward event to your agent API if needed.
+    console.log(event);
+  },
+});
+```
+
+For a full chat loop, use `useToolset` instead of hand-rolling `onToolResult` + history merge.
+
+---
+
+## Full chat with `useToolset`
+
+```tsx
+const {messageRendererRegistry} = useToolset<ToolPartContent>(toolset, setMessages, {
+  onAfterResult: (updated) => {
+    sendTurn(updated).catch(console.warn);
+  },
+});
+
+<ChatContainer
+  messages={messages}
+  messageListConfig={{messageRendererRegistry}}
+  /* ... */
+/>;
+```
+
+Keep a stable `toolset` reference (`useMemo` or module scope). `useToolset` already
+calls `applyToolResult` before `onAfterResult`.
+
+---
+
+## Architecture (with a live model)
 
 ```
 User input
   → setMessages([...messages, userMessage])
   → sendTurn(messages)
      ↓
-  fetch(PROXY_URL, { messages, tools, tool_choice: 'auto' })
+  fetch(CHAT_API_URL, { messages, tools, tool_choice: 'auto' })  // your server route
      ↓
   Response with tool_calls
   → chatCompletionsToAssistantMessage(body)
   → setMessages([...nextMessages, assistant])
      ↓
-  Renderer dispatches by toolName
-  → ToolComponent receives {args, submitResult}
-  → User clicks → submitResult(result)
+  messageRendererRegistry dispatches by toolName
+  → component receives { args, submitResult }
+  → user acts → submitResult(result)
      ↓
-  useToolset.handleToolResult
-  → applyToolResult merges result into history
-  → onAfterResult(updated) → sendTurn(updated)
+  useToolset → applyToolResult → onAfterResult(updated) → sendTurn(updated)
      ↓
-  fetch(PROXY_URL, ...) — now with role: 'tool' message in history
-  → Model responds with text or another tool_call
+  fetch(CHAT_API_URL, ...) — history now includes role: 'tool' messages
+  → model replies with text or another tool_call
 ```
 
----
-
-## Why a proxy
-
-OpenAI / OpenAI-compatible endpoints require an API key. **Never put that key
-in client code.** The example uses a tiny Node proxy (`examples/genui-live-proxy/`
-in the original branch) that:
-
-1. Keeps the API key server-side
-2. Forwards `POST /api/chat` → `${BASE_URL}/v1/chat/completions`
-3. Returns the raw response to the browser
-
-Any equivalent will work (Next.js API route, Cloudflare Worker, your own
-backend). Set `STORYBOOK_GENUI_PROXY_URL` (or the equivalent env var) to point
-at it.
+**API keys:** call the provider from your backend (Next.js route, BFF, worker, etc.).
+The browser talks only to your route; never embed provider keys in client bundles.
 
 ---
 
-## Full source
+## LLM adapter (app code, OpenAI Chat Completions shape)
+
+Provider-specific conversion stays outside the library. Typical responsibilities:
+
+- `messagesToChatCompletions` — flatten assistant `text` + `tool` parts into
+  `assistant` + `tool` roles; include `tool_calls` and serialized `tool` results.
+- `chatCompletionsToAssistantMessage` — map `tool_calls` into `tool` parts with
+  `status: 'waitingConfirmation'` (or `error` on bad JSON).
+- `toolsFromToolset()` — `Object.values(toolset)` → OpenAI `tools[]` definitions.
+
+See the reference implementation below for a two-tool weather + approval example.
+
+---
+
+## Reference: live chat component
+
+Copy into your app. Set `CHAT_API_URL` to a server route that forwards to your
+model (adds `model`, auth, etc. server-side).
 
 ```tsx
 /* eslint-disable no-console */
 import {useCallback, useMemo, useRef, useState} from 'react';
 
 import {Button, Card, Text} from '@gravity-ui/uikit';
-import type {Meta, StoryObj} from '@storybook/react-webpack5';
 import {v4 as uuid} from 'uuid';
 
 import {
@@ -130,29 +241,10 @@ type ChatCompletionsResponse = {
 type AssistantContentPart = TextMessageContent | ToolPartContent;
 type AgentChatMessage = TChatMessage<ToolPartContent>;
 
-// === Tool argument/result types ===
-
-type WeatherArgs = {
-  city: string;
-  value: number;
-  units?: 'c' | 'f';
-};
-
-type WeatherResult = {
-  acknowledged: true;
-  auditText: string;
-};
-
-type ApprovalArgs = {
-  summary: string;
-};
-
-type ApprovalResult = {
-  approved: boolean;
-  auditText: string;
-};
-
-// === JSON Schemas (sent to the LLM as `tools[].function.parameters`) ===
+type WeatherArgs = {city: string; value: number; units?: 'c' | 'f'};
+type WeatherResult = {acknowledged: true; auditText: string};
+type ApprovalArgs = {summary: string};
+type ApprovalResult = {approved: boolean; auditText: string};
 
 const weatherParameters: JSONSchemaObject = {
   type: 'object',
@@ -168,72 +260,54 @@ const weatherParameters: JSONSchemaObject = {
 const approvalParameters: JSONSchemaObject = {
   type: 'object',
   properties: {
-    summary: {
-      type: 'string',
-      description: 'One-line summary of the action that needs user approval.',
-    },
+    summary: {type: 'string', description: 'One-line summary for user approval.'},
   },
   required: ['summary'],
   additionalProperties: false,
 };
 
-// === Validators (replace with Zod if you want — see CONSUMER_API_SIMPLIFICATION.md) ===
-
 function validateWeatherArgs(input: unknown): ToolSchemaResult<WeatherArgs> {
   if (!input || typeof input !== 'object') {
     return {success: false, error: {message: 'Expected object arguments'}};
   }
-
   const value = input as Record<string, unknown>;
   if (typeof value.city !== 'string') {
     return {success: false, error: {message: 'Expected args.city to be a string'}};
   }
-
   if (typeof value.value !== 'number') {
     return {success: false, error: {message: 'Expected args.value to be a number'}};
   }
-
   if (value.units !== undefined && value.units !== 'c' && value.units !== 'f') {
     return {success: false, error: {message: 'Expected args.units to be "c" or "f"'}};
   }
-
-  return {
-    success: true,
-    data: {city: value.city, value: value.value, units: value.units},
-  };
+  return {success: true, data: {city: value.city, value: value.value, units: value.units}};
 }
 
 function validateApprovalArgs(input: unknown): ToolSchemaResult<ApprovalArgs> {
   if (!input || typeof input !== 'object') {
     return {success: false, error: {message: 'Expected object arguments'}};
   }
-
   const value = input as Record<string, unknown>;
   if (typeof value.summary !== 'string') {
     return {success: false, error: {message: 'Expected args.summary to be a string'}};
   }
-
   return {success: true, data: {summary: value.summary}};
 }
-
-// === Components ===
 
 function WeatherCard({args, result, submitResult}: ToolComponentProps<WeatherArgs, WeatherResult>) {
   return (
     <Card view="outlined" style={{padding: 12}}>
-      <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
-        <Text variant="subheader-1">Weather · {args.city}</Text>
-        <Text color="secondary">
-          {args.value}°{args.units ?? 'c'}
-        </Text>
-        {result ? (
-          <Text color="secondary">{result.auditText}</Text>
-        ) : (
-          <Button view="action" onClick={() => submitResult({acknowledged: true, auditText: ''})}>
-            Got it
-          </Button>
-        )}
-      </div>
+      <Text variant="subheader-1">Weather · {args.city}</Text>
+      <Text color="secondary">
+        {args.value}°{args.units ?? 'c'}
+      </Text>
+      {result ? (
+        <Text color="secondary">{result.auditText}</Text>
+      ) : (
+        <Button view="action" onClick={() => submitResult({acknowledged: true, auditText: ''})}>
+          Got it
+        </Button>
+      )}
     </Card>
   );
 }
@@ -245,25 +319,21 @@ function ApprovalCard({
 }: ToolComponentProps<ApprovalArgs, ApprovalResult>) {
   return (
     <Card view="outlined" style={{padding: 12}}>
-      <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
-        <Text variant="subheader-1">Approval request</Text>
-        <Text>{args.summary}</Text>
-        {result ? (
-          <Text color="secondary">{result.auditText}</Text>
-        ) : (
-          <div style={{display: 'flex', gap: 8}}>
-            <Button view="action" onClick={() => submitResult({approved: true, auditText: ''})}>
-              Approve
-            </Button>
-            <Button onClick={() => submitResult({approved: false, auditText: ''})}>Reject</Button>
-          </div>
-        )}
-      </div>
+      <Text variant="subheader-1">Approval request</Text>
+      <Text>{args.summary}</Text>
+      {result ? (
+        <Text color="secondary">{result.auditText}</Text>
+      ) : (
+        <div style={{display: 'flex', gap: 8}}>
+          <Button view="action" onClick={() => submitResult({approved: true, auditText: ''})}>
+            Approve
+          </Button>
+          <Button onClick={() => submitResult({approved: false, auditText: ''})}>Reject</Button>
+        </div>
+      )}
     </Card>
   );
 }
-
-// === Toolset (the single source of truth — also feeds tools[] to the LLM) ===
 
 const toolset: Toolset = {
   weather_show: defineTool<WeatherArgs, WeatherResult>({
@@ -274,7 +344,7 @@ const toolset: Toolset = {
     component: WeatherCard,
     execute: ({args, result}) => ({
       acknowledged: result.acknowledged,
-      auditText: `User acknowledged the weather card for ${args.city} (${args.value}°${args.units ?? 'c'}).`,
+      auditText: `User acknowledged weather for ${args.city} (${args.value}°${args.units ?? 'c'}).`,
     }),
   }),
   approval_request: defineTool<ApprovalArgs, ApprovalResult>({
@@ -293,15 +363,9 @@ const toolset: Toolset = {
 function toolsFromToolset() {
   return Object.values(toolset).map((tool) => ({
     type: 'function' as const,
-    function: {
-      name: tool.name,
-      description: tool.description,
-      parameters: tool.parameters,
-    },
+    function: {name: tool.name, description: tool.description, parameters: tool.parameters},
   }));
 }
-
-// === LLM adapter (provider-specific — stays in app code) ===
 
 function toContentArray(
   content: TAssistantMessage<ToolPartContent>['content'],
@@ -311,9 +375,7 @@ function toContentArray(
   }
   const parts = Array.isArray(content) ? content : [content];
   return parts.flatMap((part): AssistantContentPart[] => {
-    if (part.type === 'text' || part.type === 'tool') {
-      return [part as AssistantContentPart];
-    }
+    if (part.type === 'text' || part.type === 'tool') return [part as AssistantContentPart];
     return [];
   });
 }
@@ -341,19 +403,14 @@ function messagesToChatCompletions(messages: AgentChatMessage[]): ChatCompletion
         if (text) textPieces.push(text);
         continue;
       }
-
       if (!isToolPart(part)) continue;
 
       const data = part.data;
       toolCalls.push({
         id: data.toolCallId,
         type: 'function',
-        function: {
-          name: data.toolName,
-          arguments: JSON.stringify(data.args ?? {}),
-        },
+        function: {name: data.toolName, arguments: JSON.stringify(data.args ?? {})},
       });
-
       if (data.result !== undefined) {
         toolResults.push({
           role: 'tool',
@@ -371,7 +428,6 @@ function messagesToChatCompletions(messages: AgentChatMessage[]): ChatCompletion
           : {role: 'assistant', content: content ?? ''},
       );
     }
-
     items.push(...toolResults);
   }
 
@@ -418,32 +474,22 @@ function chatCompletionsToAssistantMessage(
     });
   }
 
-  return {
-    id: uuid(),
-    role: 'assistant',
-    content: parts.length === 0 ? '' : parts,
-  };
+  return {id: uuid(), role: 'assistant', content: parts.length === 0 ? '' : parts};
 }
-
-// === System prompt nudging the model toward tool calls ===
 
 const SYSTEM_PROMPT = [
   'You are a UI assistant integrated into a chat app.',
-  'When a user asks something that maps to one of the provided tools, CALL THE TOOL instead of replying with prose.',
-  'Examples:',
-  '- "weather in Berlin" -> call weather_show with {city:"Berlin", value:20}.',
-  '- "should I delete the staging db?" -> call approval_request with a one-line summary.',
-  'Only fall back to plain text when no tool fits.',
+  'When a user asks something that maps to a provided tool, CALL THE TOOL instead of prose.',
+  'Examples: "weather in Berlin" -> weather_show; "delete staging db?" -> approval_request.',
+  'Only use plain text when no tool fits.',
 ].join('\n');
 
-const PROXY_URL =
+const CHAT_API_URL =
   (typeof process !== 'undefined' &&
-    (process.env as Record<string, string | undefined>).PROXY_URL) ||
-  'http://localhost:8787/api/chat';
+    (process.env as Record<string, string | undefined>).CHAT_API_URL) ||
+  '/api/chat';
 
-// === Story / app component ===
-
-export const Live = () => {
+export function AgentChat() {
   const tools = useMemo(toolsFromToolset, []);
   const [messages, setMessages] = useState<AgentChatMessage[]>([]);
   const [status, setStatus] = useState<ChatStatus>('ready');
@@ -462,14 +508,10 @@ export const Live = () => {
           {role: 'system', content: SYSTEM_PROMPT},
           ...messagesToChatCompletions(nextMessages),
         ];
-        const res = await fetch(PROXY_URL, {
+        const res = await fetch(CHAT_API_URL, {
           method: 'POST',
           headers: {'content-type': 'application/json'},
-          body: JSON.stringify({
-            messages: chatMessages,
-            tools,
-            tool_choice: 'auto',
-          }),
+          body: JSON.stringify({messages: chatMessages, tools, tool_choice: 'auto'}),
           signal: controller.signal,
         });
         const body = (await res.json()) as ChatCompletionsResponse;
@@ -478,7 +520,7 @@ export const Live = () => {
           const reason =
             (typeof body?.error === 'object' && body.error?.message) ||
             (typeof body?.error === 'string' && body.error) ||
-            `Proxy returned ${res.status}`;
+            `Chat API returned ${res.status}`;
           setErrorBanner(String(reason));
           return;
         }
@@ -504,11 +546,7 @@ export const Live = () => {
 
   const handleSendMessage = useCallback(
     async (data: TSubmitData) => {
-      const userMessage: TUserMessage = {
-        id: uuid(),
-        role: 'user',
-        content: data.content,
-      };
+      const userMessage: TUserMessage = {id: uuid(), role: 'user', content: data.content};
       const nextMessages: AgentChatMessage[] = [...messages, userMessage];
       setMessages(nextMessages);
       await sendTurn(nextMessages);
@@ -524,114 +562,32 @@ export const Live = () => {
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-      {errorBanner && (
-        <div
-          style={{
-            padding: 8,
-            marginBottom: 8,
-            background: 'var(--g-color-base-danger-light, #fce4e4)',
-            color: 'var(--g-color-text-danger, #a30000)',
-            borderRadius: 6,
-            fontSize: 13,
-          }}
-        >
-          {errorBanner}
-        </div>
-      )}
-      <div style={{flex: 1, minHeight: 0}}>
-        <ChatContainer
-          messages={messages as TChatMessage[]}
-          status={status}
-          onSendMessage={handleSendMessage}
-          onCancel={handleCancel}
-          onSelectChat={() => {}}
-          onCreateChat={() => {}}
-          messageListConfig={{messageRendererRegistry}}
-        />
-      </div>
+      {errorBanner && <div role="alert">{errorBanner}</div>}
+      <ChatContainer
+        messages={messages as TChatMessage[]}
+        status={status}
+        onSendMessage={handleSendMessage}
+        onCancel={handleCancel}
+        onSelectChat={() => {}}
+        onCreateChat={() => {}}
+        messageListConfig={{messageRendererRegistry}}
+      />
     </div>
   );
-};
-```
-
----
-
-## Minimal proxy server (Node, ~30 lines)
-
-For reference. Put your API key in a `.env` file, never in client code.
-
-```js
-// proxy/server.mjs
-import 'dotenv/config';
-import http from 'node:http';
-
-const PORT = process.env.PORT ?? 8787;
-const API_KEY = process.env.OPENAI_API_KEY;
-const BASE_URL = process.env.OPENAI_BASE_URL ?? 'https://api.openai.com';
-const MODEL = process.env.OPENAI_MODEL ?? 'gpt-4o-mini';
-
-http
-  .createServer(async (req, res) => {
-    res.setHeader('access-control-allow-origin', '*');
-    res.setHeader('access-control-allow-headers', 'content-type');
-    res.setHeader('access-control-allow-methods', 'POST, OPTIONS');
-
-    if (req.method === 'OPTIONS') return res.writeHead(204).end();
-    if (req.method !== 'POST' || req.url !== '/api/chat') {
-      return res.writeHead(404).end();
-    }
-
-    let body = '';
-    for await (const chunk of req) body += chunk;
-    const payload = JSON.parse(body);
-
-    const upstream = await fetch(`${BASE_URL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        authorization: `Bearer ${API_KEY}`,
-      },
-      body: JSON.stringify({model: MODEL, ...payload}),
-    });
-
-    res.writeHead(upstream.status, {'content-type': 'application/json'});
-    res.end(await upstream.text());
-  })
-  .listen(PORT, () => console.log(`Proxy on :${PORT}`));
-```
-
-```
-# .env
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini
-```
-
-```bash
-node proxy/server.mjs
+}
 ```
 
 ---
 
 ## What the library gives you for free
 
-Look at how much is **not** in the example above:
+- **Registry** — `useToolset` returns a `MessageRendererRegistry` with the `tool`
+  dispatcher wired to your toolset.
+- **`submitResult`** — typed on `ToolComponentProps`; injected by `createToolsetRenderer`.
+- **History merge** — `applyToolResult` on every successful submit; `onAfterResult`
+  receives the updated transcript.
+- **Validation** — invalid args or unknown `toolName` fall back to
+  `<ToolMessage status="error" />`.
 
-- No registry construction by hand — `useToolset` returns a ready
-  `MessageRendererRegistry` with the `tool` content type dispatcher wired up.
-- No `submitResult` plumbing — `defineTool` types it; `createToolsetRenderer`
-  injects it into the component.
-- No history merge — `useToolset` calls `applyToolResult` internally on every
-  `submitResult` and triggers `onAfterResult` with the updated transcript.
-- No `args` validation orchestration — the `tool` renderer calls
-  `schema.validate(args)` and shows a fallback error UI on failure.
-
-What stays in your app: tool definitions (schemas + components + execute),
-the LLM adapter, and the round-trip handler. That is the irreducible part.
-
----
-
-## See Also
-
-- [APPROACH_DECISION.md](./APPROACH_DECISION.md) — why this pattern over a parallel registry
-- [CONSUMER_API_SIMPLIFICATION.md](./CONSUMER_API_SIMPLIFICATION.md) — the design behind the helpers
-- [INSIGHTS.md](./INSIGHTS.md) — full discussion of trade-offs
+What stays in your app: tool definitions (schemas, components, `execute`), the LLM
+adapter, `sendTurn`, and a server route that holds provider credentials.
