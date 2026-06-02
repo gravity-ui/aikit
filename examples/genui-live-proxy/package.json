@@ -1,0 +1,13 @@
+{
+  "name": "@aikit-examples/genui-live-proxy",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Dev-only proxy that forwards Storybook -> OpenAI Responses API for the GenUI live story.",
+  "scripts": {
+    "start": "node --env-file=.env server.mjs"
+  },
+  "engines": {
+    "node": ">=20.6"
+  }
+}
