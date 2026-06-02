@@ -228,40 +228,6 @@ See [src/components/organisms/MessageList/README.md](../src/components/organisms
 
 `src/adapters/` houses pre-built integrations (e.g. `openai`). They are imported through the main package entry: `import {…} from '@gravity-ui/aikit'`.
 
-### Generative UI
-
-`src/genui/` adds a second registry (`GenUIToolRegistry`) keyed by **tool name** that maps model-emitted `tool-call` parts to interactive React components and gives them a typed round-trip back to the model.
-
-```tsx
-import {createGenUIToolRegistry, registerGenUITool} from '@gravity-ui/aikit';
-
-const registry = createGenUIToolRegistry();
-registerGenUITool(registry, {
-  name: 'weather.show',
-  schema: z.object({city: z.string()}),
-  component: ({args, submitResult}) => (
-    <WeatherCard city={args.city} onAcknowledge={() => submitResult({acknowledged: true})} />
-  ),
-});
-
-<ChatContainer
-  messageListConfig={{
-    genUIRegistry: registry,
-    onToolResult: (event) => appendPart(event.part),
-  }}
-/>;
-```
-
-Key properties:
-
-- Opt-in — omit `genUIRegistry` and AIKit behaves exactly as before.
-- Zod and JSON Schema are both first-class; Zod is an optional peer dep.
-- The default `tool-call` renderer dispatches per-tool, validates args, and shows a per-tool loading / error slot.
-- A per-part error boundary isolates render failures from sibling parts.
-- AIKit never mutates `content[]`; consumers append the `tool-result` part themselves.
-
-See [docs/GENERATIVE_UI.md](./GENERATIVE_UI.md) for details and the BC5 migration note about the existing `tool` content type.
-
 ## Theming
 
 ### CSS Variables

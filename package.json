@@ -108,16 +108,6 @@
         "default": "./build/cjs/adapters/index.js"
       }
     },
-    "./genui": {
-      "import": {
-        "types": "./build/esm/genui/index.d.ts",
-        "default": "./build/esm/genui/index.js"
-      },
-      "require": {
-        "types": "./build/cjs/genui/index.d.ts",
-        "default": "./build/cjs/genui/index.js"
-      }
-    },
     "./atoms": {
       "import": {
         "types": "./build/esm/components/atoms/index.d.ts",
@@ -782,13 +772,7 @@
     "@gravity-ui/uikit": "^7.25.0",
     "highlight.js": "^11.11.1",
     "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0",
-    "zod": "^3.22.0 || ^4.0.0"
-  },
-  "peerDependenciesMeta": {
-    "zod": {
-      "optional": true
-    }
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "nano-staged": {
     "*.{scss}": [
@@ -803,8 +787,6 @@
   },
   "dependencies": {
     "@bem-react/classname": "^1.7.0",
-    "@types/json-schema": "^7.0.15",
-    "ajv": "^8.17.1",
     "dayjs": "^1.11.19",
     "marked": "^17.0.1",
     "react-window": "^2.2.1",
