@@ -1,27 +1,24 @@
 # Generative UI (toolset)
 
 > Render LLM `tool_calls` as typed React components using the existing assistant
-> `tool` content type. AIKit ships `defineTool`, `createToolsetRenderer`,
-> `applyToolResult`, and `useToolset` — no separate GenUI package.
-
-**Date:** 2026-06-02  
-**Status:** Shipped in `@gravity-ui/aikit`. Live-model wiring stays in your app.
+> `tool` content type. AIKit ships `defineTool`, `createToolset`,
+> `createToolsetRenderer`, `applyToolResult`, `toolsetToOpenAIDefinitions`, and
+> `useToolset` — no separate GenUI package.
 
 ---
 
 ## What ships in the library
 
-| Export                                                          | Module                                                         |
-| --------------------------------------------------------------- | -------------------------------------------------------------- |
-| `defineTool`, `createToolsetRenderer`, `applyToolResult`, types | `src/utils/toolset.tsx` (re-exported from `@gravity-ui/aikit`) |
-| `useToolset`                                                    | `src/hooks/useToolset.ts`                                      |
+| Export                                                                                                         | Module                                                     |
+| -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `defineTool`, `createToolset`, `createToolsetRenderer`, `applyToolResult`, `toolsetToOpenAIDefinitions`, types | `src/utils/toolset` (re-exported from `@gravity-ui/aikit`) |
+| `useToolset`                                                                                                   | `src/hooks/useToolset.ts`                                  |
 
-**Storybook (no network):** `CustomToolRenderer` → `ProofOfConcept` in  
-`src/components/organisms/AssistantMessage/__stories__/CustomToolRenderer.stories.tsx`  
-— static tool parts, approve/reject, JSON preview of what you would send back to the agent.
-
-Removed from the repo (do not look for them): `src/genui/*`, `ElegantLive` stories,
-`examples/genui-live-proxy/`.
+**Storybook (no network):** `CustomToolRenderer` → `ProofOfConcept` and
+`CustomToolRendererWithHook` in
+`src/components/organisms/AssistantMessage/__stories__/CustomToolRenderer.stories.tsx`.
+`ProofOfConcept` shows the registry directly; `CustomToolRendererWithHook` is the
+recommended path via `useToolset`.
 
 ---
 
@@ -47,11 +44,11 @@ Same pattern as the in-repo story — one message, manual history updates:
 import {useCallback, useMemo, useState} from 'react';
 import {
   AssistantMessage,
+  createToolset,
   createToolsetRenderer,
   defineTool,
   type ToolComponentProps,
   type ToolPartContent,
-  type Toolset,
 } from '@gravity-ui/aikit';
 
 type ApprovalArgs = {summary: string};
@@ -73,8 +70,8 @@ function ApprovalCard({
   );
 }
 
-const toolset: Toolset = {
-  'approval.request': defineTool<ApprovalArgs, ApprovalResult>({
+const toolset = createToolset(
+  defineTool<ApprovalArgs, ApprovalResult>({
     name: 'approval.request',
     description: 'Ask the user to approve or reject an action.',
     parameters: {
@@ -100,7 +97,7 @@ const toolset: Toolset = {
       auditText: `${result.approved ? 'Approved' : 'Rejected'} "${args.summary}".`,
     }),
   }),
-};
+);
 
 // Pass messageRendererRegistry into AssistantMessage or ChatContainer messageListConfig.
 const registry = createToolsetRenderer(toolset, {
@@ -118,7 +115,9 @@ For a full chat loop, use `useToolset` instead of hand-rolling `onToolResult` + 
 ## Full chat with `useToolset`
 
 ```tsx
-const {messageRendererRegistry} = useToolset<ToolPartContent>(toolset, setMessages, {
+const {messageRendererRegistry} = useToolset<ToolPartContent>({
+  toolset,
+  setMessages,
   onAfterResult: (updated) => {
     sendTurn(updated).catch(console.warn);
   },
@@ -131,8 +130,32 @@ const {messageRendererRegistry} = useToolset<ToolPartContent>(toolset, setMessag
 />;
 ```
 
-Keep a stable `toolset` reference (`useMemo` or module scope). `useToolset` already
-calls `applyToolResult` before `onAfterResult`.
+Keep a stable `toolset` reference (`useMemo`, `createToolset` at module scope, or
+both). `useToolset` already calls `applyToolResult` before `onAfterResult`.
+
+---
+
+## Reporting tool failures and cancellations
+
+By default an `execute` callback that returns `TResult` is treated as `'success'`.
+To report a failure or a user cancellation explicitly, return a
+`ToolExecutionOutcome<TResult>`:
+
+```tsx
+execute: async ({args}) => {
+  try {
+    const result = await callBackend(args);
+    return {status: 'success', result};
+  } catch (err) {
+    return {status: 'error', error: {message: String(err)}};
+  }
+},
+```
+
+A thrown error is also surfaced as `{status: 'error'}` — the wrapper catches it so
+the tool message flips to an error state instead of leaving the UI hanging. Use
+`'cancelled'` when the user rejects an approval or otherwise aborts the action;
+`applyToolResult` will reflect the status on the tool part.
 
 ---
 
@@ -172,7 +195,8 @@ Provider-specific conversion stays outside the library. Typical responsibilities
   `assistant` + `tool` roles; include `tool_calls` and serialized `tool` results.
 - `chatCompletionsToAssistantMessage` — map `tool_calls` into `tool` parts with
   `status: 'waitingConfirmation'` (or `error` on bad JSON).
-- `toolsFromToolset()` — `Object.values(toolset)` → OpenAI `tools[]` definitions.
+- `toolsetToOpenAIDefinitions(toolset)` — library helper that maps a `Toolset` to
+  the OpenAI `tools[]` shape.
 
 See the reference implementation below for a two-tool weather + approval example.
 
@@ -201,8 +225,9 @@ import {
   type ToolComponentProps,
   type ToolPartContent,
   type ToolSchemaResult,
-  type Toolset,
+  createToolset,
   defineTool,
+  toolsetToOpenAIDefinitions,
   useToolset,
 } from '@gravity-ui/aikit';
 
@@ -335,8 +360,8 @@ function ApprovalCard({
   );
 }
 
-const toolset: Toolset = {
-  weather_show: defineTool<WeatherArgs, WeatherResult>({
+const toolset = createToolset(
+  defineTool<WeatherArgs, WeatherResult>({
     name: 'weather_show',
     description: 'Render a weather card for a city and let the user acknowledge it.',
     parameters: weatherParameters,
@@ -347,7 +372,7 @@ const toolset: Toolset = {
       auditText: `User acknowledged weather for ${args.city} (${args.value}°${args.units ?? 'c'}).`,
     }),
   }),
-  approval_request: defineTool<ApprovalArgs, ApprovalResult>({
+  defineTool<ApprovalArgs, ApprovalResult>({
     name: 'approval_request',
     description: 'Ask the user to approve or reject a proposed action.',
     parameters: approvalParameters,
@@ -358,14 +383,7 @@ const toolset: Toolset = {
       auditText: `${result.approved ? 'Approved' : 'Rejected'} "${args.summary}" in the client UI.`,
     }),
   }),
-};
-
-function toolsFromToolset() {
-  return Object.values(toolset).map((tool) => ({
-    type: 'function' as const,
-    function: {name: tool.name, description: tool.description, parameters: tool.parameters},
-  }));
-}
+);
 
 function toContentArray(
   content: TAssistantMessage<ToolPartContent>['content'],
@@ -490,7 +508,7 @@ const CHAT_API_URL =
   '/api/chat';
 
 export function AgentChat() {
-  const tools = useMemo(toolsFromToolset, []);
+  const tools = useMemo(() => toolsetToOpenAIDefinitions(toolset), []);
   const [messages, setMessages] = useState<AgentChatMessage[]>([]);
   const [status, setStatus] = useState<ChatStatus>('ready');
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
@@ -538,7 +556,9 @@ export function AgentChat() {
     [tools],
   );
 
-  const {messageRendererRegistry} = useToolset<ToolPartContent>(toolset, setMessages, {
+  const {messageRendererRegistry} = useToolset<ToolPartContent>({
+    toolset,
+    setMessages,
     onAfterResult: (next) => {
       sendTurn(next).catch((err) => console.warn('sendTurn failed', err));
     },

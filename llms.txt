@@ -88,6 +88,7 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 - [useAutoCollapseOnSuccess](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useAutoCollapseOnSuccess.ts): auto-collapse a section on success status
 - [useAutoCollapseOnCancelled](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useAutoCollapseOnCancelled.ts): auto-collapse a section on cancelled status
 - [useFileUploadStore](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useFileUploadStore.ts): headless file-upload store with progress/error states
+- [useToolset](https://github.com/gravity-ui/aikit/blob/main/src/hooks/useToolset.ts): wire a toolset into the chat — renderer registry + history merge for tool calls
 
 ## Theming & i18n
 

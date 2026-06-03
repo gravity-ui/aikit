@@ -1,17 +1,18 @@
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {Button, Card, Text} from '@gravity-ui/uikit';
 import type {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {AssistantMessage} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import type {TAssistantMessage, TextMessageContent} from '../../../../types';
+import {useToolset} from '../../../../hooks/useToolset';
+import type {TAssistantMessage, TChatMessage, TextMessageContent} from '../../../../types';
 import {
     type ToolComponentProps,
     type ToolPartContent,
     type ToolSchemaResult,
-    type Toolset,
     type ToolsetResultEvent,
+    createToolset,
     createToolsetRenderer,
     defineTool,
 } from '../../../../utils/toolset';
@@ -94,8 +95,8 @@ function ApprovalRequestTool({
     );
 }
 
-const toolset: Toolset = {
-    'approval.request': defineTool<ApprovalArgs, ApprovalResult>({
+const toolset = createToolset(
+    defineTool<ApprovalArgs, ApprovalResult>({
         name: 'approval.request',
         description: 'Ask the user to approve or reject a proposed action.',
         parameters: {
@@ -114,7 +115,7 @@ const toolset: Toolset = {
             auditText: `${result.approved ? 'Approved' : 'Rejected'} "${args.summary}" in a client callback.`,
         }),
     }),
-};
+);
 
 const textPart = (text: string): TextMessageContent => ({type: 'text', data: {text}});
 
@@ -163,7 +164,7 @@ export const ProofOfConcept: StoryFn = () => {
                     ...part,
                     data: {
                         ...part.data,
-                        status: 'success',
+                        status: event.status,
                         result: event.result,
                     },
                 };
@@ -214,6 +215,93 @@ export const ProofOfConcept: StoryFn = () => {
                     onClick={() => {
                         setContent(initialContent);
                         setAgentEvents([]);
+                    }}
+                >
+                    Reset story state
+                </Button>
+            </div>
+        </ContentWrapper>
+    );
+};
+
+const initialMessages: TChatMessage<ToolPartContent>[] = [
+    {
+        id: 'msg-1',
+        role: 'assistant',
+        content: [
+            textPart(
+                'This story uses `useToolset` to wire the toolset into chat state. When you click Approve/Reject, the hook merges the result into history via `applyToolResult` and `onAfterResult` simulates a mock agent reply.',
+            ),
+            toolPart('call-hook-1', {
+                summary: 'Deploy the release candidate to production',
+                risk: 'high',
+            }),
+        ],
+    },
+];
+
+export const CustomToolRendererWithHook: StoryFn = () => {
+    const [messages, setMessages] = useState<TChatMessage<ToolPartContent>[]>(initialMessages);
+    const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+    useEffect(() => {
+        return () => {
+            timersRef.current.forEach(clearTimeout);
+        };
+    }, []);
+
+    const handleAfterResult = useCallback((next: TChatMessage<ToolPartContent>[]) => {
+        const lastTool = [...next]
+            .reverse()
+            .flatMap((m) => (m.role === 'assistant' && Array.isArray(m.content) ? m.content : []))
+            .find(
+                (part): part is ToolPartContent =>
+                    part.type === 'tool' && part.data.status === 'success',
+            );
+
+        if (!lastTool) return;
+
+        const timer = setTimeout(() => {
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: `mock-reply-${lastTool.data.toolCallId}`,
+                    role: 'assistant',
+                    content: [
+                        textPart(
+                            `Mock agent received tool result for ${lastTool.data.toolCallId}: ${JSON.stringify(lastTool.data.result)}`,
+                        ),
+                    ],
+                },
+            ]);
+        }, 400);
+        timersRef.current.push(timer);
+    }, []);
+
+    const {messageRendererRegistry} = useToolset({
+        toolset,
+        setMessages,
+        onAfterResult: handleAfterResult,
+    });
+
+    return (
+        <ContentWrapper width="620px">
+            <div style={{display: 'flex', flexDirection: 'column', gap: 16}}>
+                {messages.map((msg) =>
+                    msg.role === 'assistant' ? (
+                        <AssistantMessage
+                            key={msg.id}
+                            id={msg.id}
+                            content={msg.content}
+                            messageRendererRegistry={messageRendererRegistry}
+                        />
+                    ) : null,
+                )}
+                <Button
+                    onClick={() => {
+                        timersRef.current.forEach(clearTimeout);
+                        timersRef.current = [];
+                        setMessages(initialMessages);
                     }}
                 >
                     Reset story state

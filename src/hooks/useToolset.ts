@@ -11,6 +11,8 @@ import {
 } from '../utils/toolset';
 
 export type UseToolsetOptions<TCustom extends TMessageContent = never> = {
+    toolset: Toolset;
+    setMessages: Dispatch<SetStateAction<TChatMessage<TCustom>[]>>;
     /**
      * Called after the tool result has been merged into history.
      * Typical use: forward the updated transcript to the model.
@@ -30,17 +32,20 @@ export type UseToolsetReturn = {
  * renders tool parts via the toolset and a `handleToolResult` callback that
  * merges results into history and notifies via `onAfterResult`.
  *
- * Pass the same `toolset` reference across renders (e.g. via `useMemo`) so
- * the registry stays stable.
+ * Pass the same `toolset` reference across renders (e.g. via `useMemo` or
+ * `createToolset`) so the registry stays stable.
  */
 export function useToolset<TCustom extends TMessageContent = never>(
-    toolset: Toolset,
-    setMessages: Dispatch<SetStateAction<TChatMessage<TCustom>[]>>,
-    options?: UseToolsetOptions<TCustom>,
+    options: UseToolsetOptions<TCustom>,
 ): UseToolsetReturn {
-    const onAfterResultRef = useRef(options?.onAfterResult);
+    const {toolset, setMessages, onAfterResult, registry} = options;
+
+    const onAfterResultRef = useRef(onAfterResult);
+    // Mirror the latest onAfterResult into a ref every render so the
+    // registry memo below doesn't need to depend on it (which would
+    // rebuild the registry on every parent rerender).
     useEffect(() => {
-        onAfterResultRef.current = options?.onAfterResult;
+        onAfterResultRef.current = onAfterResult;
     });
 
     const handleToolResult = useCallback(
@@ -48,6 +53,9 @@ export function useToolset<TCustom extends TMessageContent = never>(
             setMessages((prev) => {
                 const updated = applyToolResult(prev, event);
                 if (updated !== prev) {
+                    // Defer to a microtask: never call onAfterResult while
+                    // React is still inside the setState reducer. Re-entrant
+                    // setState is illegal in concurrent mode.
                     queueMicrotask(() => onAfterResultRef.current?.(updated));
                 }
                 return updated;
@@ -60,9 +68,9 @@ export function useToolset<TCustom extends TMessageContent = never>(
         () =>
             createToolsetRenderer(toolset, {
                 onToolResult: handleToolResult,
-                registry: options?.registry,
+                registry,
             }),
-        [toolset, handleToolResult, options?.registry],
+        [toolset, handleToolResult, registry],
     );
 
     return {messageRendererRegistry, handleToolResult};

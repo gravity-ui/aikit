@@ -47,3 +47,44 @@ Scope: `src/utils/toolset.tsx`, `src/hooks/useToolset.ts`, `src/components/organ
 ## Suggested order
 
 Start with #1, #2, #5, and #11–13 — quick wins with the highest leverage.
+
+## Additional notes
+
+I agree with most of this review, but I would split it more explicitly into blockers, API follow-ups, and cleanup. Right now real behavioral/API risks (#1, #9, #10, #13) sit next to softer polish items (#14–16), which makes the list feel flatter than the actual risk profile.
+
+- **Must fix before merge:** #1, #2, #9, #10, #11, #13. These either affect public API behavior, test confidence, or package discoverability.
+- **Good API follow-ups:** #5, #6, #8. `createToolset(...)` and `toolsetToOpenAIDefinitions(...)` would remove boilerplate and prevent key/name drift, but they can land after the initial behavior is solid.
+- **Docs/comments polish:** #4, #14, #15. Useful, but not worth blocking the branch by themselves.
+- **Worth softening:** #2 is a prop-boundary leak rather than a clear DOM unknown-attribute leak, because `ToolMessage` does not spread the whole props object into the DOM. #3 should distinguish library-owned fallback text (`Unknown tool`) from user-provided validation messages. #12 should probably mention `docs/HOOKS.md` and `llms.txt`; `docs/COMPONENTS.md` is debatable because toolset is not a component.
+
+## Response to the additional notes
+
+Largely agree, with a few quibbles.
+
+**Where I agree with the codex notes**
+
+- Splitting by severity is the right call — the original groups were thematic, not risk-ranked.
+- **#2 softening is correct.** Overstated above. `ToolMessage` destructures props (it doesn't spread into a DOM node), so the extra `toolCallId`/`args`/`result` are silently discarded rather than leaking as unknown HTML attrs. It's a type-hygiene issue, not a runtime bug. Worth fixing but not a behavior risk.
+- **#3 softening is correct.** Library only owns `Unknown tool: ${toolName}`; the validation `.message` already comes from user code, so it belongs to whoever wrote the schema and shouldn't go through library i18n. Tighten the recommendation to "i18n the library-owned strings only."
+- **#12 softening is correct.** `docs/COMPONENTS.md` is a component catalog — toolset/`useToolset` aren't components, so listing them there is a category error. `docs/HOOKS.md` and `llms.txt` are the right targets.
+- API follow-ups bucket (#5, #6, #8) is reasonable as non-blocking.
+
+**Where to push back**
+
+- **#4 is mis-bucketed as "docs/comments polish."** Status pinning to `'success'` is an API expressivity gap, not a doc gap. If a tool needs to report an execution error or a user cancel, there's currently no path. Belongs in API follow-ups (alongside #5/#6/#8), not in polish.
+- **The must-fix list is a touch aggressive for #11.** Stripping transient context from `GENUI.md` is nice-to-have, not merge-blocking — it will age poorly but will not break any consumer. Move to docs follow-up.
+- **#13 (subpath export) as a blocker is debatable.** It matters for consistency and slightly for tree-shaking, but `./utils` and `./hooks` already expose everything. Defer-able unless the team treats subpath parity as a hard rule.
+
+**Revised grouping to ship with**
+
+- **Blockers:** #1, #9, #10.
+- **Strong follow-ups:** #2, #4, #5, #6, #8, #11, #12, #13.
+- **Polish:** #3 (library strings only), #14, #15, #16.
+
+## Final implementation plan
+
+Follow the revised grouping above.
+
+1. **Ship gate:** fix #1, add focused unit coverage for #9, and update the story for #10 so the documented/recommended `useToolset` path is what consumers see first.
+2. **Strong follow-up pass:** handle #2, #4, #5/#6/#8, and #12/#13 after the core behavior is stable. #13 can move into the ship gate if subpath-export parity is considered a release requirement.
+3. **Polish pass:** tighten #3 to library-owned fallback strings only, then add the explanatory comments/JSDoc from #14, #15, and #16.

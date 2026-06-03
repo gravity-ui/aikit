@@ -98,6 +98,16 @@
         "default": "./build/cjs/utils/clipboardUtils.js"
       }
     },
+    "./utils/toolset": {
+      "import": {
+        "types": "./build/esm/utils/toolset/index.d.ts",
+        "default": "./build/esm/utils/toolset/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/utils/toolset/index.d.ts",
+        "default": "./build/cjs/utils/toolset/index.js"
+      }
+    },
     "./adapters": {
       "import": {
         "types": "./build/esm/adapters/index.d.ts",

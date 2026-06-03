@@ -1,16 +1,17 @@
 # Hooks
 
-AIKit exports 7 public hooks. All are re-exported from the package root and from the `@gravity-ui/aikit/hooks` subpath.
+AIKit exports 8 public hooks. All are re-exported from the package root and from the `@gravity-ui/aikit/hooks` subpath.
 
-| Hook                                                        | Purpose                                                      |
-| ----------------------------------------------------------- | ------------------------------------------------------------ |
-| [`useDateFormatter`](#usedateformatter)                     | Format chat timestamps with locale and relative-date logic   |
-| [`useToolMessage`](#usetoolmessage)                         | Tool-message state machine (expand/collapse based on status) |
-| [`useSmartScroll`](#usesmartscroll)                         | Auto-scroll to bottom while respecting user scroll-up        |
-| [`useScrollPreservation`](#usescrollpreservation)           | Preserve scroll position when items are prepended            |
-| [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess)     | Collapse a section when its async operation succeeds         |
-| [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled) | Collapse a section when its async operation is cancelled     |
-| [`useFileUploadStore`](#usefileuploadstore)                 | Standalone file-upload store with progress/error states      |
+| Hook                                                        | Purpose                                                                        |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [`useDateFormatter`](#usedateformatter)                     | Format chat timestamps with locale and relative-date logic                     |
+| [`useToolMessage`](#usetoolmessage)                         | Tool-message state machine (expand/collapse based on status)                   |
+| [`useSmartScroll`](#usesmartscroll)                         | Auto-scroll to bottom while respecting user scroll-up                          |
+| [`useScrollPreservation`](#usescrollpreservation)           | Preserve scroll position when items are prepended                              |
+| [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess)     | Collapse a section when its async operation succeeds                           |
+| [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled) | Collapse a section when its async operation is cancelled                       |
+| [`useFileUploadStore`](#usefileuploadstore)                 | Standalone file-upload store with progress/error states                        |
+| [`useToolset`](#usetoolset)                                 | Wire a toolset into the chat: renderer registry + history merge for tool calls |
 
 ## `useDateFormatter`
 
@@ -129,3 +130,32 @@ type UseFileUploadStoreReturn<Meta> = {
 ```
 
 See `src/hooks/useFileUploadStore.ts` for the complete type signature.
+
+## `useToolset`
+
+Wires a `Toolset` into the chat: returns a `MessageRendererRegistry` whose `tool`
+dispatcher renders your tool components, and a `handleToolResult` callback that
+merges results into history via `applyToolResult` and forwards the updated
+transcript to `onAfterResult` (typical use: re-sending the conversation to the
+model). The callback is deferred to a microtask so it never fires inside a React
+reducer pass.
+
+```typescript
+function useToolset<TCustom extends TMessageContent = never>(
+  options: UseToolsetOptions<TCustom>,
+): UseToolsetReturn;
+
+type UseToolsetOptions<TCustom> = {
+  toolset: Toolset;
+  setMessages: Dispatch<SetStateAction<TChatMessage<TCustom>[]>>;
+  onAfterResult?: (messages: TChatMessage<TCustom>[]) => void;
+  registry?: MessageRendererRegistry;
+};
+
+type UseToolsetReturn = {
+  messageRendererRegistry: MessageRendererRegistry;
+  handleToolResult: (event: ToolsetResultEvent) => void;
+};
+```
+
+See [GENUI.md](./GENUI.md) for an end-to-end example with a live model adapter.
