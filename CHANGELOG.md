@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/gravity-ui/aikit/compare/v2.0.5...v2.1.0) (2026-06-03)
+
+
+### Features
+
+* **ChatContainer:** add ChatContainer story for custom message type ([#176](https://github.com/gravity-ui/aikit/issues/176)) ([5fad40e](https://github.com/gravity-ui/aikit/commit/5fad40e291197cc615ea1d2e74f17f8fe5971e09))
+
 ## [2.0.5](https://github.com/gravity-ui/aikit/compare/v2.0.4...v2.0.5) (2026-06-01)
 
 
