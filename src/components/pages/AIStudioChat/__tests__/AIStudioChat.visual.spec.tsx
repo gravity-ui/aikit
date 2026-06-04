@@ -39,6 +39,12 @@ test.describe('AIStudioChat', {tag: '@AIStudioChat'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with MCP tool call', async ({mount, expectScreenshot}) => {
+        await mount(<AIStudioChatStories.WithMcpToolCall />);
+
+        await expectScreenshot();
+    });
+
     test('should show send button in ready state', async ({mount, page}) => {
         await mount(<AIStudioChatStories.Playground />);
 

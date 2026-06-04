@@ -1,13 +1,11 @@
 @use '../../../styles/variables';
-
-@import '@diplodoc/transform/dist/css/yfm.css';
+@use '../../../styles/yfm';
 
 $block: '.#{variables.$ns}markdown-renderer';
 
 #{$block} {
     max-width: 100%;
     overflow-x: auto;
-    color: var(--g-color-text-primary);
 
     /* Tables inside message wrappers: reset inherited word-break; scroll on this root when wide */
     table {

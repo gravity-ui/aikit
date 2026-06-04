@@ -2,6 +2,7 @@ import type {TToolStatus} from '../../../types';
 import {OpenAIStreamEventLike, OpenAIStreamOutputItemLike} from '../types/openAiTypes';
 
 import {getTextDeltaFromStreamEvent} from './getTextDeltaFromStreamEvent';
+import {prettyPrintJson} from './prettyPrintJson';
 
 type EventRecord = Record<string, unknown>;
 
@@ -15,6 +16,8 @@ export type StreamEventToolAdd = {
     status?: TToolStatus;
     /** Optional payload to show in tool card (e.g. approval request arguments). */
     headerContent?: string;
+    /** MCP request arguments, pretty-printed JSON. Surfaced for AIStudioChat's tool renderer. */
+    mcpRequest?: string;
 };
 export type StreamEventToolUpdate = {
     kind: 'tool_update';
@@ -23,6 +26,10 @@ export type StreamEventToolUpdate = {
     toolName?: string;
     output?: string;
     error?: string;
+    /** MCP request arguments, pretty-printed JSON. */
+    mcpRequest?: string;
+    /** MCP response or error, pretty-printed JSON. */
+    mcpResponse?: string;
 };
 export type StreamEventThinkingAdd = {kind: 'thinking_add'; item_id: string};
 export type StreamEventThinkingDelta = {kind: 'thinking_delta'; item_id: string; delta: string};
@@ -89,11 +96,14 @@ function addUpdateForMcpCall(
 ): StreamEventContentUpdate | null {
     const name = typeof item.name === 'string' ? item.name : undefined;
     const serverLabel = typeof item.server_label === 'string' ? item.server_label : undefined;
+    const args = typeof item.arguments === 'string' ? item.arguments : undefined;
+    const mcpRequest = prettyPrintJson(args);
     return {
         kind: 'tool_add',
         id,
         toolName: name ?? serverLabel ?? 'MCP',
         serverLabel,
+        ...(mcpRequest ? {mcpRequest} : {}),
     };
 }
 
@@ -197,12 +207,14 @@ function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCont
         name?: string;
         server_label?: string;
         status?: string;
+        arguments?: string;
         output?: string;
         error?: string;
     };
     const st = mcp.status ?? '';
     const outputStr = typeof mcp.output === 'string' ? mcp.output : undefined;
     const errStr = typeof mcp.error === 'string' ? mcp.error : undefined;
+    const argsStr = typeof mcp.arguments === 'string' ? mcp.arguments : undefined;
 
     let status: TToolStatus = 'loading';
     if (st === 'failed' || st === 'incomplete') {
@@ -218,6 +230,10 @@ function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCont
     if (typeof mcp.name === 'string') toolName = mcp.name;
     else if (typeof mcp.server_label === 'string') toolName = mcp.server_label;
     else toolName = undefined;
+
+    const mcpRequest = prettyPrintJson(argsStr);
+    const mcpResponse = prettyPrintJson(errStr ?? outputStr);
+
     return {
         kind: 'tool_update',
         item_id: mcp.id,
@@ -225,6 +241,8 @@ function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCont
         toolName,
         output: outputStr,
         error: errStr,
+        ...(mcpRequest ? {mcpRequest} : {}),
+        ...(mcpResponse ? {mcpResponse} : {}),
     };
 }
 

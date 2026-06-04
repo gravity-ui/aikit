@@ -16,10 +16,17 @@ import type {
     TUserMessage,
     UserRating,
 } from '../../../types';
+import type {ToolMessageContent} from '../../../types/messages';
+import {
+    createMessageRendererRegistry,
+    mergeMessageRendererRegistries,
+    registerMessageRenderer,
+} from '../../../utils/messageTypeRegistry';
 import {InputContextProvider, useInputContext} from '../../molecules/InputContext';
 import type {MessageListConfig} from '../ChatContainer';
 import {ChatContainer} from '../ChatContainer';
 
+import {McpToolRenderer} from './McpToolRenderer';
 import {normalizeMcpCallIds, omitMcpListToolsEvents} from './transforms';
 import type {AIStudioChatProps} from './types';
 
@@ -458,14 +465,30 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
     }, []);
 
     /**
-     * Wrap consumer-provided Like/Unlike actions so the library toggles `userRating`
-     * automatically before delegating to the original `onClick`. Other actions and
-     * non-default (ReactNode) entries pass through unchanged.
+     * Build the final messageListConfig:
+     * - Wrap consumer-provided Like/Dislike actions so the library toggles `userRating`
+     *   automatically before delegating to the original `onClick`. Other actions and
+     *   non-default (ReactNode) entries pass through unchanged.
+     * - Inject a custom 'tool' renderer that renders MCP request/response sections when
+     *   `mcpRequest`/`mcpResponse` are present in the tool content. A consumer-provided
+     *   `messageRendererRegistry` wins on overlap.
      */
     const messageListConfig = useMemo<MessageListConfig | undefined>(() => {
         const original = chatContainerProps.messageListConfig;
+
+        const baseRegistry = createMessageRendererRegistry();
+        registerMessageRenderer<ToolMessageContent>(baseRegistry, 'tool', {
+            component: McpToolRenderer,
+        });
+        const messageRendererRegistry = mergeMessageRendererRegistries(
+            baseRegistry,
+            original?.messageRendererRegistry ?? {},
+        );
+
         const originalAssistantActions = original?.assistantActions;
-        if (!originalAssistantActions) return original;
+        if (!originalAssistantActions) {
+            return {...original, messageRendererRegistry};
+        }
 
         const wrappedAssistantActions = originalAssistantActions.map((action) => {
             const typed = action as DefaultMessageAction<TAssistantMessage>;
@@ -492,6 +515,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         return {
             ...original,
             assistantActions: wrappedAssistantActions,
+            messageRendererRegistry,
         };
     }, [chatContainerProps.messageListConfig, setUserRating]);
 

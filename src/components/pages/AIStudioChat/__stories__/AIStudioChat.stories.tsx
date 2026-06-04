@@ -261,3 +261,127 @@ export const WithSystemPrompt: Story = {
     },
     decorators: defaultDecorators,
 };
+
+const mcpRequestArgs = JSON.stringify(
+    {
+        slug: 'why-mcp',
+        format: 'markdown',
+        includeAuthor: true,
+    },
+    null,
+    2,
+);
+
+const mcpResponseBody = JSON.stringify(
+    {
+        slug: 'why-mcp',
+        title: 'Why Model Context Protocol matters',
+        author: {name: 'A. Example', handle: '@example'},
+        publishedAt: '2026-03-12T09:30:00Z',
+        excerpt:
+            'MCP lets assistants ground their reasoning in live tools without bespoke glue per integration.',
+    },
+    null,
+    2,
+);
+
+const mcpErrorBody = JSON.stringify(
+    {
+        code: 'NOT_FOUND',
+        message: 'No post with slug "missing-post"',
+    },
+    null,
+    2,
+);
+
+const messagesWithMcpToolCall: TChatMessage[] = [
+    {
+        id: 'mcp-1',
+        role: 'user',
+        content: 'Fetch the post "why-mcp" and summarise it.',
+    },
+    {
+        id: 'mcp-2',
+        role: 'assistant',
+        content: [
+            {
+                type: 'tool',
+                id: 'tool-cc-success',
+                data: {
+                    toolName: 'get-fake-post',
+                    status: 'success',
+                    initialExpanded: true,
+                    mcpRequest: mcpRequestArgs,
+                    mcpResponse: mcpResponseBody,
+                },
+            },
+            {
+                type: 'text',
+                id: 'mcp-2-text',
+                data: {
+                    text: 'The post **Why Model Context Protocol matters** argues that MCP removes per-integration glue by giving assistants a uniform way to call live tools.',
+                },
+            },
+        ],
+    },
+    {
+        id: 'mcp-3',
+        role: 'user',
+        content: 'Try fetching "missing-post" too.',
+    },
+    {
+        id: 'mcp-4',
+        role: 'assistant',
+        content: [
+            {
+                type: 'tool',
+                id: 'tool-cc-error',
+                data: {
+                    toolName: 'get-fake-post',
+                    status: 'error',
+                    initialExpanded: true,
+                    mcpRequest: JSON.stringify({slug: 'missing-post'}, null, 2),
+                    mcpResponse: mcpErrorBody,
+                },
+            },
+            {
+                type: 'text',
+                id: 'mcp-4-text',
+                data: {
+                    text: 'The tool returned `NOT_FOUND` — there is no post with the slug `missing-post`.',
+                },
+            },
+        ],
+    },
+    {
+        id: 'mcp-5',
+        role: 'assistant',
+        content: [
+            {
+                type: 'tool',
+                id: 'tool-cc-loading',
+                data: {
+                    toolName: 'get-fake-post',
+                    status: 'loading',
+                    initialExpanded: true,
+                    mcpRequest: JSON.stringify({slug: 'live-call'}, null, 2),
+                },
+            },
+        ],
+    },
+];
+
+/**
+ * Chat pre-populated with assistant messages that contain MCP tool calls.
+ * Demonstrates the AIStudioChat-specific tool renderer: a `Request` section
+ * with the pretty-printed call arguments and a `Response` section with the
+ * tool output (or error). Includes success, error, and in-flight states.
+ */
+export const WithMcpToolCall: Story = {
+    args: {
+        apiUrl: '/api/chat',
+        initialMessages: messagesWithMcpToolCall,
+        showActionsOnHover: true,
+    },
+    decorators: defaultDecorators,
+};
