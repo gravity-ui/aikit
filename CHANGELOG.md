@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/gravity-ui/aikit/compare/v2.1.0...v2.2.0) (2026-06-04)
+
+
+### Features
+
+* **AIStudioChat:** modify mcp tool renderer ([#168](https://github.com/gravity-ui/aikit/issues/168)) ([c475926](https://github.com/gravity-ui/aikit/commit/c475926e2424ce75214c043776c62eb3b54f1f5c))
+
 ## [2.1.0](https://github.com/gravity-ui/aikit/compare/v2.0.5...v2.1.0) (2026-06-03)
 
 
