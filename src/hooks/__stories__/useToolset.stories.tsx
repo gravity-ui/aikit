@@ -1,21 +1,19 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {Button, Card, Text} from '@gravity-ui/uikit';
 import type {Meta, StoryFn} from '@storybook/react-webpack5';
 
-import {AssistantMessage} from '..';
-import {ContentWrapper} from '../../../../demo/ContentWrapper';
-import {useToolset} from '../../../../hooks/useToolset';
-import type {TAssistantMessage, TChatMessage, TextMessageContent} from '../../../../types';
+import {AssistantMessage} from '../../components/organisms/AssistantMessage';
+import {ContentWrapper} from '../../demo/ContentWrapper';
+import type {TChatMessage, TextMessageContent} from '../../types';
 import {
     type ToolComponentProps,
     type ToolPartContent,
     type ToolSchemaResult,
-    type ToolsetResultEvent,
     createToolset,
-    createToolsetRenderer,
     defineTool,
-} from '../../../../utils/toolset';
+} from '../../utils/toolset';
+import {useToolset} from '../useToolset';
 
 type ApprovalArgs = {
     summary: string;
@@ -25,13 +23,6 @@ type ApprovalArgs = {
 type ApprovalResult = {
     approved: boolean;
     auditText: string;
-};
-
-type AgentToolEvent = {
-    role: 'tool';
-    tool_call_id: string;
-    name: string;
-    content: string;
 };
 
 function validateApprovalArgs(input: unknown): ToolSchemaResult<ApprovalArgs> {
@@ -130,25 +121,6 @@ const toolPart = (toolCallId: string, args: unknown): ToolPartContent => ({
     },
 });
 
-const initialContent: Array<TextMessageContent | ToolPartContent> = [
-    textPart(
-        'This story uses the existing `tool` content type. `createToolsetRenderer` validates args, dispatches by `toolName`, and sends a result back to the agent on `submitResult`.',
-    ),
-    toolPart('call-valid', {
-        summary: 'Deploy the release candidate to production',
-        risk: 'high',
-    }),
-    toolPart('call-invalid', {
-        summary: 42,
-        risk: 'medium',
-    }),
-];
-
-export default {
-    title: 'CustomToolRenderer',
-    parameters: {layout: 'padded'},
-} as Meta;
-
 const initialMessages: TChatMessage<ToolPartContent>[] = [
     {
         id: 'msg-1',
@@ -165,7 +137,12 @@ const initialMessages: TChatMessage<ToolPartContent>[] = [
     },
 ];
 
-export const CustomToolRendererWithHook: StoryFn = () => {
+export default {
+    title: 'genui/useToolset',
+    parameters: {layout: 'padded'},
+} as Meta;
+
+export const Playground: StoryFn = () => {
     const [messages, setMessages] = useState<TChatMessage<ToolPartContent>[]>(initialMessages);
     const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -227,81 +204,6 @@ export const CustomToolRendererWithHook: StoryFn = () => {
                         timersRef.current.forEach(clearTimeout);
                         timersRef.current = [];
                         setMessages(initialMessages);
-                    }}
-                >
-                    Reset story state
-                </Button>
-            </div>
-        </ContentWrapper>
-    );
-};
-
-export const ProofOfConcept: StoryFn = () => {
-    const [content, setContent] =
-        useState<Array<TextMessageContent | ToolPartContent>>(initialContent);
-    const [agentEvents, setAgentEvents] = useState<AgentToolEvent[]>([]);
-
-    const handleToolResult = useCallback((event: ToolsetResultEvent) => {
-        setContent((prevContent) =>
-            prevContent.map((part) => {
-                if (part.type !== 'tool' || part.data.toolCallId !== event.toolCallId) {
-                    return part;
-                }
-                return {
-                    ...part,
-                    data: {
-                        ...part.data,
-                        status: event.status,
-                        result: event.result,
-                    },
-                };
-            }),
-        );
-
-        setAgentEvents((prev) => [
-            ...prev,
-            {
-                role: 'tool',
-                tool_call_id: event.toolCallId,
-                name: event.toolName,
-                content: JSON.stringify(event.result),
-            },
-        ]);
-    }, []);
-
-    const messageRendererRegistry = useMemo(
-        () => createToolsetRenderer(toolset, {onToolResult: handleToolResult}),
-        [handleToolResult],
-    );
-
-    const message: TAssistantMessage<ToolPartContent> = {
-        id: 'custom-tool-renderer',
-        role: 'assistant',
-        content,
-    };
-
-    return (
-        <ContentWrapper width="620px">
-            <div style={{display: 'flex', flexDirection: 'column', gap: 16}}>
-                <AssistantMessage
-                    id={message.id}
-                    content={message.content}
-                    messageRendererRegistry={messageRendererRegistry}
-                />
-                <Card view="outlined" style={{padding: 12}}>
-                    <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
-                        <Text variant="subheader-1">Tool responses sent to agent</Text>
-                        <pre style={{margin: 0, whiteSpace: 'pre-wrap'}}>
-                            {agentEvents.length === 0
-                                ? '// Click Approve or Reject to send a tool response'
-                                : JSON.stringify(agentEvents, null, 2)}
-                        </pre>
-                    </div>
-                </Card>
-                <Button
-                    onClick={() => {
-                        setContent(initialContent);
-                        setAgentEvents([]);
                     }}
                 >
                     Reset story state

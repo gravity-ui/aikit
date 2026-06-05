@@ -14,11 +14,11 @@
 | `defineTool`, `createToolset`, `createToolsetRenderer`, `applyToolResult`, `toolsetToOpenAIDefinitions`, types | `src/utils/toolset` (re-exported from `@gravity-ui/aikit`) |
 | `useToolset`                                                                                                   | `src/hooks/useToolset.ts`                                  |
 
-**Storybook (no network):** `CustomToolRenderer` → `ProofOfConcept` and
-`CustomToolRendererWithHook` in
-`src/components/organisms/AssistantMessage/__stories__/CustomToolRenderer.stories.tsx`.
-`ProofOfConcept` shows the registry directly; `CustomToolRendererWithHook` is the
-recommended path via `useToolset`.
+**Storybook (no network):** `genui/Showcase` (in
+`src/utils/toolset/__stories__/Showcase.stories.tsx`) and `genui/useToolset` (in
+`src/hooks/__stories__/useToolset.stories.tsx`). `Showcase` shows the registry
+directly via `createToolsetRenderer`; `useToolset` is the recommended path via
+the `useToolset` hook.
 
 ---
 
