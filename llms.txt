@@ -104,6 +104,6 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 - [Live Storybook](https://preview.gravity-ui.com/aikit/): interactive component playground
 - [Project Structure](https://github.com/gravity-ui/aikit/blob/main/docs/PROJECT_STRUCTURE.md): source tree (for contributors)
 - [Components Catalog](https://github.com/gravity-ui/aikit/blob/main/docs/COMPONENTS.md): same component list as above, with table-style reference
-- [Hooks Reference](https://github.com/gravity-ui/aikit/blob/main/docs/HOOKS.md): detailed signatures for the 7 public hooks
+- [Hooks Reference](https://github.com/gravity-ui/aikit/blob/main/docs/HOOKS.md): detailed signatures for the 8 public hooks
 - [AI Agent Integration](https://github.com/gravity-ui/aikit/blob/main/docs/AI_AGENTS.md): drop-in Cursor rule and Claude Code skill for consumer projects
 - [Issue tracker](https://github.com/gravity-ui/aikit/issues)
