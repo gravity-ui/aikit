@@ -96,7 +96,7 @@ function ApprovalRequestTool({
 }
 
 const toolset = createToolset(
-    defineTool<ApprovalArgs, ApprovalResult>({
+    defineTool({
         name: 'approval.request',
         description: 'Ask the user to approve or reject a proposed action.',
         parameters: {
@@ -148,81 +148,6 @@ export default {
     title: 'CustomToolRenderer',
     parameters: {layout: 'padded'},
 } as Meta;
-
-export const ProofOfConcept: StoryFn = () => {
-    const [content, setContent] =
-        useState<Array<TextMessageContent | ToolPartContent>>(initialContent);
-    const [agentEvents, setAgentEvents] = useState<AgentToolEvent[]>([]);
-
-    const handleToolResult = useCallback((event: ToolsetResultEvent) => {
-        setContent((prevContent) =>
-            prevContent.map((part) => {
-                if (part.type !== 'tool' || part.data.toolCallId !== event.toolCallId) {
-                    return part;
-                }
-                return {
-                    ...part,
-                    data: {
-                        ...part.data,
-                        status: event.status,
-                        result: event.result,
-                    },
-                };
-            }),
-        );
-
-        setAgentEvents((prev) => [
-            ...prev,
-            {
-                role: 'tool',
-                tool_call_id: event.toolCallId,
-                name: event.toolName,
-                content: JSON.stringify(event.result),
-            },
-        ]);
-    }, []);
-
-    const messageRendererRegistry = useMemo(
-        () => createToolsetRenderer(toolset, {onToolResult: handleToolResult}),
-        [handleToolResult],
-    );
-
-    const message: TAssistantMessage<ToolPartContent> = {
-        id: 'custom-tool-renderer',
-        role: 'assistant',
-        content,
-    };
-
-    return (
-        <ContentWrapper width="620px">
-            <div style={{display: 'flex', flexDirection: 'column', gap: 16}}>
-                <AssistantMessage
-                    id={message.id}
-                    content={message.content}
-                    messageRendererRegistry={messageRendererRegistry}
-                />
-                <Card view="outlined" style={{padding: 12}}>
-                    <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
-                        <Text variant="subheader-1">Tool responses sent to agent</Text>
-                        <pre style={{margin: 0, whiteSpace: 'pre-wrap'}}>
-                            {agentEvents.length === 0
-                                ? '// Click Approve or Reject to send a tool response'
-                                : JSON.stringify(agentEvents, null, 2)}
-                        </pre>
-                    </div>
-                </Card>
-                <Button
-                    onClick={() => {
-                        setContent(initialContent);
-                        setAgentEvents([]);
-                    }}
-                >
-                    Reset story state
-                </Button>
-            </div>
-        </ContentWrapper>
-    );
-};
 
 const initialMessages: TChatMessage<ToolPartContent>[] = [
     {
@@ -302,6 +227,81 @@ export const CustomToolRendererWithHook: StoryFn = () => {
                         timersRef.current.forEach(clearTimeout);
                         timersRef.current = [];
                         setMessages(initialMessages);
+                    }}
+                >
+                    Reset story state
+                </Button>
+            </div>
+        </ContentWrapper>
+    );
+};
+
+export const ProofOfConcept: StoryFn = () => {
+    const [content, setContent] =
+        useState<Array<TextMessageContent | ToolPartContent>>(initialContent);
+    const [agentEvents, setAgentEvents] = useState<AgentToolEvent[]>([]);
+
+    const handleToolResult = useCallback((event: ToolsetResultEvent) => {
+        setContent((prevContent) =>
+            prevContent.map((part) => {
+                if (part.type !== 'tool' || part.data.toolCallId !== event.toolCallId) {
+                    return part;
+                }
+                return {
+                    ...part,
+                    data: {
+                        ...part.data,
+                        status: event.status,
+                        result: event.result,
+                    },
+                };
+            }),
+        );
+
+        setAgentEvents((prev) => [
+            ...prev,
+            {
+                role: 'tool',
+                tool_call_id: event.toolCallId,
+                name: event.toolName,
+                content: JSON.stringify(event.result),
+            },
+        ]);
+    }, []);
+
+    const messageRendererRegistry = useMemo(
+        () => createToolsetRenderer(toolset, {onToolResult: handleToolResult}),
+        [handleToolResult],
+    );
+
+    const message: TAssistantMessage<ToolPartContent> = {
+        id: 'custom-tool-renderer',
+        role: 'assistant',
+        content,
+    };
+
+    return (
+        <ContentWrapper width="620px">
+            <div style={{display: 'flex', flexDirection: 'column', gap: 16}}>
+                <AssistantMessage
+                    id={message.id}
+                    content={message.content}
+                    messageRendererRegistry={messageRendererRegistry}
+                />
+                <Card view="outlined" style={{padding: 12}}>
+                    <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+                        <Text variant="subheader-1">Tool responses sent to agent</Text>
+                        <pre style={{margin: 0, whiteSpace: 'pre-wrap'}}>
+                            {agentEvents.length === 0
+                                ? '// Click Approve or Reject to send a tool response'
+                                : JSON.stringify(agentEvents, null, 2)}
+                        </pre>
+                    </div>
+                </Card>
+                <Button
+                    onClick={() => {
+                        setContent(initialContent);
+                        setAgentEvents([]);
                     }}
                 >
                     Reset story state

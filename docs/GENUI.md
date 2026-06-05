@@ -71,7 +71,7 @@ function ApprovalCard({
 }
 
 const toolset = createToolset(
-  defineTool<ApprovalArgs, ApprovalResult>({
+  defineTool({
     name: 'approval.request',
     description: 'Ask the user to approve or reject an action.',
     parameters: {
@@ -361,7 +361,7 @@ function ApprovalCard({
 }
 
 const toolset = createToolset(
-  defineTool<WeatherArgs, WeatherResult>({
+  defineTool({
     name: 'weather_show',
     description: 'Render a weather card for a city and let the user acknowledge it.',
     parameters: weatherParameters,
@@ -372,7 +372,7 @@ const toolset = createToolset(
       auditText: `User acknowledged weather for ${args.city} (${args.value}°${args.units ?? 'c'}).`,
     }),
   }),
-  defineTool<ApprovalArgs, ApprovalResult>({
+  defineTool({
     name: 'approval_request',
     description: 'Ask the user to approve or reject a proposed action.',
     parameters: approvalParameters,

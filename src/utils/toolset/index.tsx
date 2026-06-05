@@ -41,8 +41,8 @@ export type ToolExecutionOutcome<TResult> =
     | {status: 'error'; result?: TResult; error?: {message: string}}
     | {status: 'cancelled'; result?: TResult};
 
-export type ToolDefinition<TArgs, TResult> = {
-    name: string;
+export type ToolDefinition<TArgs, TResult, TName extends string = string> = {
+    name: TName;
     description: string;
     parameters: Record<string, unknown>;
     schema: ToolSchema<TArgs>;
@@ -64,8 +64,8 @@ export type ToolDefinition<TArgs, TResult> = {
         | Promise<TResult | ToolExecutionOutcome<TResult>>;
 };
 
-export type RuntimeToolDefinition = {
-    name: string;
+export type RuntimeToolDefinition<TName extends string = string> = {
+    name: TName;
     description: string;
     parameters: Record<string, unknown>;
     validate: (input: unknown) => ToolSchemaResult<unknown>;
@@ -108,11 +108,12 @@ export type ToolsetResultEvent = {
 
 /**
  * Wrap a typed tool definition into an erased runtime entry that the
- * toolset renderer can dispatch by `toolName`.
+ * toolset renderer can dispatch by `toolName`. The literal `name` is
+ * preserved as a type parameter so `createToolset` can derive its keys.
  */
-export function defineTool<TArgs, TResult>(
-    definition: ToolDefinition<TArgs, TResult>,
-): RuntimeToolDefinition {
+export function defineTool<TArgs, TResult, const TName extends string>(
+    definition: ToolDefinition<TArgs, TResult, TName>,
+): RuntimeToolDefinition<TName> {
     return {
         name: definition.name,
         description: definition.description,
@@ -133,11 +134,13 @@ export function defineTool<TArgs, TResult>(
 /**
  * Build a `Toolset` from a list of `defineTool(...)` results. Keys are
  * derived from `definition.name`, so the call site cannot drift between
- * a literal-object key and the embedded `name`. Throws on duplicates.
+ * a literal-object key and the embedded `name`. The return type narrows
+ * its keys to the union of literal tool names, giving name-autocomplete
+ * on lookups. Throws on duplicates.
  */
-export function createToolset<const T extends readonly RuntimeToolDefinition[]>(
+export function createToolset<const T extends readonly RuntimeToolDefinition<string>[]>(
     ...tools: T
-): {[K in T[number]['name']]: RuntimeToolDefinition} {
+): {[K in T[number]['name']]: RuntimeToolDefinition<T[number]['name']>} {
     const result: Record<string, RuntimeToolDefinition> = {};
     for (const tool of tools) {
         if (Object.prototype.hasOwnProperty.call(result, tool.name)) {
@@ -145,7 +148,7 @@ export function createToolset<const T extends readonly RuntimeToolDefinition[]>(
         }
         result[tool.name] = tool;
     }
-    return result as {[K in T[number]['name']]: RuntimeToolDefinition};
+    return result as {[K in T[number]['name']]: RuntimeToolDefinition<T[number]['name']>};
 }
 
 /**

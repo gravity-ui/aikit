@@ -5,6 +5,7 @@ import {act, render} from '@testing-library/react';
 
 import type {TChatMessage, TextMessageContent} from '../../types/messages';
 import {
+    type ToolComponentProps,
     type ToolPartContent,
     type ToolSchemaResult,
     type Toolset,
@@ -28,12 +29,12 @@ const okSchema = {
     },
 };
 
-function DemoComponent({args}: {args: DemoArgs}) {
-    return <div data-testid="demo">{args.value}</div>;
+function DemoComponent(_props: ToolComponentProps<DemoArgs, DemoResult>) {
+    return <div data-testid="demo">{_props.args.value}</div>;
 }
 
-function makeDemoTool(name = 'demo.tool') {
-    return defineTool<DemoArgs, DemoResult>({
+function makeDemoTool<const TName extends string>(name: TName = 'demo.tool' as TName) {
+    return defineTool({
         name,
         description: 'demo',
         parameters: {type: 'object'},
@@ -51,7 +52,7 @@ describe('defineTool', () => {
     });
 
     it('exposes the user component identity-equal as Renderer', () => {
-        const tool = defineTool<DemoArgs, DemoResult>({
+        const tool = defineTool({
             name: 'demo',
             description: '',
             parameters: {},
@@ -62,7 +63,7 @@ describe('defineTool', () => {
     });
 
     it('default execute echoes the result when user execute is omitted', async () => {
-        const tool = defineTool<DemoArgs, DemoResult>({
+        const tool = defineTool({
             name: 'demo',
             description: '',
             parameters: {},
@@ -94,6 +95,19 @@ describe('createToolset', () => {
 
     it('returns an empty object for no tools', () => {
         expect(createToolset()).toEqual({});
+    });
+
+    it('preserves literal tool names in the return type', () => {
+        const set = createToolset(makeDemoTool('alpha'), makeDemoTool('beta'));
+        // Compile-time assertion: `set.alpha` and `set.beta` are typed; an
+        // unknown key is rejected.
+        const alpha = set.alpha;
+        const beta = set.beta;
+        // @ts-expect-error - 'gamma' is not in the toolset key union
+        const gamma = set.gamma;
+        expect(alpha.name).toBe('alpha');
+        expect(beta.name).toBe('beta');
+        expect(gamma).toBeUndefined();
     });
 });
 
@@ -286,12 +300,12 @@ describe('createToolsetRenderer', () => {
 
     it('catches synchronous throws inside execute() as error outcome', async () => {
         const onToolResult = jest.fn();
-        const tool = defineTool<DemoArgs, DemoResult>({
+        const tool = defineTool({
             name: 'probe',
             description: '',
             parameters: {},
             schema: okSchema,
-            component: ({submitResult}) => {
+            component: ({submitResult}: ToolComponentProps<DemoArgs, DemoResult>) => {
                 React.useEffect(() => {
                     submitResult({ok: true});
                 }, [submitResult]);
@@ -325,12 +339,12 @@ describe('createToolsetRenderer', () => {
 
     it('catches async rejections inside execute() as error outcome', async () => {
         const onToolResult = jest.fn();
-        const tool = defineTool<DemoArgs, DemoResult>({
+        const tool = defineTool({
             name: 'probe',
             description: '',
             parameters: {},
             schema: okSchema,
-            component: ({submitResult}) => {
+            component: ({submitResult}: ToolComponentProps<DemoArgs, DemoResult>) => {
                 React.useEffect(() => {
                     submitResult({ok: true});
                 }, [submitResult]);
@@ -362,12 +376,12 @@ describe('createToolsetRenderer', () => {
 
     it('forwards an explicit error outcome from execute()', async () => {
         const onToolResult = jest.fn();
-        const tool = defineTool<DemoArgs, DemoResult>({
+        const tool = defineTool({
             name: 'probe',
             description: '',
             parameters: {},
             schema: okSchema,
-            component: ({submitResult}) => {
+            component: ({submitResult}: ToolComponentProps<DemoArgs, DemoResult>) => {
                 React.useEffect(() => {
                     submitResult({ok: true});
                 }, [submitResult]);
@@ -398,12 +412,12 @@ describe('createToolsetRenderer', () => {
 
     it('wraps a bare result as a success outcome', async () => {
         const onToolResult = jest.fn();
-        const tool = defineTool<DemoArgs, DemoResult>({
+        const tool = defineTool({
             name: 'probe',
             description: '',
             parameters: {},
             schema: okSchema,
-            component: ({submitResult}) => {
+            component: ({submitResult}: ToolComponentProps<DemoArgs, DemoResult>) => {
                 React.useEffect(() => {
                     submitResult({ok: true});
                 }, [submitResult]);

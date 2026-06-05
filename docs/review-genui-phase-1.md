@@ -88,3 +88,12 @@ Follow the revised grouping above.
 1. **Ship gate:** fix #1, add focused unit coverage for #9, and update the story for #10 so the documented/recommended `useToolset` path is what consumers see first.
 2. **Strong follow-up pass:** handle #2, #4, #5/#6/#8, and #12/#13 after the core behavior is stable. #13 can move into the ship gate if subpath-export parity is considered a release requirement.
 3. **Polish pass:** tighten #3 to library-owned fallback strings only, then add the explanatory comments/JSDoc from #14, #15, and #16.
+
+## Current diff status vs `main`
+
+The plan is mostly implemented, but not completely closed.
+
+- **Done:** #1, #2, #4, #5, #7, #8, #9, #11, #12, #13, #14, #15, #16.
+- **Partial:** #10. A `useToolset` story exists, but the old `ProofOfConcept` story with manual result merging is still the first export. If the goal is for consumers to see the recommended path first, make the hook-based story first or replace the manual story.
+- **Partial:** #6. `createToolset` has a generic return type, but `defineTool` still erases `name` to plain `string`, so literal tool names are not preserved for autocomplete. Make `RuntimeToolDefinition` / `defineTool` generic over the tool name to close this.
+- **Not verified here:** tests were not run; this status is based on reading `git diff main` and the changed files.

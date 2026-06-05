@@ -21,6 +21,15 @@ export function registerMessageRenderer<TContent extends TMessageContent>(
     contentType: TContent['type'],
     renderer: MessageRenderer<TContent>,
 ): MessageRendererRegistry {
+    if (
+        process.env.NODE_ENV !== 'production' &&
+        Object.prototype.hasOwnProperty.call(registry, contentType)
+    ) {
+        // eslint-disable-next-line no-console
+        console.warn(
+            `registerMessageRenderer: overwriting existing renderer for content type "${contentType}"`,
+        );
+    }
     Object.assign(registry, {
         [contentType]: renderer as unknown as MessageRenderer,
     });

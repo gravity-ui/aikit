@@ -5,6 +5,7 @@ import {act, renderHook} from '@testing-library/react';
 
 import type {TChatMessage, TextMessageContent} from '../../types/messages';
 import {
+    type ToolComponentProps,
     type ToolPartContent,
     type ToolSchemaResult,
     createToolset,
@@ -22,10 +23,12 @@ const okSchema = {
     }),
 };
 
-const DemoComponent = ({args}: {args: DemoArgs}) => <div>{args.value}</div>;
+const DemoComponent = (props: ToolComponentProps<DemoArgs, DemoResult>) => (
+    <div>{props.args.value}</div>
+);
 
 const demoToolset = createToolset(
-    defineTool<DemoArgs, DemoResult>({
+    defineTool({
         name: 'demo',
         description: '',
         parameters: {},
