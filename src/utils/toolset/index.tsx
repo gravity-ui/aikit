@@ -178,10 +178,19 @@ export type CreateToolsetRendererOptions = {
     registry?: MessageRendererRegistry;
 };
 
+const OUTCOME_KEYS = new Set(['status', 'result', 'error']);
+
 function isToolExecutionOutcome<TResult>(value: unknown): value is ToolExecutionOutcome<TResult> {
     if (!value || typeof value !== 'object') return false;
     const status = (value as {status?: unknown}).status;
-    return status === 'success' || status === 'error' || status === 'cancelled';
+    if (status !== 'success' && status !== 'error' && status !== 'cancelled') return false;
+    // A bare TResult may coincidentally carry a `status` field. Require all
+    // own keys to be in {status, result, error} so e.g. `{status: 'success',
+    // id: '123'}` is treated as a result, not a (result-less) outcome.
+    for (const key of Object.keys(value)) {
+        if (!OUTCOME_KEYS.has(key)) return false;
+    }
+    return true;
 }
 
 function normalizeOutcome<TResult>(value: unknown): ToolExecutionOutcome<TResult> {

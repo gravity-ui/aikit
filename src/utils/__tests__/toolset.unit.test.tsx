@@ -410,6 +410,43 @@ describe('createToolsetRenderer', () => {
         expect(event.error?.message).toBe('rejected');
     });
 
+    it('treats a bare result whose `status` field coincides with an outcome status as a result', async () => {
+        const onToolResult = jest.fn();
+        type ResultLikeOutcome = {status: 'success'; id: string};
+        const tool = defineTool({
+            name: 'probe',
+            description: '',
+            parameters: {},
+            schema: okSchema,
+            component: ({submitResult}: ToolComponentProps<DemoArgs, ResultLikeOutcome>) => {
+                React.useEffect(() => {
+                    submitResult({status: 'success', id: '123'});
+                }, [submitResult]);
+                return null;
+            },
+            execute: () => ({status: 'success' as const, id: '123'}),
+        });
+        const registry = createToolsetRenderer(createToolset(tool), {onToolResult});
+        const Renderer = registry.tool!.component;
+        await act(async () => {
+            render(
+                <Renderer
+                    part={
+                        {
+                            type: 'tool',
+                            data: {toolName: 'probe', toolCallId: 'c', args: {value: 'x'}},
+                        } as ToolPartContent
+                    }
+                />,
+            );
+            await Promise.resolve();
+            await Promise.resolve();
+        });
+        const event = onToolResult.mock.calls[0]![0] as ToolsetResultEvent;
+        expect(event.status).toBe('success');
+        expect(event.result).toEqual({status: 'success', id: '123'});
+    });
+
     it('wraps a bare result as a success outcome', async () => {
         const onToolResult = jest.fn();
         const tool = defineTool({
