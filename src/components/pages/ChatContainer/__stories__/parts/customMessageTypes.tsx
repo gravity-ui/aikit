@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, {useState} from 'react';
+import React, {Suspense, lazy, useState} from 'react';
 
 import {Button, Card, Flex, Text} from '@gravity-ui/uikit';
 
@@ -18,6 +18,7 @@ import {
     registerMessageRenderer,
 } from '../../../../../utils/messageTypeRegistry';
 
+import type {ChartMessageContent} from './chartMessageTypes';
 import {type Story, defaultDecorators} from './shared';
 
 // ---------------------------------------------------------------------------
@@ -33,25 +34,7 @@ import {type Story, defaultDecorators} from './shared';
 // Demo-only styles live inline in this story file, not in component SCSS.
 // ---------------------------------------------------------------------------
 
-/** Single bar of the `chart` message type. */
-interface ChartBar {
-    /** Label shown under the bar */
-    label: string;
-    /** Raw value; bar height is scaled relative to the largest value */
-    value: number;
-    /** Optional bar color (defaults to the brand color) */
-    color?: string;
-}
-
-/** Data payload for the `chart` custom message type. */
-interface ChartMessageData {
-    /** Optional chart heading */
-    title?: string;
-    /** Bars to render */
-    bars: ChartBar[];
-}
-
-type ChartMessageContent = TMessageContent<'chart', ChartMessageData>;
+// The `chart` content type is shared with the lazily-loaded renderer in `LazyChartView`.
 
 /** Single card of the `cards` message type. */
 interface CardItem {
@@ -337,6 +320,67 @@ export const WithCustomMessageTypes: Story = {
                         {id: 'chart', title: 'Show me a sales chart'},
                         {id: 'cards', title: 'What pricing plans do you offer?'},
                     ],
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+// ---------------------------------------------------------------------------
+// Lazily code-split custom message type
+//
+// A registered renderer is an ordinary React component, so it can be loaded with
+// `React.lazy(() => import('./LazyChartView'))`. The renderer below wraps the lazy
+// component in its own `Suspense` boundary, so the heavy module is fetched only when
+// a `chart` message is actually rendered (and split into a separate chunk by the
+// consumer's bundler). Wrapping `Suspense` inside the renderer keeps the boundary
+// local — host code doesn't need to add one around the whole chat.
+// ---------------------------------------------------------------------------
+
+const LazyChartView = lazy(() => import('./LazyChartView'));
+
+const LazyChartRenderer: React.FC<MessageContentComponentProps<ChartMessageContent>> = (props) => (
+    <Suspense
+        fallback={
+            <Text color="secondary" variant="body-1">
+                Loading chart…
+            </Text>
+        }
+    >
+        <LazyChartView {...props} />
+    </Suspense>
+);
+
+const lazyMessageRendererRegistry: MessageRendererRegistry = createMessageRendererRegistry();
+registerMessageRenderer<ChartMessageContent>(lazyMessageRendererRegistry, 'chart', {
+    component: LazyChartRenderer,
+});
+
+/**
+ * Same custom `chart` type as above, but its renderer is loaded lazily via `React.lazy`
+ * so the chart module ships in a separate chunk and is fetched on first use.
+ */
+export const WithLazyCustomMessageType: Story = {
+    render: (args) => {
+        const messages: TChatMessage[] = [
+            {
+                id: 'user-lazy-chart',
+                role: 'user',
+                content: 'Show me sales by quarter as a chart',
+                timestamp: new Date().toISOString(),
+            },
+            chartAssistantMessage as unknown as TChatMessage,
+        ];
+
+        return (
+            <ChatContainer
+                {...args}
+                messages={messages}
+                status="ready"
+                onSendMessage={async () => undefined}
+                messageListConfig={{
+                    messageRendererRegistry: lazyMessageRendererRegistry,
                 }}
             />
         );

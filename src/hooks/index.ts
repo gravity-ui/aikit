@@ -2,6 +2,7 @@ export * from './useDateFormatter';
 export * from './useToolMessage';
 export * from './useSmartScroll';
 export * from './useScrollPreservation';
+export * from './useVirtualStickToBottom';
 export * from './useAutoCollapseOnSuccess';
 export * from './useAutoCollapseOnCancelled';
 export * from './useFileUploadStore';

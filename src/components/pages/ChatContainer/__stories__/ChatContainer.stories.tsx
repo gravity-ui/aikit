@@ -18,7 +18,15 @@ export default {
 // They are re-exported here so Storybook renders them under a single
 // `pages/ChatContainer` entry. The export order below defines the sidebar order.
 
-export {Playground, EmptyState, WithMessages, WithStreaming, WithHistory} from './parts/basic';
+export {
+    Playground,
+    EmptyState,
+    WithMessages,
+    WithStreaming,
+    WithVirtualizedStreaming,
+    VirtualizationComparison,
+    WithHistory,
+} from './parts/basic';
 
 export {
     EmptyStateWithTextWrap,
@@ -62,4 +70,4 @@ export {WithActionPopup} from './parts/actions';
 
 export {WithAttachmentInput} from './parts/attachments';
 
-export {WithCustomMessageTypes} from './parts/customMessageTypes';
+export {WithCustomMessageTypes, WithLazyCustomMessageType} from './parts/customMessageTypes';

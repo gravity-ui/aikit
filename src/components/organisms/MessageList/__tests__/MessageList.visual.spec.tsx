@@ -384,4 +384,115 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
             await expect(page.getByText('Report issue')).toBeVisible();
         });
     });
+
+    // Virtualization renders only a window of rows, so a 2000-message history must keep the
+    // DOM small. Assert the number of mounted rows is far below the total instead of taking a
+    // screenshot (dynamically measured rows are not pixel-stable).
+    test('should window large history when virtualized', async ({mount, page}) => {
+        await mount(<MessageListStories.Virtualized />);
+
+        const rows = page.getByRole('listitem');
+        // Wait for the virtualizer to mount its first row before counting; on slower CI the
+        // initial render lands after mount() resolves, so a bare count() would race it.
+        await expect(rows.first()).toBeVisible();
+        const renderedCount = await rows.count();
+
+        expect(renderedCount).toBeGreaterThan(0);
+        expect(renderedCount).toBeLessThan(100);
+    });
+
+    // Behavioral coverage for useVirtualStickToBottom. Dynamically measured rows are not
+    // pixel-stable, so these assert scroll metrics instead of taking screenshots. react-window
+    // owns the scroll container, so scroll is measured on the list element, not the root.
+    const VIRTUAL_SCROLLER = '.g-aikit-message-list__list';
+    const distanceFromBottom = (el: HTMLElement) =>
+        el.scrollHeight - el.scrollTop - el.clientHeight;
+
+    test('should preserve viewport when prepending older messages', async ({mount, page}) => {
+        await mount(<MessageListStories.VirtualizedWithPreviousMessages />);
+
+        const scroller = page.locator(VIRTUAL_SCROLLER);
+        await expect(scroller).toBeVisible();
+        // Let the initial pin-to-bottom settle before scrolling up.
+        await page.waitForTimeout(200);
+
+        // Scroll to the top so the user is no longer pinned to the bottom; "Message 11" (the story
+        // seeds 11-40) is the message on top, and the one a prepend must keep in place.
+        await scroller.evaluate((el) => el.scrollTo({top: 0}));
+        // The scroll event is dispatched asynchronously - wait for the listener to register the
+        // scroll-up before triggering the prepend (otherwise auto-stick treats it as "at bottom").
+        await page.waitForTimeout(200);
+        const anchor = page.getByText('Message 11', {exact: true});
+        await expect(anchor).toBeVisible();
+        const before = await anchor.boundingBox();
+
+        // Trigger the load (prepends "Message 1".."Message 10" after the story's delay).
+        await page.evaluate(() => window.__loadPreviousMessages?.());
+
+        // The load-more trigger is removed once the (only) older batch has loaded - a reliable
+        // "prepend committed" signal (rows above the restored viewport are not rendered, so the
+        // older messages themselves are not a dependable locator). Then let the restore settle.
+        await expect(page.locator('.g-aikit-message-list__load-trigger')).toHaveCount(0);
+        // Wait past the prepend shimmer (it hides the list while the scroll is restored).
+        await page.waitForTimeout(500);
+
+        // The previously-visible message keeps its on-screen position (no jump, no snap to top).
+        await expect(anchor).toBeVisible();
+        const after = await anchor.boundingBox();
+        expect(before?.y).toBeDefined();
+        expect(after?.y).toBeDefined();
+        expect(Math.abs((after?.y ?? 0) - (before?.y ?? 0))).toBeLessThan(50);
+    });
+
+    test('should stay pinned to the bottom while the streaming row grows', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<MessageListStories.VirtualizedStreaming />);
+
+        const scroller = page.locator(VIRTUAL_SCROLLER);
+        await expect(scroller).toBeVisible();
+        // Let the initial pin-to-bottom settle. The first appendStreamChunk call below also stops
+        // the story's auto-stream, so the growth is driven deterministically from here.
+        await page.waitForTimeout(200);
+
+        for (let i = 0; i < 5; i++) {
+            await page.evaluate(() => window.__appendStreamChunk?.(' more streaming content'));
+            // Allow the streamingSignal pin to re-apply across its post-paint re-measure frames.
+            await page.waitForTimeout(150);
+
+            const distance = await scroller.evaluate(distanceFromBottom);
+            expect(distance).toBeLessThan(10);
+        }
+    });
+
+    test('should not auto-scroll when the user scrolled up during streaming', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<MessageListStories.VirtualizedStreaming />);
+
+        const scroller = page.locator(VIRTUAL_SCROLLER);
+        await expect(scroller).toBeVisible();
+        // Let the initial pin-to-bottom settle, then stop the story's auto-stream (empty chunk) so
+        // it doesn't pin back to the bottom while we scroll up.
+        await page.waitForTimeout(200);
+        await page.evaluate(() => window.__appendStreamChunk?.(''));
+
+        await scroller.evaluate((el) => el.scrollTo({top: 0}));
+        // The scroll event is dispatched asynchronously - wait for the listener to register the
+        // scroll-up (set the "user scrolled up" flag) before the next streamed chunk arrives.
+        await page.waitForTimeout(200);
+        const distanceBefore = await scroller.evaluate(distanceFromBottom);
+        // Sanity: we really are scrolled up (a stray pin didn't pull us back to the bottom).
+        expect(distanceBefore).toBeGreaterThan(10);
+
+        await page.evaluate(() => window.__appendStreamChunk?.(' more streaming content'));
+        await page.waitForTimeout(150);
+
+        const distanceAfter = await scroller.evaluate(distanceFromBottom);
+        // The view stayed near the top - it did not jump to the bottom.
+        expect(distanceAfter).toBeGreaterThan(10);
+        expect(distanceAfter).toBeGreaterThanOrEqual(distanceBefore - 50);
+    });
 });
