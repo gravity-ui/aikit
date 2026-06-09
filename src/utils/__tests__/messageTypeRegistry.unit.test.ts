@@ -2,7 +2,7 @@
 import type {TextMessageContent} from '../../types/messages';
 import {createMessageRendererRegistry, registerMessageRenderer} from '../messageTypeRegistry';
 
-const TextRenderer = {component: () => null} as const;
+const createTextRenderer = () => ({component: () => null}) as const;
 
 describe('registerMessageRenderer', () => {
     const originalEnv = process.env.NODE_ENV;
@@ -20,6 +20,7 @@ describe('registerMessageRenderer', () => {
     it('does not warn on first registration in dev', () => {
         process.env.NODE_ENV = 'development';
         const registry = createMessageRendererRegistry();
+        const TextRenderer = createTextRenderer();
         registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer);
         expect(warnSpy).not.toHaveBeenCalled();
     });
@@ -27,6 +28,7 @@ describe('registerMessageRenderer', () => {
     it('warns when overwriting an existing renderer in dev', () => {
         process.env.NODE_ENV = 'development';
         const registry = createMessageRendererRegistry();
+        const TextRenderer = createTextRenderer();
         registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer);
         registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer);
         expect(warnSpy).toHaveBeenCalledTimes(1);
@@ -36,8 +38,34 @@ describe('registerMessageRenderer', () => {
     it('does not warn on overwrite in production', () => {
         process.env.NODE_ENV = 'production';
         const registry = createMessageRendererRegistry();
+        const TextRenderer = createTextRenderer();
         registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer);
         registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer);
         expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not warn when replacing a default renderer in dev', () => {
+        process.env.NODE_ENV = 'development';
+        const registry = createMessageRendererRegistry();
+        const TextRenderer = createTextRenderer();
+        const CustomTextRenderer = createTextRenderer();
+        registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer, {
+            isDefault: true,
+        });
+        registerMessageRenderer<TextMessageContent>(registry, 'text', CustomTextRenderer);
+        expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('warns when replacing a custom renderer after a default renderer', () => {
+        process.env.NODE_ENV = 'development';
+        const registry = createMessageRendererRegistry();
+        const TextRenderer = createTextRenderer();
+        const CustomTextRenderer = createTextRenderer();
+        registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer, {
+            isDefault: true,
+        });
+        registerMessageRenderer<TextMessageContent>(registry, 'text', CustomTextRenderer);
+        registerMessageRenderer<TextMessageContent>(registry, 'text', TextRenderer);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
     });
 });

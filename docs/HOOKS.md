@@ -135,10 +135,9 @@ See `src/hooks/useFileUploadStore.ts` for the complete type signature.
 
 Wires a `Toolset` into the chat: returns a `MessageRendererRegistry` whose `tool`
 dispatcher renders your tool components, and a `handleToolResult` callback that
-merges results into history via `applyToolResult` and forwards the updated
-transcript to `onAfterResult` (typical use: re-sending the conversation to the
-model). The callback is deferred to a microtask so it never fires inside a React
-reducer pass.
+merges results into history via `applyToolResult`. It does not run model
+continuation side effects; pair it with `useToolResultContinuation` when you
+need to re-send the updated conversation after a tool completes.
 
 ```typescript
 function useToolset<TCustom extends TMessageContent = never>(
@@ -148,13 +147,38 @@ function useToolset<TCustom extends TMessageContent = never>(
 type UseToolsetOptions<TCustom> = {
   toolset: Toolset;
   setMessages: Dispatch<SetStateAction<TChatMessage<TCustom>[]>>;
-  onAfterResult?: (messages: TChatMessage<TCustom>[]) => void;
   registry?: MessageRendererRegistry;
 };
 
 type UseToolsetReturn = {
   messageRendererRegistry: MessageRendererRegistry;
   handleToolResult: (event: ToolsetResultEvent) => void;
+};
+```
+
+## `useToolResultContinuation`
+
+Observes `messages` and calls `onSettled` once when a tool part moves from a
+pending status (`loading`, `waitingConfirmation`, `waitingSubmission`) to a
+terminal status (`success`, `error`, `cancelled`). Tools that are already
+terminal in the first observed snapshot do not fire, so replay/restore is silent
+by default.
+
+```typescript
+function useToolResultContinuation<TCustom extends TMessageContent = never>(
+  options: UseToolResultContinuationOptions<TCustom>,
+): void;
+
+type UseToolResultContinuationOptions<TCustom> = {
+  messages: TChatMessage<TCustom>[];
+  onSettled: (event: ToolSettledEvent<TCustom>) => void;
+};
+
+type ToolSettledEvent<TCustom> = {
+  toolCallId: string;
+  toolName: string;
+  status: 'success' | 'error' | 'cancelled';
+  messages: TChatMessage<TCustom>[];
 };
 ```
 

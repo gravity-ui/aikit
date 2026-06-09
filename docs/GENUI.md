@@ -3,7 +3,7 @@
 > Render LLM `tool_calls` as typed React components using the existing assistant
 > `tool` content type. AIKit ships `defineTool`, `createToolset`,
 > `createToolsetRenderer`, `applyToolResult`, `toolsetToOpenAIDefinitions`, and
-> `useToolset` — no separate GenUI package.
+> `useToolset` / `useToolResultContinuation` — no separate GenUI package.
 
 ---
 
@@ -13,6 +13,7 @@
 | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | `defineTool`, `createToolset`, `createToolsetRenderer`, `applyToolResult`, `toolsetToOpenAIDefinitions`, types | `src/utils/toolset` (re-exported from `@gravity-ui/aikit`) |
 | `useToolset`                                                                                                   | `src/hooks/useToolset.ts`                                  |
+| `useToolResultContinuation`                                                                                    | `src/hooks/useToolResultContinuation.ts`                   |
 
 **Storybook (no network):** `genui/Showcase` (in
 `src/utils/toolset/__stories__/Showcase.stories.tsx`) and `genui/useToolset` (in
@@ -30,9 +31,10 @@ the `useToolset` hook.
    (shape the payload returned to the model).
 3. `createToolsetRenderer` / `useToolset` register a `tool` dispatcher on
    `MessageRendererRegistry` so `AssistantMessage` renders your components.
-4. On `submitResult`, the renderer runs `execute`, merges the result into history
-   (`applyToolResult`), and optionally calls `onAfterResult` / `onToolResult` so
-   you can POST the updated transcript to your chat API.
+4. On `submitResult`, the renderer runs `execute` and emits a result event.
+   `useToolset` wires that event to `applyToolResult`; use
+   `useToolResultContinuation` to observe the resulting pending → terminal status
+   change and POST the updated transcript to your chat API.
 
 ---
 
@@ -41,7 +43,6 @@ the `useToolset` hook.
 Same pattern as the in-repo story — one message, manual history updates:
 
 ```tsx
-import {useCallback, useMemo, useState} from 'react';
 import {
   AssistantMessage,
   createToolset,
@@ -102,7 +103,7 @@ const toolset = createToolset(
 // Pass messageRendererRegistry into AssistantMessage or ChatContainer messageListConfig.
 const registry = createToolsetRenderer(toolset, {
   onToolResult: (event) => {
-    // Merge result into parts, then forward event to your agent API if needed.
+    // Merge the event into your messages with applyToolResult if needed.
     console.log(event);
   },
 });
@@ -118,7 +119,11 @@ For a full chat loop, use `useToolset` instead of hand-rolling `onToolResult` + 
 const {messageRendererRegistry} = useToolset<ToolPartContent>({
   toolset,
   setMessages,
-  onAfterResult: (updated) => {
+});
+
+useToolResultContinuation<ToolPartContent>({
+  messages,
+  onSettled: ({messages: updated}) => {
     sendTurn(updated).catch(console.warn);
   },
 });
@@ -131,7 +136,8 @@ const {messageRendererRegistry} = useToolset<ToolPartContent>({
 ```
 
 Keep a stable `toolset` reference (`useMemo`, `createToolset` at module scope, or
-both). `useToolset` already calls `applyToolResult` before `onAfterResult`.
+both). `useToolset` calls `applyToolResult`; `useToolResultContinuation` handles
+the follow-up side effect after a tool reaches `success`, `error`, or `cancelled`.
 
 ---
 
@@ -176,7 +182,9 @@ User input
   → component receives { args, submitResult }
   → user acts → submitResult(result)
      ↓
-  useToolset → applyToolResult → onAfterResult(updated) → sendTurn(updated)
+  useToolset → applyToolResult
+     ↓
+  useToolResultContinuation → sendTurn(updated)
      ↓
   fetch(CHAT_API_URL, ...) — history now includes role: 'tool' messages
   → model replies with text or another tool_call
@@ -228,6 +236,7 @@ import {
   createToolset,
   defineTool,
   toolsetToOpenAIDefinitions,
+  useToolResultContinuation,
   useToolset,
 } from '@gravity-ui/aikit';
 
@@ -559,7 +568,11 @@ export function AgentChat() {
   const {messageRendererRegistry} = useToolset<ToolPartContent>({
     toolset,
     setMessages,
-    onAfterResult: (next) => {
+  });
+
+  useToolResultContinuation<ToolPartContent>({
+    messages,
+    onSettled: ({messages: next}) => {
       sendTurn(next).catch((err) => console.warn('sendTurn failed', err));
     },
   });
@@ -604,8 +617,9 @@ export function AgentChat() {
 - **Registry** — `useToolset` returns a `MessageRendererRegistry` with the `tool`
   dispatcher wired to your toolset.
 - **`submitResult`** — typed on `ToolComponentProps`; injected by `createToolsetRenderer`.
-- **History merge** — `applyToolResult` on every successful submit; `onAfterResult`
-  receives the updated transcript.
+- **History merge** — `applyToolResult` on every successful submit.
+- **Continuation hook** — `useToolResultContinuation` observes tool status transitions
+  and receives the updated transcript.
 - **Validation** — invalid args or unknown `toolName` fall back to
   `<ToolMessage status="error" />`.
 

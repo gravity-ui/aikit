@@ -8,6 +8,7 @@ import type {
     ToolMessageContentData,
 } from '../../types/messages';
 import {
+    type MessageRenderer,
     type MessageRendererRegistry,
     createMessageRendererRegistry,
     registerMessageRenderer,
@@ -213,7 +214,7 @@ export function createToolsetRenderer(
         ...(options.registry ?? createMessageRendererRegistry()),
     };
 
-    registerMessageRenderer<ToolPartContent>(registry, 'tool', {
+    const toolRenderer: MessageRenderer<ToolPartContent> = {
         component: ({part}) => {
             const toolPart = part.data;
             const toolDef = toolset[toolPart.toolName];
@@ -281,7 +282,9 @@ export function createToolsetRenderer(
                 />
             );
         },
-    });
+    };
+
+    registerMessageRenderer<ToolPartContent>(registry, 'tool', toolRenderer);
 
     return registry;
 }

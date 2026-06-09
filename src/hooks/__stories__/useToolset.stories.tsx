@@ -1,11 +1,11 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 import {Button, Card, Text} from '@gravity-ui/uikit';
 import type {Meta, StoryFn} from '@storybook/react-webpack5';
 
 import {AssistantMessage} from '../../components/organisms/AssistantMessage';
 import {ContentWrapper} from '../../demo/ContentWrapper';
-import type {TChatMessage, TextMessageContent} from '../../types';
+import type {TChatMessage, TMessageContent, TextMessageContent} from '../../types';
 import {
     type ToolComponentProps,
     type ToolPartContent,
@@ -13,6 +13,7 @@ import {
     createToolset,
     defineTool,
 } from '../../utils/toolset';
+import {useToolResultContinuation} from '../useToolResultContinuation';
 import {useToolset} from '../useToolset';
 
 type ApprovalArgs = {
@@ -121,13 +122,35 @@ const toolPart = (toolCallId: string, args: unknown): ToolPartContent => ({
     },
 });
 
+function isToolPartContent(part: TMessageContent): part is ToolPartContent {
+    return (
+        part.type === 'tool' &&
+        typeof part.data === 'object' &&
+        part.data !== null &&
+        'toolCallId' in part.data
+    );
+}
+
+function getToolResult(messages: TChatMessage<ToolPartContent>[], toolCallId: string): unknown {
+    for (const message of messages) {
+        if (message.role !== 'assistant' || typeof message.content === 'string') continue;
+        const parts = Array.isArray(message.content) ? message.content : [message.content];
+        const tool = parts.find(
+            (part): part is ToolPartContent =>
+                isToolPartContent(part) && part.data.toolCallId === toolCallId,
+        );
+        if (tool) return tool.data.result;
+    }
+    return undefined;
+}
+
 const initialMessages: TChatMessage<ToolPartContent>[] = [
     {
         id: 'msg-1',
         role: 'assistant',
         content: [
             textPart(
-                'This story uses `useToolset` to wire the toolset into chat state. When you click Approve/Reject, the hook merges the result into history via `applyToolResult` and `onAfterResult` simulates a mock agent reply.',
+                'This story wires the toolset with `useToolset` (state writes only) and reacts to tool completion via `useToolResultContinuation`. Clicking Approve/Reject merges the result into history; the continuation hook then simulates a mock agent reply.',
             ),
             toolPart('call-hook-1', {
                 summary: 'Deploy the release candidate to production',
@@ -137,9 +160,34 @@ const initialMessages: TChatMessage<ToolPartContent>[] = [
     },
 ];
 
+const componentDescription = `
+\`useToolset\` wires a \`Toolset\` into chat state. It returns a stable
+\`messageRendererRegistry\` that renders \`tool\` parts via the toolset, and a
+\`handleToolResult\` callback that merges results back into history with
+\`applyToolResult\`. It performs no side effects beyond \`setMessages\`.
+
+To react to tool completion (e.g. forward the merged transcript to the model),
+pair it with \`useToolResultContinuation\`, which observes \`messages\` and
+fires \`onSettled\` once per pending → terminal transition.
+`;
+
+const playgroundDescription = `
+Renders an approval-request tool that the user can Approve or Reject.
+\`useToolset\` merges the click result into the assistant message; the separate
+\`useToolResultContinuation\` hook observes the transition and schedules a mock
+agent reply 400 ms later. Use **Reset story state** to start over.
+`;
+
 export default {
     title: 'genui/useToolset',
-    parameters: {layout: 'padded'},
+    parameters: {
+        layout: 'padded',
+        docs: {
+            description: {
+                component: componentDescription,
+            },
+        },
+    },
 } as Meta;
 
 export const Playground: StoryFn = () => {
@@ -152,38 +200,30 @@ export const Playground: StoryFn = () => {
         };
     }, []);
 
-    const handleAfterResult = useCallback((next: TChatMessage<ToolPartContent>[]) => {
-        const lastTool = [...next]
-            .reverse()
-            .flatMap((m) => (m.role === 'assistant' && Array.isArray(m.content) ? m.content : []))
-            .find(
-                (part): part is ToolPartContent =>
-                    part.type === 'tool' && part.data.status === 'success',
-            );
+    const {messageRendererRegistry} = useToolset({toolset, setMessages});
 
-        if (!lastTool) return;
+    useToolResultContinuation({
+        messages,
+        onSettled: ({toolCallId, status, messages: next}) => {
+            if (status !== 'success') return;
+            const toolResult = getToolResult(next, toolCallId);
 
-        const timer = setTimeout(() => {
-            setMessages((prev) => [
-                ...prev,
-                {
-                    id: `mock-reply-${lastTool.data.toolCallId}`,
-                    role: 'assistant',
-                    content: [
-                        textPart(
-                            `Mock agent received tool result for ${lastTool.data.toolCallId}: ${JSON.stringify(lastTool.data.result)}`,
-                        ),
-                    ],
-                },
-            ]);
-        }, 400);
-        timersRef.current.push(timer);
-    }, []);
-
-    const {messageRendererRegistry} = useToolset({
-        toolset,
-        setMessages,
-        onAfterResult: handleAfterResult,
+            const timer = setTimeout(() => {
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        id: `mock-reply-${toolCallId}`,
+                        role: 'assistant',
+                        content: [
+                            textPart(
+                                `Mock agent received tool result for ${toolCallId}: ${JSON.stringify(toolResult)}`,
+                            ),
+                        ],
+                    },
+                ]);
+            }, 400);
+            timersRef.current.push(timer);
+        },
     });
 
     return (
@@ -211,4 +251,12 @@ export const Playground: StoryFn = () => {
             </div>
         </ContentWrapper>
     );
+};
+
+Playground.parameters = {
+    docs: {
+        description: {
+            story: playgroundDescription,
+        },
+    },
 };

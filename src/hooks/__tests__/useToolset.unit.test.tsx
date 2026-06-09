@@ -56,131 +56,66 @@ const buildMessages = (): TChatMessage<ToolPartContent>[] => [
     },
 ];
 
+const makeSetMessages = (initial: TChatMessage<ToolPartContent>[]) => {
+    const ref: {current: TChatMessage<ToolPartContent>[]} = {current: initial};
+    const setMessages: React.Dispatch<React.SetStateAction<TChatMessage<ToolPartContent>[]>> = (
+        updater,
+    ) => {
+        ref.current =
+            typeof updater === 'function'
+                ? (
+                      updater as (
+                          prev: TChatMessage<ToolPartContent>[],
+                      ) => TChatMessage<ToolPartContent>[]
+                  )(ref.current)
+                : updater;
+    };
+    return {ref, setMessages};
+};
+
 describe('useToolset', () => {
-    it('defers onAfterResult to a microtask', async () => {
-        let stored: TChatMessage<ToolPartContent>[] = buildMessages();
-        const setMessages: React.Dispatch<React.SetStateAction<TChatMessage<ToolPartContent>[]>> = (
-            updater,
-        ) => {
-            stored =
-                typeof updater === 'function'
-                    ? (
-                          updater as (
-                              prev: TChatMessage<ToolPartContent>[],
-                          ) => TChatMessage<ToolPartContent>[]
-                      )(stored)
-                    : updater;
-        };
+    it('merges a tool result into the matching tool part', () => {
+        const {ref, setMessages} = makeSetMessages(buildMessages());
+        const {result} = renderHook(() => useToolset({toolset: demoToolset, setMessages}));
 
-        const onAfterResult = jest.fn();
-        const {result} = renderHook(() =>
-            useToolset({toolset: demoToolset, setMessages, onAfterResult}),
-        );
-
-        result.current.handleToolResult({
-            toolCallId: 'call-1',
-            toolName: 'demo',
-            status: 'success',
-            result: {ok: true},
+        act(() => {
+            result.current.handleToolResult({
+                toolCallId: 'call-1',
+                toolName: 'demo',
+                status: 'success',
+                result: {ok: true},
+            });
         });
 
-        expect(onAfterResult).not.toHaveBeenCalled();
-        await act(async () => {
-            await Promise.resolve();
-        });
-        expect(onAfterResult).toHaveBeenCalledTimes(1);
+        const toolPart = (ref.current[0].content as ToolPartContent[])[1];
+        expect(toolPart.data.status).toBe('success');
+        expect(toolPart.data.result).toEqual({ok: true});
     });
 
-    it('uses the latest onAfterResult ref across renders', async () => {
-        let stored: TChatMessage<ToolPartContent>[] = buildMessages();
-        const setMessages: React.Dispatch<React.SetStateAction<TChatMessage<ToolPartContent>[]>> = (
-            updater,
-        ) => {
-            stored =
-                typeof updater === 'function'
-                    ? (
-                          updater as (
-                              prev: TChatMessage<ToolPartContent>[],
-                          ) => TChatMessage<ToolPartContent>[]
-                      )(stored)
-                    : updater;
-        };
+    it('keeps the messages array reference when toolCallId is unknown', () => {
+        const {ref, setMessages} = makeSetMessages(buildMessages());
+        const original = ref.current;
+        const {result} = renderHook(() => useToolset({toolset: demoToolset, setMessages}));
 
-        const first = jest.fn();
-        const second = jest.fn();
-        const {result, rerender} = renderHook(
-            ({cb}: {cb: jest.Mock}) =>
-                useToolset({toolset: demoToolset, setMessages, onAfterResult: cb}),
-            {initialProps: {cb: first}},
-        );
-
-        rerender({cb: second});
-
-        result.current.handleToolResult({
-            toolCallId: 'call-1',
-            toolName: 'demo',
-            status: 'success',
-            result: {ok: true},
+        act(() => {
+            result.current.handleToolResult({
+                toolCallId: 'never-existed',
+                toolName: 'demo',
+                status: 'success',
+                result: {ok: true},
+            });
         });
-        await act(async () => {
-            await Promise.resolve();
-        });
-        expect(first).not.toHaveBeenCalled();
-        expect(second).toHaveBeenCalledTimes(1);
+
+        expect(ref.current).toBe(original);
     });
 
     it('memoizes the registry across renders when inputs are stable', () => {
-        let stored: TChatMessage<ToolPartContent>[] = buildMessages();
-        const setMessages: React.Dispatch<React.SetStateAction<TChatMessage<ToolPartContent>[]>> = (
-            updater,
-        ) => {
-            stored =
-                typeof updater === 'function'
-                    ? (
-                          updater as (
-                              prev: TChatMessage<ToolPartContent>[],
-                          ) => TChatMessage<ToolPartContent>[]
-                      )(stored)
-                    : updater;
-        };
-
+        const {setMessages} = makeSetMessages(buildMessages());
         const {result, rerender} = renderHook(() =>
             useToolset({toolset: demoToolset, setMessages}),
         );
         const first = result.current.messageRendererRegistry;
         rerender();
         expect(result.current.messageRendererRegistry).toBe(first);
-    });
-
-    it('does not invoke onAfterResult when toolCallId is unknown', async () => {
-        let stored: TChatMessage<ToolPartContent>[] = buildMessages();
-        const setMessages: React.Dispatch<React.SetStateAction<TChatMessage<ToolPartContent>[]>> = (
-            updater,
-        ) => {
-            stored =
-                typeof updater === 'function'
-                    ? (
-                          updater as (
-                              prev: TChatMessage<ToolPartContent>[],
-                          ) => TChatMessage<ToolPartContent>[]
-                      )(stored)
-                    : updater;
-        };
-
-        const onAfterResult = jest.fn();
-        const {result} = renderHook(() =>
-            useToolset({toolset: demoToolset, setMessages, onAfterResult}),
-        );
-
-        result.current.handleToolResult({
-            toolCallId: 'never-existed',
-            toolName: 'demo',
-            status: 'success',
-            result: {ok: true},
-        });
-        await act(async () => {
-            await Promise.resolve();
-        });
-        expect(onAfterResult).not.toHaveBeenCalled();
     });
 });

@@ -20,23 +20,44 @@ export function createDefaultMessageRegistry(
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
-    registerMessageRenderer<TextMessageContent>(registry, 'text', {
-        component: ({part}) => (
-            <MarkdownRenderer
-                content={part.data.text}
-                transformOptions={transformOptions}
-                shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
-            />
-        ),
-    });
+    registerMessageRenderer<TextMessageContent>(
+        registry,
+        'text',
+        {
+            component: ({part}) => (
+                <MarkdownRenderer
+                    content={part.data.text}
+                    transformOptions={transformOptions}
+                    shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                />
+            ),
+        },
+        {
+            isDefault: true,
+        },
+    );
 
-    registerMessageRenderer<ToolMessageContent>(registry, 'tool', {
-        component: ({part}) => <ToolMessage {...part.data} />,
-    });
+    registerMessageRenderer<ToolMessageContent>(
+        registry,
+        'tool',
+        {
+            component: ({part}) => <ToolMessage {...part.data} />,
+        },
+        {
+            isDefault: true,
+        },
+    );
 
-    registerMessageRenderer<ThinkingMessageContent>(registry, 'thinking', {
-        component: ({part}) => <ThinkingMessage {...part.data} />,
-    });
+    registerMessageRenderer<ThinkingMessageContent>(
+        registry,
+        'thinking',
+        {
+            component: ({part}) => <ThinkingMessage {...part.data} />,
+        },
+        {
+            isDefault: true,
+        },
+    );
 
     return registry;
 }
