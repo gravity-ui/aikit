@@ -5,7 +5,13 @@ import type {AIDataProps} from './types';
 
 /**
  * Hook to register data in the AI agent context.
- * Uses ref + getter pattern so getData() always returns fresh values.
+ *
+ * Registration happens in `useEffect`, so `getData()` is only meaningful
+ * **after mount** of components that register data. Do not call `getData()`
+ * synchronously during render or in `useLayoutEffect` in the same commit.
+ *
+ * Uses a ref + getter pattern: the registry stores `() => propsRef.current`
+ * so `getData()` always reads the latest props without re-registering on every render.
  */
 export function useProvideAIData<T>(props: AIDataProps<T>): void {
     const ctx = useContext(_AIAgentContext);

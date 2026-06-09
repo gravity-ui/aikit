@@ -3,7 +3,7 @@
  */
 export interface AIDataProps<T = unknown> {
     /** Human-readable description of what this data represents */
-    it: string;
+    label: string;
     /** The actual data to expose to the AI agent */
     data: T;
 }
@@ -13,7 +13,7 @@ export interface AIDataProps<T = unknown> {
  */
 export interface AIDataEntry<T = unknown> {
     /** Human-readable description of what this data represents */
-    it: string;
+    label: string;
     /** The actual data */
     data: T;
 }
@@ -71,7 +71,7 @@ export interface BuildAIContextOptions<T = unknown> {
      *
      * ${(entries, options) => entries.map((entry) =>
      *     // Each function inside the template literal has access to the entries and options from context:
-     *     `### ${entry.it}/n${options.formatData(entry.data)}`
+     *     `### ${entry.label}\n${options.formatData(entry.data)}`
      * )}
      * `
      *

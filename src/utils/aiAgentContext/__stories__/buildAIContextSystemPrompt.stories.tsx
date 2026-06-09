@@ -1,24 +1,23 @@
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
+import {AIPrompt, buildAIContextSystemPrompt} from '..';
 import {ContentWrapper} from '../../../demo/ContentWrapper';
-import {buildAIContextSystemPrompt} from '../buildAIContextSystemPrompt';
-import {AIPrompt} from '../templateStrings';
 import type {AIDataEntry} from '../types';
 
 const sampleEntries: AIDataEntry[] = [
-    {it: 'Current user', data: {name: 'Alice', email: 'alice@example.com', role: 'admin'}},
-    {it: 'Current page', data: {title: 'Product Dashboard', section: 'Analytics'}},
+    {label: 'Current user', data: {name: 'Alice', email: 'alice@example.com', role: 'admin'}},
+    {label: 'Current page', data: {title: 'Product Dashboard', section: 'Analytics'}},
 ];
 
 const variable = 42;
 
-const someExtraneuosCode = (v: number) => `Some extraneuos code: variable - ${v}`;
+const someExtraneousCode = (v: number) => `Some extraneous code: variable - ${v}`;
 
-const customTemplate = AIPrompt`Here are example of custom template. Data already provided:
+const customTemplate = AIPrompt`Here is an example of a custom template. Data already provided:
 
-${(entries, options) => entries.map((entry) => `### ${entry.it}:\n${options.formatData(entry.data)}`)}
+${(entries, options) => entries.map((entry) => `### ${entry.label}:\n${options.formatData(entry.data)}`)}
 
-${someExtraneuosCode(variable)}
+${someExtraneousCode(variable)}
 `;
 
 function PromptPreview({prompt}: {prompt: string}) {
@@ -34,7 +33,7 @@ function PromptPreview({prompt}: {prompt: string}) {
                 margin: 0,
             }}
         >
-            {prompt || '(empty — no entries. There is nothing to pass to LLM)'}
+            {prompt || '(empty — no entries. There is nothing to pass to the LLM)'}
         </pre>
     );
 }

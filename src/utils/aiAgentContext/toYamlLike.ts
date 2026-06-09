@@ -44,31 +44,20 @@ function isVisitedReference(val: unknown, visited: Set<object>): val is object {
     return typeof val === 'object' && val !== null && visited.has(val);
 }
 
-function formatProperty(key: string, val: unknown, indent: number, visited: Set<object>): string {
-    const prefix = ' '.repeat(indent);
-    if (isVisitedReference(val, visited)) {
-        return `${prefix}${key}: ${CIRCULAR_REF}`;
-    }
-    if (isComplexValue(val)) {
-        return `${prefix}${key}:\n${toYamlLikeInternal(val, indent + 2, visited)}`;
-    }
-    return `${prefix}${key}: ${toYamlLikeInternal(val, indent + 2, visited)}`;
-}
-
-function formatListItemFirstProperty(
+function formatKeyValue(
     key: string,
     val: unknown,
+    keyPrefix: string,
     indent: number,
     visited: Set<object>,
 ): string {
-    const prefix = `${' '.repeat(indent)}- `;
     if (isVisitedReference(val, visited)) {
-        return `${prefix}${key}: ${CIRCULAR_REF}`;
+        return `${keyPrefix}${key}: ${CIRCULAR_REF}`;
     }
     if (isComplexValue(val)) {
-        return `${prefix}${key}:\n${toYamlLikeInternal(val, indent + 2, visited)}`;
+        return `${keyPrefix}${key}:\n${toYamlLikeInternal(val, indent + 2, visited)}`;
     }
-    return `${prefix}${key}: ${toYamlLikeInternal(val, indent + 2, visited)}`;
+    return `${keyPrefix}${key}: ${toYamlLikeInternal(val, indent + 2, visited)}`;
 }
 
 /**
@@ -107,15 +96,24 @@ function toYamlLikeInternal(data: unknown, indent: number, visited: Set<object>)
                             const entries = Object.entries(item);
                             if (entries.length === 0) return `${prefix}{}`;
                             const [firstKey, firstVal] = entries[0];
-                            const firstLine = formatListItemFirstProperty(
+                            const firstLine = formatKeyValue(
                                 firstKey,
                                 firstVal,
+                                `${' '.repeat(indent)}- `,
                                 indent,
                                 visited,
                             );
                             const rest = entries
                                 .slice(1)
-                                .map(([key, val]) => formatProperty(key, val, indent + 2, visited))
+                                .map(([key, val]) =>
+                                    formatKeyValue(
+                                        key,
+                                        val,
+                                        ' '.repeat(indent + 2),
+                                        indent + 2,
+                                        visited,
+                                    ),
+                                )
                                 .join('\n');
                             return rest ? `${firstLine}\n${rest}` : firstLine;
                         });
@@ -132,7 +130,7 @@ function toYamlLikeInternal(data: unknown, indent: number, visited: Set<object>)
             if (entries.length === 0) return '{}';
 
             return entries
-                .map(([key, val]) => formatProperty(key, val, indent, visited))
+                .map(([key, val]) => formatKeyValue(key, val, ' '.repeat(indent), indent, visited))
                 .join('\n');
         });
     }

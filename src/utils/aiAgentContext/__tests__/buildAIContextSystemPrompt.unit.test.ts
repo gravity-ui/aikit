@@ -11,7 +11,7 @@ describe('buildAIContextSystemPrompt', () => {
 
     it('should format single entry with default YAML formatter', () => {
         const result = buildAIContextSystemPrompt([
-            {it: 'Current user', data: {name: 'Alice', email: 'alice@example.com'}},
+            {label: 'Current user', data: {name: 'Alice', email: 'alice@example.com'}},
         ]);
 
         expect(result).toBe(
@@ -24,8 +24,8 @@ describe('buildAIContextSystemPrompt', () => {
 
     it('should format multiple entries separated by blank lines', () => {
         const result = buildAIContextSystemPrompt([
-            {it: 'Current user', data: {name: 'Alice'}},
-            {it: 'Current page', data: {title: 'Dashboard'}},
+            {label: 'Current user', data: {name: 'Alice'}},
+            {label: 'Current page', data: {title: 'Dashboard'}},
         ]);
 
         expect(result).toBe(
@@ -40,7 +40,7 @@ describe('buildAIContextSystemPrompt', () => {
     it('should use custom formatData when provided', () => {
         const customFormatter = (data: unknown) => JSON.stringify(data);
 
-        const result = buildAIContextSystemPrompt([{it: 'User', data: {name: 'Alice'}}], {
+        const result = buildAIContextSystemPrompt([{label: 'User', data: {name: 'Alice'}}], {
             formatData: customFormatter,
         });
 
@@ -49,7 +49,7 @@ describe('buildAIContextSystemPrompt', () => {
     });
 
     it('should handle primitive data', () => {
-        const result = buildAIContextSystemPrompt([{it: 'User count', data: 42}]);
+        const result = buildAIContextSystemPrompt([{label: 'User count', data: 42}]);
 
         expect(result).toContain('### User count');
         expect(result).toContain('42');
@@ -58,10 +58,10 @@ describe('buildAIContextSystemPrompt', () => {
     it('should use custom template from AIPrompt', () => {
         const template = AIPrompt`Page context:
 
-${(entries, options) => entries.map((entry) => `## ${entry.it}\n${options.formatData(entry.data)}`)}
+${(entries, options) => entries.map((entry) => `## ${entry.label}\n${options.formatData(entry.data)}`)}
 `;
 
-        const result = buildAIContextSystemPrompt([{it: 'Current user', data: {name: 'Bob'}}], {
+        const result = buildAIContextSystemPrompt([{label: 'Current user', data: {name: 'Bob'}}], {
             template,
         });
 

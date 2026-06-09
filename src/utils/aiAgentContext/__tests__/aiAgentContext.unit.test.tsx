@@ -1,5 +1,3 @@
-// src/utils/aiAgentContext/__tests__/aiAgentContext.unit.test.tsx
-
 import React from 'react';
 
 import {renderHook} from '@testing-library/react';
@@ -28,7 +26,7 @@ describe('AIAgentContext', () => {
         it('should return registered data', () => {
             const {result} = renderHook(
                 () => {
-                    useProvideAIData({it: 'Test data', data: {name: 'Alice'}});
+                    useProvideAIData({label: 'Test data', data: {name: 'Alice'}});
                     return useAIAgentContext();
                 },
                 {wrapper},
@@ -36,14 +34,14 @@ describe('AIAgentContext', () => {
 
             const entries = result.current.getData();
             expect(entries).toHaveLength(1);
-            expect(entries[0]).toEqual({it: 'Test data', data: {name: 'Alice'}});
+            expect(entries[0]).toEqual({label: 'Test data', data: {name: 'Alice'}});
         });
 
         it('should return data from multiple providers', () => {
             const {result} = renderHook(
                 () => {
-                    useProvideAIData({it: 'User', data: {name: 'Alice'}});
-                    useProvideAIData({it: 'Page', data: {title: 'Dashboard'}});
+                    useProvideAIData({label: 'User', data: {name: 'Alice'}});
+                    useProvideAIData({label: 'Page', data: {title: 'Dashboard'}});
                     return useAIAgentContext();
                 },
                 {wrapper},
@@ -51,7 +49,7 @@ describe('AIAgentContext', () => {
 
             const entries = result.current.getData();
             expect(entries).toHaveLength(2);
-            expect(entries.map((e) => e.it)).toEqual(['User', 'Page']);
+            expect(entries.map((e) => e.label)).toEqual(['User', 'Page']);
         });
 
         it('should unregister data on unmount', () => {
@@ -59,7 +57,7 @@ describe('AIAgentContext', () => {
 
             const {unmount} = renderHook(
                 () => {
-                    useProvideAIData({it: 'Temp', data: 'value'});
+                    useProvideAIData({label: 'Temp', data: 'value'});
                     const {getData} = useAIAgentContext();
                     getDataFromOutside = getData;
                 },
@@ -78,7 +76,7 @@ describe('AIAgentContext', () => {
 
             const {result, rerender} = renderHook(
                 () => {
-                    useProvideAIData({it: 'User', data});
+                    useProvideAIData({label: 'User', data});
                     return useAIAgentContext();
                 },
                 {wrapper},

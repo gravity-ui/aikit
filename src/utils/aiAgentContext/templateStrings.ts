@@ -54,6 +54,6 @@ ${(entries, options) =>
     entries.map((entry) => {
         const formatted = options.formatData(entry.data);
 
-        return [`### ${entry.it}`, formatted];
+        return [`### ${entry.label}`, formatted];
     })}
 `;

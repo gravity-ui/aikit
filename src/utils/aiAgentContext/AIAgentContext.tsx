@@ -24,14 +24,14 @@ export function AIAgentContextProvider({children}: {children: React.ReactNode}) 
             },
             getData: (): AIDataEntry[] =>
                 Array.from(registryRef.current.values()).map((getter) => {
-                    const {it, data} = getter();
-                    return {it, data};
+                    const {label, data} = getter();
+                    return {label, data};
                 }),
         }),
         [],
     );
 
-    return React.createElement(AIAgentContext.Provider, {value: contextValue}, children);
+    return <AIAgentContext.Provider value={contextValue}>{children}</AIAgentContext.Provider>;
 }
 
 /**

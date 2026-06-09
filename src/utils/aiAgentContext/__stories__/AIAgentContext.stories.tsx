@@ -1,5 +1,3 @@
-// src/utils/aiAgentContext/__stories__/AIAgentContext.stories.tsx
-
 import {useEffect, useRef, useState} from 'react';
 
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
@@ -69,7 +67,7 @@ function BasicUsageExample() {
 
     return (
         <AIAgentContextProvider>
-            <AIData it="Current product" data={product} />
+            <AIData label="Current product" data={product} />
             <PromptPreview />
         </AIAgentContextProvider>
     );
@@ -103,9 +101,9 @@ function MultipleDataSourcesExample() {
 
     return (
         <AIAgentContextProvider>
-            <AIData it="Current user" data={user} />
-            <AIData it="Current page" data={page} />
-            <AIData it="Applied filters" data={filters} />
+            <AIData label="Current user" data={user} />
+            <AIData label="Current page" data={page} />
+            <AIData label="Applied filters" data={filters} />
             <PromptPreview />
         </AIAgentContextProvider>
     );
@@ -116,8 +114,8 @@ function DynamicDataExample({userName, userEmail}: {userName: string; userEmail:
 
     return (
         <AIAgentContextProvider>
-            <AIData it="Current user" data={{name: userName, email: userEmail}} />
-            <AIData it="Session state" data={{clickCount: counter}} />
+            <AIData label="Current user" data={{name: userName, email: userEmail}} />
+            <AIData label="Session state" data={{clickCount: counter}} />
             <div style={{marginBottom: '12px'}}>
                 <button onClick={() => setCounter((c) => c + 1)}>Clicked {counter} times</button>
             </div>
@@ -135,7 +133,7 @@ export default {
     },
 } as Meta;
 
-type BasicStory = StoryObj<typeof BasicUsageExample>;
+type PlaygroundStory = StoryObj<typeof BasicUsageExample>;
 type MultiStory = StoryObj<typeof MultipleDataSourcesExample>;
 type DynamicStory = StoryObj<typeof DynamicDataExample>;
 
@@ -145,9 +143,9 @@ const defaultDecorators = [
             <Story />
         </ContentWrapper>
     ),
-] satisfies BasicStory['decorators'];
+] satisfies PlaygroundStory['decorators'];
 
-export const BasicUsage: BasicStory = {
+export const Playground: PlaygroundStory = {
     render: () => <BasicUsageExample />,
     decorators: defaultDecorators,
 };
