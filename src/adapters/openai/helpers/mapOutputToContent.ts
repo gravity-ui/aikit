@@ -7,6 +7,8 @@ import {
     OpenAIResponseReasoningItem,
 } from '../types/openAiTypes';
 
+import {prettyPrintJson} from './prettyPrintJson';
+
 function pushBlocksForMessage(
     msg: OpenAIResponseOutputMessage,
     blocks: TMessageContentUnion[],
@@ -64,6 +66,8 @@ function pushBlocksForMcpCall(
     } else if (typeof mcp.output === 'string' && mcp.output.length > 0) {
         bodyText = mcp.output;
     }
+    const mcpRequest = prettyPrintJson(mcp.arguments);
+    const mcpResponse = prettyPrintJson(bodyText);
     blocks.push({
         type: 'tool',
         id: mcp.id,
@@ -71,6 +75,8 @@ function pushBlocksForMcpCall(
             toolName: mcp.name ?? mcp.server_label ?? 'MCP',
             status,
             ...(bodyText ? {bodyContent: bodyText} : {}),
+            ...(mcpRequest ? {mcpRequest} : {}),
+            ...(mcpResponse ? {mcpResponse} : {}),
         },
     });
 }

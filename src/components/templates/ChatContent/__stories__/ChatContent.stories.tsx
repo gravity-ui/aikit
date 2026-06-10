@@ -49,8 +49,8 @@ const sampleActions = [
         onClick: () => console.log('Like clicked'),
     },
     {
-        actionType: BaseMessageActionType.Unlike,
-        onClick: () => console.log('Unlike clicked'),
+        actionType: BaseMessageActionType.Dislike,
+        onClick: () => console.log('Dislike clicked'),
     },
     {
         actionType: BaseMessageActionType.Delete,

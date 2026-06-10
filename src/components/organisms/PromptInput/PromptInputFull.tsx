@@ -40,6 +40,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         contextItems = [],
         showContextIndicator = false,
         contextIndicatorProps,
+        qa: headerQa,
     } = headerProps;
 
     const {
@@ -47,13 +48,15 @@ export function PromptInputFull(props: PromptInputFullProps) {
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
+        qa: bodyQa,
     } = bodyProps;
 
     const {
         bottomContent,
         showSettings = false,
         onSettingsClick,
-        showAttachment = false,
+        attachmentContent,
+        showAttachment,
         onAttachmentClick,
         showMicrophone = false,
         onMicrophoneClick,
@@ -61,12 +64,12 @@ export function PromptInputFull(props: PromptInputFullProps) {
         submitButtonTooltipCancel,
         submitButtonCancelableText,
         submitButtonQa,
+        qa: footerQa,
     } = footerProps;
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
 
     const shouldShowHeader = topContent || contextItems.length > 0 || showContextIndicator;
-    const shouldShowFooter = true;
 
     return (
         <div className={b({view: 'full'}, className)} data-qa={qa}>
@@ -75,6 +78,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                     contextItems={contextItems}
                     showContextIndicator={showContextIndicator}
                     contextIndicatorProps={contextIndicatorProps}
+                    qa={headerQa}
                 >
                     {topContent}
                 </PromptInputHeader>
@@ -89,28 +93,29 @@ export function PromptInputFull(props: PromptInputFullProps) {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 inputClassName={b('textarea')}
+                qa={bodyQa}
             />
 
-            {shouldShowFooter && (
-                <PromptInputFooter
-                    submitButton={{
-                        onClick: handleSubmit,
-                        state: submitButtonState,
-                        tooltipSend: submitButtonTooltipSend,
-                        tooltipCancel: submitButtonTooltipCancel,
-                        cancelableText: submitButtonCancelableText,
-                        qa: submitButtonQa || 'submit-button-full',
-                    }}
-                    showSettings={showSettings}
-                    onSettingsClick={onSettingsClick}
-                    showAttachment={showAttachment}
-                    onAttachmentClick={onAttachmentClick}
-                    showMicrophone={showMicrophone}
-                    onMicrophoneClick={onMicrophoneClick}
-                >
-                    {bottomContent}
-                </PromptInputFooter>
-            )}
+            <PromptInputFooter
+                qa={footerQa}
+                submitButton={{
+                    onClick: handleSubmit,
+                    state: submitButtonState,
+                    tooltipSend: submitButtonTooltipSend,
+                    tooltipCancel: submitButtonTooltipCancel,
+                    cancelableText: submitButtonCancelableText,
+                    qa: submitButtonQa || 'submit-button-full',
+                }}
+                showSettings={showSettings}
+                onSettingsClick={onSettingsClick}
+                showAttachment={showAttachment}
+                onAttachmentClick={onAttachmentClick}
+                attachmentContent={attachmentContent}
+                showMicrophone={showMicrophone}
+                onMicrophoneClick={onMicrophoneClick}
+            >
+                {bottomContent}
+            </PromptInputFooter>
         </div>
     );
 }

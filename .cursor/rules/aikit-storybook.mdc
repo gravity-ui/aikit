@@ -1,0 +1,7 @@
+---
+description: AIKit Storybook conventions (Docs.mdx, stories.tsx, story types)
+globs: src/components/**/__stories__/**
+alwaysApply: false
+---
+
+Follow `docs/guidelines/storybook.md` when working on files in `__stories__/`. Read it before creating or editing `*.stories.tsx` or `Docs.mdx`.

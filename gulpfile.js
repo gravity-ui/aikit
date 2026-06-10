@@ -22,6 +22,9 @@ async function compileTs(modules = false) {
             declaration: true,
             module: modules ? 'esnext' : 'nodenext',
             moduleResolution: modules ? 'bundler' : 'nodenext',
+            // Override `noEmit: true` from tsconfig.json (set there for `tsc --noEmit` typecheck).
+            // Without this, gulp's TS pipeline silently produces no .js/.d.ts files.
+            noEmit: false,
         },
     });
 
@@ -82,7 +85,7 @@ task('copy-i18n', () => {
 task('styles-global', () => {
     return src(['src/styles/styles.scss'])
         .pipe(
-            sass.sync({includePaths: ['src', 'node_modules']}).on('error', function (error) {
+            sass.sync({loadPaths: ['src', 'node_modules']}).on('error', function (error) {
                 sass.logError.call(this, error);
                 process.exit(1);
             }),
@@ -94,7 +97,7 @@ task('styles-global', () => {
 task('styles-components', () => {
     return src(['src/components/**/*.scss', '!src/components/**/__stories__/**/*'])
         .pipe(
-            sass.sync({includePaths: ['src', 'node_modules']}).on('error', function (error) {
+            sass.sync({loadPaths: ['src', 'node_modules']}).on('error', function (error) {
                 sass.logError.call(this, error);
                 process.exit(1);
             }),

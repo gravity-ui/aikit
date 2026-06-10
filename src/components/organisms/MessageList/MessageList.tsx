@@ -5,6 +5,7 @@ import {useScrollPreservation, useSmartScroll} from '../../../hooks';
 import {ChatStatus} from '../../../types';
 import type {
     DefaultMessageAction,
+    MessageExtraInfoComponent,
     TAssistantMessage,
     TChatMessage,
     TMessageContent,
@@ -34,6 +35,11 @@ import './MessageList.scss';
 
 const b = block('message-list');
 
+export enum MessageListQa {
+    Root = 'message-list',
+    Messages = 'message-list-messages',
+}
+
 /** Configuration for action popup behavior */
 export interface MessageListActionPopupConfig {
     /** Override title for all popups (overrides action-specific title) */
@@ -61,6 +67,10 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     showAvatar?: boolean;
     userActions?: DefaultMessageAction<TUserMessage<TMessageMetadata>>[];
     assistantActions?: DefaultMessageAction<TAssistantMessage<TContent, TMessageMetadata>>[];
+    /** Component rendered alongside action buttons for each user message. Receives message as prop. */
+    userExtraInfo?: MessageExtraInfoComponent<TUserMessage<TMessageMetadata>>;
+    /** Component rendered alongside action buttons for each assistant message. Receives message as prop. */
+    assistantExtraInfo?: MessageExtraInfoComponent<TAssistantMessage<TContent, TMessageMetadata>>;
     /** Array of chat statuses that should display the loader */
     loaderStatuses?: ChatStatus[];
     className?: string;
@@ -83,6 +93,8 @@ export function MessageList<TContent extends TMessageContent = never>({
     showAvatar,
     userActions,
     assistantActions,
+    userExtraInfo: UserExtraInfo,
+    assistantExtraInfo: AssistantExtraInfo,
     loaderStatuses = ['submitted', 'streaming_loading'],
     className,
     qa,
@@ -122,9 +134,12 @@ export function MessageList<TContent extends TMessageContent = never>({
                     key={message.id || `message-${index}`}
                     content={message.content}
                     actions={actions}
+                    extraInfo={UserExtraInfo ? <UserExtraInfo message={message} /> : undefined}
                     timestamp={message.timestamp}
                     format={message.format}
                     avatarUrl={message.avatarUrl}
+                    images={message.images}
+                    fileAttachments={message.fileAttachments}
                     transformOptions={transformOptions}
                     shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                     showActionsOnHover={showActionsOnHover}
@@ -151,6 +166,9 @@ export function MessageList<TContent extends TMessageContent = never>({
                     key={message.id || `message-${index}`}
                     content={message.content}
                     actions={actions}
+                    extraInfo={
+                        AssistantExtraInfo ? <AssistantExtraInfo message={message} /> : undefined
+                    }
                     timestamp={message.timestamp}
                     id={message.id}
                     messageRendererRegistry={messageRendererRegistry}
@@ -168,7 +186,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     };
 
     return (
-        <div ref={containerRef} className={b(null, className)} data-qa={qa}>
+        <div ref={containerRef} className={b(null, className)} data-qa={qa ?? MessageListQa.Root}>
             {hasPreviousMessages && (
                 <IntersectionContainer
                     onIntersect={onLoadPreviousMessages}
@@ -177,7 +195,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                     <Loader view="loading" />
                 </IntersectionContainer>
             )}
-            <div className={b('messages')} data-qa={qa}>
+            <div className={b('messages')} data-qa={qa ? `${qa}-messages` : MessageListQa.Messages}>
                 {messages.map(renderMessage)}
             </div>
             {showLoader && <Loader className={b('loader')} />}
@@ -206,7 +224,7 @@ export function MessageList<TContent extends TMessageContent = never>({
                         actionPopupProps?.placement || popupState.actionConfig.popup.placement
                     }
                     className={actionPopupProps?.className}
-                    qa={qa ? `${qa}-action-popup` : 'action-popup'}
+                    qa={actionPopupProps?.qa ?? (qa ? `${qa}-action-popup` : 'action-popup')}
                 >
                     {popupState.content}
                 </ActionPopup>

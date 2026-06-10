@@ -58,12 +58,20 @@ function applyToolAdd(
     update: StreamEventToolAdd,
 ): TMessageContentUnion[] {
     const status = update.status ?? 'loading';
-    const data: {toolName: string; status: typeof status; headerContent?: string} = {
+    const data: {
+        toolName: string;
+        status: typeof status;
+        headerContent?: string;
+        mcpRequest?: string;
+    } = {
         toolName: update.toolName,
         status,
     };
     if (update.headerContent !== undefined) {
         data.headerContent = update.headerContent;
+    }
+    if (update.mcpRequest !== undefined) {
+        data.mcpRequest = update.mcpRequest;
     }
     return [
         ...parts,
@@ -104,6 +112,10 @@ function applyToolUpdate(
                       ...(update.toolName && {toolName: update.toolName}),
                       status: update.status,
                       ...(bodyText ? {bodyContent: bodyText} : {}),
+                      ...(update.mcpRequest === undefined ? {} : {mcpRequest: update.mcpRequest}),
+                      ...(update.mcpResponse === undefined
+                          ? {}
+                          : {mcpResponse: update.mcpResponse}),
                   },
               }
             : p,

@@ -42,3 +42,5 @@ The component uses CSS variables for theming:
 | `--g-color-text-primary` | Text color  |
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
+
+**Markdown tables**: Wide tables scroll horizontally on the renderer root; `th` / `td` use single-line cells by default so table column layout stays stable inside message wrappers (e.g. `BaseMessage`).

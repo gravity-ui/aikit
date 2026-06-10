@@ -18,6 +18,8 @@ export type PromptInputPanelConfig = {
  * Props for the header section of PromptInput
  */
 export type PromptInputHeaderConfig = {
+    /** QA/test identifier for header wrapper */
+    qa?: string;
     /** Custom content for header area */
     topContent?: ReactNode;
     /** Array of context items to display on the left */
@@ -32,6 +34,8 @@ export type PromptInputHeaderConfig = {
  * Props for the body/textarea section of PromptInput
  */
 export type PromptInputBodyConfig = {
+    /** QA/test identifier for body wrapper */
+    qa?: string;
     /** Placeholder text for textarea */
     placeholder?: string;
     /** Minimum number of textarea rows */
@@ -40,12 +44,24 @@ export type PromptInputBodyConfig = {
     maxRows?: number;
     /** Auto focus textarea on mount */
     autoFocus?: boolean;
+    /**
+     * Auto focus textarea when a new chat is opened via the plus icon.
+     * Only applies inside ChatContainer. Defaults to false.
+     */
+    autoFocusOnNewChat?: boolean;
+    /**
+     * Auto focus textarea when a chat is selected from history.
+     * Only applies inside ChatContainer. Defaults to false.
+     */
+    autoFocusOnChatSelect?: boolean;
 };
 
 /**
  * Props for the footer section of PromptInput
  */
 export type PromptInputFooterConfig = {
+    /** QA/test identifier for footer wrapper */
+    qa?: string;
     /** Custom content for footer area (SubmitButton will still be shown) */
     bottomContent?: ReactNode;
     /** Show settings icon in footer */
@@ -56,6 +72,11 @@ export type PromptInputFooterConfig = {
     showAttachment?: boolean;
     /** Attachment icon click handler */
     onAttachmentClick?: () => void;
+    /**
+     * Replaces the built-in attachment icon button with a custom node (e.g. AttachmentPicker).
+     * When set, `showAttachment` and `onAttachmentClick` are ignored.
+     */
+    attachmentContent?: ReactNode;
     /** Show microphone icon in footer */
     showMicrophone?: boolean;
     /** Microphone icon click handler */

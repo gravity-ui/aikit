@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {test} from '~playwright/core';
 
 import {MarkdownRendererStories} from './helpersPlaywright';
@@ -16,6 +14,15 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         expectScreenshot,
     }) => {
         await mount(<MarkdownRendererStories.WithTransformOptions />);
+
+        await expectScreenshot();
+    });
+
+    test('should render markdown table inside BaseMessage without broken layout', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<MarkdownRendererStories.WithMarkdownTableInMessage />);
 
         await expectScreenshot();
     });

@@ -1,13 +1,16 @@
 # AIKit Component Development Guidelines
 
-For detailed guidelines on developing components in this project, refer to [MEMORYBANK.md](./MEMORYBANK.md).
+**English-only**: all code comments, JSDoc, inline notes, TODO markers, and commit messages must be in English. UI strings (i18n) can be localized.
 
-## Quick Reference
+Detailed guidelines live in `docs/guidelines/`:
 
-- **Code language**: All comments, JSDoc, and documentation must be written in **English**
-- **Storybook**: Every component needs `__stories__/Docs.mdx` and `__stories__/ComponentName.stories.tsx`
-- **Tests**: Every component needs `__tests__/helpersPlaywright.tsx` and `__tests__/ComponentName.visual.spec.tsx`
-- **README**: Every component needs a README with Features, Usage, Props, and Styling sections
+- [`docs/guidelines/code-style.md`](./docs/guidelines/code-style.md) — language requirements (examples, rationale)
+- [`docs/guidelines/storybook.md`](./docs/guidelines/storybook.md) — `Docs.mdx` + `*.stories.tsx` templates
+- [`docs/guidelines/testing.md`](./docs/guidelines/testing.md) — Playwright Component Testing (Docker)
+- [`docs/guidelines/readme.md`](./docs/guidelines/readme.md) — component README structure
+- [`docs/guidelines/new-component.md`](./docs/guidelines/new-component.md) — checklist when adding a new component (level barrel + `package.json#exports` + docs catalog)
+
+Read the relevant file before working on a component, its `__stories__/`, `__tests__/`, or `README.md`. Claude skills (`aikit-storybook`, `aikit-testing`, `aikit-readme`, `aikit-new-component`) and Cursor rules under `.cursor/rules/aikit-*` are thin pointers to the same files.
 
 ## Running Tests
 
@@ -22,6 +25,4 @@ npm run playwright:docker -- --grep "@ComponentName"
 npm run playwright:docker:update
 ```
 
-> **Important**: Always use Docker commands for Playwright tests to ensure consistency with CI/CD.
-
-See [MEMORYBANK.md](./MEMORYBANK.md) for full templates, examples, and best practices.
+> **Important**: Always use Docker commands for Playwright tests — required for snapshot consistency with CI.

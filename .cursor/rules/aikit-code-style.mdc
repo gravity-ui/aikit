@@ -1,0 +1,10 @@
+---
+description: AIKit code language requirements
+alwaysApply: true
+---
+
+All code comments, JSDoc, inline notes, TODO markers, and commit messages must be written in **English**.
+
+UI text strings (i18n) can be in any language — code itself must use English.
+
+See `docs/guidelines/code-style.md` for examples and rationale.

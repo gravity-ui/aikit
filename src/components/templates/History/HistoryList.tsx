@@ -36,7 +36,7 @@ export interface HistoryListProps extends QAProps, DOMProps {
     /** Callback when a chat is selected */
     onSelectChat?: (chat: ChatType) => void;
     /** Callback when a chat is deleted */
-    onDeleteChat?: (chat: ChatType) => void;
+    onDeleteChat?: (chat: ChatType) => Promise<void>;
     /**
      * Callback to load more chats.
      * - Full mode: () => void - triggers load, parent updates chats prop
@@ -60,6 +60,8 @@ export interface HistoryListProps extends QAProps, DOMProps {
     emptyPlaceholder?: React.ReactNode;
     /** Empty filtered state placeholder (when search returns no results) */
     emptyFilteredPlaceholder?: React.ReactNode;
+    /** Placeholder text for the search/filter input (defaults to built-in i18n string) */
+    searchPlaceholder?: string;
     /** Additional CSS class */
     className?: string;
     /** Custom filter function for search */
@@ -74,6 +76,9 @@ export interface HistoryListProps extends QAProps, DOMProps {
 
 /**
  * HistoryList component - displays a list of chats with search, grouping, and actions
+ *
+ * @param props - {@link HistoryListProps}
+ * @returns Rendered history list (search, grouping, lazy/full load, chat rows).
  */
 export function HistoryList(props: HistoryListProps) {
     const {
@@ -89,6 +94,7 @@ export function HistoryList(props: HistoryListProps) {
         showActions = true,
         emptyPlaceholder,
         emptyFilteredPlaceholder,
+        searchPlaceholder,
         className,
         qa,
         style,
@@ -101,15 +107,17 @@ export function HistoryList(props: HistoryListProps) {
     const [filteredItemCount, setFilteredItemCount] = useState<number | null>(null);
     const [loadedChats, setLoadedChats] = useState<ChatType[]>([]);
     const [lazyHasMore, setLazyHasMore] = useState(hasMore);
+    const [deletedChats, setDeletedChats] = useState<Set<string>>(new Set());
 
     const loadingMoreRef = useRef(false);
 
     const displayChats = useMemo(() => {
-        if (loadMode === 'lazy') {
-            return [...chats, ...loadedChats];
-        }
-        return chats;
-    }, [loadMode, chats, loadedChats]);
+        const totalChats = loadMode === 'lazy' ? [...chats, ...loadedChats] : chats;
+
+        const filteredChats = totalChats.filter((chat) => !deletedChats.has(chat.id));
+
+        return filteredChats;
+    }, [loadMode, chats, loadedChats, deletedChats]);
 
     const displayChatsLengthRef = useRef(displayChats.length);
     displayChatsLengthRef.current = displayChats.length;
@@ -215,9 +223,15 @@ export function HistoryList(props: HistoryListProps) {
         onChatClick?.(chat as ChatType);
     };
 
-    const handleDeleteClick = (e: React.MouseEvent, chat: ChatType) => {
+    const handleDeleteClick = async (e: React.MouseEvent, chat: ChatType) => {
         e.stopPropagation();
-        onDeleteChat?.(chat);
+        try {
+            await onDeleteChat?.(chat);
+            setDeletedChats((prevDeletedChats) => new Set([...prevDeletedChats, chat.id]));
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('HistoryList: failed to delete chat', error);
+        }
     };
 
     const wrappedFilterFunction = useMemo(() => {
@@ -275,7 +289,7 @@ export function HistoryList(props: HistoryListProps) {
                             virtualized={false}
                             filterable={searchable}
                             filterItem={wrappedFilterFunction}
-                            filterPlaceholder={i18n('search-placeholder')}
+                            filterPlaceholder={searchPlaceholder ?? i18n('search-placeholder')}
                             filterClassName={b('filter')}
                             emptyPlaceholder={finalEmptyPlaceholder}
                             selectedItemIndex={selectedItemIndex}

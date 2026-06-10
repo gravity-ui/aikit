@@ -62,14 +62,14 @@ const buttons = [
     // eslint-disable-next-line no-console
     {actionType: 'like', onClick: () => console.log('like')},
     // eslint-disable-next-line no-console
-    {actionType: 'unlike', onClick: () => console.log('unlike')},
+    {actionType: 'dislike', onClick: () => console.log('dislike')},
 ];
 
-const likeUnlikeButtons = [
+const likeDislikeButtons = [
     // eslint-disable-next-line no-console
     {actionType: 'like', onClick: () => console.log('like')},
     // eslint-disable-next-line no-console
-    {actionType: 'unlike', onClick: () => console.log('unlike')},
+    {actionType: 'dislike', onClick: () => console.log('dislike')},
 ];
 
 export const Playground: StoryFn<BaseMessageProps> = (args) => (
@@ -174,14 +174,14 @@ export const WithUserRating: StoryObj<BaseMessageProps> = {
     render: (args) => (
         <>
             <ShowcaseItem title="No rating" width="300px">
-                <BaseMessage {...args} actions={likeUnlikeButtons} role="assistant">
+                <BaseMessage {...args} actions={likeDislikeButtons} role="assistant">
                     {'Message'}
                 </BaseMessage>
             </ShowcaseItem>
             <ShowcaseItem title="Rated like" width="300px">
                 <BaseMessage
                     {...args}
-                    actions={likeUnlikeButtons}
+                    actions={likeDislikeButtons}
                     role="assistant"
                     userRating="like"
                 >
@@ -191,7 +191,7 @@ export const WithUserRating: StoryObj<BaseMessageProps> = {
             <ShowcaseItem title="Rated dislike" width="300px">
                 <BaseMessage
                     {...args}
-                    actions={likeUnlikeButtons}
+                    actions={likeDislikeButtons}
                     role="assistant"
                     userRating="dislike"
                 >

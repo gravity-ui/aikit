@@ -1,299 +1,220 @@
 # Quick Start
 
-This guide will help you get started with the Aikit library.
+This guide walks you through installing `@gravity-ui/aikit` and rendering your first chat.
 
 ## Installation
 
 ```bash
-npm install aikit
-# or
-yarn add aikit
-# or
-pnpm add aikit
+npm install @gravity-ui/aikit
 ```
 
-## Basic Usage
+You also need to install the peer dependencies (most likely already in your app if you use Gravity UI):
 
-### 1. Simple Chat Out of the Box
+```bash
+npm install @gravity-ui/uikit @gravity-ui/icons @gravity-ui/i18n @diplodoc/transform highlight.js react react-dom
+```
 
-The fastest way to get started is to use the ready-made `ChatContainer` component:
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) if `Module not found` errors appear after install.
+
+## Theme CSS
+
+AIKit ships compiled CSS that you must import once at the application root:
 
 ```typescript
-import React, { useState } from 'react';
-import { ChatContainer } from 'aikit';
-import type { ChatType, MessageType } from 'aikit';
+import '@gravity-ui/aikit/themes/common';
+import '@gravity-ui/aikit/themes/light'; // or '/dark'
+```
+
+The component tree must be rendered inside Gravity UI's `<ThemeProvider>` (from `@gravity-ui/uikit`) so that `data-theme="light"` / `data-theme="dark"` is set on the root.
+
+## 1. Simple Chat Out of the Box
+
+The fastest path is the `ChatContainer` page component:
+
+```tsx
+import {useState} from 'react';
+import {ChatContainer} from '@gravity-ui/aikit';
+import type {ChatType, TChatMessage, TSubmitData} from '@gravity-ui/aikit';
 
 function App() {
-    const [messages, setMessages] = useState<MessageType[]>([]);
-    const [chats, setChats] = useState<ChatType[]>([]);
-    const [activeChat, setActiveChat] = useState<ChatType | null>(null);
+  const [chats, setChats] = useState<ChatType[]>([]);
+  const [activeChat, setActiveChat] = useState<ChatType | null>(null);
+  const [messages, setMessages] = useState<TChatMessage[]>([]);
 
-    const handleSendMessage = async (content: string) => {
-        // Your message sending logic
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            body: JSON.stringify({ message: content })
-        });
-        const data = await response.json();
+  const handleSendMessage = async (data: TSubmitData) => {
+    // Append the user message immediately
+    setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
 
-        // Update state
-        setMessages(prev => [...prev, data]);
-    };
+    // Call your backend, then append the assistant message
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({message: data.content}),
+    });
+    const assistant = await response.json();
+    setMessages((prev) => [...prev, {role: 'assistant', content: assistant.content}]);
+  };
 
-    return (
-        <ChatContainer
-            chats={chats}
-            activeChat={activeChat}
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onSelectChat={setActiveChat}
-            onCreateChat={() => {/* Create chat */}}
-            onDeleteChat={(chat) => {/* Delete chat */}}
-        />
-    );
+  return (
+    <ChatContainer
+      chats={chats}
+      activeChat={activeChat}
+      messages={messages}
+      onSendMessage={handleSendMessage}
+      onSelectChat={setActiveChat}
+      onCreateChat={() => {
+        /* create chat */
+      }}
+      onDeleteChat={(chat) => {
+        /* delete chat */
+      }}
+    />
+  );
 }
 ```
 
-### 2. Using Individual Components
+## 2. Composing from Organisms
 
-For more flexible customization, use components separately:
+For more control, compose `Header`, `MessageList`, and `PromptInput` directly:
 
-```typescript
-import {
-    Header,
-    MessageList,
-    PromptBox,
-} from 'aikit';
+```tsx
+import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
 
 function CustomChat() {
-    return (
-        <div className="custom-chat">
-            <Header
-                title="AI Assistant"
-                onNewChat={() => {/* ... */}}
-            />
-
-            <MessageList
-                messages={messages}
-                showTimestamp
-            />
-
-            <PromptBox
-                onSend={handleSend}
-                placeholder="Enter message..."
-            />
-        </div>
-    );
+  return (
+    <div className="custom-chat">
+      <Header
+        title="AI Assistant"
+        onNewChat={() => {
+          /* ... */
+        }}
+      />
+      <MessageList messages={messages} status="ready" />
+      <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
+    </div>
+  );
 }
 ```
 
-### 3. Using Hooks for Full Customization
+Each organism has its own README in `src/components/organisms/<Name>/README.md` with the full props table.
 
-```typescript
-import { usePromptBox } from 'aikit';
+## 3. Hooks
 
-function MyCustomPromptBox() {
-    const {
-        value,
-        setValue,
-        handleSubmit,
-        canSubmit
-    } = usePromptBox({
-        onSend: async (data) => {
-            // Your logic
-        }
-    });
-
-    return (
-        <div className="my-prompt">
-            <textarea
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
-            <button
-                onClick={handleSubmit}
-                disabled={!canSubmit}
-            >
-                Send
-            </button>
-        </div>
-    );
-}
-```
+AIKit exports a small set of hooks for advanced composition (date formatting, smart scrolling, tool-message state, file-upload store, etc.). See [HOOKS.md](./HOOKS.md) for the catalog and signatures.
 
 ## Working with Message Types
 
-### Built-in Types
+Messages are typed by `role` (`'user'` | `'assistant'` | `'system'`). Assistant content supports multi-part rendering — a string, a single `TMessageContent` object, or an array of parts.
 
-The library supports three built-in message types:
+### Built-in content types
 
-1. **Simple** — regular text message
-2. **Thinking** — AI thinking process
-3. **Tool** — tool execution
+| Type       | Description                       |
+| ---------- | --------------------------------- |
+| `text`     | Plain text or markdown            |
+| `thinking` | AI thinking process (collapsible) |
+| `tool`     | Tool execution with status        |
 
-```typescript
-import type {SimpleMessageType} from 'aikit';
+```tsx
+import type {TAssistantMessage} from '@gravity-ui/aikit';
 
-const message: SimpleMessageType = {
-  type: 'simple',
-  id: 'msg-1',
-  author: 'assistant',
+const message: TAssistantMessage = {
+  role: 'assistant',
   timestamp: new Date().toISOString(),
-  state: 'success',
-  data: {
-    formattedText: 'Hello! How can I help?',
-  },
+  content: [
+    {type: 'text', data: {text: 'Let me think…'}},
+    {type: 'thinking', data: {content: 'Analyzing the request', status: 'thinking'}},
+    {type: 'text', data: {text: 'Here is the answer.'}},
+  ],
 };
 ```
 
-### Custom Message Types
+### Custom message content types
 
-You can create your own message types:
+Register a custom renderer with `MessageRendererRegistry`:
 
-```typescript
-import type { BaseMessage, MessageTypeRegistry } from 'aikit';
+```tsx
+import {
+  createMessageRendererRegistry,
+  registerMessageRenderer,
+  type MessageRendererRegistry,
+} from '@gravity-ui/aikit';
 
-// 1. Define data
-interface ImageMessageData {
-    imageUrl: string;
-    caption?: string;
-}
-
-// 2. Create message type
-type ImageMessage = BaseMessage<ImageMessageData> & {
-    type: 'image';
+type ChartMessageContent = {
+  type: 'chart';
+  data: {points: number[]};
 };
 
-// 3. Create display component
-const ImageMessageView = ({ message }: { message: ImageMessage }) => {
-    return (
-        <div>
-            <img src={message.data.imageUrl} />
-            {message.data.caption && <p>{message.data.caption}</p>}
-        </div>
-    );
-};
+const renderers: MessageRendererRegistry = createMessageRendererRegistry();
+registerMessageRenderer<ChartMessageContent>(renderers, 'chart', {
+  render: ({content}) => <Chart points={content.data.points} />,
+});
 
-// 4. Register type
-const customTypes: MessageTypeRegistry = {
-    image: {
-        component: ImageMessageView,
-        validator: (msg) => msg.type === 'image'
-    }
-};
-
-// 5. Use in ChatContainer
-<ChatContainer
-    messages={messages}
-    messageTypeRegistry={customTypes}
-/>
+<MessageList messages={messages} messageRendererRegistry={renderers} />;
 ```
+
+See [src/components/organisms/MessageList/README.md](../src/components/organisms/MessageList/README.md) for the full registry API.
 
 ## Theming
 
-### Using Built-in Themes
+Theme switching is done via Gravity UI's `<ThemeProvider>` (sets `data-theme` on the root). AIKit ships per-theme CSS files; import them at the application root.
 
-```typescript
-<ChatContainer
-    theme="dark"  // 'light' | 'dark' | 'auto'
-    // ...
-/>
-```
+CSS variables follow the `--g-aikit-*` convention and are documented in [THEMING.md](./THEMING.md).
 
-### Customization via CSS Variables
+## Streaming Responses
 
-```css
-.g-root {
-  --g-aikit-color-bg-primary: #ffffff;
-  /* ... */
-}
+Stream tokens by mutating an in-flight assistant message with `status: 'streaming'` on `MessageList`:
 
-[data-theme='dark'] {
-  --g-aikit-bg-primary: #1a1a1a;
-  /* ... */
-}
-```
+```tsx
+const handleSendMessage = async (data: TSubmitData) => {
+  setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
 
-## Streaming
-
-The library supports streaming responses:
-
-```typescript
-const handleSendMessage = async (content: string) => {
-  // Create temporary message in streaming state
-  const tempMessage: SimpleMessageType = {
-    type: 'simple',
-    id: 'temp-' + Date.now(),
-    author: 'assistant',
-    timestamp: new Date().toISOString(),
-    state: 'streaming',
-    data: {formattedText: ''},
-  };
-
-  setMessages((prev) => [...prev, tempMessage]);
-
-  // Streaming from server
   const response = await fetch('/api/chat/stream', {
     method: 'POST',
-    body: JSON.stringify({message: content}),
+    body: JSON.stringify({message: data.content}),
   });
-
-  const reader = response.body.getReader();
+  const reader = response.body!.getReader();
   let accumulated = '';
+
+  // Insert a placeholder assistant message
+  setMessages((prev) => [...prev, {role: 'assistant', content: ''}]);
 
   while (true) {
     const {done, value} = await reader.read();
     if (done) break;
-
     accumulated += new TextDecoder().decode(value);
-
-    // Update message as data arrives
-    setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === tempMessage.id ? {...msg, data: {formattedText: accumulated}} : msg,
-      ),
-    );
+    setMessages((prev) => {
+      const next = [...prev];
+      next[next.length - 1] = {role: 'assistant', content: accumulated};
+      return next;
+    });
   }
-
-  // Change state to success
-  setMessages((prev) =>
-    prev.map((msg) => (msg.id === tempMessage.id ? {...msg, state: 'success' as const} : msg)),
-  );
 };
 ```
 
-## Server
+For an end-to-end working example with OpenAI on the server side, see [EXAMPLES.md](./EXAMPLES.md).
 
-### Streaming
+## Server-Side: OpenAI Adapter
 
-```typescript
-const service = new OpenAIService({...})
-
-const stream = await service.createResponseStream({
-    input: 'Hello world',
-});
-
-stream.start() // start stream to get chunks
-stream.onEventChunk(console.log) // a typed chunk object
-stream.onBufferChunk(console.log) // if we need pass chunks to another service (for example via http)
-stream.abort() // abort stream
-```
-
-### Summarizing the header of a dialog.
+A server-side helper (`@gravity-ui/aikit/server/openai`) wraps the OpenAI Responses API:
 
 ```typescript
-const summarizing = await service.summarizeConversationTitle({
-  conversation: '<convId>',
-  byLastItems: 5, // summarizes based on the last 5 messages
-  // byFirstItems: 5, summarizes based on the first 5 messages
+const service = new OpenAIService({
+  /* config */
 });
 
-console.log('summarizing :>> ', summarizing); // header of conversation
+const stream = await service.createResponseStream({input: 'Hello world'});
+stream.start();
+stream.onEventChunk(console.log); // typed event chunks
+stream.onBufferChunk(console.log); // raw chunks (e.g. to forward over HTTP)
+stream.abort(); // cancel
 ```
 
-If neither the _byLastItems_ nor the _byFirstItems_ parameter is provided, summarization will, by default, be performed on the first 5 items.
+`openai` and `semver` are listed as `optionalDependencies` — install them only if you use the server adapter.
 
 ## Next Steps
 
-- Study the [full architecture](./ARCHITECTURE.md)
-- Review the [project structure](./PROJECT_STRUCTURE.md)
+- Component catalog: [COMPONENTS.md](./COMPONENTS.md)
+- Theming and CSS variables: [THEMING.md](./THEMING.md)
+- Hooks reference: [HOOKS.md](./HOOKS.md)
+- Real-world examples: [EXAMPLES.md](./EXAMPLES.md)
+- Architecture deep dive: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- AI agent integration in your project: [AI_AGENTS.md](./AI_AGENTS.md)

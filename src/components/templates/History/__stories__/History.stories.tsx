@@ -109,6 +109,7 @@ export const Playground: Story = {
         onDeleteChat: (chat) => {
             // eslint-disable-next-line no-console
             console.log('Delete chat:', chat);
+            return Promise.resolve();
         },
     },
     render: (args) => <HistoryWithTrigger {...args} />,
@@ -276,6 +277,7 @@ export const WithLoadMoreAndDelete: Story = {
         onDeleteChat: (chat) => {
             // eslint-disable-next-line no-console
             console.log('Delete chat:', chat);
+            return Promise.resolve();
         },
         onLoadMore: () => {
             // eslint-disable-next-line no-console
@@ -301,6 +303,7 @@ export const Interactive: Story = {
             if (selectedChat?.id === chat.id) {
                 setSelectedChat(null);
             }
+            return Promise.resolve();
         };
 
         return (
@@ -401,6 +404,7 @@ export const NotForceOpen: Story = {
         onDeleteChat: (chat) => {
             // eslint-disable-next-line no-console
             console.log('Delete chat:', chat);
+            return Promise.resolve();
         },
     },
     render: (args) => <HistoryWithTrigger initialOpen={false} {...args} />,
@@ -416,5 +420,29 @@ export const Loading: Story = {
         showActions: true,
     },
     render: (args) => <HistoryWithTrigger {...args} />,
+    decorators: defaultDecorators,
+};
+
+export const DeleteChat: Story = {
+    args: {
+        chats: mockChats,
+        searchable: false,
+        groupBy: 'date',
+        showActions: true,
+        onSelectChat: (chat) => {
+            // eslint-disable-next-line no-console
+            console.log('Selected chat:', chat);
+        },
+        onDeleteChat: (chat) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 1000);
+                // eslint-disable-next-line no-console
+                console.log('Delete chat:', chat);
+            });
+        },
+    },
+    render: (args) => <HistoryWithTrigger initialOpen={false} {...args} />,
     decorators: defaultDecorators,
 };

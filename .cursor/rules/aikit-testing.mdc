@@ -1,0 +1,7 @@
+---
+description: AIKit Playwright Component Testing conventions
+globs: src/components/**/__tests__/**
+alwaysApply: false
+---
+
+Follow `docs/guidelines/testing.md` when working on files in `__tests__/`. Tests must run via `npm run playwright:docker` (not local Playwright).

@@ -54,7 +54,7 @@ export enum BaseMessageActionType {
     Edit = 'edit',
     Retry = 'retry',
     Like = 'like',
-    Unlike = 'unlike',
+    Dislike = 'dislike',
     Delete = 'delete',
 }
 
@@ -66,16 +66,31 @@ export type DefaultMessageAction<TMessage> = {
     type?: string;
     onClick: (message: TMessage) => void;
     icon?: React.ReactNode;
+    /**
+     * Arbitrary button content (text, badges, or any ReactNode).
+     * Takes precedence over `icon` when both are provided.
+     * Can be a static ReactNode or a render function that receives the message,
+     * allowing dynamic content based on message data (e.g. token count from metadata).
+     */
+    children?: React.ReactNode | ((message: TMessage) => React.ReactNode);
     label?: string;
     view?: ButtonView;
     /** Optional popup configuration for this action */
     popup?: ActionPopupConfig<TMessage>;
 };
 
+/**
+ * React component used to render extra contextual info for a message
+ * (e.g. token count, latency). Receives the message as a `message` prop.
+ */
+export type MessageExtraInfoComponent<TMessage> = React.ComponentType<{message: TMessage}>;
+
 export type BaseMessageProps<TMessage = unknown> = {
     children: React.ReactNode;
     role: TMessageRole;
     actions?: BaseMessageAction<TMessage>[];
+    /** Extra info node rendered alongside the action buttons (e.g. token count). */
+    extraInfo?: React.ReactNode;
     userRating?: UserRating;
     timestamp?: string;
     showTimestamp?: boolean;
@@ -122,7 +137,12 @@ export type ThinkingMessageContentData = {
 
 export type ThinkingMessageContent = TMessageContent<'thinking', ThinkingMessageContentData>;
 
-export type ToolMessageContentData = ToolMessageProps;
+export type ToolMessageContentData = ToolMessageProps & {
+    /** MCP arguments, pretty-printed JSON. Read by AIStudioChat's tool renderer. */
+    mcpRequest?: string;
+    /** MCP output (or error), pretty-printed JSON. Read by AIStudioChat's tool renderer. */
+    mcpResponse?: string;
+};
 
 export type ToolMessageContent = TMessageContent<'tool', ToolMessageContentData>;
 
@@ -149,11 +169,21 @@ export type TBaseMessage<Metadata = TMessageMetadata> = Pick<
     metadata?: Metadata;
 };
 
+export type FileAttachment = {
+    id: string;
+    name: string;
+    mimeType?: string;
+};
+
 export type TUserMessage<Metadata = TMessageMetadata> = TBaseMessage<Metadata> & {
     role: 'user';
     content: string;
     format?: 'plain' | 'markdown';
     avatarUrl?: string;
+    /** Base64 data URLs or regular image URLs attached to the message */
+    images?: string[];
+    /** File attachments sent with this message */
+    fileAttachments?: FileAttachment[];
 };
 
 export type TAssistantMessage<

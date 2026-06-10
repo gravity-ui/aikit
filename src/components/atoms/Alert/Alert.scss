@@ -33,6 +33,20 @@ $block: '.#{variables.$ns}alert';
         }
     }
 
+    &__icon-wrapper {
+        display: flex;
+        align-items: center;
+        align-self: baseline;
+        flex-shrink: 0;
+        height: var(--g-text-body-1-line-height);
+    }
+
+    &__icon-with-text-wrapper {
+        display: flex;
+        flex: 1;
+        gap: var(--g-spacing-2);
+    }
+
     &__action {
         margin-left: auto;
     }

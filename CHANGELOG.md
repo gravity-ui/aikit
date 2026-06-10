@@ -1,5 +1,146 @@
 # Changelog
 
+## [2.3.0](https://github.com/gravity-ui/aikit/compare/v2.2.0...v2.3.0) (2026-06-09)
+
+
+### Features
+
+* add usage example to readme ([#180](https://github.com/gravity-ui/aikit/issues/180)) ([4b45ee7](https://github.com/gravity-ui/aikit/commit/4b45ee72a71194d4f96a2c31a1eea1d00f3126b7))
+
+## [2.2.0](https://github.com/gravity-ui/aikit/compare/v2.1.0...v2.2.0) (2026-06-04)
+
+
+### Features
+
+* **AIStudioChat:** modify mcp tool renderer ([#168](https://github.com/gravity-ui/aikit/issues/168)) ([c475926](https://github.com/gravity-ui/aikit/commit/c475926e2424ce75214c043776c62eb3b54f1f5c))
+
+## [2.1.0](https://github.com/gravity-ui/aikit/compare/v2.0.5...v2.1.0) (2026-06-03)
+
+
+### Features
+
+* **ChatContainer:** add ChatContainer story for custom message type ([#176](https://github.com/gravity-ui/aikit/issues/176)) ([5fad40e](https://github.com/gravity-ui/aikit/commit/5fad40e291197cc615ea1d2e74f17f8fe5971e09))
+
+## [2.0.5](https://github.com/gravity-ui/aikit/compare/v2.0.4...v2.0.5) (2026-06-01)
+
+
+### Bug Fixes
+
+* **Alert:** fix icon position ([#174](https://github.com/gravity-ui/aikit/issues/174)) ([997be4e](https://github.com/gravity-ui/aikit/commit/997be4e9857752a196851e34624bcd55de40162e))
+
+## [2.0.4](https://github.com/gravity-ui/aikit/compare/v2.0.3...v2.0.4) (2026-05-27)
+
+
+### Bug Fixes
+
+* **OpenaiAdapter:** tool loading state [DATAUI-3561] ([#171](https://github.com/gravity-ui/aikit/issues/171)) ([3885df5](https://github.com/gravity-ui/aikit/commit/3885df5d4ef103d156596db3709fd0bf3a96638d))
+
+## [2.0.3](https://github.com/gravity-ui/aikit/compare/v2.0.2...v2.0.3) (2026-05-26)
+
+
+### Bug Fixes
+
+* add padding-bottom in history list ([#169](https://github.com/gravity-ui/aikit/issues/169)) ([d7094b9](https://github.com/gravity-ui/aikit/commit/d7094b9b2bea3d27967846bcfd16f1c9a92cd4b0))
+
+## [2.0.2](https://github.com/gravity-ui/aikit/compare/v2.0.1...v2.0.2) (2026-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **BaseMessage:** the default action type `unlike` is renamed to `dislike` for consistency with the existing `UserRating = 'like' | 'dislike'` type. This affects the `BaseMessageActionType` enum, the action `actionType`/`type` string value, and the i18n keyset.
+
+  **Migration:**
+
+  ```diff
+  - {actionType: 'unlike', onClick: handleDislike}
+  + {actionType: 'dislike', onClick: handleDislike}
+
+  - {type: BaseMessageActionType.Unlike, onClick: handleDislike}
+  + {type: BaseMessageActionType.Dislike, onClick: handleDislike}
+  ```
+
+  If you override `action-tooltip-*` strings via `@gravity-ui/i18n` keysets, rename the key:
+
+  ```diff
+  - "action-tooltip-unlike": "Dislike"
+  + "action-tooltip-dislike": "Dislike"
+  ```
+
+### Bug Fixes
+
+* **AIStudioChat:** add watcher for feedback ([#166](https://github.com/gravity-ui/aikit/issues/166)) ([350a8af](https://github.com/gravity-ui/aikit/commit/350a8af7c8dafe9e31601356f0a86f4449d94ba5))
+
+## [2.0.1](https://github.com/gravity-ui/aikit/compare/v2.0.0...v2.0.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* **build:** fix ts config for build ([9c7beae](https://github.com/gravity-ui/aikit/commit/9c7beaebd375e1da3469370f5cff783a6866ae3b))
+
+## [2.0.0](https://github.com/gravity-ui/aikit/compare/v1.17.1...v2.0.0) (2026-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ChatContainer / AIStudioChat:** the nested `i18nConfig` prop (typed `ChatContainerI18nConfig`) is removed and replaced with a flat `texts` prop (typed `ChatContainerTexts`). Keys are flattened with section prefixes — e.g. `i18nConfig.header.defaultTitle` → `texts.headerTitle`, `i18nConfig.promptInput.placeholder` → `texts.promptPlaceholder`. See `ChatContainerTexts` in `src/components/pages/ChatContainer/types.ts` for the full key list (covers header, empty state, prompt input, submit button, history, error, disclaimer).
+
+  **Migration:**
+
+  ```diff
+  - <AIStudioChat
+  -   i18nConfig={{
+  -     header: {defaultTitle: 'Code Assistant'},
+  -     promptInput: {placeholder: 'Ask a coding question...'},
+  -   }}
+  - />
+  + <AIStudioChat
+  +   texts={{
+  +     headerTitle: 'Code Assistant',
+  +     promptPlaceholder: 'Ask a coding question...',
+  +   }}
+  + />
+  ```
+
+  The same applies when passing `i18nConfig`/`texts` through to `ChatContainer` directly. Global `@gravity-ui/i18n` keysets still work as the fallback layer beneath `texts`.
+
+### Non-breaking additions (worth knowing)
+
+* **Header:** new optional `qa`, `actionQa`, and `actionTooltipTexts` props for per-instance test identifiers and tooltip text overrides. `actionQa` partially overrides the default `header-action-${id}` `data-qa`; `actionTooltipTexts` overrides the bundled i18n strings per action (including a `{collapsed, opened}` subobject for `HeaderAction.Folding`).
+* **MessageList:** exports a new `MessageListQa` enum (`Root`, `Messages`) used as default `data-qa` values; the `qa` prop on `MessageList` still wins.
+* **PromptInput:** `PromptInputHeaderConfig`, `PromptInputBodyConfig`, and `PromptInputFooterConfig` each gain an optional `qa` field for wrapper-level test identifiers.
+* **InputContext (new molecule):** React context for prompt-input attachments and chips — paired with `useInputContext()` hook for consumers inside the provider tree.
+* **AIStudioChat (new page):** ready-to-use chat with built-in OpenAI streaming support — wraps `ChatContainer` and manages internal state, requires only an API URL.
+
+### Features
+
+* **AIStudioChat:** add new pages for easy integrate ai-studio agent ([#160](https://github.com/gravity-ui/aikit/issues/160)) ([27fc1ab](https://github.com/gravity-ui/aikit/commit/27fc1ab382d516c68bfbe965a982c27ac12ad661))
+* **docs:** updating docs, add generate exports, add llms rules for use lib ([6a251e7](https://github.com/gravity-ui/aikit/commit/6a251e73592e2a41aafa1f8ec217317d61ef6b33))
+* **Header:** add QA props and unified texts customization ([#159](https://github.com/gravity-ui/aikit/issues/159)) ([8b09fd8](https://github.com/gravity-ui/aikit/commit/8b09fd8540144f262c2302f5e915b296d44ef8b1))
+* **InputContext:** refactor AIStudioChat and create new moclecule ([cff8f16](https://github.com/gravity-ui/aikit/commit/cff8f16e7f5d49669f537dbd38888e9d8fa7816b))
+* **skills:** add skills for cursor and claude ([7b90fc5](https://github.com/gravity-ui/aikit/commit/7b90fc5cb16f1429c08533e6991db99cef540afc))
+
+## [1.17.1](https://github.com/gravity-ui/aikit/compare/v1.17.0...v1.17.1) (2026-05-13)
+
+
+### Bug Fixes
+
+* **MarkdownRenderer:** stabilize markdown tables inside BaseMessage ([#161](https://github.com/gravity-ui/aikit/issues/161)) ([c62c05d](https://github.com/gravity-ui/aikit/commit/c62c05d4fc59cd5e71dde843bd1e30ccd6e1b383))
+
+## [1.17.0](https://github.com/gravity-ui/aikit/compare/v1.16.0...v1.17.0) (2026-04-29)
+
+
+### Features
+
+* add deleting chats ([#155](https://github.com/gravity-ui/aikit/issues/155)) ([00512de](https://github.com/gravity-ui/aikit/commit/00512deb301f0b7b42481c6328f9cc8997a4b6e6))
+* **ChatContainer:** add autofocus for input ([#156](https://github.com/gravity-ui/aikit/issues/156)) ([262633c](https://github.com/gravity-ui/aikit/commit/262633c6e0a811a56d915951ee18ef0e84fe85b0))
+
+## [1.16.0](https://github.com/gravity-ui/aikit/compare/v1.15.1...v1.16.0) (2026-04-14)
+
+
+### Features
+
+* add mock stream ([#145](https://github.com/gravity-ui/aikit/issues/145)) ([6e94b31](https://github.com/gravity-ui/aikit/commit/6e94b316a0434272f29a9c898691ba6cf0afa5cb))
+
 ## [1.15.1](https://github.com/gravity-ui/aikit/compare/v1.15.0...v1.15.1) (2026-04-03)
 
 

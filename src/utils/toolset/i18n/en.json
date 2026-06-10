@@ -1,0 +1,3 @@
+{
+  "fallback-unknown-tool": "Unknown tool: {{toolName}}"
+}

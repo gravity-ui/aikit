@@ -37,18 +37,21 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
+        qa: bodyQa,
     } = bodyProps;
 
     const {
         bottomContent,
         showAttachment = false,
         onAttachmentClick,
+        attachmentContent,
         showMicrophone = false,
         onMicrophoneClick,
         submitButtonTooltipSend,
         submitButtonTooltipCancel,
         submitButtonCancelableText,
         submitButtonQa,
+        qa: footerQa,
     } = footerProps;
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
@@ -64,8 +67,10 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                     autoFocus={autoFocus}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
+                    qa={bodyQa}
                 />
                 <PromptInputFooter
+                    qa={footerQa}
                     submitButton={{
                         onClick: handleSubmit,
                         state: submitButtonState,
@@ -76,6 +81,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                     }}
                     showAttachment={showAttachment}
                     onAttachmentClick={onAttachmentClick}
+                    attachmentContent={attachmentContent}
                     showMicrophone={showMicrophone}
                     onMicrophoneClick={onMicrophoneClick}
                     buttonSize="l"

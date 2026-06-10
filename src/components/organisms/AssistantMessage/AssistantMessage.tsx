@@ -24,7 +24,7 @@ import './AssistantMessage.scss';
 
 type BaseMessagePick = Pick<
     BaseMessageProps,
-    'actions' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp' | 'onActionPopup'
+    'actions' | 'extraInfo' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp' | 'onActionPopup'
 >;
 type AssistantMessagePick<TContent extends TMessageContent> = Pick<
     TAssistantMessage<TContent, TMessageMetadata>,
@@ -45,6 +45,7 @@ const b = block('assistant-message');
 export function AssistantMessage<TContent extends TMessageContent = never>({
     content,
     actions,
+    extraInfo,
     timestamp,
     id,
     messageRendererRegistry,
@@ -91,6 +92,7 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
         <BaseMessage
             role="assistant"
             actions={actions}
+            extraInfo={extraInfo}
             showActionsOnHover={showActionsOnHover}
             showTimestamp={showTimestamp}
             timestamp={timestamp}
