@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/gravity-ui/aikit/compare/v2.2.0...v2.3.0) (2026-06-09)
+
+
+### Features
+
+* add usage example to readme ([#180](https://github.com/gravity-ui/aikit/issues/180)) ([4b45ee7](https://github.com/gravity-ui/aikit/commit/4b45ee72a71194d4f96a2c31a1eea1d00f3126b7))
+
 ## [2.2.0](https://github.com/gravity-ui/aikit/compare/v2.1.0...v2.2.0) (2026-06-04)
 
 
