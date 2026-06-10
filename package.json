@@ -106,6 +106,8 @@
       "require": {
         "types": "./build/cjs/utils/aiAgentContext/index.d.ts",
         "default": "./build/cjs/utils/aiAgentContext/index.js"
+      }
+    },
     "./utils/toolset": {
       "import": {
         "types": "./build/esm/utils/toolset/index.d.ts",
