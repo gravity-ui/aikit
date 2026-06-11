@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/gravity-ui/aikit/compare/v2.4.0...v2.5.0) (2026-06-11)
+
+
+### Features
+
+* add AIAgentContext and AIData ([#146](https://github.com/gravity-ui/aikit/issues/146)) ([9718e85](https://github.com/gravity-ui/aikit/commit/9718e85620521a3184023fade409f18102e8bffd))
+
 ## [2.4.0](https://github.com/gravity-ui/aikit/compare/v2.3.0...v2.4.0) (2026-06-10)
 
 
