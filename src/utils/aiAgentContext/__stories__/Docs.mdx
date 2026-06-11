@@ -1,0 +1,21 @@
+import {Meta, Canvas, Controls, Markdown} from '@storybook/addon-docs';
+import * as Stories from './AIAgentContext.stories';
+import Readme from '../README.md?raw';
+
+<Meta of={Stories} />
+
+<Markdown>{Readme}</Markdown>
+
+## Playground
+
+<Canvas of={Stories.Playground} />
+<Controls of={Stories.Playground} />
+
+## Multiple Data Sources
+
+<Canvas of={Stories.MultipleDataSources} />
+
+## Dynamic Data
+
+<Canvas of={Stories.DynamicData} />
+<Controls of={Stories.DynamicData} />

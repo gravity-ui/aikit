@@ -1,0 +1,165 @@
+import {useEffect, useRef, useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-webpack5';
+
+import {AIAgentContextProvider, AIData, buildAIContextSystemPrompt, useAIAgentContext} from '..';
+import {ContentWrapper} from '../../../demo/ContentWrapper';
+
+import MDXDocs from './Docs.mdx';
+
+function useForceUpdateEachSecond() {
+    const [tick, setTick] = useState<number>(0);
+
+    const tickRef = useRef<number>(tick);
+    tickRef.current = tick;
+    const interval = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        interval.current = setInterval(() => {
+            setTick(tickRef.current + 1);
+        }, 1000);
+
+        return () => {
+            if (interval.current) {
+                clearInterval(interval.current);
+            }
+        };
+    }, []);
+
+    return tick;
+}
+
+function PromptPreview() {
+    const {getData} = useAIAgentContext();
+    const entries = getData();
+    const prompt = buildAIContextSystemPrompt(entries);
+
+    const tick = useForceUpdateEachSecond();
+
+    return (
+        <pre
+            style={{
+                background: '#f5f5f5',
+                padding: '16px',
+                borderRadius: '8px',
+                whiteSpace: 'pre-wrap',
+                fontFamily: 'monospace',
+                fontSize: '13px',
+            }}
+        >
+            {prompt || '(no data registered)'}
+
+            <br />
+            <br />
+
+            <small>Force updating each second: {tick}</small>
+        </pre>
+    );
+}
+
+function BasicUsageExample() {
+    const product = {
+        id: 42,
+        name: 'Gravity UI Kit',
+        price: 0,
+        category: 'Open Source',
+    };
+
+    return (
+        <AIAgentContextProvider>
+            <AIData label="Current product" data={product} />
+            <PromptPreview />
+        </AIAgentContextProvider>
+    );
+}
+
+function MultipleDataSourcesExample() {
+    const user = {name: 'Alice', email: 'alice@example.com', role: 'admin'};
+    const page = {
+        title: 'Product Dashboard',
+        section: 'Analytics',
+        products: [
+            {
+                category: 'Open Source',
+                products: [
+                    {id: 1, name: 'Product 1', price: 100},
+                    {id: 2, name: 'Product 2', price: 200},
+                    {id: 3, name: 'Product 3', price: 300},
+                ],
+            },
+            {
+                products: [
+                    {id: 1, name: 'Product 1', price: 100},
+                    {id: 2, name: 'Product 2', price: 200},
+                    {id: 3, name: 'Product 3', price: 300},
+                ],
+                category: 'NDA',
+            },
+        ],
+    };
+    const filters = {dateRange: '2026-01-01 to 2026-04-13', status: 'active'};
+
+    return (
+        <AIAgentContextProvider>
+            <AIData label="Current user" data={user} />
+            <AIData label="Current page" data={page} />
+            <AIData label="Applied filters" data={filters} />
+            <PromptPreview />
+        </AIAgentContextProvider>
+    );
+}
+
+function DynamicDataExample({userName, userEmail}: {userName: string; userEmail: string}) {
+    const [counter, setCounter] = useState(0);
+
+    return (
+        <AIAgentContextProvider>
+            <AIData label="Current user" data={{name: userName, email: userEmail}} />
+            <AIData label="Session state" data={{clickCount: counter}} />
+            <div style={{marginBottom: '12px'}}>
+                <button onClick={() => setCounter((c) => c + 1)}>Clicked {counter} times</button>
+            </div>
+            <PromptPreview />
+        </AIAgentContextProvider>
+    );
+}
+
+export default {
+    title: 'utils/AIAgentContext',
+    parameters: {
+        docs: {
+            page: MDXDocs,
+        },
+    },
+} as Meta;
+
+type PlaygroundStory = StoryObj<typeof BasicUsageExample>;
+type MultiStory = StoryObj<typeof MultipleDataSourcesExample>;
+type DynamicStory = StoryObj<typeof DynamicDataExample>;
+
+const defaultDecorators = [
+    (Story) => (
+        <ContentWrapper>
+            <Story />
+        </ContentWrapper>
+    ),
+] satisfies PlaygroundStory['decorators'];
+
+export const Playground: PlaygroundStory = {
+    render: () => <BasicUsageExample />,
+    decorators: defaultDecorators,
+};
+
+export const MultipleDataSources: MultiStory = {
+    render: () => <MultipleDataSourcesExample />,
+    decorators: defaultDecorators,
+};
+
+export const DynamicData: DynamicStory = {
+    render: (args) => <DynamicDataExample {...args} />,
+    args: {
+        userName: 'Alice',
+        userEmail: 'alice@example.com',
+    },
+    decorators: defaultDecorators,
+};

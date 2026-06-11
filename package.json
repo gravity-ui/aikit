@@ -98,6 +98,16 @@
         "default": "./build/cjs/utils/clipboardUtils.js"
       }
     },
+    "./utils/aiAgentContext": {
+      "import": {
+        "types": "./build/esm/utils/aiAgentContext/index.d.ts",
+        "default": "./build/esm/utils/aiAgentContext/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/utils/aiAgentContext/index.d.ts",
+        "default": "./build/cjs/utils/aiAgentContext/index.js"
+      }
+    },
     "./utils/toolset": {
       "import": {
         "types": "./build/esm/utils/toolset/index.d.ts",
