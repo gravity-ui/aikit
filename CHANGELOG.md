@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/gravity-ui/aikit/compare/v2.5.0...v2.5.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* **MarkdownRenderer:** scope yfm theme to the renderer ([#184](https://github.com/gravity-ui/aikit/issues/184)) ([48ac1c1](https://github.com/gravity-ui/aikit/commit/48ac1c10a2bc5722ae009a2732e1b576dc33e325))
+
 ## [2.5.0](https://github.com/gravity-ui/aikit/compare/v2.4.0...v2.5.0) (2026-06-11)
 
 
