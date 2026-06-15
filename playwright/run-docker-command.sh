@@ -12,12 +12,25 @@ command_exists() {
 }
 
 run_command() {
-  $CONTAINER_TOOL run --rm --network host -it -w /work \
-    -v $(pwd):/work \
+  # Allocate a TTY only when one is attached. `docker run -t` aborts with
+  # "the input device is not a TTY" in CI and other non-interactive shells,
+  # so the flag is added conditionally to keep the script working everywhere.
+  # A plain string (not an array) is used on purpose: expanding an empty array
+  # under `set -u` errors on bash < 4.4, which macOS still ships by default.
+  local tty_flag=""
+  if [ -t 0 ]; then
+    tty_flag="-t"
+  fi
+
+  # Pass the command as separate argv entries (`"$@"`, run directly) instead of
+  # joining them with `bash -c "$*"`. The latter collapses arguments on spaces
+  # and drops quoting, so a multi-word value like `--grep "a b c"` would break.
+  $CONTAINER_TOOL run --rm --network host -i $tty_flag -w /work \
+    -v "$(pwd):/work" \
     -v "$NODE_MODULES_CACHE_DIR:/work/node_modules" \
     -e IS_DOCKER=1 \
     "$IMAGE_NAME:$IMAGE_TAG" \
-    /bin/bash -c "$*"
+    "$@"
 }
 
 if command_exists docker; then
@@ -29,7 +42,7 @@ else
   exit 1
 fi
 
-if [[ "$*" = "clear-cache" ]]; then
+if [[ "${1:-}" = "clear-cache" ]]; then
   rm -rf "$NODE_MODULES_CACHE_DIR"
   rm -rf "./playwright/.cache"
   exit 0
@@ -37,7 +50,7 @@ fi
 
 if [[ ! -d "$NODE_MODULES_CACHE_DIR" ]]; then
   mkdir -p "$NODE_MODULES_CACHE_DIR"
-  run_command 'npm ci'
+  run_command npm ci
 fi
 
-run_command "$*"
+run_command "$@"

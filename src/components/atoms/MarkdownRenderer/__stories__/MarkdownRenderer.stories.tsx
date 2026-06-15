@@ -164,3 +164,25 @@ export const WithMarkdownTableInMessage: StoryObj<typeof MarkdownRenderer> = {
     ),
     decorators: defaultDecorators,
 };
+
+/**
+ * Markup a consumer renders with their own `@diplodoc/transform` usage: a bare
+ * `.yfm` container that is NOT wrapped in AIKit's namespace class. `**bold**`
+ * becomes `<strong>`, for which `@diplodoc/transform` ships `font-weight: 700`.
+ * AIKit must not leak its `.yfm` overrides onto this standalone content.
+ */
+const STANDALONE_TRANSFORM_HTML = '<p>This is <strong>bold</strong> text.</p>';
+
+export const StyleIsolation: StoryObj<typeof MarkdownRenderer> = {
+    render: () => (
+        <>
+            <MarkdownRenderer qa="aikit-yfm" content="This is **bold** text." />
+            <div
+                className="yfm"
+                data-qa="standalone-yfm"
+                dangerouslySetInnerHTML={{__html: STANDALONE_TRANSFORM_HTML}}
+            />
+        </>
+    ),
+    decorators: defaultDecorators,
+};

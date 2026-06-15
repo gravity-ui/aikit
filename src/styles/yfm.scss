@@ -9,9 +9,17 @@
  * Here we re-map them onto Gravity UI tokens (`--g-color-*`) so the markdown
  * content follows the active Gravity theme (`.g-root_theme_light` /
  * `.g-root_theme_dark`) automatically — no dedicated dark-theme block needed.
+ *
+ * Exposed as a mixin instead of a bare `.yfm` ruleset so the caller can scope
+ * it to AIKit's own renderer. `.yfm` is the shared root class of
+ * @diplodoc/transform, so a global `.yfm { ... }` override would leak these
+ * styles onto markdown that consumers render with their own transform setup
+ * (e.g. `<strong>`/`<b>` would inherit AIKit's accent weight instead of the
+ * transform default). Keeping the base `@import` above global is intentional —
+ * those are the standard transform styles, identical for every consumer.
  */
 
-.yfm {
+@mixin yfm-theme {
     // Base / text
     --yfm-color-base: var(--g-color-base-background);
     --yfm-color-text: var(--g-color-text-primary);

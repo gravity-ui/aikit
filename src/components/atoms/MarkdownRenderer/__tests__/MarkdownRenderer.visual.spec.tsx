@@ -1,4 +1,4 @@
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {MarkdownRendererStories} from './helpersPlaywright';
 
@@ -25,5 +25,22 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await mount(<MarkdownRendererStories.WithMarkdownTableInMessage />);
 
         await expectScreenshot();
+    });
+
+    test('should not leak yfm styles onto standalone @diplodoc/transform content', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<MarkdownRendererStories.StyleIsolation />);
+
+        const fontWeight = (selector: string) =>
+            page.locator(selector).evaluate((el) => getComputedStyle(el).fontWeight);
+
+        // AIKit's accent override (font-weight: 600) applies inside its own renderer.
+        await expect.poll(() => fontWeight('[data-qa="aikit-yfm"] strong')).toBe('600');
+
+        // Standalone `.yfm` content must keep `@diplodoc/transform`'s default (700)
+        // and stay untouched by AIKit's `.yfm` overrides.
+        await expect.poll(() => fontWeight('[data-qa="standalone-yfm"] strong')).toBe('700');
     });
 });

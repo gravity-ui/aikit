@@ -4,6 +4,8 @@
 $block: '.#{variables.$ns}markdown-renderer';
 
 #{$block} {
+    @include yfm.yfm-theme;
+
     max-width: 100%;
     overflow-x: auto;
 
