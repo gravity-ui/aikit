@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/gravity-ui/aikit/compare/v2.6.0...v2.6.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* **OpenaiAdapter:** reasoning problem [COMRADEAGENT-776] ([#187](https://github.com/gravity-ui/aikit/issues/187)) ([36dc29d](https://github.com/gravity-ui/aikit/commit/36dc29d297649893dd5b5f29801eb4057a662216))
+
 ## [2.6.0](https://github.com/gravity-ui/aikit/compare/v2.5.1...v2.6.0) (2026-06-18)
 
 
