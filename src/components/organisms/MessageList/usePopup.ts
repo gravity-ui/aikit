@@ -18,7 +18,7 @@ const INITIAL_POPUP_STATE = {
     actionConfig: null,
 } as const;
 
-interface PopupState {
+export interface PopupState {
     open: boolean;
     messageId: string | null;
     actionType: string | null;

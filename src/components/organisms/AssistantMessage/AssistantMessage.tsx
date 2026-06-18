@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {memo, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
@@ -42,7 +42,7 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
 
 const b = block('assistant-message');
 
-export function AssistantMessage<TContent extends TMessageContent = never>({
+function AssistantMessageComponent<TContent extends TMessageContent = never>({
     content,
     actions,
     extraInfo,
@@ -70,7 +70,7 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
         return defaultRegistry;
     }, [messageRendererRegistry, transformOptions, shouldParseIncompleteMarkdown]);
 
-    const parts = normalizeContent<TContent>(content);
+    const parts = useMemo(() => normalizeContent<TContent>(content), [content]);
 
     if (parts.length === 0) {
         return null;
@@ -107,3 +107,8 @@ export function AssistantMessage<TContent extends TMessageContent = never>({
         </BaseMessage>
     );
 }
+
+const MemoizedAssistantMessage = memo(AssistantMessageComponent);
+MemoizedAssistantMessage.displayName = 'AssistantMessage';
+
+export const AssistantMessage = MemoizedAssistantMessage as typeof AssistantMessageComponent;

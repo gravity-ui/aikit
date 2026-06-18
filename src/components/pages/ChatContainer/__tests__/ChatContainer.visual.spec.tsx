@@ -515,4 +515,12 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
             await expect(page.getByText('What went wrong?')).not.toBeVisible();
         });
     });
+
+    // The chart renderer is loaded via React.lazy; assert its content appears once the lazy
+    // chunk resolves, which exercises the Suspense boundary inside the registered renderer.
+    test('should render lazily code-split custom message type', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithLazyCustomMessageType />);
+
+        await expect(page.getByText('Sales by quarter, $K')).toBeVisible();
+    });
 });

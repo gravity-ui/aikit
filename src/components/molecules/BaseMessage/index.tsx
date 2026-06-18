@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 
 import {
     ArrowRotateLeft,
@@ -26,7 +26,7 @@ import './BaseMessage.scss';
 
 const b = block('base-message');
 
-export const BaseMessage = (props: BaseMessageProps) => {
+const BaseMessageComponent = (props: BaseMessageProps) => {
     const {
         className,
         qa,
@@ -129,6 +129,9 @@ export const BaseMessage = (props: BaseMessageProps) => {
         </div>
     );
 };
+
+export const BaseMessage = memo(BaseMessageComponent);
+BaseMessage.displayName = 'BaseMessage';
 
 function getDefaultIcon(actionType?: string, userRating?: UserRating) {
     switch (actionType) {
