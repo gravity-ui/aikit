@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/gravity-ui/aikit/compare/v2.5.1...v2.6.0) (2026-06-18)
+
+
+### Features
+
+* **messages:** add virtualization and memoization calculating ([#179](https://github.com/gravity-ui/aikit/issues/179)) ([1a8be79](https://github.com/gravity-ui/aikit/commit/1a8be796e081abfeb498b92d39597bc19fb871d6))
+
 ## [2.5.1](https://github.com/gravity-ui/aikit/compare/v2.5.0...v2.5.1) (2026-06-15)
 
 
