@@ -360,13 +360,13 @@ export function getStreamEventContentUpdate(
     const itemId =
         typeof e.item_id === 'string' ? e.item_id : (data?.item_id as string | undefined);
 
-    const delta = getTextDeltaFromStreamEvent(event);
-    if (delta) return {kind: 'text_delta', delta};
-
     if (itemId) {
         const reasoningUpdate = getReasoningUpdate(e, data, type, itemId);
         if (reasoningUpdate) return reasoningUpdate;
     }
+
+    const delta = getTextDeltaFromStreamEvent(event);
+    if (delta) return {kind: 'text_delta', delta};
 
     if (type === 'response.output_item.added') {
         return getUpdateFromOutputItemAdded(e, data, itemId);

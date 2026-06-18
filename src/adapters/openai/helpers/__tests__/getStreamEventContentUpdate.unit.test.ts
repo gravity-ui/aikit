@@ -1,5 +1,33 @@
 import {getStreamEventContentUpdate} from '../getStreamEventContentUpdate';
 
+describe('getStreamEventContentUpdate — reasoning', () => {
+    it('maps reasoning_text.done to thinking_done, not text_delta', () => {
+        const update = getStreamEventContentUpdate({
+            type: 'response.reasoning_text.done',
+            item_id: 'rsn-1',
+            text: 'Full reasoning text.',
+        });
+        expect(update).toEqual({
+            kind: 'thinking_done',
+            item_id: 'rsn-1',
+            text: 'Full reasoning text.',
+        });
+    });
+
+    it('maps reasoning_summary_text.done to thinking_done, not text_delta', () => {
+        const update = getStreamEventContentUpdate({
+            type: 'response.reasoning_summary_text.done',
+            item_id: 'rsn-1',
+            text: 'Summary text.',
+        });
+        expect(update).toEqual({
+            kind: 'thinking_done',
+            item_id: 'rsn-1',
+            text: 'Summary text.',
+        });
+    });
+});
+
 describe('getStreamEventContentUpdate — MCP output_item.done', () => {
     it('maps completed + application error in output XML to tool_update error', () => {
         const update = getStreamEventContentUpdate({
