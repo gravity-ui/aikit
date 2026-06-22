@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.2](https://github.com/gravity-ui/aikit/compare/v2.6.1...v2.6.2) (2026-06-22)
+
+
+### Bug Fixes
+
+* **csat:** fix ui/ux csat ([#190](https://github.com/gravity-ui/aikit/issues/190)) ([fbda7f5](https://github.com/gravity-ui/aikit/commit/fbda7f55dd454bac83e1a7dff77e6a25da4e4542))
+
 ## [2.6.1](https://github.com/gravity-ui/aikit/compare/v2.6.0...v2.6.1) (2026-06-18)
 
 
