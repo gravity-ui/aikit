@@ -53,13 +53,13 @@ Do you confirm the creation?`,
             {
                 type: BaseMessageActionType.Like,
                 onClick: () => {
-                    setUserRating('like');
+                    setUserRating((prev) => (prev === 'like' ? undefined : 'like'));
                 },
             },
             {
                 type: BaseMessageActionType.Dislike,
                 onClick: (_message: TAssistantMessage) => {
-                    setUserRating('dislike');
+                    setUserRating((prev) => (prev === 'dislike' ? undefined : 'dislike'));
                 },
                 popup: {
                     title: 'What went wrong?',
@@ -153,7 +153,7 @@ export const WithMultipleActionPopups: StoryObj<MessageListProps> = {
                 type: BaseMessageActionType.Like,
                 onClick: () => {
                     console.log('Like clicked');
-                    setUserRating('like');
+                    setUserRating((prev) => (prev === 'like' ? undefined : 'like'));
                 },
                 popup: {
                     title: 'What did you like?',
@@ -199,7 +199,7 @@ export const WithMultipleActionPopups: StoryObj<MessageListProps> = {
                 type: BaseMessageActionType.Dislike,
                 onClick: () => {
                     console.log('Dislike clicked');
-                    setUserRating('dislike');
+                    setUserRating((prev) => (prev === 'dislike' ? undefined : 'dislike'));
                 },
                 popup: {
                     title: 'What went wrong?',
