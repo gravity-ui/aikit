@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 
 import type {
     ActionPopupContext,
@@ -39,6 +39,11 @@ export interface PopupState {
 export function usePopup<TContent extends TMessageContent, TMessageMetadata>() {
     const [popupState, setPopupState] = useState<PopupState>(INITIAL_POPUP_STATE);
 
+    // Mirror the latest popup state so the stable (deps: []) handler can read it without
+    // re-creating itself on every popup change (it is passed to memoized message items).
+    const popupStateRef = useRef(popupState);
+    popupStateRef.current = popupState;
+
     const handleActionPopup = useCallback(
         (
             message: TChatMessage<TContent, TMessageMetadata>,
@@ -46,6 +51,21 @@ export function usePopup<TContent extends TMessageContent, TMessageMetadata>() {
             anchorElement: HTMLElement,
         ) => {
             if (!action.popup) {
+                return;
+            }
+
+            const messageId = message.id || null;
+            const actionType = action.actionType || null;
+
+            // Toggle off: clicking the same action that already opened the popup (e.g. un-pressing
+            // dislike) closes the popup instead of re-opening it.
+            const current = popupStateRef.current;
+            if (
+                current.open &&
+                current.messageId === messageId &&
+                current.actionType === actionType
+            ) {
+                setPopupState(INITIAL_POPUP_STATE);
                 return;
             }
 
@@ -77,8 +97,8 @@ export function usePopup<TContent extends TMessageContent, TMessageMetadata>() {
 
             setPopupState({
                 open: true,
-                messageId: message.id || null,
-                actionType: action.actionType || null,
+                messageId,
+                actionType,
                 anchorElement,
                 content,
                 title: action.popup.title,

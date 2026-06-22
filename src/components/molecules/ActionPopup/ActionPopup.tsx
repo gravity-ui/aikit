@@ -67,6 +67,7 @@ export function ActionPopup({
             onOpenChange={onOpenChange}
             anchorElement={anchorElement}
             placement={placement}
+            hasArrow
             className={b(null, className)}
             qa={qa}
         >
