@@ -26,6 +26,10 @@ export default {
             options: ['xs', 's', 'm'],
             description: 'Size of element',
         },
+        message: {
+            control: 'text',
+            description: 'Message',
+        },
         className: {
             control: 'text',
             description: 'Additional CSS class',
@@ -65,6 +69,16 @@ export const Loading: StoryFn<LoaderProps> = (args) => (
 export const Streaming: StoryFn<LoaderProps> = (args) => (
     <ContentWrapper>
         <Loader {...args} view="streaming" />
+    </ContentWrapper>
+);
+
+export const WithMessage: StoryFn<LoaderProps> = (args) => (
+    <ContentWrapper>
+        <Loader
+            {...args}
+            view="streaming"
+            message="Вопрос со звёздочкой — позвали умную модель, ей нужно больше времени"
+        />
     </ContentWrapper>
 );
 
