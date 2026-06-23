@@ -16,28 +16,27 @@ export interface LoaderProps {
 }
 
 export function Loader({view = 'streaming', size = 's', message, className, qa}: LoaderProps) {
-    if (view === 'streaming') {
-        const dots = (
+    const loader =
+        view === 'streaming' ? (
             <div className={b({size}, className)} data-qa={qa}>
                 <div className={b('left')} />
                 <div className={b('center')} />
                 <div className={b('right')} />
             </div>
+        ) : (
+            <Spin size={size} data-qa={qa} className={b({view}, className)} />
         );
 
-        if (!message) {
-            return dots;
-        }
-
-        return (
-            <Flex gap={2}>
-                {dots}
-                <Text variant="body-1" color="secondary">
-                    {message}
-                </Text>
-            </Flex>
-        );
+    if (!message) {
+        return loader;
     }
 
-    return <Spin size={size} data-qa={qa} className={b({view}, className)} />;
+    return (
+        <Flex gap={2}>
+            {loader}
+            <Text variant="body-1" color="secondary">
+                {message}
+            </Text>
+        </Flex>
+    );
 }
