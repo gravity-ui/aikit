@@ -15,6 +15,7 @@ export interface MessageListFooterProps {
     showLoader?: boolean;
     status?: ChatStatus;
     errorMessage?: AlertProps;
+    loaderMessage?: string;
     onRetry?: () => void;
     ratingBlockProps?: RatingBlockProps;
     actionPopupProps?: MessageListActionPopupConfig;
@@ -32,6 +33,7 @@ export function MessageListFooter({
     showLoader,
     status,
     errorMessage,
+    loaderMessage,
     onRetry,
     ratingBlockProps,
     actionPopupProps,
@@ -42,7 +44,7 @@ export function MessageListFooter({
 }: MessageListFooterProps) {
     return (
         <>
-            {showLoader && <Loader className={b('loader')} />}
+            {showLoader && <Loader className={b('loader')} message={loaderMessage} />}
             {status === 'error' && (
                 <ErrorAlert
                     className={b('error-alert')}
