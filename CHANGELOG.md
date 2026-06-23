@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.7.0](https://github.com/gravity-ui/aikit/compare/v2.6.2...v2.7.0) (2026-06-23)
+
+
+### Features
+
+* **loader:** add-message ([#193](https://github.com/gravity-ui/aikit/issues/193)) ([551eca3](https://github.com/gravity-ui/aikit/commit/551eca339986cbd50b3e075a52cf9252b4637761))
+
+
+### Bug Fixes
+
+* **css-variables:** move css variables to common.css ([be5ef8d](https://github.com/gravity-ui/aikit/commit/be5ef8dabec5d9f34f48a4e394324e973b6c945f))
+
 ## [2.6.2](https://github.com/gravity-ui/aikit/compare/v2.6.1...v2.6.2) (2026-06-22)
 
 
