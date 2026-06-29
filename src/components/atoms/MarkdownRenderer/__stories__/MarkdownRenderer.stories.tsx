@@ -11,9 +11,27 @@ import {MarkdownRenderer, MarkdownRendererProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
+import {block} from '../../../../utils/cn';
 import {BaseMessage} from '../../../molecules/BaseMessage';
 
 import MDXDocs from './Docs.mdx';
+
+import '../../../organisms/AssistantMessage/AssistantMessage.scss';
+
+const assistantMessageB = block('assistant-message');
+
+/** Same DOM as AssistantMessage: BaseMessage + __content wrapper (width 100%). */
+function MarkdownTableInAssistantMessage({content}: {content: string}) {
+    return (
+        <ContentWrapper width="380px">
+            <BaseMessage role="assistant">
+                <div className={assistantMessageB('content')}>
+                    <MarkdownRenderer content={content} />
+                </div>
+            </BaseMessage>
+        </ContentWrapper>
+    );
+}
 
 export default {
     title: 'atoms/MarkdownRenderer',
@@ -155,13 +173,31 @@ const MARKDOWN_TABLE = `| Full name | Code | Joined | Units | Score | Status | L
 | Maria García-López | FL-888 | 2023-03-22 | 7 | 4.1 | Active | Barcelona | Standard plan |`;
 
 export const WithMarkdownTableInMessage: StoryObj<typeof MarkdownRenderer> = {
-    render: () => (
-        <ContentWrapper width="380px">
-            <BaseMessage role="assistant">
-                <MarkdownRenderer content={MARKDOWN_TABLE} />
-            </BaseMessage>
-        </ContentWrapper>
-    ),
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE} />,
+    decorators: defaultDecorators,
+};
+
+const MARKDOWN_TABLE_TWO_COLUMNS = `| Component | Price |
+| --- | --- |
+| CPU (2 cores) | 1 660 ₽ |
+| RAM (2 GiB) | 443 ₽ |
+| Disk (10 GiB SSD) | 143 ₽ |
+| **Total** | **2 246 ₽** |`;
+
+export const WithMarkdownTableTwoColumnsInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE_TWO_COLUMNS} />,
+    decorators: defaultDecorators,
+};
+
+const MARKDOWN_TABLE_LONG_CELL = `| Field | Value |
+| --- | --- |
+| Name | Anna |
+| Notes | This is a very long description with many words separated by spaces that should wrap inside the cell instead of stretching the table on one line. |
+| Token | super-long-unbroken-token-without-any-spaces-in-the-middle |`;
+
+/** Multi-word cells wrap at `--g-aikit-markdown-renderer-table-cell-max-width`; long tokens scroll horizontally. */
+export const WithMarkdownTableLongCellInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE_LONG_CELL} />,
     decorators: defaultDecorators,
 };
 

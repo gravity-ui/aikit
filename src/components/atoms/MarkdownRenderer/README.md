@@ -37,10 +37,11 @@ const transformOptions: OptionsType = {
 
 The component uses CSS variables for theming:
 
-| Variable                 | Description |
-| ------------------------ | ----------- |
-| `--g-color-text-primary` | Text color  |
+| Variable                                           | Default | Description                                     |
+| -------------------------------------------------- | ------- | ----------------------------------------------- |
+| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                      |
+| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps |
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 
-**Markdown tables**: Wide tables scroll horizontally on the renderer root; `th` / `td` use single-line cells by default so table column layout stays stable inside message wrappers (e.g. `BaseMessage`).
+Markdown tables override YFM `inline-block` sizing: `min-width: 100%` stretches narrow tables to message width; `width: max-content` lets wide tables grow and scroll on the markdown root (`overflow-x: auto`). Header cells stay on one line. Body cells wrap multi-word text at spaces within `--g-aikit-markdown-renderer-table-cell-max-width`; single long tokens stay on one line.

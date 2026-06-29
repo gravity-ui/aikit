@@ -27,6 +27,24 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expectScreenshot();
     });
 
+    test('should stretch narrow two-column markdown table to full message width', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<MarkdownRendererStories.WithMarkdownTableTwoColumnsInMessage />);
+
+        await expectScreenshot();
+    });
+
+    test('should scroll horizontally for long markdown table cell text', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<MarkdownRendererStories.WithMarkdownTableLongCellInMessage />);
+
+        await expectScreenshot();
+    });
+
     test('should not leak yfm styles onto standalone @diplodoc/transform content', async ({
         mount,
         page,

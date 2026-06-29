@@ -16,6 +16,8 @@ $block: '.#{variables.$ns}base-message';
     &_variant_system,
     &_variant_assistant {
         align-items: flex-start;
+        min-width: 0;
+        max-width: 100%;
     }
 
     &_btn-hover {

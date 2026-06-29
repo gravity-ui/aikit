@@ -74,4 +74,7 @@
     /* === Action Popup === */
     --g-aikit-action-popup-min-width: 280px;
     --g-aikit-action-popup-max-width: 400px;
+
+    /* === Markdown Renderer === */
+    --g-aikit-markdown-renderer-table-cell-max-width: 240px;
 }
