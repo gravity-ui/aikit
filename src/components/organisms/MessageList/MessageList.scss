@@ -10,6 +10,7 @@ $block: '.#{variables.$ns}message-list';
     display: flex;
     flex-direction: column;
     min-height: 0;
+    min-width: 0;
     flex: 1;
     align-self: stretch;
 
@@ -17,6 +18,7 @@ $block: '.#{variables.$ns}message-list';
         display: flex;
         flex-direction: column;
         gap: var(--g-spacing-4);
+        min-width: 0;
     }
 
     // Virtualized variant: react-window's List owns the scroll container, so the root must not

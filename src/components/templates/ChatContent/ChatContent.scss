@@ -22,6 +22,7 @@ $block: '.#{variables.$ns}chat-content';
         align-self: stretch;
         flex: 1;
         min-height: 0;
+        min-width: 0;
     }
 
     &__message-list {
