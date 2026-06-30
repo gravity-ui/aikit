@@ -4,7 +4,7 @@ import transform from '@diplodoc/transform';
 import '@diplodoc/transform/dist/js/yfm.js';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import {areOptionsEqual} from '../utils/markdownUtils';
+import {areOptionsEqual, mergeMarkdownTransformOptions} from '../utils/markdownUtils';
 import {parseMarkdownIntoBlocks} from '../utils/parse-blocks';
 
 export function useMarkdownTransform(content: string, options?: OptionsType): string {
@@ -22,6 +22,8 @@ export function useMarkdownTransform(content: string, options?: OptionsType): st
             prevOptionsRef.current = options;
         }
 
+        const transformOptions = mergeMarkdownTransformOptions(options);
+
         try {
             const blocks = parseMarkdownIntoBlocks(content);
             const cache = cacheRef.current;
@@ -31,7 +33,7 @@ export function useMarkdownTransform(content: string, options?: OptionsType): st
                 let html = cache.get(block);
                 if (!html) {
                     try {
-                        const result = transform(block, options);
+                        const result = transform(block, transformOptions);
                         html = result.result.html;
                         cache.set(block, html);
                     } catch {

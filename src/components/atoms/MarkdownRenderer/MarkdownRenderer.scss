@@ -9,12 +9,18 @@ $block: '.#{variables.$ns}markdown-renderer';
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: auto;
+
+    /* Scroll container injected by markdownTableWrapPlugin; text outside stays fixed */
+    &__table-wrap {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+    }
 
     /*
      * Override @diplodoc/transform `.yfm table` (inline-block + max-width: 100%).
-     * min-width: 100% — narrow tables fill the message; width: max-content — wide tables grow.
-     * Horizontal scroll lives on this root (min-width: 0 on flex ancestors required).
+     * min-width: 100% — narrow tables fill the message; width: max-content — columns size to content.
      */
     table {
         display: table;
@@ -37,7 +43,7 @@ $block: '.#{variables.$ns}markdown-renderer';
         max-width: var(--g-aikit-markdown-renderer-table-cell-max-width);
         word-break: normal;
         white-space: normal;
-        /* Wrap multi-word text at spaces within max-width; do not break tokens at hyphens */
+        /* Wrap multi-word text at spaces within max-width */
         overflow-wrap: normal;
         overflow: visible;
         text-overflow: clip;

@@ -27,6 +27,15 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render markdown text and table together in assistant message', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<MarkdownRendererStories.WithMarkdownTextAndTableInMessage />);
+
+        await expectScreenshot();
+    });
+
     test('should stretch narrow two-column markdown table to full message width', async ({
         mount,
         expectScreenshot,

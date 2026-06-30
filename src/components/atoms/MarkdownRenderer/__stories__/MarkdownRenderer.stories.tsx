@@ -172,6 +172,18 @@ const MARKDOWN_TABLE = `| Full name | Code | Joined | Units | Score | Status | L
 | James O'Brien | PT-015 | 2024-09-01 | 0 | — | On hold | Dublin | Awaiting payment |
 | Maria García-López | FL-888 | 2023-03-22 | 7 | 4.1 | Active | Barcelona | Standard plan |`;
 
+const MARKDOWN_TEXT_AND_TABLE = `Here is the team overview for zone **ru-central1-a**. This paragraph should wrap normally inside the assistant message and stay readable even when a wide table follows below.
+
+${MARKDOWN_TABLE}
+
+If you need to add or remove someone from this list, let me know. You can also paste a long URL like https://console.cloud.yandex.ru/folders/b1gexample/overview and it should wrap without breaking the layout.`;
+
+/** Text + wide table in one message: verify paragraphs wrap and the table scrolls horizontally. */
+export const WithMarkdownTextAndTableInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TEXT_AND_TABLE} />,
+    decorators: defaultDecorators,
+};
+
 export const WithMarkdownTableInMessage: StoryObj<typeof MarkdownRenderer> = {
     render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE} />,
     decorators: defaultDecorators,

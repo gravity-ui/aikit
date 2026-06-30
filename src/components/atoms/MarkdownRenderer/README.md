@@ -44,4 +44,4 @@ The component uses CSS variables for theming:
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 
-Markdown tables override YFM `inline-block` sizing: `min-width: 100%` stretches narrow tables to message width; `width: max-content` lets wide tables grow and scroll on the markdown root (`overflow-x: auto`). Header cells stay on one line. Body cells wrap multi-word text at spaces within `--g-aikit-markdown-renderer-table-cell-max-width`; single long tokens stay on one line.
+**Markdown tables**: a markdown-it plugin (via `@diplodoc/transform`) wraps each `<table>` in `__table-wrap` with `overflow-x: auto` so only the table scrolls horizontally. Table CSS resets inherited `word-break` from message wrappers. `min-width: 100%` stretches narrow tables; `width: max-content` sizes columns to content.
