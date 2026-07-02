@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactNode, type Ref} from 'react';
 
 import type {SuggestionsItem} from '../../../types/common';
 import {PromptInputHeaderProps} from '../../molecules/PromptInputHeader';
@@ -36,6 +36,8 @@ export type PromptInputHeaderConfig = {
 export type PromptInputBodyConfig = {
     /** QA/test identifier for body wrapper */
     qa?: string;
+    /** Ref to the textarea control */
+    controlRef?: Ref<HTMLTextAreaElement>;
     /** Placeholder text for textarea */
     placeholder?: string;
     /** Minimum number of textarea rows */

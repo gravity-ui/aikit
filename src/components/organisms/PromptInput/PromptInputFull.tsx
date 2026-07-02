@@ -48,6 +48,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
+        controlRef,
         qa: bodyQa,
     } = bodyProps;
 
@@ -90,6 +91,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                 minRows={minRows}
                 maxRows={maxRows}
                 autoFocus={autoFocus}
+                ref={controlRef}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 inputClassName={b('textarea')}
