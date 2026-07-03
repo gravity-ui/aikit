@@ -95,6 +95,50 @@ export const WithSuggestions: Story = {
     decorators: defaultDecorators,
 };
 
+const manySuggestions = [
+    {id: '1', title: 'What can the AI assistant help with?'},
+    {id: '2', title: 'Analyze the page and give recommendations'},
+    {id: '3', title: 'Help configure permissions in IAM'},
+    {id: '4', title: 'Analyze my expenses for the month'},
+    {id: '5', title: 'Create a virtual machine'},
+    {id: '6', title: 'Analyze the infrastructure in the current folder'},
+    {id: '7', title: 'Check the security of my infrastructure'},
+    {id: '8', title: 'Help with Terraform'},
+    {id: '9', title: 'Summarize recent activity'},
+    {id: '10', title: 'Explain the project structure'},
+];
+
+/**
+ * When there are more suggestions than fit the available height, only the
+ * suggestions list scrolls. The welcome section (image, title, description)
+ * and the suggestions title stay fixed in place.
+ */
+export const ScrollableSuggestions: Story = {
+    args: {
+        image: (
+            <Icon
+                data={CircleInfo}
+                size={96}
+                style={{color: 'var(--g-color-text-complementary)'}}
+            />
+        ),
+        title: 'AI assistant',
+        description: 'Helps with your everyday tasks in the cloud',
+        suggestionTitle: "Don't know where to start from? Try this:",
+        suggestions: manySuggestions,
+        onSuggestionClick: (content, id) => {
+            console.log('Suggestion clicked:', content, id);
+        },
+    },
+    decorators: [
+        (Story) => (
+            <ContentWrapper width="420px" height="440px">
+                <Story />
+            </ContentWrapper>
+        ),
+    ],
+};
+
 export const MinimalContent: Story = {
     args: {
         title: 'Welcome',
