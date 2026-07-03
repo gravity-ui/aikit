@@ -6,6 +6,13 @@ import {MessageList} from '../MessageList';
 
 import {MessageListStories} from './helpersPlaywright';
 
+/** Reveal action buttons hidden by showActionsOnHover before interacting with them. */
+async function hoverAssistantMessage(page: {
+    locator: (selector: string) => {hover: () => Promise<void>};
+}) {
+    await page.locator('.g-aikit-base-message_variant_assistant').hover();
+}
+
 test.describe('MessageList', {tag: '@MessageList'}, () => {
     test('should render default state', async ({mount, expectScreenshot}) => {
         await mount(<MessageListStories.Playground />);
@@ -316,6 +323,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         test('should open feedback popup on dislike click', async ({mount, page}) => {
             await mount(<MessageListStories.WithFeedbackPopup />);
 
+            await hoverAssistantMessage(page);
             await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
 
             await expect(page.getByText('What went wrong?')).toBeVisible();
@@ -325,6 +333,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         test('should render feedback popup screenshot', async ({mount, page, expectScreenshot}) => {
             await mount(<MessageListStories.WithFeedbackPopup />);
 
+            await hoverAssistantMessage(page);
             await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
 
             await expect(page.getByText('What went wrong?')).toBeVisible();
@@ -338,6 +347,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         }) => {
             await mount(<MessageListStories.WithFeedbackPopup />);
 
+            await hoverAssistantMessage(page);
             await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
 
             await expect(page.getByText('What went wrong?')).toBeVisible();
@@ -349,9 +359,29 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
             await expect(page.getByText('What went wrong?')).not.toBeVisible();
         });
 
+        test('should keep message actions visible while feedback popup is open', async ({
+            mount,
+            page,
+        }) => {
+            await mount(<MessageListStories.WithFeedbackPopup />);
+
+            const actions = page.locator('.g-aikit-base-message__actions');
+            await hoverAssistantMessage(page);
+            await actions.getByRole('button').nth(1).click();
+
+            await expect(page.getByText('What went wrong?')).toBeVisible();
+
+            // Move cursor away from the message (popup stays open)
+            await page.mouse.move(0, 0);
+
+            await expect(actions).toBeVisible();
+            await expect(actions.getByRole('button')).toHaveCount(3);
+        });
+
         test('should close popup when clicking outside', async ({mount, page}) => {
             await mount(<MessageListStories.WithFeedbackPopup />);
 
+            await hoverAssistantMessage(page);
             await page.locator('.g-aikit-base-message__actions').getByRole('button').nth(1).click();
 
             await expect(page.getByText('What went wrong?')).toBeVisible();

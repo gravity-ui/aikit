@@ -22,7 +22,7 @@ import {type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 import {MessageItem} from './MessageItem';
 import {VirtualizedMessageList} from './MessageList.virtualized';
 import {MessageListFooter} from './MessageListFooter';
-import {usePopup} from './usePopup';
+import {isActionPopupOpenForMessage, usePopup} from './usePopup';
 
 import './MessageList.scss';
 
@@ -154,10 +154,13 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                         key={message.id || `message-${index}`}
                         message={message}
                         suppressActions={index === messages.length - 1 && isNotCompleted}
+                        showActionsOnHover={
+                            showActionsOnHover &&
+                            !isActionPopupOpenForMessage(popupState, message.id)
+                        }
                         messageRendererRegistry={messageRendererRegistry}
                         transformOptions={transformOptions}
                         shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
-                        showActionsOnHover={showActionsOnHover}
                         showTimestamp={showTimestamp}
                         showAvatar={showAvatar}
                         userActions={userActions}

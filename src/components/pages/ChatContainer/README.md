@@ -617,6 +617,8 @@ const messages: TMessage[] = [
 <ChatContainer messages={messages} onSendMessage={handleSendMessage} showActionsOnHover={true} />;
 ```
 
+When `showActionsOnHover` is enabled and an action opens a popup (for example, a dislike feedback form), action buttons on that message stay visible while the popup is open so users can fill the form without losing the anchor buttons. This is handled by the library; no extra configuration is required.
+
 ### 2. Default Actions (Recommended)
 
 Use `messageListConfig` prop with `userActions` and `assistantActions` to provide default actions for all messages of that role. This is cleaner and more maintainable than adding actions to each message individually:

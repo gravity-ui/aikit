@@ -11,7 +11,7 @@ import {Loader} from '../../atoms/Loader';
 import {MessageItem, type MessageItemConfig} from './MessageItem';
 import {type MessageListProps, MessageListQa} from './MessageList';
 import {MessageListFooter} from './MessageListFooter';
-import {usePopup} from './usePopup';
+import {type PopupState, isActionPopupOpenForMessage, usePopup} from './usePopup';
 
 const b = block('message-list');
 
@@ -28,6 +28,7 @@ type MessageRowProps = {
     headerOffset: number;
     hasPreviousMessages: boolean;
     onLoadPreviousMessages?: () => void;
+    popupState: PopupState;
     config: MessageItemConfig<TMessageContent>;
 };
 
@@ -40,6 +41,7 @@ function MessageRow({
     headerOffset,
     hasPreviousMessages,
     onLoadPreviousMessages,
+    popupState,
     config,
 }: RowComponentProps<MessageRowProps>) {
     // Header row: the "load previous messages" intersection trigger.
@@ -73,6 +75,10 @@ function MessageRow({
                     message={message}
                     suppressActions={isLast && isNotCompleted}
                     {...config}
+                    showActionsOnHover={
+                        Boolean(config.showActionsOnHover) &&
+                        !isActionPopupOpenForMessage(popupState, message.id)
+                    }
                 />
             </div>
         </div>
@@ -151,6 +157,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
             headerOffset,
             hasPreviousMessages,
             onLoadPreviousMessages,
+            popupState,
             config: config as unknown as MessageItemConfig<TMessageContent>,
         }),
         [
@@ -159,6 +166,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
             headerOffset,
             hasPreviousMessages,
             onLoadPreviousMessages,
+            popupState,
             config,
         ],
     );
