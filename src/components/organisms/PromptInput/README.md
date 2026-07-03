@@ -147,12 +147,16 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ### PromptInputBodyConfig
 
-| Prop          | Type      | Required | Default                                 | Description                     |
-| ------------- | --------- | -------- | --------------------------------------- | ------------------------------- |
-| `placeholder` | `string`  | -        | `'Plan, code, build and test anything'` | Placeholder text for textarea   |
-| `minRows`     | `number`  | -        | `1`                                     | Minimum number of textarea rows |
-| `maxRows`     | `number`  | -        | `15`                                    | Maximum number of textarea rows |
-| `autoFocus`   | `boolean` | -        | `false`                                 | Auto focus textarea on mount    |
+| Prop                    | Type                       | Required | Default                                 | Description                                 |
+| ----------------------- | -------------------------- | -------- | --------------------------------------- | ------------------------------------------- |
+| `qa`                    | `string`                   | -        | -                                       | QA/test identifier for body wrapper         |
+| `inputRef`              | `Ref<HTMLTextAreaElement>` | -        | -                                       | Ref to the textarea input                   |
+| `placeholder`           | `string`                   | -        | `'Plan, code, build and test anything'` | Placeholder text for textarea               |
+| `minRows`               | `number`                   | -        | `1`                                     | Minimum number of textarea rows             |
+| `maxRows`               | `number`                   | -        | `15`                                    | Maximum number of textarea rows             |
+| `autoFocus`             | `boolean`                  | -        | `false`                                 | Auto focus textarea on mount                |
+| `autoFocusOnNewChat`    | `boolean`                  | -        | `false`                                 | Auto focus textarea when a new chat is open |
+| `autoFocusOnChatSelect` | `boolean`                  | -        | `false`                                 | Auto focus textarea when a chat is selected |
 
 ### PromptInputFooterConfig
 

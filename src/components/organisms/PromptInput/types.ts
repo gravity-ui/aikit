@@ -36,8 +36,8 @@ export type PromptInputHeaderConfig = {
 export type PromptInputBodyConfig = {
     /** QA/test identifier for body wrapper */
     qa?: string;
-    /** Ref to the textarea control */
-    controlRef?: Ref<HTMLTextAreaElement>;
+    /** Ref to the textarea input */
+    inputRef?: Ref<HTMLTextAreaElement>;
     /** Placeholder text for textarea */
     placeholder?: string;
     /** Minimum number of textarea rows */

@@ -37,7 +37,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
-        controlRef,
+        inputRef,
         qa: bodyQa,
     } = bodyProps;
 
@@ -66,7 +66,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                     minRows={minRows}
                     maxRows={maxRows}
                     autoFocus={autoFocus}
-                    ref={controlRef}
+                    ref={inputRef}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     qa={bodyQa}
