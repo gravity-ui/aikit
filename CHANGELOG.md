@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/gravity-ui/aikit/compare/v2.7.0...v2.8.0) (2026-07-03)
+
+
+### Features
+
+* **PromptInput:** expose textarea control ref ([#195](https://github.com/gravity-ui/aikit/issues/195)) ([940b83e](https://github.com/gravity-ui/aikit/commit/940b83ecc56990ede78484f16e44d17f6e86f9b0))
+
 ## [2.7.0](https://github.com/gravity-ui/aikit/compare/v2.6.2...v2.7.0) (2026-06-23)
 
 
