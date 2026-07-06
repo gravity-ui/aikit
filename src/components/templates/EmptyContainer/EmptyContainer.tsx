@@ -148,7 +148,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
                                         )}
                                     </div>
                                 )}
-                                <div>
+                                <div className={b('suggestions-list')}>
                                     <Suggestions
                                         items={suggestions}
                                         onClick={onSuggestionClick}
