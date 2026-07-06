@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.0](https://github.com/gravity-ui/aikit/compare/v2.8.0...v2.9.0) (2026-07-06)
+
+
+### Features
+
+* **EmptyContainer:** add scrollable suggestion on empty container ([#198](https://github.com/gravity-ui/aikit/issues/198)) ([7b335b7](https://github.com/gravity-ui/aikit/commit/7b335b71e8503e5a11b7ec8c6d979f42485c67ab))
+
 ## [2.8.0](https://github.com/gravity-ui/aikit/compare/v2.7.0...v2.8.0) (2026-07-03)
 
 
