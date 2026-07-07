@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.1](https://github.com/gravity-ui/aikit/compare/v2.9.0...v2.9.1) (2026-07-07)
+
+
+### Bug Fixes
+
+* **actions:** show actions when popup open ([#197](https://github.com/gravity-ui/aikit/issues/197)) ([427041b](https://github.com/gravity-ui/aikit/commit/427041bcc8d3d490ad166edcf3eec81eb8e0708a))
+
 ## [2.9.0](https://github.com/gravity-ui/aikit/compare/v2.8.0...v2.9.0) (2026-07-06)
 
 
