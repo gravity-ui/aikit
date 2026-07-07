@@ -1,3 +1,5 @@
+import type {Page} from '@playwright/test';
+
 import {expect, test} from '~playwright/core';
 
 import type {TAssistantMessage, TUserMessage} from '../../../../types/messages';
@@ -7,9 +9,7 @@ import {MessageList} from '../MessageList';
 import {MessageListStories} from './helpersPlaywright';
 
 /** Reveal action buttons hidden by showActionsOnHover before interacting with them. */
-async function hoverAssistantMessage(page: {
-    locator: (selector: string) => {hover: () => Promise<void>};
-}) {
+async function hoverAssistantMessage(page: Page) {
     await page.locator('.g-aikit-base-message_variant_assistant').hover();
 }
 
