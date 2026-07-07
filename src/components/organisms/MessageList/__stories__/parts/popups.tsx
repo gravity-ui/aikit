@@ -119,7 +119,11 @@ Do you confirm the creation?`,
         return (
             <ShowcaseItem title="With Feedback Popup - Click dislike to see feedback form">
                 <ContentWrapper width="600px" height="500px" display="flex">
-                    <MessageList messages={messages} assistantActions={assistantActions} />
+                    <MessageList
+                        messages={messages}
+                        assistantActions={assistantActions}
+                        showActionsOnHover
+                    />
                 </ContentWrapper>
             </ShowcaseItem>
         );

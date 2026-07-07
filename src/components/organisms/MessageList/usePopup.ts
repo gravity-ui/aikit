@@ -125,3 +125,11 @@ export function usePopup<TContent extends TMessageContent, TMessageMetadata>() {
         showActionPopup,
     };
 }
+
+/** Whether an action popup is open and anchored to the given message. */
+export function isActionPopupOpenForMessage(
+    popupState: PopupState,
+    messageId: string | undefined,
+): boolean {
+    return Boolean(popupState.open && messageId && popupState.messageId === messageId);
+}

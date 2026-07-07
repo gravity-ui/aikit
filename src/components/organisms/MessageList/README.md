@@ -275,6 +275,8 @@ The `getContent` function receives a context object with the following methods:
 - `setSubtitle(subtitle: string | undefined)` — Update popup subtitle dynamically (pass `undefined` to hide)
 - `closePopup()` — Programmatically close the popup
 
+When `showActionsOnHover` is enabled, `MessageList` temporarily disables hover-hiding for the message whose action popup is open, so users can interact with the popup without losing the anchor buttons.
+
 **ActionPopup Configuration:**
 
 ```typescript
