@@ -56,6 +56,7 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    openMarkdownLinksInNewTab?: boolean;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -98,6 +99,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     messageRendererRegistry,
     transformOptions,
     shouldParseIncompleteMarkdown,
+    openMarkdownLinksInNewTab,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -161,6 +163,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                         messageRendererRegistry={messageRendererRegistry}
                         transformOptions={transformOptions}
                         shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                        openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
                         showTimestamp={showTimestamp}
                         showAvatar={showAvatar}
                         userActions={userActions}

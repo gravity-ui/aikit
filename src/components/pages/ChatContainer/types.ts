@@ -48,7 +48,12 @@ export interface WelcomeConfig {
  */
 export type MessageListConfig = Omit<
     MessageListProps,
-    'messages' | 'status' | 'onRetry' | 'showActionsOnHover' | 'transformOptions'
+    | 'messages'
+    | 'status'
+    | 'onRetry'
+    | 'showActionsOnHover'
+    | 'transformOptions'
+    | 'openMarkdownLinksInNewTab'
 >;
 
 /**
@@ -194,6 +199,8 @@ export interface ChatContainerProps {
     transformOptions?: OptionsType;
     /** Should parse incomplete markdown (e.g., during streaming) */
     shouldParseIncompleteMarkdown?: boolean;
+    /** Open all markdown links rendered by the default message renderers in a new tab */
+    openMarkdownLinksInNewTab?: boolean;
 
     // Configuration
     /** MessageList configuration for actions and loader behavior */

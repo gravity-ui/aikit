@@ -26,12 +26,13 @@ const transformOptions: OptionsType = {
 
 ## Props
 
-| Prop               | Type          | Required | Default | Description                                                                                |
-| ------------------ | ------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
-| `content`          | `string`      | Yes      | -       | YFM markdown content to render                                                             |
-| `className`        | `string`      | -        | -       | Additional CSS class                                                                       |
-| `qa`               | `string`      | -        | -       | QA/test identifier                                                                         |
-| `transformOptions` | `OptionsType` | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
+| Prop                | Type          | Required | Default | Description                                                                                                                                                                                             |
+| ------------------- | ------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content`           | `string`      | Yes      | -       | YFM markdown content to render                                                                                                                                                                          |
+| `className`         | `string`      | -        | -       | Additional CSS class                                                                                                                                                                                    |
+| `qa`                | `string`      | -        | -       | QA/test identifier                                                                                                                                                                                      |
+| `transformOptions`  | `OptionsType` | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                              |
+| `openLinksInNewTab` | `boolean`     | -        | `false` | Open every rendered markdown link in a new tab, including in-page anchors (`#local`), `mailto:`, and same-origin relative links. Adds `target="_blank"` and `rel="noopener noreferrer"` to every `<a>`. |
 
 ## Styling
 

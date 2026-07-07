@@ -1,5 +1,7 @@
 import {expect, test} from '~playwright/core';
 
+import {MarkdownRenderer} from '../MarkdownRenderer';
+
 import {MarkdownRendererStories} from './helpersPlaywright';
 
 test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
@@ -16,6 +18,32 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await mount(<MarkdownRendererStories.WithTransformOptions />);
 
         await expectScreenshot();
+    });
+
+    test('should open links in new tab when enabled', async ({mount, page}) => {
+        await mount(
+            <MarkdownRenderer
+                content="[External](https://gravity-ui.com) and [Anchor](#local)"
+                openLinksInNewTab
+            />,
+        );
+
+        const externalLink = page.getByRole('link', {name: 'External'});
+        const anchorLink = page.getByRole('link', {name: 'Anchor'});
+
+        await expect(externalLink).toHaveAttribute('target', '_blank');
+        await expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(anchorLink).toHaveAttribute('target', '_blank');
+        await expect(anchorLink).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    test('should keep default link target behavior', async ({mount, page}) => {
+        await mount(<MarkdownRenderer content="[Anchor](#local)" />);
+
+        const link = page.getByRole('link', {name: 'Anchor'});
+
+        await expect(link).not.toHaveAttribute('target', '_blank');
+        await expect(link).not.toHaveAttribute('rel', 'noopener noreferrer');
     });
 
     test('should render markdown table inside BaseMessage without broken layout', async ({

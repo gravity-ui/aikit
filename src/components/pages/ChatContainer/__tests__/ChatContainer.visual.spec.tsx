@@ -1,6 +1,17 @@
 import {expect, test} from '~playwright/core';
 
+import type {TChatMessage} from '../../../../types';
+import {ChatContainer} from '../ChatContainer';
+
 import {ChatContainerStories} from './helpersPlaywright';
+
+const markdownLinkMessages: TChatMessage[] = [
+    {
+        id: 'assistant-link',
+        role: 'assistant',
+        content: '[Open docs](#docs)',
+    },
+];
 
 test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
     test('should render playground state', async ({mount, expectScreenshot}) => {
@@ -83,6 +94,32 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await page.locator('[data-qa="header-action-history"]').click();
         await expect(page.getByText('E2E No chats yet')).toBeVisible();
         await expect(page.getByPlaceholder('E2E History search ph')).toBeVisible();
+    });
+
+    test('should open markdown links in new tab when enabled', async ({mount, page}) => {
+        await mount(
+            <ChatContainer
+                messages={markdownLinkMessages}
+                openMarkdownLinksInNewTab
+                onSendMessage={async () => {}}
+            />,
+        );
+
+        const link = page.getByRole('link', {name: 'Open docs'});
+
+        await expect(link).toHaveAttribute('target', '_blank');
+        await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    test('should keep default markdown link target behavior', async ({mount, page}) => {
+        await mount(
+            <ChatContainer messages={markdownLinkMessages} onSendMessage={async () => {}} />,
+        );
+
+        const link = page.getByRole('link', {name: 'Open docs'});
+
+        await expect(link).not.toHaveAttribute('target', '_blank');
+        await expect(link).not.toHaveAttribute('rel', 'noopener noreferrer');
     });
 
     test('should apply texts.submitButtonCancelableText in streaming state', async ({

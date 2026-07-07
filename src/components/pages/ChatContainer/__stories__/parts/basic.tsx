@@ -540,6 +540,25 @@ export const VirtualizationComparison: Story = {
 };
 
 /**
+ * Markdown links rendered in assistant messages open in a new tab.
+ */
+export const WithMarkdownLinksInNewTab: Story = {
+    args: {
+        messages: [
+            {
+                id: 'assistant-link-1',
+                role: 'assistant',
+                content:
+                    'Here are markdown links: [external docs](https://gravity-ui.com) and [local section](#local-section).',
+            },
+        ],
+        openMarkdownLinksInNewTab: true,
+    },
+    render: (args) => <ChatContainer {...args} onSendMessage={async () => {}} />,
+    decorators: defaultDecorators,
+};
+
+/**
  * With history
  */
 export const WithHistory: Story = {
