@@ -10,6 +10,7 @@ $block: '.#{variables.$ns}base-message';
 
     &_variant_user {
         align-items: flex-end;
+        min-width: 0;
         max-width: 90%;
     }
 

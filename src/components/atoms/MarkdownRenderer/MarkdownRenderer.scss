@@ -36,7 +36,6 @@ $block: '.#{variables.$ns}markdown-renderer';
         word-break: normal;
         white-space: nowrap;
         overflow: visible;
-        text-overflow: clip;
     }
 
     table td {
@@ -46,6 +45,5 @@ $block: '.#{variables.$ns}markdown-renderer';
         /* Wrap multi-word text at spaces within max-width */
         overflow-wrap: normal;
         overflow: visible;
-        text-overflow: clip;
     }
 }
