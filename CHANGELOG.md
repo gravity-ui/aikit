@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.3](https://github.com/gravity-ui/aikit/compare/v2.9.2...v2.9.3) (2026-07-08)
+
+
+### Bug Fixes
+
+* **markdown:** fix import for esm ([#203](https://github.com/gravity-ui/aikit/issues/203)) ([e468036](https://github.com/gravity-ui/aikit/commit/e4680361162850a5d7fff58de071931956ab9f27))
+
 ## [2.9.2](https://github.com/gravity-ui/aikit/compare/v2.9.1...v2.9.2) (2026-07-08)
 
 
