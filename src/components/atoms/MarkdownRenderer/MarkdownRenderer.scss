@@ -6,20 +6,44 @@ $block: '.#{variables.$ns}markdown-renderer';
 #{$block} {
     @include yfm.yfm-theme;
 
+    width: 100%;
     max-width: 100%;
-    overflow-x: auto;
+    min-width: 0;
 
-    /* Tables inside message wrappers: reset inherited word-break; scroll on this root when wide */
-    table {
-        table-layout: auto;
-        word-break: normal;
-        min-width: 100%;
-        width: max-content;
+    /* Scroll container injected by markdownTableWrapPlugin; text outside stays fixed */
+    &__table-wrap {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
     }
 
-    th,
-    td {
+    /*
+     * Override @diplodoc/transform `.yfm table` (inline-block + max-width: 100%).
+     * min-width: 100% — narrow tables fill the message; width: max-content — columns size to content.
+     */
+    table {
+        display: table;
+        table-layout: auto;
+        word-break: normal;
+        width: max-content;
+        min-width: 100%;
+        max-width: none;
+        overflow: visible;
+    }
+
+    table th {
         word-break: normal;
         white-space: nowrap;
+        overflow: visible;
+    }
+
+    table td {
+        max-width: var(--g-aikit-markdown-renderer-table-cell-max-width);
+        word-break: normal;
+        white-space: normal;
+        /* Wrap multi-word text at spaces within max-width */
+        overflow-wrap: normal;
+        overflow: visible;
     }
 }

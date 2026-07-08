@@ -1,4 +1,7 @@
+import defaultTransformPlugins from '@diplodoc/transform/lib/plugins';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
+
+import {markdownTableWrapPlugin} from './markdownTableWrapPlugin';
 
 export function areOptionsEqual(prev?: OptionsType, next?: OptionsType): boolean {
     if (prev === next) {
@@ -18,4 +21,17 @@ export function areOptionsEqual(prev?: OptionsType, next?: OptionsType): boolean
         }
     }
     return true;
+}
+
+/**
+ * Prepends AIKit table-wrap plugin and restores @diplodoc/transform defaults.
+ * Explicit `plugins` in transform options replace defaults — user plugins are appended after.
+ */
+export function mergeMarkdownTransformOptions(options?: OptionsType): OptionsType {
+    const userPlugins = options?.plugins ?? [];
+
+    return {
+        ...options,
+        plugins: [markdownTableWrapPlugin, ...defaultTransformPlugins, ...userPlugins],
+    };
 }
