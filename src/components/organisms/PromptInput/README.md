@@ -184,6 +184,8 @@ import {PromptInput} from '@gravity-ui/aikit';
 | `suggestionsTextAlign` | `'left' \| 'center' \| 'right'`          | -        | `'center'` | Text alignment                    |
 | `onSuggestionClick`    | `(content: string, id?: string) => void` | -        | -          | Callback when suggestion clicked  |
 
+Suggestions always render with text wrapping enabled: full suggestion text wraps to multiple lines instead of being truncated with an ellipsis. This is not configurable, since prompt suggestions are full-length phrases that must stay readable.
+
 ## Expandable Panels
 
 The component supports top and bottom expandable panels with smooth animation:
