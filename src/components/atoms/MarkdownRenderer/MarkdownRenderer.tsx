@@ -24,6 +24,31 @@ export interface MarkdownRendererProps {
     openLinksInNewTab?: boolean;
 }
 
+const ABSOLUTE_HTTP_URL_RE = /^(https?:)?\/\//i;
+
+const isSameDocumentAnchor = (href: string) => {
+    if (href.startsWith('#')) {
+        return true;
+    }
+
+    if (!ABSOLUTE_HTTP_URL_RE.test(href) || typeof window === 'undefined') {
+        return false;
+    }
+
+    try {
+        const url = new URL(href, window.location.href);
+
+        return (
+            Boolean(url.hash) &&
+            url.origin === window.location.origin &&
+            url.pathname === window.location.pathname &&
+            url.search === window.location.search
+        );
+    } catch {
+        return false;
+    }
+};
+
 const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => {
     const rendererRules = md.renderer.rules;
     const defaultRender =
@@ -34,7 +59,7 @@ const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => 
 
     rendererRules.link_open = function (tokens, idx, options, env, self) {
         const href = tokens[idx].attrGet('href');
-        if (!href?.startsWith('#')) {
+        if (!href || !isSameDocumentAnchor(href)) {
             tokens[idx].attrSet('target', '_blank');
             tokens[idx].attrSet('rel', 'noopener noreferrer');
         }
