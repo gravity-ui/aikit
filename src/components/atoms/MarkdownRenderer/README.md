@@ -26,13 +26,13 @@ const transformOptions: OptionsType = {
 
 ## Props
 
-| Prop                | Type          | Required | Default | Description                                                                                                                                                                                                                      |
-| ------------------- | ------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `content`           | `string`      | Yes      | -       | YFM markdown content to render                                                                                                                                                                                                   |
-| `className`         | `string`      | -        | -       | Additional CSS class                                                                                                                                                                                                             |
-| `qa`                | `string`      | -        | -       | QA/test identifier                                                                                                                                                                                                               |
-| `transformOptions`  | `OptionsType` | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                                                       |
-| `openLinksInNewTab` | `boolean`     | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and absolute same-document anchors with matching origin, path, and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
+| Prop                | Type          | Required | Default | Description                                                                                                                                                                                                             |
+| ------------------- | ------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content`           | `string`      | Yes      | -       | YFM markdown content to render                                                                                                                                                                                          |
+| `className`         | `string`      | -        | -       | Additional CSS class                                                                                                                                                                                                    |
+| `qa`                | `string`      | -        | -       | QA/test identifier                                                                                                                                                                                                      |
+| `transformOptions`  | `OptionsType` | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                                              |
+| `openLinksInNewTab` | `boolean`     | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and relative same-document anchors with matching path and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
 
 ## Styling
 

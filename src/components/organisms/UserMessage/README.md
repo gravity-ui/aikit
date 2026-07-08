@@ -52,22 +52,22 @@ import {UserMessage} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop                            | Type                    | Required | Default   | Description                                                                                                    |
-| ------------------------------- | ----------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------- |
-| `content`                       | `React.ReactNode`       | ✓        | -         | Message content (string for plain/markdown, ReactNode for custom)                                              |
-| `format`                        | `'plain' \| 'markdown'` | -        | `'plain'` | Rendering format; `'markdown'` enables rich text via `MarkdownRenderer`                                        |
-| `images`                        | `string[]`              | -        | -         | Base64 data URLs or image URLs displayed above the text balloon                                                |
-| `showAvatar`                    | `boolean`               | -        | `false`   | Show user avatar beside the message                                                                            |
-| `avatarUrl`                     | `string`                | -        | `''`      | Image URL for the avatar                                                                                       |
-| `showTimestamp`                 | `boolean`               | -        | `false`   | Show message timestamp                                                                                         |
-| `timestamp`                     | `string`                | -        | `''`      | Timestamp value (Unix ms as string or ISO date)                                                                |
-| `showActionsOnHover`            | `boolean`               | -        | `false`   | Show action buttons only on hover instead of always                                                            |
-| `actions`                       | `BaseMessageAction[]`   | -        | -         | Array of action button configs (copy, edit, custom, etc.)                                                      |
-| `transformOptions`              | `OptionsType`           | -        | -         | Options passed to [@diplodoc/transform](https://github.com/diplodoc-platform/transform) for markdown rendering |
-| `shouldParseIncompleteMarkdown` | `boolean`               | -        | -         | Allow incomplete markdown to be parsed (useful during streaming)                                               |
-| `openMarkdownLinksInNewTab`     | `boolean`               | -        | `false`   | Open markdown links in a new tab when `format` is `'markdown'`, except same-document anchors                   |
-| `className`                     | `string`                | -        | -         | Additional CSS class                                                                                           |
-| `qa`                            | `string`                | -        | -         | QA/test identifier                                                                                             |
+| Prop                            | Type                    | Required | Default   | Description                                                                                                         |
+| ------------------------------- | ----------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| `content`                       | `React.ReactNode`       | ✓        | -         | Message content (string for plain/markdown, ReactNode for custom)                                                   |
+| `format`                        | `'plain' \| 'markdown'` | -        | `'plain'` | Rendering format; `'markdown'` enables rich text via `MarkdownRenderer`                                             |
+| `images`                        | `string[]`              | -        | -         | Base64 data URLs or image URLs displayed above the text balloon                                                     |
+| `showAvatar`                    | `boolean`               | -        | `false`   | Show user avatar beside the message                                                                                 |
+| `avatarUrl`                     | `string`                | -        | `''`      | Image URL for the avatar                                                                                            |
+| `showTimestamp`                 | `boolean`               | -        | `false`   | Show message timestamp                                                                                              |
+| `timestamp`                     | `string`                | -        | `''`      | Timestamp value (Unix ms as string or ISO date)                                                                     |
+| `showActionsOnHover`            | `boolean`               | -        | `false`   | Show action buttons only on hover instead of always                                                                 |
+| `actions`                       | `BaseMessageAction[]`   | -        | -         | Array of action button configs (copy, edit, custom, etc.)                                                           |
+| `transformOptions`              | `OptionsType`           | -        | -         | Options passed to [@diplodoc/transform](https://github.com/diplodoc-platform/transform) for markdown rendering      |
+| `shouldParseIncompleteMarkdown` | `boolean`               | -        | -         | Allow incomplete markdown to be parsed (useful during streaming)                                                    |
+| `openMarkdownLinksInNewTab`     | `boolean`               | -        | `false`   | Open markdown links in a new tab when `format` is `'markdown'`, except hash-only and relative same-document anchors |
+| `className`                     | `string`                | -        | -         | Additional CSS class                                                                                                |
+| `qa`                            | `string`                | -        | -         | QA/test identifier                                                                                                  |
 
 ## Styling
 

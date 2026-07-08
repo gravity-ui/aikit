@@ -31,7 +31,7 @@ const isSameDocumentAnchor = (href: string) => {
         return true;
     }
 
-    if (!ABSOLUTE_HTTP_URL_RE.test(href) || typeof window === 'undefined') {
+    if (ABSOLUTE_HTTP_URL_RE.test(href) || typeof window === 'undefined') {
         return false;
     }
 

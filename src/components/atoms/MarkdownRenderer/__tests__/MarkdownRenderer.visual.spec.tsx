@@ -33,7 +33,9 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
                     '[Anchor](#local)',
                     `[Same document](${origin}/markdown-renderer?utm_source=google#local)`,
                     `[Different query](${origin}/markdown-renderer?utm_source=yandex#local)`,
-                    '[Relative](/markdown-renderer#local)',
+                    '[Relative anchor](/markdown-renderer?utm_source=google#local)',
+                    '[Relative page](/markdown-renderer?utm_source=google)',
+                    '[Relative different query](/markdown-renderer?utm_source=yandex#local)',
                     '[Email](mailto:test@example.com)',
                     '[Phone](tel:+1234567890)',
                 ].join(' ')}
@@ -42,10 +44,14 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         );
 
         const externalLink = page.getByRole('link', {name: 'External'});
-        const anchorLink = page.getByRole('link', {name: 'Anchor'});
+        const anchorLink = page.getByRole('link', {name: 'Anchor', exact: true});
         const sameDocumentLink = page.getByRole('link', {name: 'Same document'});
-        const differentQueryLink = page.getByRole('link', {name: 'Different query'});
-        const relativeLink = page.getByRole('link', {name: 'Relative'});
+        const differentQueryLink = page.getByRole('link', {name: 'Different query', exact: true});
+        const relativeAnchorLink = page.getByRole('link', {name: 'Relative anchor'});
+        const relativePageLink = page.getByRole('link', {name: 'Relative page'});
+        const relativeDifferentQueryLink = page.getByRole('link', {
+            name: 'Relative different query',
+        });
         const emailLink = page.getByRole('link', {name: 'Email'});
         const phoneLink = page.getByRole('link', {name: 'Phone'});
 
@@ -53,12 +59,16 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
         await expect(anchorLink).not.toHaveAttribute('target', '_blank');
         await expect(anchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
-        await expect(sameDocumentLink).not.toHaveAttribute('target', '_blank');
-        await expect(sameDocumentLink).not.toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(sameDocumentLink).toHaveAttribute('target', '_blank');
+        await expect(sameDocumentLink).toHaveAttribute('rel', 'noopener noreferrer');
         await expect(differentQueryLink).toHaveAttribute('target', '_blank');
         await expect(differentQueryLink).toHaveAttribute('rel', 'noopener noreferrer');
-        await expect(relativeLink).toHaveAttribute('target', '_blank');
-        await expect(relativeLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(relativeAnchorLink).not.toHaveAttribute('target', '_blank');
+        await expect(relativeAnchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(relativePageLink).toHaveAttribute('target', '_blank');
+        await expect(relativePageLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(relativeDifferentQueryLink).toHaveAttribute('target', '_blank');
+        await expect(relativeDifferentQueryLink).toHaveAttribute('rel', 'noopener noreferrer');
         await expect(emailLink).toHaveAttribute('target', '_blank');
         await expect(emailLink).toHaveAttribute('rel', 'noopener noreferrer');
         await expect(phoneLink).toHaveAttribute('target', '_blank');
