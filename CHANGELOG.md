@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.2](https://github.com/gravity-ui/aikit/compare/v2.9.1...v2.9.2) (2026-07-08)
+
+
+### Bug Fixes
+
+* **MarkdownRenderer:** stabilize markdown table layout in messages ([#194](https://github.com/gravity-ui/aikit/issues/194)) ([4643463](https://github.com/gravity-ui/aikit/commit/46434636a53c61cb31305453c8b7a61c872c55a4))
+
 ## [2.9.1](https://github.com/gravity-ui/aikit/compare/v2.9.0...v2.9.1) (2026-07-07)
 
 
