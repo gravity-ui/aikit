@@ -1,4 +1,4 @@
-import defaultTransformPlugins from '@diplodoc/transform/lib/plugins';
+import defaultTransformPlugins from '@diplodoc/transform/lib/plugins.js';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {markdownTableWrapPlugin} from './markdownTableWrapPlugin';
