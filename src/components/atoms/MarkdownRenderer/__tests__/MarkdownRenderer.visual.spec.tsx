@@ -20,7 +20,7 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expectScreenshot();
     });
 
-    test('should open links in new tab when enabled', async ({mount, page}) => {
+    test('should open non-anchor links in new tab when enabled', async ({mount, page}) => {
         await mount(
             <MarkdownRenderer
                 content="[External](https://gravity-ui.com) and [Anchor](#local)"
@@ -33,8 +33,8 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
 
         await expect(externalLink).toHaveAttribute('target', '_blank');
         await expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
-        await expect(anchorLink).toHaveAttribute('target', '_blank');
-        await expect(anchorLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(anchorLink).not.toHaveAttribute('target', '_blank');
+        await expect(anchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
     });
 
     test('should keep default link target behavior', async ({mount, page}) => {

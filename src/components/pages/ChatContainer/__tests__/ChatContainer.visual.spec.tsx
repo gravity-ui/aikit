@@ -1,17 +1,8 @@
 import {expect, test} from '~playwright/core';
 
-import type {TChatMessage} from '../../../../types';
 import {ChatContainer} from '../ChatContainer';
 
 import {ChatContainerStories} from './helpersPlaywright';
-
-const markdownLinkMessages: TChatMessage[] = [
-    {
-        id: 'assistant-link',
-        role: 'assistant',
-        content: '[Open docs](#docs)',
-    },
-];
 
 test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
     test('should render playground state', async ({mount, expectScreenshot}) => {
@@ -97,23 +88,29 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
     });
 
     test('should open markdown links in new tab when enabled', async ({mount, page}) => {
-        await mount(
-            <ChatContainer
-                messages={markdownLinkMessages}
-                openMarkdownLinksInNewTab
-                onSendMessage={async () => {}}
-            />,
-        );
+        await mount(<ChatContainerStories.WithMarkdownLinksInNewTab />);
 
-        const link = page.getByRole('link', {name: 'Open docs'});
+        const externalLink = page.getByRole('link', {name: 'external docs'});
+        const anchorLink = page.getByRole('link', {name: 'local section'});
 
-        await expect(link).toHaveAttribute('target', '_blank');
-        await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(externalLink).toHaveAttribute('target', '_blank');
+        await expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(anchorLink).not.toHaveAttribute('target', '_blank');
+        await expect(anchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
     });
 
     test('should keep default markdown link target behavior', async ({mount, page}) => {
         await mount(
-            <ChatContainer messages={markdownLinkMessages} onSendMessage={async () => {}} />,
+            <ChatContainer
+                messages={[
+                    {
+                        id: 'assistant-link',
+                        role: 'assistant',
+                        content: '[Open docs](https://gravity-ui.com)',
+                    },
+                ]}
+                onSendMessage={async () => {}}
+            />,
         );
 
         const link = page.getByRole('link', {name: 'Open docs'});

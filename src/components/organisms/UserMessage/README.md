@@ -65,6 +65,7 @@ import {UserMessage} from '@gravity-ui/aikit';
 | `actions`                       | `BaseMessageAction[]`   | -        | -         | Array of action button configs (copy, edit, custom, etc.)                                                      |
 | `transformOptions`              | `OptionsType`           | -        | -         | Options passed to [@diplodoc/transform](https://github.com/diplodoc-platform/transform) for markdown rendering |
 | `shouldParseIncompleteMarkdown` | `boolean`               | -        | -         | Allow incomplete markdown to be parsed (useful during streaming)                                               |
+| `openMarkdownLinksInNewTab`     | `boolean`               | -        | `false`   | Open non-anchor markdown links in a new tab when `format` is `'markdown'`                                      |
 | `className`                     | `string`                | -        | -         | Additional CSS class                                                                                           |
 | `qa`                            | `string`                | -        | -         | QA/test identifier                                                                                             |
 

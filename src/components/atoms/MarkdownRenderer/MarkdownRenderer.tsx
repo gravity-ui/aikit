@@ -33,8 +33,11 @@ const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => 
         };
 
     rendererRules.link_open = function (tokens, idx, options, env, self) {
-        tokens[idx].attrSet('target', '_blank');
-        tokens[idx].attrSet('rel', 'noopener noreferrer');
+        const href = tokens[idx].attrGet('href');
+        if (!href?.startsWith('#')) {
+            tokens[idx].attrSet('target', '_blank');
+            tokens[idx].attrSet('rel', 'noopener noreferrer');
+        }
 
         return defaultRender(tokens, idx, options, env, self);
     };
