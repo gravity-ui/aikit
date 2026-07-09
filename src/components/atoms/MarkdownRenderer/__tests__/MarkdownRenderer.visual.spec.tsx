@@ -1,5 +1,7 @@
 import {expect, test} from '~playwright/core';
 
+import {MarkdownRenderer} from '../MarkdownRenderer';
+
 import {MarkdownRendererStories} from './helpersPlaywright';
 
 test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
@@ -16,6 +18,70 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await mount(<MarkdownRendererStories.WithTransformOptions />);
 
         await expectScreenshot();
+    });
+
+    test('should open matching links in new tab when enabled', async ({mount, page}) => {
+        await page.evaluate(() =>
+            window.history.replaceState(null, '', '/markdown-renderer?utm_source=google'),
+        );
+        const origin = await page.evaluate(() => window.location.origin);
+
+        await mount(
+            <MarkdownRenderer
+                content={[
+                    '[External](https://gravity-ui.com)',
+                    '[Anchor](#local)',
+                    `[Same document](${origin}/markdown-renderer?utm_source=google#local)`,
+                    `[Different query](${origin}/markdown-renderer?utm_source=yandex#local)`,
+                    '[Relative anchor](/markdown-renderer?utm_source=google#local)',
+                    '[Relative page](/markdown-renderer?utm_source=google)',
+                    '[Relative different query](/markdown-renderer?utm_source=yandex#local)',
+                    '[Email](mailto:test@example.com)',
+                    '[Phone](tel:+1234567890)',
+                ].join(' ')}
+                openLinksInNewTab
+            />,
+        );
+
+        const externalLink = page.getByRole('link', {name: 'External'});
+        const anchorLink = page.getByRole('link', {name: 'Anchor', exact: true});
+        const sameDocumentLink = page.getByRole('link', {name: 'Same document'});
+        const differentQueryLink = page.getByRole('link', {name: 'Different query', exact: true});
+        const relativeAnchorLink = page.getByRole('link', {name: 'Relative anchor'});
+        const relativePageLink = page.getByRole('link', {name: 'Relative page'});
+        const relativeDifferentQueryLink = page.getByRole('link', {
+            name: 'Relative different query',
+        });
+        const emailLink = page.getByRole('link', {name: 'Email'});
+        const phoneLink = page.getByRole('link', {name: 'Phone'});
+
+        await expect(externalLink).toHaveAttribute('target', '_blank');
+        await expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(anchorLink).not.toHaveAttribute('target', '_blank');
+        await expect(anchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(sameDocumentLink).toHaveAttribute('target', '_blank');
+        await expect(sameDocumentLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(differentQueryLink).toHaveAttribute('target', '_blank');
+        await expect(differentQueryLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(relativeAnchorLink).not.toHaveAttribute('target', '_blank');
+        await expect(relativeAnchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(relativePageLink).toHaveAttribute('target', '_blank');
+        await expect(relativePageLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(relativeDifferentQueryLink).toHaveAttribute('target', '_blank');
+        await expect(relativeDifferentQueryLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(emailLink).toHaveAttribute('target', '_blank');
+        await expect(emailLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(phoneLink).toHaveAttribute('target', '_blank');
+        await expect(phoneLink).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    test('should keep default link target behavior', async ({mount, page}) => {
+        await mount(<MarkdownRenderer content="[Anchor](#local)" />);
+
+        const link = page.getByRole('link', {name: 'Anchor'});
+
+        await expect(link).not.toHaveAttribute('target', '_blank');
+        await expect(link).not.toHaveAttribute('rel', 'noopener noreferrer');
     });
 
     test('should render markdown table inside BaseMessage without broken layout', async ({

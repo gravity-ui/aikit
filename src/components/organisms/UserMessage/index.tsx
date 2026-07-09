@@ -28,6 +28,7 @@ export type UserMessageProps = Pick<
     fileAttachments?: FileAttachment[];
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    openMarkdownLinksInNewTab?: boolean;
     className?: string;
     qa?: string;
 };
@@ -49,6 +50,7 @@ export const UserMessage = (props: UserMessageProps) => {
         format = 'plain',
         transformOptions,
         shouldParseIncompleteMarkdown,
+        openMarkdownLinksInNewTab,
         onActionPopup,
     } = props;
 
@@ -75,6 +77,7 @@ export const UserMessage = (props: UserMessageProps) => {
                             content={content as string}
                             transformOptions={transformOptions}
                             shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                            openLinksInNewTab={openMarkdownLinksInNewTab}
                         />
                     ) : (
                         content

@@ -31,6 +31,7 @@ export type MessageItemConfig<TContent extends TMessageContent = never> = {
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    openMarkdownLinksInNewTab?: boolean;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -63,6 +64,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     messageRendererRegistry,
     transformOptions,
     shouldParseIncompleteMarkdown,
+    openMarkdownLinksInNewTab,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -87,6 +89,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 fileAttachments={message.fileAttachments}
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 showAvatar={showAvatar}
@@ -115,6 +118,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 messageRendererRegistry={messageRendererRegistry}
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 userRating={message.userRating}

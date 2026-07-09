@@ -25,6 +25,7 @@ export {
     WithStreaming,
     WithVirtualizedStreaming,
     VirtualizationComparison,
+    WithMarkdownLinksInNewTab,
     WithHistory,
 } from './parts/basic';
 

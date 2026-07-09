@@ -1,5 +1,7 @@
 import {expect, test} from '~playwright/core';
 
+import {ChatContainer} from '../ChatContainer';
+
 import {ChatContainerStories} from './helpersPlaywright';
 
 test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
@@ -83,6 +85,38 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await page.locator('[data-qa="header-action-history"]').click();
         await expect(page.getByText('E2E No chats yet')).toBeVisible();
         await expect(page.getByPlaceholder('E2E History search ph')).toBeVisible();
+    });
+
+    test('should open markdown links in new tab when enabled', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithMarkdownLinksInNewTab />);
+
+        const externalLink = page.getByRole('link', {name: 'external docs'});
+        const anchorLink = page.getByRole('link', {name: 'local section'});
+
+        await expect(externalLink).toHaveAttribute('target', '_blank');
+        await expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(anchorLink).not.toHaveAttribute('target', '_blank');
+        await expect(anchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    test('should keep default markdown link target behavior', async ({mount, page}) => {
+        await mount(
+            <ChatContainer
+                messages={[
+                    {
+                        id: 'assistant-link',
+                        role: 'assistant',
+                        content: '[Open docs](https://gravity-ui.com)',
+                    },
+                ]}
+                onSendMessage={async () => {}}
+            />,
+        );
+
+        const link = page.getByRole('link', {name: 'Open docs'});
+
+        await expect(link).not.toHaveAttribute('target', '_blank');
+        await expect(link).not.toHaveAttribute('rel', 'noopener noreferrer');
     });
 
     test('should apply texts.submitButtonCancelableText in streaming state', async ({

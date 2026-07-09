@@ -73,19 +73,20 @@ registerMessageRenderer<CustomContent>(customRegistry, 'custom', {
 
 ## Props
 
-| Prop                      | Type                                           | Required | Default | Description                                                                                 |
-| ------------------------- | ---------------------------------------------- | -------- | ------- | ------------------------------------------------------------------------------------------- |
-| `content`                 | `string \| MessageContent \| MessageContent[]` | ✓        | -       | Message content                                                                             |
-| `id`                      | `string`                                       | -        | -       | Message ID (used for generating part keys)                                                  |
-| `actions`                 | `Array<Action>`                                | -        | -       | Array of action buttons (copy, edit, like, etc.)                                            |
-| `userRating`              | `'like' \| 'dislike'`                          | -        | -       | Current user rating; passed to BaseMessage for like/dislike icon state (filled when active) |
-| `timestamp`               | `string`                                       | -        | -       | Timestamp string                                                                            |
-| `messageRendererRegistry` | `MessageRendererRegistry`                      | -        | -       | Custom message renderer registry (merged with default registry)                             |
-| `transformOptions`        | `OptionsType`                                  | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package  |
-| `showActionsOnHover`      | `boolean`                                      | -        | -       | Show action buttons on hover                                                                |
-| `showTimestamp`           | `boolean`                                      | -        | -       | Show timestamp in actions area                                                              |
-| `className`               | `string`                                       | -        | -       | Additional CSS class                                                                        |
-| `qa`                      | `string`                                       | -        | -       | QA/test identifier                                                                          |
+| Prop                        | Type                                           | Required | Default | Description                                                                                                                 |
+| --------------------------- | ---------------------------------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `content`                   | `string \| MessageContent \| MessageContent[]` | ✓        | -       | Message content                                                                                                             |
+| `id`                        | `string`                                       | -        | -       | Message ID (used for generating part keys)                                                                                  |
+| `actions`                   | `Array<Action>`                                | -        | -       | Array of action buttons (copy, edit, like, etc.)                                                                            |
+| `userRating`                | `'like' \| 'dislike'`                          | -        | -       | Current user rating; passed to BaseMessage for like/dislike icon state (filled when active)                                 |
+| `timestamp`                 | `string`                                       | -        | -       | Timestamp string                                                                                                            |
+| `messageRendererRegistry`   | `MessageRendererRegistry`                      | -        | -       | Custom message renderer registry (merged with default registry)                                                             |
+| `transformOptions`          | `OptionsType`                                  | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                  |
+| `openMarkdownLinksInNewTab` | `boolean`                                      | -        | `false` | Open markdown links rendered by default message renderers in a new tab, except hash-only and relative same-document anchors |
+| `showActionsOnHover`        | `boolean`                                      | -        | -       | Show action buttons on hover                                                                                                |
+| `showTimestamp`             | `boolean`                                      | -        | -       | Show timestamp in actions area                                                                                              |
+| `className`                 | `string`                                       | -        | -       | Additional CSS class                                                                                                        |
+| `qa`                        | `string`                                       | -        | -       | QA/test identifier                                                                                                          |
 
 ### Action Type
 

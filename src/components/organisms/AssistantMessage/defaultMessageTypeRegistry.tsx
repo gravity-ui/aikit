@@ -17,6 +17,7 @@ import {ToolMessage} from '../ToolMessage';
 export function createDefaultMessageRegistry(
     transformOptions?: OptionsType,
     shouldParseIncompleteMarkdown?: boolean,
+    openMarkdownLinksInNewTab?: boolean,
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
@@ -29,6 +30,7 @@ export function createDefaultMessageRegistry(
                     content={part.data.text}
                     transformOptions={transformOptions}
                     shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                    openLinksInNewTab={openMarkdownLinksInNewTab}
                 />
             ),
         },
@@ -52,7 +54,12 @@ export function createDefaultMessageRegistry(
         registry,
         'thinking',
         {
-            component: ({part}) => <ThinkingMessage {...part.data} />,
+            component: ({part}) => (
+                <ThinkingMessage
+                    {...part.data}
+                    openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                />
+            ),
         },
         {
             isDefault: true,

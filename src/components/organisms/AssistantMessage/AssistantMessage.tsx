@@ -36,6 +36,7 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
         messageRendererRegistry?: MessageRendererRegistry;
         transformOptions?: OptionsType;
         shouldParseIncompleteMarkdown?: boolean;
+        openMarkdownLinksInNewTab?: boolean;
         className?: string;
         qa?: string;
     };
@@ -51,6 +52,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
     messageRendererRegistry,
     transformOptions,
     shouldParseIncompleteMarkdown,
+    openMarkdownLinksInNewTab,
     showActionsOnHover,
     showTimestamp,
     userRating,
@@ -62,13 +64,19 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
         const defaultRegistry = createDefaultMessageRegistry(
             transformOptions,
             shouldParseIncompleteMarkdown,
+            openMarkdownLinksInNewTab,
         );
         if (messageRendererRegistry) {
             return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
         }
 
         return defaultRegistry;
-    }, [messageRendererRegistry, transformOptions, shouldParseIncompleteMarkdown]);
+    }, [
+        messageRendererRegistry,
+        transformOptions,
+        shouldParseIncompleteMarkdown,
+        openMarkdownLinksInNewTab,
+    ]);
 
     const parts = useMemo(() => normalizeContent<TContent>(content), [content]);
 
