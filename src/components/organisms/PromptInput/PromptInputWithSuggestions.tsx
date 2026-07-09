@@ -49,6 +49,7 @@ export function PromptInputWithSuggestions(props: PromptInputWithSuggestionsProp
                         title={suggestTitle}
                         layout={suggestionsLayout}
                         textAlign={suggestionsTextAlign}
+                        wrapText
                     />
                 </div>
             )}
