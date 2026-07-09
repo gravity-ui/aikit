@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.0](https://github.com/gravity-ui/aikit/compare/v2.10.0...v2.11.0) (2026-07-09)
+
+
+### Features
+
+* open markdown links in new tab ([#200](https://github.com/gravity-ui/aikit/issues/200)) ([ae2068c](https://github.com/gravity-ui/aikit/commit/ae2068c7c82b5e16f93e42ac50afdbe6d0abfabe))
+
 ## [2.10.0](https://github.com/gravity-ui/aikit/compare/v2.9.3...v2.10.0) (2026-07-09)
 
 
