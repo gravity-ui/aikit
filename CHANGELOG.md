@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.0](https://github.com/gravity-ui/aikit/compare/v2.9.3...v2.10.0) (2026-07-09)
+
+
+### Features
+
+* **PromptInputWithSuggestions:** use wrapText on the Suggestions ([#205](https://github.com/gravity-ui/aikit/issues/205)) ([ae785cd](https://github.com/gravity-ui/aikit/commit/ae785cd6c6ccd8f2337de3a04525e661c4d89264))
+
 ## [2.9.3](https://github.com/gravity-ui/aikit/compare/v2.9.2...v2.9.3) (2026-07-08)
 
 
