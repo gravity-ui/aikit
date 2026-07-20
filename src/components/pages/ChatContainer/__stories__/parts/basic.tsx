@@ -147,6 +147,48 @@ export const EmptyState: Story = {
 };
 
 /**
+ * Empty state fixture for verifying the additional suggestion item callback.
+ */
+export const WithSuggestionItemCallback: Story = {
+    args: {
+        messages: [],
+        welcomeConfig: {
+            suggestions: [{id: 'suggestion-1', title: 'Suggestion content'}],
+        },
+    },
+    render: (args) => {
+        const [clickedSuggestion, setClickedSuggestion] = useState('');
+        const [sentSuggestion, setSentSuggestion] = useState('');
+
+        return (
+            <>
+                <div data-qa="welcome-suggestion-click">{clickedSuggestion}</div>
+                <div data-qa="welcome-suggestion-send">{sentSuggestion}</div>
+                <ChatContainer
+                    {...args}
+                    welcomeConfig={{
+                        ...args.welcomeConfig,
+                        suggestions: [
+                            {
+                                id: 'suggestion-1',
+                                title: 'Suggestion content',
+                                onClick: (content, id) => {
+                                    setClickedSuggestion(`${content}:${id}`);
+                                },
+                            },
+                        ],
+                    }}
+                    onSendMessage={async ({content}) => {
+                        setSentSuggestion(content);
+                    }}
+                />
+            </>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+/**
  * State with messages
  */
 export const WithMessages: Story = {

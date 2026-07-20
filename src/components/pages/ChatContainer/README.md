@@ -434,7 +434,19 @@ interface WelcomeConfig {
 
 #### Suggestions Properties
 
-The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is clicked, its `title` value is sent as the message content.
+The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is clicked, its optional `onClick` callback is called before its `title` value is sent as the message content.
+
+```tsx
+welcomeConfig={{
+  suggestions: [{
+    id: 'explain-cloud',
+    title: 'Explain Yandex Cloud',
+    onClick: (content, id) => {
+      sendMetric('welcome_suggestion_click', {content, id});
+    },
+  }],
+}}
+```
 
 **SuggestionsItem Properties:**
 
@@ -442,6 +454,7 @@ The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is cl
 - **`id`** (optional): Unique identifier for the suggestion
 - **`view`** (optional): Button styling - `'normal'`, `'action'`, `'outlined'`, `'flat'`, `'flat-secondary'`, `'outlined-info'`
 - **`icon`** (optional): Icon position - `'left'` displays ChevronLeft, `'right'` displays ChevronRight
+- **`onClick`** (optional): Additional callback called with the suggestion title and optional ID before the default click handler
 
 **Text Wrapping:**
 

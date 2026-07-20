@@ -21,6 +21,7 @@ export default {
 export {
     Playground,
     EmptyState,
+    WithSuggestionItemCallback,
     WithMessages,
     WithStreaming,
     WithVirtualizedStreaming,

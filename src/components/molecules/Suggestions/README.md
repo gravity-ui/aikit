@@ -128,12 +128,13 @@ import {Suggestions} from '@/components/molecules/Suggestions';
 
 ### SuggestionsItem
 
-| Prop    | Type                        | Required | Default      | Description                                                     |
-| ------- | --------------------------- | -------- | ------------ | --------------------------------------------------------------- |
-| `id`    | `string`                    | No       | -            | Optional unique identifier for the item                         |
-| `title` | `string`                    | Yes      | -            | Title text to display on the button                             |
-| `view`  | `ButtonButtonProps['view']` | No       | `'outlined'` | Button view style                                               |
-| `icon`  | `'left' \| 'right'`         | No       | -            | Icon position: 'left' for ChevronLeft, 'right' for ChevronRight |
+| Prop      | Type                                                      | Required | Default      | Description                                                               |
+| --------- | --------------------------------------------------------- | -------- | ------------ | ------------------------------------------------------------------------- |
+| `id`      | `string`                                                  | No       | -            | Optional unique identifier for the item                                   |
+| `title`   | `string`                                                  | Yes      | -            | Title text to display on the button                                       |
+| `view`    | `ButtonButtonProps['view']`                               | No       | `'outlined'` | Button view style                                                         |
+| `icon`    | `'left' \| 'right'`                                       | No       | -            | Icon position: 'left' for ChevronLeft, 'right' for ChevronRight           |
+| `onClick` | `(content: string, id?: string) => void \| Promise<void>` | No       | -            | Additional callback invoked before the component-level `onClick` callback |
 
 ## Styling
 
