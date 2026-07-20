@@ -158,6 +158,22 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expect(page.locator('.g-aikit-user-message')).toBeVisible();
     });
 
+    test('should call suggestion item callback in addition to sending a message', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<ChatContainerStories.WithSuggestionItemCallback />);
+
+        await page.getByRole('button', {name: 'Suggestion content'}).click();
+
+        await expect(page.locator('[data-qa="welcome-suggestion-click"]')).toHaveText(
+            'Suggestion content:suggestion-1',
+        );
+        await expect(page.locator('[data-qa="welcome-suggestion-send"]')).toHaveText(
+            'Suggestion content',
+        );
+    });
+
     test('should send message via prompt input', async ({mount, page}) => {
         await mount(<ChatContainerStories.EmptyState />);
 
