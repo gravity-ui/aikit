@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.0](https://github.com/gravity-ui/aikit/compare/v2.11.0...v2.12.0) (2026-07-20)
+
+
+### Features
+
+* **SuggestionItem:** add a extra onclick callback ([#208](https://github.com/gravity-ui/aikit/issues/208)) ([d8173b5](https://github.com/gravity-ui/aikit/commit/d8173b52891a17dc912ff0e9721b1a612c3fa0fd))
+
 ## [2.11.0](https://github.com/gravity-ui/aikit/compare/v2.10.0...v2.11.0) (2026-07-09)
 
 
