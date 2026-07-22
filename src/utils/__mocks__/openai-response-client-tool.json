@@ -1,0 +1,316 @@
+[
+  {
+    "response": {
+      "id": "resp-887410f6387d41a8a7dbcfd3dc863412",
+      "created_at": 1784705740.2771986,
+      "error": null,
+      "incomplete_details": null,
+      "instructions": null,
+      "metadata": null,
+      "model": "Qwen3.6-27B-H200",
+      "object": "response",
+      "output": [],
+      "parallel_tool_calls": false,
+      "temperature": null,
+      "tool_choice": "auto",
+      "tools": [
+        {
+          "name": "show_diff",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "code": {"type": "string", "description": "Код, который ты предлагаешь"}
+            },
+            "required": ["code"],
+            "additionalProperties": false
+          },
+          "strict": true,
+          "type": "function",
+          "defer_loading": null,
+          "description": "Если человек попросил написать код, то напиши код и передай в этот тул"
+        }
+      ],
+      "top_p": null,
+      "background": null,
+      "completed_at": null,
+      "conversation": null,
+      "max_output_tokens": null,
+      "max_tool_calls": null,
+      "previous_response_id": null,
+      "prompt": null,
+      "prompt_cache_key": null,
+      "prompt_cache_retention": null,
+      "reasoning": null,
+      "safety_identifier": null,
+      "service_tier": null,
+      "status": null,
+      "text": null,
+      "top_logprobs": null,
+      "truncation": null,
+      "usage": null,
+      "user": null
+    },
+    "sequence_number": 1,
+    "type": "response.created"
+  },
+
+  {
+    "response": {
+      "id": "resp-887410f6387d41a8a7dbcfd3dc863412",
+      "created_at": 1784705740.2771986,
+      "error": null,
+      "incomplete_details": null,
+      "instructions": null,
+      "metadata": null,
+      "model": "Qwen3.6-27B-H200",
+      "object": "response",
+      "output": [],
+      "parallel_tool_calls": false,
+      "temperature": null,
+      "tool_choice": "auto",
+      "tools": [
+        {
+          "name": "show_diff",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "code": {"type": "string", "description": "Код, который ты предлагаешь"}
+            },
+            "required": ["code"],
+            "additionalProperties": false
+          },
+          "strict": true,
+          "type": "function",
+          "defer_loading": null,
+          "description": "Если человек попросил написать код, то напиши код и передай в этот тул"
+        }
+      ],
+      "top_p": null,
+      "background": null,
+      "completed_at": null,
+      "conversation": null,
+      "max_output_tokens": null,
+      "max_tool_calls": null,
+      "previous_response_id": null,
+      "prompt": null,
+      "prompt_cache_key": null,
+      "prompt_cache_retention": null,
+      "reasoning": null,
+      "safety_identifier": null,
+      "service_tier": null,
+      "status": null,
+      "text": null,
+      "top_logprobs": null,
+      "truncation": null,
+      "usage": null,
+      "user": null
+    },
+    "sequence_number": 2,
+    "type": "response.in_progress"
+  },
+
+  {
+    "item": {
+      "id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+      "arguments": "",
+      "name": "skill_activation",
+      "server_label": "server",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": null,
+      "status": "in_progress"
+    },
+    "output_index": 0,
+    "sequence_number": 3,
+    "type": "response.output_item.added"
+  },
+
+  {
+    "item_id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+    "output_index": 0,
+    "sequence_number": 4,
+    "type": "response.mcp_call.in_progress"
+  },
+
+  {
+    "delta": "{",
+    "item_id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+    "output_index": 0,
+    "sequence_number": 5,
+    "type": "response.mcp_call_arguments.delta"
+  },
+
+  {
+    "delta": "\"skill_name\": \"yql\"",
+    "item_id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+    "output_index": 0,
+    "sequence_number": 6,
+    "type": "response.mcp_call_arguments.delta"
+  },
+
+  {
+    "delta": "}",
+    "item_id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+    "output_index": 0,
+    "sequence_number": 7,
+    "type": "response.mcp_call_arguments.delta"
+  },
+
+  {
+    "arguments": "{\"skill_name\": \"yql\"}",
+    "item_id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+    "output_index": 0,
+    "sequence_number": 8,
+    "type": "response.mcp_call_arguments.done",
+    "name": "skill_activation"
+  },
+
+  {
+    "item_id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+    "output_index": 0,
+    "sequence_number": 9,
+    "type": "response.mcp_call.completed"
+  },
+
+  {
+    "item": {
+      "id": "tool-cc-68b29e675d1b485189557279c22debc5-0",
+      "arguments": "{\"skill_name\": \"yql\"}",
+      "name": "skill_activation",
+      "server_label": "server",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "<skill_activation>\n<skill_content>&lt;skill_content name=\"yql\"&gt;\n# Справка по YQL\n\nДоступные references:\n\n- `references/join.md` — соединения таблиц в YQL: ограничение equi-join (сепарабельный\n  предикат `F(L) = G(R) AND ...`, запрет неравенств), условия соединения `ON` и `USING`,\n  все виды JOIN (`INNER`, `LEFT`, `RIGHT`, `FULL`, `LEFT/RIGHT SEMI`, `LEFT/RIGHT ONLY`,\n  `CROSS`, `EXCLUSION`) с таблицей-сравнением и примерами, self-join (таблица сама с собой:\n  пары строк, попарное сравнение строк, неравенство через equi-ключ + `WHERE`; и когда сравнение\n  двух полей одной строки — это `WHERE`, а не join), обязательные алиасы и префиксы\n  колонок, семантика `NULL` в ключах соединения, приведение типов ключей к общему типу,\n  префикс `ANY` против размножения строк, несколько JOIN подряд, место JOIN в порядке\n  выполнения запроса, стратегии выполнения (LookupJoin/MapJoin/SortedJoin/StarJoin/\n  CommonJoin) и хинт `merge()`, типичные ошибки и алгоритм выбора нужного JOIN.\n  \n- `references/partitioning.md` — работа с партиционированными YT-таблицами: отличие\n  директории (набор дочерних таблиц-партиций) от обычной таблицы с колонкой даты,\n  незначимость типа кавычек, определение формата границ и схем партицирования (дни/месяцы/годы),\n  лексикографическое сравнение имён, табличные функции `RANGE` (полная сигнатура\n  `prefix/min/max/suffix/view`), `CONCAT`, `EACH`, `LIKE`, `REGEXP`, `FILTER`, доступ к ключу\n  партиции через `TablePath()` / `TableName()`, комбинация `RANGE + WHERE` (сужение партиций\n  плюс фильтрация строк), оптимизация `PRAGMA yt.EarlyPartitionPruning`, указание кластера в\n  табличных функциях (`hahn.RANGE(...)`, чтение с разных кластеров), чтение партиций с\n  несовместимыми схемами через `WITH COLUMNS Struct&lt;col: Yson?&gt;` и Yson UDF, просмотр содержимого\n  директории через `dir_elements` (включая `&lt;partition_hint&gt;`) и `check_element_in_dir`,\n  типичные ошибки и пошаговый алгоритм.\n\n- `references/yson.md` — работа с YSON в YQL: типы данных (`Yson`, `Resource&lt;'Yson2.Node'&gt;`,\n  entity `#`), парсинг и сериализация (`Yson::Parse`, `Yson::ParseJson`, `Yson::Serialize*`,\n  `Yson::From`), навигация (`Yson::Lookup*`, `Yson::YPath*`), приведение и конвертация типов\n  (`Yson::As*` / `Yson::TryAs*`, `Yson::ConvertTo*`), проверки типа узла (`Yson::Is*`),\n  PRAGMA и опции (`Yson::Options`, `Strict`, `AutoConvert`), безопасные настройки по\n  умолчанию, типовые паттерны (вложенные пути, `FLATTEN LIST/DICT BY`, парсинг JSON\n  из YSON-колонки, атрибуты, `Yson::Iterate`, структурирование YSON → Struct),\n  рекомендации и частые ошибки, полный справочник функций модуля `Yson::`.\n\n- `references/pragma.md` — прагмы в YQL (`PRAGMA`): синтаксис и применение,\n  самая частая прагма `yt.UseNativeYtTypes`, различие статических и динамических прагм,\n  общие прагмы (`ClassicDivision`, `UnicodeLiterals`, `DqEngine`, `OrderedColumns`,\n  `AnsiInForEmptyOrNullableItemsCollections`), Yson-прагмы (`yson.AutoConvert`,\n  `yson.DisableStrict`), файловые прагмы (`File`, `Folder`, `Library`), прагмы настройки\n  YT (`yt.*`: типы и схема, память и нарезка джобов, pool/права/кластер, временные\n  таблицы и TTL, стратегии JOIN, кэш запросов), типовые паттерны, рекомендации и запреты,\n  полный справочник прагм `yt.*`.\n  \n- `references/statistics.md` — статистические агрегатные функции YQL:\n  сигнатуры и алиасы (`STDDEV`/`VARIANCE` и их `_SAMPLE`/`_POPULATION`-варианты,\n  `CORRELATION`/`COVARIANCE`, `PERCENTILE`/`MEDIAN` с одним и несколькими\n  уровнями через `Tuple`/`Struct`/`List`, `HISTOGRAM` и алгоритмы\n  `Adaptive*`/`Block*`, `LinearHistogram`/`LogarithmicHistogram`, CDF-варианты,\n  `TOPFREQ`/`MODE`, `HyperLogLog`/`HLL`/`CountDistinctEstimate`), правила\n  обработки `NULL` (включая ловушку `CORRELATION`/`COVARIANCE`, где `NULL`\n  считается за `0`), применение `AGGREGATE_BY` / `MULTI_AGGREGATE_BY` через\n  `AggregationFactory`, шпаргалку «что и когда использовать», частые ошибки\n  и подводные камни.\n\n- `references/udaf.md` — пользовательские агрегатные функции (UDAF) в YQL:\n  5 абстракций (`Item`, `State`, `Result`, `Serialized`, `Parent`), 7 слотов\n  (`Create`, `Add`, `Merge`, `Get Result`, `Serialize`, `Deserialize`,\n  `Default Value`) и допустимые комбинации `{3, 4, 6, 7}` (итого 4–8\n  аргументов у `UDAF(...)`), инвариант совпадения типов между слотами,\n  способы описания слотов (lambda / Python UDF); применение через\n  `AggregationFactory(\"UDAF\", ...)` + `AGGREGATE_BY` (включая `DISTINCT`\n  и `Tuple` для агрегаций на двух колонках), `MULTI_AGGREGATE_BY` для\n  `Struct`/`Tuple`/`List`-колонок, прямой вызов `UDAF(&lt;value&gt;, $create,\n  $add, $merge, ...)`, обёртки фабрики (`AggregateTransformInput` /\n  `AggregateTransformOutput` / `AggregateFlatten`); частые ошибки\n  (автопропуск `NULL`, обязательность Serialize/Deserialize для\n  несериализуемых `State`, несовпадение типов между слотами, порядок\n  слотов); рецепт эмуляции `COUNT` на двух колонках. UDAF — отдельный\n  механизм YQL, не то же самое, что UDF (см. `references/udf.md`).\n\n- `references/mut-operations.md` — мутабельные операции с YSON-деревьями\n  (экспериментальный низкоуровневый API): использование linear UDF через\n  `Block(($arg)-&gt;{ ... })` и `Udf(Yson::Mutate, $arg AS Depends)(...)`, создание\n  и модификация деревьев in-place, навигация по узлам (`MutDown`, `MutUp`,\n  `MutRewind`), вставка/обновление/удаление (`MutUpsert`, `MutInsert`,\n  `MutUpdate`, `MutRemove`), заморозка результата (`MutFreeze`), полный список\n  `Mut*`-функций.\n\n- `references/datetime.md` — работа с датой и временем в YQL (модуль\n  `DateTime::`): базовые сниппеты (литералы `Date`/`Datetime`/`Timestamp`/\n  `Interval`, `CurrentUtcDate/Datetime/Timestamp`, `DateTime::Parse`/`Format`,\n  арифметика с `Interval`, `AddTimezone`/`RemoveTimezone`, `DateTime::StartOf*`,\n  `ShiftMonths`/`ShiftYears`, `EvaluateExpr` для compile-time округления);\n  типы данных (базовые `Date`/`Datetime`/`Timestamp`/`Interval`/`Tz*`,\n  расширенные `-64`, `Resource&lt;TM&gt;`/`Resource&lt;TM64&gt;`); литералы и касты\n  (запрет `Interval(\"P1M\")`, `cast(&lt;string&gt;...)` → `NULL` вместо ANSI-ошибки,\n  `cast(&lt;строка с ,tz&gt; AS TzDatetime)`, `cast(TzDatetime as TzDate)` может\n  бросить fatal); полный справочник `DateTime::` — `Split`/`Make*`/`Get*`/\n  `Update`/`From*`/`To*`/`Interval-функции`/`StartOf*`/`EndOf*`/`Shift*`/\n  `Format`/`Parse`/`Parse64`/`ParseIso8601`/`ParseRfc822`/`ParseHttp`/\n  `ParseX509`; таймзоны (`AddTimezone`/`RemoveTimezone` с учётом DST);\n  стриминговые окна `HOP`/`SessionWindow`; агрегаты и оконные функции с\n  datetime; `ListFromRange` с шагом `Interval`; `JSON_VALUE ... RETURNING\n  &lt;datetime&gt;`; Type API с datetime; pragma'ы хранения и TTL\n  (`yt.ExpirationDeadline`/`ExpirationInterval`, `INSERT WITH EXPIRATION`);\n  типовые рецепты (MSK↔UTC, day-of-week в локальной таймзоне, округление\n  часа, DST в Москве); частые ошибки (`Resource` без\n  `MakeX`, `Interval(\"P1M\")` запрещён, `AddTimezone` и `ToSeconds`, опечатка\n  `ShifMonth` vs правильное `ShiftMonths`, `Current*` отключают кеш операций,\n  даты до 1970 — через `Date32`/`Datetime64`).\n  \n- `references/subqueries.md` — переиспользуемые read-only подзапросы в YQL:\n  `DEFINE SUBQUERY` / `END DEFINE` (синтаксис, ограничения: ровно один\n  терминальный `SELECT`/`PROCESS`/`REDUCE`, запрет `INSERT`/`COMMIT;` внутри,\n  запрет глобальных прагм), необязательные параметры `?`, лямбда-эквивалент\n  с `world`, `EXPORT`/`IMPORT` через `PRAGMA Library`; объединение шаблонов\n  (`SubqueryExtend`/`SubqueryUnionAll`/`SubqueryMerge`/`SubqueryUnionMerge`\n  и `*For`-варианты, включая упаковку нескольких параметров на итерацию в\n  `Tuple&lt;...&gt;` / `Struct&lt;...&gt;`), сортировка (`SubqueryOrderBy`/\n  `SubqueryAssumeOrderBy`); компактное сравнение `DEFINE SUBQUERY` vs\n  `DEFINE ACTION` и правило выбора; частые ошибки (`Strictly one\n  select/process/reduce statement must be used in the subquery`,\n  модифицирующие statement'ы внутри, `*For` с N параметрами,\n  `SubqueryOrderBy` через `SELECT`, `USE` не влияет на импорт,\n  `PRAGMA Library` vs `PRAGMA File`) и типовые рецепты\n  (параметризованный SELECT, объединение источников, размножение\n  шаблона по списку, вынос шаблона в библиотеку).\n\n- `references/writes.md` — модифицирующие statement'ы и контроль потока\n  в YQL: `DEFINE ACTION` / `DO` / `EMPTY_ACTION` / `DO BEGIN ... END DO`\n  и `EVALUATE IF`/`EVALUATE FOR` (Evaluation-стадия, запрет `@`-таблиц\n  внутри); `INSERT INTO` со всеми модификаторами `WITH (...)`\n  (`TRUNCATE`, `EXPIRATION`, `COMPRESSION_CODEC`, `ERASURE_CODEC`,\n  `REPLICATION_FACTOR`, `USER_ATTRS`, `MEDIA`, `PRIMARY_MEDIUM`,\n  `KEEP_META`, `MONOTONIC_KEYS`, `COLUMN_GROUPS`, `SECURITY_TAGS`),\n  запись в динтаблицы и `REPLACE INTO` (UPSERT), `WITH XLOCK` на чтении\n  против гонок, кросс-кластерная запись; `COMMIT;` как барьер и\n  `PRAGMA AutoCommit`; анонимные таблицы с префиксом `@` (семантика,\n  требование `COMMIT;` перед чтением, ограничения на Evaluation-стадии\n  и в `EVALUATE IF`/`EVALUATE FOR`, связанные `yt.TmpFolder`/\n  `TablesTmpFolder`/`TempTablesTtl`/`ReleaseTempData`/\n  `ExpirationDeadline`/`ExpirationInterval`/`QueryCacheMode` и\n  `Published*`/`Temporary*` пары); `WITHOUT` / `WITHOUT IF EXISTS`\n  (включая `PRAGMA simplecolumns` для квалифицированных имён) с типичным\n  use case `INSERT INTO target SELECT * WITHOUT internal_col FROM source`;\n  компактное сравнение `DEFINE SUBQUERY` vs `DEFINE ACTION`; частые\n  ошибки (`Anonymous table ... must be materialized. Use COMMIT before\n  reading from it.`, конфликт двух `INSERT WITH TRUNCATE` в одну\n  таблицу, `EXPIRATION`/`KEEP_META` без `TRUNCATE`) и типовые рецепты\n  (материализация в `@tmp`, self-cleaning отчёт через `EXPIRATION`,\n  пересоздание через `KEEP_META`, `MONOTONIC_KEYS` для свежих ключей,\n  `EVALUATE FOR` + `DEFINE ACTION` для копирования N таблиц,\n  кросс-кластерное копирование, `WITHOUT IF EXISTS` для копии «всё\n  кроме служебных»).\n\n- `references/strings.md` — работа со строками в YQL (модуль `String::`, только\n  ASCII; для UTF-8 — `Unicode::`): базовые сниппеты (конкатенация `||`,\n  `String::SplitToList`, `String::JoinFromList`, `String::Strip`); полный\n  справочник функций — кодирование/декодирование (`Base32/64`, `Hex`, `EscapeC`,\n  `EncodeHtml`, `CgiEscape`), обрезка и нормализация пробелов (`Strip`,\n  `Collapse`, `CollapseText`), поиск и сравнение (`Contains`,\n  `AsciiContainsIgnoreCase`, `AsciiEqualsIgnoreCase`,\n  `AsciiStartsWithIgnoreCase`, `AsciiEndsWithIgnoreCase`), регистр\n  (`AsciiToLower/Upper/Title`), разбиение/склейка (`SplitToList` с\n  `DelimeterString`/`SkipEmpty`/`Limit`, `JoinFromList`), байты\n  (`ToByteList`, `FromByteList`), замена и удаление (`ReplaceAll/First/Last`,\n  `RemoveAll/First/Last`), развороты (`ReverseBytes`, `ReverseBits`, с 2025.02),\n  проверки символов (`IsAscii*`), `LevensteinDistance`, `LeftPad`/`RightPad`,\n  числовые представления (`Hex`, `SHex`, `Bin`, `SBin`, `HexText`, `BinText`),\n  человекочитаемые форматы (`HumanReadable*`), `Prec`. Отдельно — списки\n  устаревших (`HasPrefix`, `Find`, `Substring` и др. — заменять встроенными\n  YQL-функциями) и удалённых в 2025.02 (`String::Reverse`, `*IgnoreCase` без\n  префикса `Ascii`) функций, частые ошибки, и напоминание перед использованием\n  любой не упомянутой в справочнике функции `String::` ОБЯЗАТЕЛЬНО сверять имя\n  через `search_docs`.\n\n- `references/regex.md` — регулярные выражения и поиск/извлечение по шаблону\n  (модуль `Re2::`, оператор `REGEXP`): главный принцип — Re2-функции это ФАБРИКИ\n  (`Re2::Grep(pattern)(string)` — два вызова); обязательное удвоение слешей в обычных\n  строках или raw-строки `@@...@@` (одиночный `\\d` тихо ломается); справочник\n  `Re2::Grep`/`Match` (проверка), `Re2::Capture` (группы захвата `_0`/именованные/\n  безымянные `_1`,`_2`), `Re2::FindAndConsume` (все вхождения списком), `Re2::Replace`\n  (замена с `\\\\1`), `Re2::Count`, `Re2::IsValidRegexp`, `Re2::Options` и флаги\n  `(?i)`/`(?s)`/`(?m)`; эквивалентность `REGEXP` ≡ `Re2::Grep`; частые ошибки.\n  Подключай для любых задач «регулярка»/«regex»/«по шаблону»/«match»/«извлечь часть\n  строки по шаблону»/`Re2`/`REGEXP`. Извлечение подстроки по фиксированной позиции/длине\n  (без шаблона) — НЕ regex, см. `Substring`/`Unicode::Substring` в `references/strings.md`.\n\n- `references/udf.md` — пользовательские функции (UDF) в YQL: языки и\n  неймспейсы (`Python3::`/`Python::`/`Python2::`/`CustomPython3::`/`&lt;MyUdf&gt;::`),\n  жизненный цикл (скрипт → объявление → вызов), способы задания скрипта\n  (`@@#py ... @@`, `FileContent`), способы задания сигнатуры (`Callable&lt;...&gt;`,\n  `yql.typing`-аннотации, docstring, type-API через `CallableType`/`ParseType`\n  /`TypeOf`), маппинг YQL↔Python (`String`≡`bytes`, `Utf8`≡`str`, `yql.TList`/\n  `yql.TDict`, `_yql_lazy_input`, `_yql_convert_yson`); конструкции вызова\n  (`PROCESS USING $udf(TableRow()|TableRows())`, `REDUCE ... ON ... USING [ALL]\n  $udf(...)`, `Yql::Collect`, `Udf(...) AS Depends`); линейные типы\n  (`Linear&lt;Resource&lt;Python3&gt;&gt;`, `DynamicLinear&lt;...&gt;`, `Block(($arg)-&gt;...)`,\n  `ToDynamicLinear`/`FromDynamicLinear`, `LinearDestroy`, ограничения);\n  прикрепление файлов (`PRAGMA File`/`Folder`/`udf`, `FileContent`/`FilePath`/\n  `FolderPath`, `ParseFile`); pragma'ы под UDF (`yt.PythonCpu`/`JavascriptCpu`/\n  `ScriptCpu`/`UseTmpfs`/`ExtraTmpfsSize`/`BinaryExpirationInterval`/\n  `QueryCacheMode`, `AssumeStrict`, «отравитель» кеша через\n  `CurrentUtcTimestamp()`); `SecureParam`/`_yql_secure_param`;\n  `WithSideEffects`/`WithSideEffectsMode`; `CustomPython3`/`CustomPython2`\n  (`YQL_PYTHON3_UDF` + `PRAGMA File('libcustom.so', '...')`); частые ошибки\n  (`Got Resource in SELECT/GROUP BY`, `Strictly one select/process/reduce`,\n  `Cannot convert ... to ...`, тихий `Bool`-truthy, `Utf8` vs `String` ключи в\n  dict, холодный кеш, `stdout` проглатывается, тяжёлая инициализация на каждый\n  вызов, 30–60 с простой из-за annotation/docstring-сигнатуры, мерж UDF из-за\n  отсутствия `WithSideEffects`); типовые рецепты (Hello World, генератор →\n  `Stream` + `Yql::Collect`, `PROCESS TableRows()`, `REDUCE ON key USING ...`,\n  «инициализация + замыкание» для sklearn/numpy, CustomPython с приватной\n  либой, auto-Yson, материализация `yql.TList`/`yql.TDict`, чтение секрета,\n  in-place мутация через Linear, тип результата по типу колонки). UDAF —\n  отдельно в `references/udaf.md`.\n\n- `references/aggregations.md` — общие, условные, булевые и битовые агрегаты YQL:\n  `COUNT`/`COUNT_IF`, `SUM`/`SUM_IF`, `AVG`/`AVG_IF`, `MIN`/`MAX`, `SOME`,\n  `AGGREGATE_LIST`/`AGGREGATE_LIST_DISTINCT`, `MIN_BY`/`MAX_BY`, `TOP`/`BOTTOM`,\n  `TOP_BY`/`BOTTOM_BY`, `BOOL_AND`/`BOOL_OR`/`BOOL_XOR`, `BIT_AND`/`BIT_OR`/`BIT_XOR`,\n  `SessionStart`; сигнатуры, NULL-семантика (пропуск NULL и исключения `COUNT(*)`/`BOOL_*`),\n  применение через `AGGREGATE_BY`/`AggregationFactory`, частые ошибки. Статистические\n  агрегаты (STDDEV/CORRELATION/PERCENTILE/HISTOGRAM/HLL/...) — в `references/statistics.md`.\n\n- `references/window.md` — оконные функции YQL: синтаксис `OVER (PARTITION BY ... ORDER BY ... &lt;рамка&gt;)`\n  и именованные окна `WINDOW ... AS`, рамки `ROWS BETWEEN ...` (только `ROWS`, не `RANGE`),\n  неявные рамки при наличии `ORDER BY`, `SessionWindow` в `PARTITION BY`; функции `ROW_NUMBER`,\n  `LAG`/`LEAD`, `FIRST_VALUE`/`LAST_VALUE`/`NTH_VALUE` (`IGNORE NULLS`), `RANK`/`DENSE_RANK`/\n  `PERCENT_RANK`, `NTILE`, `CUME_DIST`, `SessionState`, агрегаты как оконные (см. `references/aggregations.md`);\n  особенности реализации (Reduce по разделу, лимит на раздел), частые ошибки и рецепты\n  (накопительный итог, скользящее среднее, дельта через `LAG`, топ-N/дедуп через `ROW_NUMBER`).\n\n- `references/lists.md` — функции списков YQL (`List*`): конструирование/конвертация\n  (`ListCreate`, `AsList`(`Strict`), `ListFromTuple`/`ListToTuple`, `ToDict`/`ToMultiDict`/`ToSet`,\n  `ListCollect`), размер/доступ (`ListLength`, `ListHead`/`ListLast`, `ListHas`/`ListIndexOf`),\n  срезы/выборки (`ListSkip`/`ListTake`, `ListReverse`, `ListSample*`, `ListTakeWhile`/`SkipWhile`),\n  сортировка/топ (`ListSort`(`Asc`/`Desc`), `ListTop*`), объединение/упаковка (`ListExtend`,\n  `ListZip`/`ListZipAll`, `ListEnumerate`, `ListReplicate`), map/filter (`ListMap`, `ListFilter`,\n  `ListFlatMap`, `ListNotNull`, `ListFlatten`, `ListExtract`), уникальность (`ListUniq`(`Stable`)),\n  агрегация (`ListMin`/`Max`/`Sum`/`Avg`, `ListAny`/`ListAll`, `ListConcat`, `ListAggregate`),\n  свёртки (`ListFold`(`1`), `ListFoldMap`), генерация (`ListFromRange`, шаг `Interval` — см. `references/datetime.md`);\n  лениивость списков и частые ошибки.\n\n- `references/flatten.md` — разворачивание контейнеров в строки и колонки (синтаксис\n  SELECT, не функции): `FLATTEN BY` (контейнер → строки; позиция сразу после источника\n  во FROM, до JOIN/WHERE/GROUP BY; форма `AS` с сохранением исходного контейнера;\n  декартово произведение `FLATTEN BY (a, b)`; выражения только в скобках с `AS`),\n  уточнённые формы `FLATTEN LIST BY` / `FLATTEN DICT BY` (пары через `item.0`/`item.1`) /\n  `FLATTEN OPTIONAL BY`, ловушка `Optional&lt;List&lt;T&gt;&gt;`; `FLATTEN COLUMNS` (Struct-колонки →\n  отдельные колонки, строго без аргументов); `AS_TABLE` (список структур → таблица,\n  чтение константного списка как строк); частые ошибки с текстами (литерал списка\n  во FROM, пропущенный `BY`, аргументы у `FLATTEN COLUMNS`, `WHERE` до `FLATTEN`,\n  `AS_TABLE` от скаляров). Функции списков (`List*`) — в `references/lists.md`.\n\n- `references/builtins.md` — базовые встроенные функции и контейнеры YQL: Optional/NULL-обработка\n  (`COALESCE`/`??`/`NVL`, `Just`, `Unwrap`, `Nothing`, `NANVL`, `IF`), общие функции (`LENGTH`,\n  `Abs`, `MIN_OF`/`MAX_OF`/`LEAST`/`GREATEST`, `Random*`, `Pickle`/`Unpickle`), проверки и подсказки\n  оптимизатору (`Ensure` с `DISCARD SELECT`, `EnsureType`, `AssumeStrict`, `Likely`, `WeakField`);\n  конструкторы контейнеров (`AsTuple`/`AsStruct`/`AsList`/`AsDict`/`AsSet`(+`Strict`), литералы,\n  `Variant`/`AsVariant`) и таксономия типов (`List`/`Dict`/`Set`/`Tuple`/`Struct`/`Variant`/`Enum`);\n  функции структур: статические (`StaticMap`/`StaticZip`/`StaticFold`(`1`)) и изменение состава\n  полей (`TryMember`, `AddMember`/`ExpandStruct`, `ReplaceMember`, `RemoveMember(s)`/`Force*`,\n  `ChooseMembers`, `CombineMembers`/`FlattenMembers`, `RenameMembers`, `StructMembers`/\n  `GatherMembers`, `SpreadMembers`, `StructUnion`/`StructIntersection`/`StructDifference`/\n  `StructSymmetricDifference`); table-функции (`TablePath`/`TableName`/\n  `TableRecordIndex`/`TableRow`/`JoinTableRow`). Строки → `references/strings.md`, `File*`/UDF → `references/udf.md`,\n  списки → `references/lists.md`, словари/множества → `references/dicts.md`, типы → `references/types.md`, JSON → `references/json.md`.\n\n- `references/math.md` — математические функции YQL (модуль `Math::`, обёртки над libm):\n  константы (`Pi`/`E`/`Eps`), проверки `NaN`/`Inf`/конечности (`IsNaN`/`IsInf`/`IsFinite`),\n  унарные `Double-&gt;Double` (корни/степени `Sqrt`/`Cbrt`/`Exp`/`Exp2`, логарифмы `Log`(ln)/`Log2`/\n  `Log10`, тригонометрия и гиперболические, округления `Ceil`/`Floor`/`Trunc`/`Rint`, модуль\n  `Abs`/`Fabs`, спец-функции `Erf*`/`Tgamma`/`Lgamma`/`Sigmoid`), бинарные `(Double,Double)`\n  (`Pow`/`Atan2`/`Hypot`/`Fmod`/`Remainder`), масштаб и округление до десятичного разряда\n  (`Ldexp`, `Math::Round` со знаковой степенью десятки), приблизительное равенство\n  `FuzzyEquals` (ловушка с `0.0`), знакочувствительный целочисленный остаток `Mod`/`Rem`\n  (безопасный к делению на ноль) против встроенного `%`, разворот байт `SwapBytes`, округление\n  до целого в заданном режиме (`RoundDownward/Upward/TowardZero/ToNearest` + `NearbyInt`);\n  частые ошибки (`NaN`/`Inf` ≠ `NULL` → `IsFinite`, контринтуитивный знак степени в `Round`,\n  сравнение `Double` через `=`, `Mod` vs `Rem`, `Log` — натуральный). Простая арифметика и\n  `Abs`/`MIN_OF`/`MAX_OF` — встроенные, см. `references/builtins.md`.\n\n- `references/dicts.md` — словари и множества (`Dict&lt;K,V&gt;`/`Set&lt;K&gt;`; `Set` ≡ `Dict&lt;K,Void&gt;`,\n  функции словарей работают и для множеств): создание пустых (`DictCreate`/`SetCreate`),\n  доступ (`DictLookup` и подписка `$d['key']`, `DictContains`, `DictLength`/`DictHasItems`),\n  содержимое целиком (`DictItems`/`DictKeys`/`DictPayloads`; порядок элементов не определён),\n  агрегация по ключам (`DictAggregate`), операции над множествами (`SetIsDisjoint`/\n  `SetIntersection`/`SetIncludes`/`SetUnion`/`SetDifference`/`SetSymmetricDifference`,\n  опциональная лямбда слияния значений); НЕДОСТУПНЫЕ над YT функции (`DictInsert`/`DictUpsert`/\n  `DictUpdate`/`DictRemove`, `MutDict*`) и рецепты пересборки словаря вместо них\n  (upsert/insert/remove через `DictItems` + `ListExtend`/`ListFilter` + `ToDict`); частые\n  ошибки. Построение из списков (`ToDict`/`ToMultiDict`/`ToSet`) — в `references/lists.md`.\n\n- `references/types.md` — функции работы с типами данных (type-API): базовые\n  (`TypeOf`/`ParseType`/`FormatType`/`FormatTypeDiff`/`InstanceOf`); конструкторы типов\n  (`DataType`, `OptionalType`/`AsOptionalType`, `ListType`/`StreamType`, `DictType`,\n  `TupleType`, `StructType`, `VariantType`, `ResourceType`, `CallableType`, специальные\n  `VoidType`/`NullType`/`EmptyListType`/`EmptyDictType` и др.); интроспекция контейнерных\n  типов (`OptionalItemType`, `ListItemType`/`StreamItemType`, `DictKeyType`/`DictPayloadType`,\n  `TupleElementType`, `StructMemberType`, `CallableResultType`/`CallableArgumentType`,\n  `VariantUnderlyingType`); runtime-хендлы типов (`TypeHandle`/`EvaluateType`/\n  `ParseTypeHandle`/`TypeKind`, семейства `*TypeComponents`/`*TypeHandle`,\n  `LambdaArgumentsCount`); НЕДОСТУПНЫЕ над YT `LinearType`/`DynamicLinearType`; частые ошибки.\n  Нужен для `ListCreate`/`DictCreate`/`Nothing`/`EnsureType`/`Unpickle`/CAST к вычисленному\n  типу/сигнатур UDF.\n\n- `references/json.md` — JSON в YQL: функции `JSON_VALUE` (скаляры; `RETURNING &lt;тип&gt;`,\n  `ON EMPTY`/`ON ERROR`), `JSON_QUERY` (массивы/объекты; `WITH ... WRAPPER`), `JSON_EXISTS`\n  (проверка пути), `PASSING`-переменные; язык JsonPath: ключи/индексы/срезы/`$[*]`,\n  фильтры `? (@.age &gt; 20)`, предикаты `like_regex`/`starts with`/`exists`/`is unknown`,\n  методы `.type()`/`.size()`/`.double()`/`.ceiling()`/`.floor()`/`.abs()`/`.keyvalue()`,\n  режимы `lax`/`strict` (автораспаковка массивов); `CAST(строка AS Json)`; частые ошибки\n  (тихие `NULL ON ERROR`, `Utf8?` по умолчанию у `JSON_VALUE`, запрет `RETURNING Interval`,\n  JsonPath только литералом). YSON-колонки и `Yson::*` (в т.ч. `Yson::ParseJson`) — в `references/yson.md`.\n\n  &lt;skill_resources&gt;\n    &lt;file&gt;references/aggregations.md&lt;/file&gt;\n    &lt;file&gt;references/builtins.md&lt;/file&gt;\n    &lt;file&gt;references/datetime.md&lt;/file&gt;\n    &lt;file&gt;references/dicts.md&lt;/file&gt;\n    &lt;file&gt;references/flatten.md&lt;/file&gt;\n    &lt;file&gt;references/join.md&lt;/file&gt;\n    &lt;file&gt;references/json.md&lt;/file&gt;\n    &lt;file&gt;references/lists.md&lt;/file&gt;\n    &lt;file&gt;references/math.md&lt;/file&gt;\n    &lt;file&gt;references/mut-operations.md&lt;/file&gt;\n    &lt;file&gt;references/partitioning.md&lt;/file&gt;\n    &lt;file&gt;references/pragma.md&lt;/file&gt;\n    &lt;file&gt;references/regex.md&lt;/file&gt;\n    &lt;file&gt;references/statistics.md&lt;/file&gt;\n    &lt;file&gt;references/strings.md&lt;/file&gt;\n    &lt;file&gt;references/subqueries.md&lt;/file&gt;\n    &lt;file&gt;references/types.md&lt;/file&gt;\n    &lt;file&gt;references/udaf.md&lt;/file&gt;\n    &lt;file&gt;references/udf.md&lt;/file&gt;\n    &lt;file&gt;references/window.md&lt;/file&gt;\n    &lt;file&gt;references/writes.md&lt;/file&gt;\n    &lt;file&gt;references/yson.md&lt;/file&gt;\n  &lt;/skill_resources&gt;\n&lt;/skill_content&gt;</skill_content>\n</skill_activation>",
+      "status": "completed"
+    },
+    "output_index": 0,
+    "sequence_number": 10,
+    "type": "response.output_item.done"
+  },
+
+  {
+    "item": {
+      "arguments": "",
+      "call_id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+      "name": "show_diff",
+      "type": "function_call",
+      "id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+      "namespace": null,
+      "status": "completed"
+    },
+    "output_index": 1,
+    "sequence_number": 11,
+    "type": "response.output_item.added"
+  },
+
+  {
+    "delta": "{",
+    "item_id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+    "output_index": 1,
+    "sequence_number": 12,
+    "type": "response.function_call_arguments.delta"
+  },
+
+  {
+    "delta": "\"code\": \"SELECT 1;\"",
+    "item_id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+    "output_index": 1,
+    "sequence_number": 13,
+    "type": "response.function_call_arguments.delta"
+  },
+
+  {
+    "delta": "}",
+    "item_id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+    "output_index": 1,
+    "sequence_number": 14,
+    "type": "response.function_call_arguments.delta"
+  },
+
+  {
+    "arguments": "{\"code\": \"SELECT 1;\"}",
+    "item_id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+    "name": "show_diff",
+    "output_index": 1,
+    "sequence_number": 15,
+    "type": "response.function_call_arguments.done"
+  },
+
+  {
+    "item": {
+      "arguments": "{\"code\": \"SELECT 1;\"}",
+      "call_id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+      "name": "show_diff",
+      "type": "function_call",
+      "id": "tool-cc-7408f103ec3544c593e38e685472be33-0",
+      "namespace": null,
+      "status": "completed"
+    },
+    "output_index": 1,
+    "sequence_number": 16,
+    "type": "response.output_item.done"
+  },
+
+  {
+    "response": {
+      "id": "resp-887410f6387d41a8a7dbcfd3dc863412",
+      "created_at": 1784705740.2771986,
+      "error": null,
+      "incomplete_details": null,
+      "instructions": "Ты консультант, помогающий сотрудникам Яндекса с YQL (Yandex Query Language)\n\n# ‼️ ПЕРВОЕ ДЕЙСТВИЕ В БЕСЕДЕ ‼️\nПРЕЖДЕ чем писать пользователю хоть один символ ответа и прежде чем звать любые другие тулы, ты ОБЯЗАН вызвать тул `skill_activation` со skill_name=`yql`. Это не опция и не «при необходимости» — это безусловный первый шаг в ЛЮБОЙ беседе, где есть хоть что-то про YQL (новый запрос, правка чужого, объяснение, вопрос про синтаксис/функцию/PRAGMA, ревью, обсуждение). Даже для тривиального `SELECT ... LIMIT 10` сначала `skill_activation`.\n`skill_activation` вызывается ОДИН раз на беседу. Если в контексте беседы уже есть результат вызова `skill_activation` со skill_name=`yql` (содержимое SKILL.md) — из предыдущих сообщений пользователя или из текущей работы, в том числе когда ты исправляешь ошибки валидации, — повторно его не зови: SKILL.md уже у тебя в контексте, сразу подключай недостающие references через `skill_reference`.\nЗапрещено: начинать текстовый ответ, писать запрос или звать `search_docs`/`get_table_schema`, пока в контексте беседы нет SKILL.md (не было вызова `skill_activation`). Если ты поймал себя на том, что отвечаешь без активированного скилла — остановись и первым же действием вызови `skill_activation`.\nЕдинственное исключение: если сам `skill_activation` или `skill_reference` вернул атрибут `limit_exceeded=\"true\"` (достигнут лимит использования скиллов) — новые вызовы skill-тулов не делай до следующего сообщения пользователя; работай с уже загруженными SKILL.md и references, недостающее ищи через `search_docs`.\n\nВсе YQL-запросы в твоём ответе автоматически проверяются на корректность. Оформляй запросы в блоках ```sql или ```yql. Если обнаружены ошибки, тебе будет предложено их исправить. Если валидатор отклонил один и тот же фрагмент дважды — ЗАПРЕЩЕНО предлагать очередной вариант по памяти: сначала подключи через `skill_reference` reference по теме этого фрагмента, а если тема не покрыта ни одним reference из SKILL.md — найди точный синтаксис через `search_docs`.\n\n# Входные данные\n- Запрос от пользователя (обернут в тег <user_message></user_message>): нужно стремиться ответить на вопрос/выполнить задачу, которые обозначены там\nТакже тебе будет дан контекст:\n- Текущий скрипт пользователя (опционально): обернут в тег <query></query>\n- Текущая ошибка (критичная проблема, запрос не может быть выполнен) при выполнении скрипта: обернута в тег <error></error>. Если пользователь задает вопрос про issue уровня warning или info, нужно отвечать, что они некритичны и поэтому тобой игнорируются.\n- Библиотека, содержащая часть скрипта пользователя, вынесенную в отдельный файл (опционально): обернута в тег <library></library>\n- Параметры запроса (опционально): обернуты в тег <param></param>. Представлены в JSON формате, где ключ это имя параметра, а значение это значение параметра. Имена соответствуют именам параметров, объявленных с помощью ключевого слова DECLARE.\n\nТы должен дать ответ пользователю, опираясь на документацию, помещенную в блок <rag_context></rag_context>, базовую инструкцию по YQL, помещенную в блок <yql_manual></yql_manual>,   а также используя данные тебе тулы.\n\n# Требования к ответу\n- Релевантность: Ответ ДОЛЖЕН строго соответствовать запросу пользователя\n- Полнота: Учитывай контекст запроса и предоставляй исчерпывающую информацию, включая примеры, команды, ссылки на документацию (если они тебе были ЯВНО даны), тикеты, контакты или внутренние ресурсы\n- Форматы: Если запрос подразумевает инструкцию, предоставь её в виде готового решения (например, команды терминала, JSON, YAML и т.д.)\n- Источники: Всегда указывай релевантные ссылки на документацию, вики, тикеты или другие источники (ЕСЛИ они были тебе предоставлены)\n- Контакты: Если запрос требует экспертной помощи, предложи контакты специалистов или команды, которые могут помочь\n- Лаконичность: Ответ должен быть кратким, в нём нет воды, всё кратко, но по делу, без избыточных рекомендаций\n- Формулировки: Избегай категоричности (\"невозможно\" → \"вероятно, невозможно\"), кроме случаев с подтверждением из документации/тулов.\n- Внимание к запросу пользователя: строго следуй явным указаниям и замечаниям. Если пользователь просит дополнить код или указывает на ошибку — обязательно внеси соответствующие изменения.\n\nВАЖНО: НИКОГДА не говори пользователю названия тулов, которые тебе даны\nВАЖНО: НИКОГДА не расшифровывай аббревиатуры\nВАЖНО: НИКОГДА не придумывай ссылки, можно приводить только те ссылки, что тебе были даны НАПРЯМУЮ. Можно приводить ссылки только ТАК, как они тебе ДАНЫ, ОДИН В ОДИН, не додумывай ссылки\nВАЖНО: Если информации недостаточно для ответа, отвечай 'У меня недостаточно информации, чтобы ответить'. Не придумывай ничего в ответе\nВАЖНО: будь внимателен и ничего не теряй\n\n# Использование тулов\nКРИТИЧЕСКИ ВАЖНО: Если ты решил использовать тул - ты ОБЯЗАН НЕМЕДЛЕННО сгенерировать полный вызов тула с ВСЕМИ необходимыми параметрами.\n\nСТРОГО ЗАПРЕЩЕНО:\n- Писать о намерении использовать тул без немедленной генерации вызова\n- Генерировать вызов тула без параметров или с пустыми параметрами\n- Останавливаться после объявления о том, что будешь использовать тул\n\nОБЯЗАТЕЛЬНЫЙ АЛГОРИТМ для YQL-задач:\n1. ПЕРВЫМ ДЕЛОМ — `skill_activation` со skill_name=`yql` (если SKILL.md ещё не в контексте беседы). В ответ тула придёт корневой файл скилла SKILL.md со списком доступных references.\n2. На основе SKILL.md решаешь, какие reference подключить через `skill_reference`, и подключаешь их параллельно. References — твой ОСНОВНОЙ источник знаний о YQL.\n3. ТОЛЬКО если какая-то тема задачи не покрыта ни одним reference из SKILL.md, либо нужной функции/конструкции не нашлось в подключённых reference — ищешь её через `search_docs`. НЕ зови `search_docs` ради функции/конструкции, которую уже нашёл в подключённом reference.\n4. Если задача про КОНКРЕТНЫЕ таблицы — параллельно тянешь схемы через `get_table_schema`.\n5. Дальше — обычная работа с тулами: решил использовать тул → НЕМЕДЛЕННО генерируешь полный вызов с параметрами → ждёшь результата → анализируешь.\nБез шагов 1–2 ответ про YQL считается недостаточным.\n\nПравила использования:\n- КРИТИЧЕСКИ ВАЖНО — `skill_activation` для скилла `yql` это ПЕРВАЯ операция в ЛЮБОЙ беседе, связанной с YQL. Не «при сомнении», не «если задача нетривиальная», не «если попросил пользователь» — это твой ДЕФОЛТНЫЙ первый шаг. Работа над любой YQL-задачей (написание нового запроса, исправление чужого, объяснение конструкции, обсуждение синтаксиса, использование функций модулей или PRAGMA) НАЧИНАЕТСЯ с вызова `skill_activation` со skill_name=`yql`. Без этого вызова твой ответ считается недостаточным. Вызов нужен ОДИН раз на беседу: если результат `skill_activation` (SKILL.md) уже есть в контексте — из предыдущих сообщений беседы или из текущей работы (например, при исправлении ошибок валидации) — повторная активация не нужна, используй уже полученный SKILL.md и подключай references через `skill_reference`. Исключение ОДНО: если `skill_activation` или `skill_reference` вернул атрибут `limit_exceeded=\"true\"` (достигнут лимит использования скиллов) — новые вызовы skill-тулов не делай до следующего сообщения пользователя.\n- После `skill_activation` ВНИМАТЕЛЬНО прочитай пришедший в ответе тула корневой файл SKILL.md — в нём перечислены доступные reference-файлы с короткими описаниями. НЕ полагайся на свою память относительно состава скилла: список references меняется со временем, новые темы добавляются в SKILL.md, а не в промпт.\n- На основании описаний из SKILL.md ОБЯЗАТЕЛЬНО подключи через тул `skill_reference` (skill_name=`yql`, file_name=путь reference из SKILL.md) КАЖДЫЙ reference, который покрывает темы задачи, ДО того как начнёшь писать или править запрос. Если задача затрагивает несколько тем — подключи соответствующие references параллельно.\n- КРИТИЧЕСКИ ВАЖНО: НИКОГДА не придумывай названия функций модулей (любых `<Module>::<Func>` — `Yson::`, `DateTime::`, `String::`, `Math::`, `Url::`, `Re2::`, `Digest::` и т.п.), агрегатных функций, контейнерных хелперов и сигнатуры PRAGMA — точные имена и аргументы бери ТОЛЬКО из подключённых reference YQL-скилла, а если их там нет — через `search_docs`. Если ни reference, ни `search_docs` не дают ответа — явно скажи об этом, а не угадывай.\n- НИКОГДА не говори пользователю самостоятельно использовать тулы, это ТВОИ тулы, а не пользователя\n- ПОРЯДОК ПОИСКА ЗНАНИЙ О YQL — СТРОГО ТАКОЙ, без пропусков и перестановок:\n  1. Reference YQL-скилла: найди в SKILL.md reference по теме и подключи его через `skill_reference`. Это твой ОСНОВНОЙ источник знаний о синтаксисе, функциях и их сигнатурах.\n  2. ТОЛЬКО если тема не покрыта ни одним reference из SKILL.md, либо нужной функции/конструкции не нашлось в подключённых reference — используй тул `search_docs` (возвращает фрагменты документации как есть; точные сигнатуры бери из него). `summarize_docs` используй только когда нужен общий обзор темы по нескольким источникам, а не конкретная функция.\n  3. Если и документация не дала ответа — скажи, что информации недостаточно. НЕ угадывай.\n  НЕ вызывай `search_docs` ради функции/конструкции, которую уже нашёл в подключённом reference: в reference информация точнее и полнее. И наоборот: если нужной функции в подключённом reference НЕТ (даже когда его тема в целом совпадает с темой вопроса) — НЕ отвечай по памяти, обязательно проверь её через `search_docs`. Отвечать без подтверждения из reference или документации ЗАПРЕЩЕНО.\n- ВСЕГДА используй тулы для получения информации о таблицах, если задача пользователя касается КОНКРЕТНЫХ таблиц: без этого твой ответ будет некорректным и неполным\n- ОБЯЗАТЕЛЬНО используй тул get_first_row при наличии YSON/JSON колонок в таблице\n- Если get_first_row вернул null необходимой колонки — ОБЯЗАТЕЛЬНО используй тул get_table_row_by_columns с параметрами columns=[<нужные_колонки>] и skip_empty=true, чтобы найти непустое значение и понять структуру данных, изменяй start_index и end_index по необходимости\n- Если тебе нужна информация о содержимом директории, используй тул get_dir_elements. Если тебе нужно проверить существование элемента в директории или его тип, то используй тул check_element_in_dir\n- Если нужно посмотреть содержимое страницы по ссылке, используй тул get_page_content\n- Если в аутпуте тула говорится, что превышен лимит использования, не используй этот тул до следующего сообщения от пользователя\n- Результат работы тула обернут в соответствующие теги. Обращай внимание на атрибуты, если они есть: они задают контекст использования тула\n\n\n# Исправление текущего запроса через search_and_replace\nЕсли в контексте есть текущий запрос пользователя (тег <query></query> с парным тегом <query_file path=\"current_query.yql\"/>) или запрос получен через yql_get_request_info, и задача — исправить, дополнить или локально изменить этот запрос, применяй точечные правки через search_and_replace, а не перепечатывай весь запрос.\nЕсли пользователь дал только YQL operation id или URL операции — сначала вызови yql_get_request_info: он сохранит запрос как current_query.yql и вернёт query_file_id.\nОбычно редактируй актуальную версию через стабильное имя current_query.yql. UUID/query_file_id используй только как точную ссылку на сохранённую версию, если нужно откатиться к определённому этапу search_and_replace или к исходному запросу.\n\nsearch_and_replace можно вызвать не более 5 раз за запрос пользователя.\n\nИспользуй search_and_replace, когда: есть текущий запрос (через <query_file> или query_file_id), понятно, какой запрос редактируется, правка локальная, а запрос не слишком короткий.\nНЕ используй search_and_replace, а выдай полный запрос в блоке ```yql, когда: запроса в контексте нет (пишешь с нуля), непонятно какой запрос текущий, запрос очень короткий или исчерпан лимит (5 вызовов).\n\nПравила:\n- file — это имя файла запроса (current_query.yql) из тега <query_file path=\"current_query.yql\">. Имя стабильно и указывает на актуальную версию.\n- file_id — UUID конкретной сохранённой версии файла. Используй его только для отката к определённому этапу search_and_replace или к исходному запросу (например, query_file_id из yql_get_request_info или updated_files[].file_id из предыдущего результата search_and_replace).\n- Передавай список hunks с полями file, search, replace; для отката можно использовать file_id вместо file.\n- search — КОРОТКИЙ фрагмент (1-3 строки вокруг места правки). СТРОГО ЗАПРЕЩЕНО копировать в search весь запрос или большую его часть.\n- ВСЕ исправления передавай в ОДНОМ вызове через несколько коротких hunks; не вызывай search_and_replace несколько раз подряд для разных ошибок. После успешного вызова файл обновляется — search-фрагменты из исходного <query> перестают работать.\n\nПосле успешного search_and_replace (status: \"success\"):\n- НЕ дублируй исправленный запрос в ответе и НЕ оборачивай его в ```sql/```yql — он автоматически показывается пользователю в редакторе.\n- Напиши только краткое пояснение, что изменено и почему (1-3 предложения).\n\nПри limit_exceeded больше НЕ вызывай search_and_replace — выдай полный исправленный запрос в блоке ```yql.\n\nПример короткого hunk (добавить PRAGMA после USE hahn;):\n   hunks: [{\"file\": \"current_query.yql\", \"search\": \"USE hahn;\", \"replace\": \"USE hahn;\\n\\nPRAGMA yt.InferSchema = '1';\"}]\n\n\n# Починка запроса\nЕсли запрос падает с ошибкой и задача — его починить, то нужно ТОЛЬКО починить запрос, ничего другого делать не надо. В частности, не нужно менять названия колонок, выводить дополнительные колонки, удалять фрагменты запроса (даже если они не используются), менять структуру запроса и т.д.\n\n# Формат кода в ответе\n- Полный исполняемый YQL-запрос оформляй в блок с указанием языка — ```yql ... ``` (или ```sql ... ```). Такой блок попадает в валидатор запросов, поэтому он должен быть исполняемым; все найденные ошибки нужно будет исправить.\n- Примеры кода, отдельные сигнатуры вызова функций, фрагменты и другой незавершённый код, который НЕ является полным YQL-запросом, оформляй в блок БЕЗ указания языка — ``` ... ```. Валидатор такие блоки не проверяет на исполняемость, т.к. это пример, а не полный запрос.\n<example>\nПолный запрос (будет провалидирован):\n```yql\nUSE hahn;\nSELECT id FROM `//home/app/data` WHERE id > 0;\n```\nПример сигнатуры функции (валидатор не проверяет):\n```\nDateTime::Format(value, format) -> String\n```\n</example>\n\n# Сценарии\n- Если пользователь задает вопрос про детали YQL (функция, конструкция, синтаксис), сначала подключи reference по теме вопроса (`skill_activation` → SKILL.md → `skill_reference`) и отвечай по нему. ТОЛЬКО если тема не покрыта ни одним reference или нужной функции в подключённом reference нет — ИЩИ в документации (тул search_docs). НЕ ВЫДУМЫВАЙ: каждый факт ответа должен опираться на подключённый reference или найденную документацию.\n<example>\nПользователь: как мне пользоваться функцией histogram в ыкле?\nАгент: [вызывает skill_activation со skill_name=yql и читает список references в SKILL.md]\nАгент: [HISTOGRAM — статистическая агрегатная функция, её покрывает references/statistics.md → вызывает skill_reference со skill_name=yql, file_name=references/statistics.md]\nАгент: [отвечает на основе подключённого reference; search_docs НЕ нужен — сигнатура и примеры уже есть в reference]\n</example>\n<example>\nПользователь: [спрашивает про функцию, которую не покрывает ни один reference из SKILL.md]\nАгент: [вызывает skill_activation со skill_name=yql, по описаниям в SKILL.md не находит подходящего reference]\nАгент: [ищет функцию в документации с помощью тула search_docs]\nАгент: [отвечает на основе найденной документации]\n</example>\n\n- Если задача от пользователя касается исправления/оптимизации запросов, сначала подключи references по темам запроса (`skill_activation` → SKILL.md → `skill_reference`); то, чего в references не нашлось, ИЩИ в документации (search_docs). ОБЯЗАТЕЛЬНО проверь схемы таблиц (тул get_table_schema), использующихся в запросе, они дадут тебе важный контекст для решения задачи. КРИТИЧЕСКИ ВАЖНО: перед использованием ЛЮБОЙ функции из модулей (любые `<Module>::<Func>`) — ОБЯЗАТЕЛЬНО возьми её точное название и синтаксис из подключённого reference YQL-скилла, а если её там нет — через `search_docs`. НЕ ПРИДУМЫВАЙ названия функций.\n<example>\nПользователь: [просит переделать запрос; запрос работает с датами и содержит незнакомую функцию X]\nАгент: [вызывает skill_activation со skill_name=yql и читает список references в SKILL.md]\nАгент: [подключает релевантные references параллельно (например references/datetime.md для дат); параллельно тянет схемы таблиц через get_table_schema]\nАгент: [функции X в подключённых references не нашлось → ищет её в документации с помощью тула search_docs]\nАгент: [создает исправленный запрос, беря сигнатуры функций из references и найденной документации]\nАгент: [показывает финальный запрос]\n</example>\n\n- Если задача от пользователя касается написания новых запросов, знания бери в том же порядке: сначала references по темам задачи, и только для того, чего в references не нашлось — search_docs. Если пользователь упомянул конкретные таблицы, которые нужно использовать, узнай их схемы (тул get_table_schema): без этого корректный запрос написать НЕ ПОЛУЧИТСЯ. КРИТИЧЕСКИ ВАЖНО: перед использованием ЛЮБОЙ функции из модулей (любые `<Module>::<Func>`) — ОБЯЗАТЕЛЬНО возьми её точное название и синтаксис из подключённого reference YQL-скилла, а если её там нет — через `search_docs`.\n<example>\nПользователь: [просит написать запрос для таблицы X с агрегацией по дням]\nАгент: [вызывает skill_activation со skill_name=yql и читает список references в SKILL.md]\nАгент: [задача затрагивает даты и агрегаты → подключает references/datetime.md и references/aggregations.md параллельно; параллельно получает схему таблицы X через get_table_schema]\nАгент: [создает запрос на основе схемы таблицы, беря сигнатуры функций из подключённых references]\nАгент: [показывает финальный запрос]\n</example>\n\n<yql_manual>\nБазовое руководство по YQL: минимальная шпаргалка, задающая контекст, — ключевые отличия от ANSI SQL. Она НЕ заменяет YQL-скилл: даже если тема упомянута в этой шпаргалке, при работе над задачей ВСЕГДА подключай соответствующий reference YQL-скилла через `skill_reference` — там информация полнее и точнее.\n\nТемы, покрытые references YQL-скилла (ориентир; актуальный список с описаниями — в SKILL.md, при расхождении верь SKILL.md):\n- JOIN'ы (виды, ограничения, стратегии);\n- партиционированные таблицы и табличные функции (RANGE/CONCAT/EACH/LIKE/FILTER);\n- дата и время (типы Date/Datetime/Timestamp/Interval, модуль DateTime::, таймзоны);\n- строки (модуль String::);\n- регулярные выражения и поиск/извлечение по шаблону (модуль Re2::, оператор REGEXP);\n- математика (модуль Math::);\n- списки (функции List*);\n- разворачивание контейнеров в строки и колонки (FLATTEN BY, FLATTEN COLUMNS, AS_TABLE);\n- словари и множества (функции Dict*/Set*);\n- функции работы с типами данных (TypeOf/ParseType/DataType и др., type-API);\n- JSON (JSON_VALUE/JSON_QUERY/JSON_EXISTS, JsonPath);\n- базовые встроенные функции, Optional/NULL-обработка, конструкторы и типы контейнеров, функции структур, table-функции;\n- общие агрегатные функции (COUNT/SUM/AVG/MIN_BY/TOP и др.);\n- статистические агрегатные функции (STDDEV/PERCENTILE/HISTOGRAM/HLL и др.);\n- оконные функции (OVER, рамки, ROW_NUMBER/LAG/LEAD и др.);\n- YSON (модуль Yson::, парсинг и навигация);\n- PRAGMA (общие, yson.*, yt.*, файловые);\n- UDF (Python-функции, PROCESS/REDUCE);\n- UDAF (пользовательские агрегатные функции);\n- переиспользуемые подзапросы (DEFINE SUBQUERY, Subquery*-комбинаторы);\n- запись и временные таблицы (INSERT INTO ... WITH, DEFINE ACTION, EVALUATE IF/FOR, COMMIT, @-таблицы, WITHOUT);\n- мутабельные операции с YSON-деревьями (Mut*).\n\nАббревиатура YT ВСЕГДА означает Yandex Tables — систему распределённого хранения и обработки больших объёмов данных на основе MapReduce.\n\n## Общие правила\n\n- Кластер при работе с директориями и таблицами указывать ОБЯЗАТЕЛЬНО (по умолчанию `hahn`, если не сказано другое). Задать его можно один раз на весь скрипт через `USE <cluster name>;` в начале, либо префиксом кластера перед путём таблицы в backticks (например, hahn.`//home/app/data`). Не нужно дублировать кластер в каждом сниппете, если он уже задан через `USE`.\n- YQL всегда состоит из множества подзапросов — не бойся создавать несколько подзапросов с `;` между ними.\n- Все пользовательские функции (`$functions`) объявляются в начале скрипта.\n- YQL не чувствителен к регистру для ключевых слов.\n- Проверки на равенство `=` и `==` эквивалентны.\n- При выполнении нескольких SELECT в одном скрипте возвращается несколько результатов — по количеству SELECT-ов.\n- Если колонки с датой/временем хранятся как строки, старайся избегать функций для работы с датами и работай как со строками в формате `'YYYY-MM-DD'` или `'YYYY-MM-DD hh24:mi:ss'`.\n\n## Алиасы через AS\n\nВсегда используй `AS` для создания алиаса:\n```\nSELECT column1 AS alias1\n```\nи никогда:\n```\nSELECT column1 alias1\n```\n\nYQL НЕ поддерживает динамическое задание имён колонок после `AS` (например, `SELECT 1 AS \"a\" || \"b\";` запрещено), но в других случаях это возможно через `AddMember`:\n```\n$myDynamicColumn = \"f\" || \"oo\";\nSELECT * FROM (\n    SELECT AddMember(TableRow(), $myDynamicColumn, 1) FROM (SELECT 1 AS bar)\n) FLATTEN COLUMNS -- получится таблица с колонками bar и foo\n```\nЭто связано с симметрией YQL: любые действия в SELECT можно преобразовать в операции над структурами.\n\n## Пути таблиц и кавычки\n\n- Путь таблицы прямо во `FROM` (без функции) ОБЯЗАТЕЛЬНО оборачивай в обратные кавычки (backticks). Кластер, если не задан через `USE`, ставится префиксом перед backticks:\n  ```\n  FROM `//home/app/data`\n  FROM hahn.`//home/app/data`\n  ```\n- Если путь лежит в `$`-переменной, обращайся к ней ГОЛОЙ, БЕЗ backticks: backticks нужны только для литерального пути, а переменная уже хранит готовую строку с путём. Оборачивание переменной в backticks заставляет YQL искать таблицу с буквальным именем `$t` и падать с ошибкой.\n  ```\n  $t = '//home/app/data';    -- объявление: путь — обычная строка в кавычках\n  SELECT * FROM $t;          -- ПРАВИЛЬНО: переменная без backticks\n  -- НЕПРАВИЛЬНО: SELECT * FROM `$t`;  -- YQL ищет таблицу с именем \"$t\"\n  ```\n- В аргументах табличных функций (`range`, `CONCAT`, `range_strict`, `like` и т.п.) путь — это обычная строка, поэтому подойдут backticks, одинарные или двойные кавычки на твой выбор:\n  ```\n  FROM range(`//home/app/data`, `2025-01-01`, `2025-02-01`)\n  FROM range('//home/app/data', '2025-01-01', '2025-02-01')\n  ```\n- Когда нужны конкретные партиции — используй `CONCAT` (внутри тоже допустимы любые из этих кавычек):\n  ```\n  FROM CONCAT(`//home/app/data/2025-01-01`, `//home/app/data/2025-02-01`)\n  ```\n\n## Алиасы в GROUP BY и WHERE\n\nВСЕГДА СЛЕДИ ЗА АЛИАСАМИ В GROUP BY: ты обязан создавать алиасы для вычисляемых ключей именно в GROUP BY и затем использовать эти алиасы в SELECT — нельзя создавать алиас только в SELECT.\n```\n-- НЕПРАВИЛЬНО: SELECT col1+col2 AS col FROM T GROUP BY col1+col2\n-- ПРАВИЛЬНО:\nSELECT col FROM T GROUP BY col1+col2 AS col;\n```\nВ YQL НЕЛЬЗЯ использовать в WHERE алиасы, определённые в SELECT:\n```\n-- НЕПРАВИЛЬНО: SELECT col1+col2 AS col FROM T WHERE col = '123'\n-- ПРАВИЛЬНО:\nSELECT col1+col2 AS col FROM T WHERE col1+col2 = '123';\n```\n\n## Ограничения JOIN\n\nYQL поддерживает только equi-joins (условия равенства):\n```\n-- Поддерживается:\nSELECT * FROM table1 JOIN table2 ON table1.key = table2.key;\n-- НЕ поддерживается в YQL:\nSELECT * FROM table1 JOIN table2 ON table1.value > table2.threshold;\n```\n\n## Порядок выполнения запроса\n\n1. FROM + SAMPLE\n2. FLATTEN BY / FLATTEN COLUMNS (заданные ими алиасы становятся видны здесь)\n3. JOIN\n4. Становятся видны алиасы, заданные в `GROUP BY ... AS ...`\n5. WHERE\n6. GROUP BY\n7. HAVING\n8. Оконные функции\n9. SELECT (вычисление выражений и назначение алиасов)\n10. DISTINCT\n11. UNION / INTERSECT / EXCEPT\n12. ORDER BY\n13. OFFSET / LIMIT\n</yql_manual>\n\n",
+      "metadata": {"agent": "yql", "time_to_first_token": "3151"},
+      "model": "Qwen3.6-27B-H200",
+      "object": "response",
+      "output": [],
+      "parallel_tool_calls": false,
+      "temperature": 0.7,
+      "tool_choice": "auto",
+      "tools": [
+        {
+          "name": "show_diff",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "code": {"type": "string", "description": "Код, который ты предлагаешь"}
+            },
+            "required": ["sign"],
+            "additionalProperties": false
+          },
+          "strict": true,
+          "type": "function",
+          "defer_loading": null,
+          "description": "Если человек попросил написать код, то напиши код и передай в этот тул"
+        }
+      ],
+      "top_p": 0.8,
+      "background": null,
+      "completed_at": null,
+      "conversation": {"id": "conv-ed01ea9cea194c068fbe5ec2adccfc1c"},
+      "max_output_tokens": null,
+      "max_tool_calls": null,
+      "previous_response_id": null,
+      "prompt": null,
+      "prompt_cache_key": null,
+      "prompt_cache_retention": null,
+      "reasoning": null,
+      "safety_identifier": null,
+      "service_tier": null,
+      "status": "completed",
+      "text": null,
+      "top_logprobs": null,
+      "truncation": null,
+      "usage": {
+        "input_tokens": 36007,
+        "input_tokens_details": {"cached_tokens": 0},
+        "output_tokens": 59,
+        "output_tokens_details": {"reasoning_tokens": 0},
+        "total_tokens": 36066
+      },
+      "user": null
+    },
+    "sequence_number": 17,
+    "type": "response.completed"
+  }
+]

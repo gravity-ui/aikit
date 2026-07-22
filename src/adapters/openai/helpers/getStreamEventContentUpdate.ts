@@ -253,6 +253,7 @@ function getFunctionCallDoneUpdate(
     const fn = item as {
         call_id: string;
         name?: string;
+        arguments?: string;
         output?: string;
         result?: string;
         status?: string;
@@ -278,6 +279,8 @@ function getFunctionCallDoneUpdate(
         output = undefined;
     }
 
+    const mcpRequest = prettyPrintJson(typeof fn.arguments === 'string' ? fn.arguments : undefined);
+
     return {
         kind: 'tool_update',
         item_id: fnCallId,
@@ -285,6 +288,7 @@ function getFunctionCallDoneUpdate(
         toolName: typeof fn.name === 'string' ? fn.name : undefined,
         output,
         error: typeof fn.error === 'string' ? fn.error : undefined,
+        ...(mcpRequest ? {mcpRequest} : {}),
     };
 }
 
@@ -378,7 +382,6 @@ export function getStreamEventContentUpdate(
         const err = typeof e.error === 'string' ? e.error : undefined;
         return {kind: 'tool_update', item_id: itemId, status: 'error', error: err};
     }
-
     const progressMatch = TOOL_PROGRESS_EVENTS.find(([t]) => t === type);
     if (progressMatch && itemId) {
         return {kind: 'tool_update', item_id: itemId, status: progressMatch[1]};
