@@ -1,11 +1,14 @@
 import {v4 as uuid} from 'uuid';
 
 import openaiResponseStream from './__mocks__/openai-response-chunks.json';
+import openaiResponseStreamClientTool from './__mocks__/openai-response-client-tool.json';
 
-const createStreamData = () => {
+const createStreamData = (
+    mockJson: typeof openaiResponseStream | typeof openaiResponseStreamClientTool,
+) => {
     const idMatchMap: Record<string, string> = {};
 
-    return openaiResponseStream.map((chunk) => {
+    return mockJson.map((chunk) => {
         if (chunk.response && chunk.response.id) {
             if (!idMatchMap[chunk.response.id]) {
                 const newRespId = `resp-${uuid()}`;
@@ -50,10 +53,27 @@ const createStreamData = () => {
     });
 };
 
-export const createReadableStream = () => {
+export const createMockOpenAIStream = () => {
     const readableStream = new ReadableStream({
         async start(controller) {
-            const streamData = createStreamData();
+            const streamData = createStreamData(openaiResponseStream);
+
+            for (const chunk of streamData) {
+                const dataString = JSON.stringify(chunk).trim();
+                controller.enqueue(new TextEncoder().encode(`data: ${dataString}\n`));
+                await new Promise((r) => setTimeout(r, 10));
+            }
+            controller.close();
+        },
+    });
+
+    return readableStream;
+};
+
+export const createMockOpenAIClientToolStream = () => {
+    const readableStream = new ReadableStream({
+        async start(controller) {
+            const streamData = createStreamData(openaiResponseStreamClientTool);
 
             for (const chunk of streamData) {
                 const dataString = JSON.stringify(chunk).trim();
