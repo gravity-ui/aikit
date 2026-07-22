@@ -11,9 +11,27 @@ import {MarkdownRenderer, MarkdownRendererProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
+import {block} from '../../../../utils/cn';
 import {BaseMessage} from '../../../molecules/BaseMessage';
 
 import MDXDocs from './Docs.mdx';
+
+import '../../../organisms/AssistantMessage/AssistantMessage.scss';
+
+const assistantMessageB = block('assistant-message');
+
+/** Same DOM as AssistantMessage: BaseMessage + __content wrapper (width 100%). */
+function MarkdownTableInAssistantMessage({content}: {content: string}) {
+    return (
+        <ContentWrapper width="380px">
+            <BaseMessage role="assistant">
+                <div className={assistantMessageB('content')}>
+                    <MarkdownRenderer content={content} />
+                </div>
+            </BaseMessage>
+        </ContentWrapper>
+    );
+}
 
 export default {
     title: 'atoms/MarkdownRenderer',
@@ -154,13 +172,65 @@ const MARKDOWN_TABLE = `| Full name | Code | Joined | Units | Score | Status | L
 | James O'Brien | PT-015 | 2024-09-01 | 0 | — | On hold | Dublin | Awaiting payment |
 | Maria García-López | FL-888 | 2023-03-22 | 7 | 4.1 | Active | Barcelona | Standard plan |`;
 
+const MARKDOWN_TEXT_AND_TABLE = `Here is the team overview for zone **ru-central1-a**. This paragraph should wrap normally inside the assistant message and stay readable even when a wide table follows below.
+
+${MARKDOWN_TABLE}
+
+If you need to add or remove someone from this list, let me know. You can also paste a long URL like https://console.cloud.yandex.ru/folders/b1gexample/overview and it should wrap without breaking the layout.`;
+
+/** Text + wide table in one message: verify paragraphs wrap and the table scrolls horizontally. */
+export const WithMarkdownTextAndTableInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TEXT_AND_TABLE} />,
+    decorators: defaultDecorators,
+};
+
 export const WithMarkdownTableInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE} />,
+    decorators: defaultDecorators,
+};
+
+const MARKDOWN_TABLE_TWO_COLUMNS = `| Component | Price |
+| --- | --- |
+| CPU (2 cores) | 1 660 ₽ |
+| RAM (2 GiB) | 443 ₽ |
+| Disk (10 GiB SSD) | 143 ₽ |
+| **Total** | **2 246 ₽** |`;
+
+export const WithMarkdownTableTwoColumnsInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE_TWO_COLUMNS} />,
+    decorators: defaultDecorators,
+};
+
+const MARKDOWN_TABLE_LONG_CELL = `| Field | Value |
+| --- | --- |
+| Name | Anna |
+| Notes | This is a very long description with many words separated by spaces that should wrap inside the cell instead of stretching the table on one line. |
+| Token | super-long-unbroken-token-without-any-spaces-in-the-middle |`;
+
+/** Multi-word cells wrap at `--g-aikit-markdown-renderer-table-cell-max-width`; long tokens scroll horizontally. */
+export const WithMarkdownTableLongCellInMessage: StoryObj<typeof MarkdownRenderer> = {
+    render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE_LONG_CELL} />,
+    decorators: defaultDecorators,
+};
+
+/**
+ * Markup a consumer renders with their own `@diplodoc/transform` usage: a bare
+ * `.yfm` container that is NOT wrapped in AIKit's namespace class. `**bold**`
+ * becomes `<strong>`, for which `@diplodoc/transform` ships `font-weight: 700`.
+ * AIKit must not leak its `.yfm` overrides onto this standalone content.
+ */
+const STANDALONE_TRANSFORM_HTML = '<p>This is <strong>bold</strong> text.</p>';
+
+export const StyleIsolation: StoryObj<typeof MarkdownRenderer> = {
     render: () => (
-        <ContentWrapper width="380px">
-            <BaseMessage role="assistant">
-                <MarkdownRenderer content={MARKDOWN_TABLE} />
-            </BaseMessage>
-        </ContentWrapper>
+        <>
+            <MarkdownRenderer qa="aikit-yfm" content="This is **bold** text." />
+            <div
+                className="yfm"
+                data-qa="standalone-yfm"
+                dangerouslySetInnerHTML={{__html: STANDALONE_TRANSFORM_HTML}}
+            />
+        </>
     ),
     decorators: defaultDecorators,
 };

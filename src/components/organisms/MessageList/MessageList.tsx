@@ -12,24 +12,17 @@ import type {
     TMessageMetadata,
     TUserMessage,
 } from '../../../types/messages';
-import {
-    hasOnlyThinkingContent,
-    isAssistantMessage,
-    isUserMessage,
-    resolveMessageActions,
-} from '../../../utils';
 import {block} from '../../../utils/cn';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
-import {ActionPopup} from '../../molecules/ActionPopup';
-import {RatingBlock, type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
-import {AssistantMessage} from '../AssistantMessage';
-import {UserMessage} from '../UserMessage';
+import {type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 
-import {ErrorAlert} from './ErrorAlert';
-import {usePopup} from './usePopup';
+import {MessageItem} from './MessageItem';
+import {VirtualizedMessageList} from './MessageList.virtualized';
+import {MessageListFooter} from './MessageListFooter';
+import {isActionPopupOpenForMessage, usePopup} from './usePopup';
 
 import './MessageList.scss';
 
@@ -58,10 +51,12 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     messages: TChatMessage<TContent, TMessageMetadata>[];
     status?: ChatStatus;
     errorMessage?: AlertProps;
+    loaderMessage?: string;
     onRetry?: () => void;
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    openMarkdownLinksInNewTab?: boolean;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -81,13 +76,30 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     ratingBlockProps?: RatingBlockProps;
     /** Action popup configuration - applies to all action popups */
     actionPopupProps?: MessageListActionPopupConfig;
+    /**
+     * Enable windowed rendering via react-window for very large histories.
+     * Off by default to preserve the existing rendering/scroll behavior.
+     */
+    virtualized?: boolean;
 };
 
-export function MessageList<TContent extends TMessageContent = never>({
+export function MessageList<TContent extends TMessageContent = never>(
+    props: MessageListProps<TContent>,
+) {
+    // Opt-in virtualized path - keeps the proven non-virtualized rendering untouched below.
+    if (props.virtualized) {
+        return <VirtualizedMessageList<TContent> {...props} />;
+    }
+
+    return <PlainMessageList<TContent> {...props} />;
+}
+
+function PlainMessageList<TContent extends TMessageContent = never>({
     messages,
     messageRendererRegistry,
     transformOptions,
     shouldParseIncompleteMarkdown,
+    openMarkdownLinksInNewTab,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -100,6 +112,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     qa,
     status,
     errorMessage,
+    loaderMessage,
     onRetry,
     hasPreviousMessages = false,
     onLoadPreviousMessages,
@@ -125,65 +138,7 @@ export function MessageList<TContent extends TMessageContent = never>({
     // Preserve scroll position when older messages are loaded
     useScrollPreservation(containerRef, messages.length);
 
-    const renderMessage = (message: TChatMessage<TContent, TMessageMetadata>, index: number) => {
-        if (isUserMessage<TMessageMetadata, TContent>(message)) {
-            const actions = resolveMessageActions(message, userActions);
-
-            return (
-                <UserMessage
-                    key={message.id || `message-${index}`}
-                    content={message.content}
-                    actions={actions}
-                    extraInfo={UserExtraInfo ? <UserExtraInfo message={message} /> : undefined}
-                    timestamp={message.timestamp}
-                    format={message.format}
-                    avatarUrl={message.avatarUrl}
-                    images={message.images}
-                    fileAttachments={message.fileAttachments}
-                    transformOptions={transformOptions}
-                    shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
-                    showActionsOnHover={showActionsOnHover}
-                    showTimestamp={showTimestamp}
-                    showAvatar={showAvatar}
-                    onActionPopup={(action, anchor) => handleActionPopup(message, action, anchor)}
-                />
-            );
-        }
-
-        if (isAssistantMessage<TMessageMetadata, TContent>(message)) {
-            const isLastMessage = index === messages.length - 1;
-            const isNotCompleted = isSubmitted || isStreaming;
-            const showActions = !(isLastMessage && isNotCompleted);
-            // Don't show assistantActions for messages with ONLY thinking content
-            // For mixed content (thinking + text), actions are shown and copy entire message
-            const actions =
-                showActions && !hasOnlyThinkingContent(message.content)
-                    ? resolveMessageActions(message, assistantActions)
-                    : undefined;
-
-            return (
-                <AssistantMessage<TContent>
-                    key={message.id || `message-${index}`}
-                    content={message.content}
-                    actions={actions}
-                    extraInfo={
-                        AssistantExtraInfo ? <AssistantExtraInfo message={message} /> : undefined
-                    }
-                    timestamp={message.timestamp}
-                    id={message.id}
-                    messageRendererRegistry={messageRendererRegistry}
-                    transformOptions={transformOptions}
-                    shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
-                    showActionsOnHover={showActionsOnHover}
-                    showTimestamp={showTimestamp}
-                    userRating={message.userRating}
-                    onActionPopup={(action, anchor) => handleActionPopup(message, action, anchor)}
-                />
-            );
-        }
-
-        return null;
-    };
+    const isNotCompleted = isSubmitted || isStreaming;
 
     return (
         <div ref={containerRef} className={b(null, className)} data-qa={qa ?? MessageListQa.Root}>
@@ -196,39 +151,42 @@ export function MessageList<TContent extends TMessageContent = never>({
                 </IntersectionContainer>
             )}
             <div className={b('messages')} data-qa={qa ? `${qa}-messages` : MessageListQa.Messages}>
-                {messages.map(renderMessage)}
+                {messages.map((message, index) => (
+                    <MessageItem<TContent>
+                        key={message.id || `message-${index}`}
+                        message={message}
+                        suppressActions={index === messages.length - 1 && isNotCompleted}
+                        showActionsOnHover={
+                            showActionsOnHover &&
+                            !isActionPopupOpenForMessage(popupState, message.id)
+                        }
+                        messageRendererRegistry={messageRendererRegistry}
+                        transformOptions={transformOptions}
+                        shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                        openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                        showTimestamp={showTimestamp}
+                        showAvatar={showAvatar}
+                        userActions={userActions}
+                        assistantActions={assistantActions}
+                        userExtraInfo={UserExtraInfo}
+                        assistantExtraInfo={AssistantExtraInfo}
+                        onActionPopup={handleActionPopup}
+                    />
+                ))}
             </div>
-            {showLoader && <Loader className={b('loader')} />}
-            {status === 'error' && (
-                <ErrorAlert
-                    className={b('error-alert')}
-                    onRetry={onRetry}
-                    errorMessage={errorMessage}
-                />
-            )}
-            {ratingBlockProps && ratingBlockProps.visible !== false && (
-                <RatingBlock
-                    {...ratingBlockProps}
-                    className={b('rating-block', ratingBlockProps.className)}
-                />
-            )}
-            {/* Action Popup - renders when an action with popup config is triggered */}
-            {showActionPopup && popupState.actionConfig?.popup && (
-                <ActionPopup
-                    open={popupState.open}
-                    onOpenChange={handlePopupOpenChange}
-                    anchorElement={popupState.anchorElement}
-                    title={actionPopupProps?.title || popupState.title || undefined}
-                    subtitle={actionPopupProps?.subtitle || popupState.subtitle || undefined}
-                    placement={
-                        actionPopupProps?.placement || popupState.actionConfig.popup.placement
-                    }
-                    className={actionPopupProps?.className}
-                    qa={actionPopupProps?.qa ?? (qa ? `${qa}-action-popup` : 'action-popup')}
-                >
-                    {popupState.content}
-                </ActionPopup>
-            )}
+            <MessageListFooter
+                showLoader={showLoader}
+                status={status}
+                errorMessage={errorMessage}
+                loaderMessage={loaderMessage}
+                onRetry={onRetry}
+                ratingBlockProps={ratingBlockProps}
+                actionPopupProps={actionPopupProps}
+                qa={qa}
+                showActionPopup={showActionPopup}
+                popupState={popupState}
+                onPopupOpenChange={handlePopupOpenChange}
+            />
         </div>
     );
 }

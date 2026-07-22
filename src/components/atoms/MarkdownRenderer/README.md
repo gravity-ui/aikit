@@ -26,21 +26,23 @@ const transformOptions: OptionsType = {
 
 ## Props
 
-| Prop               | Type          | Required | Default | Description                                                                                |
-| ------------------ | ------------- | -------- | ------- | ------------------------------------------------------------------------------------------ |
-| `content`          | `string`      | Yes      | -       | YFM markdown content to render                                                             |
-| `className`        | `string`      | -        | -       | Additional CSS class                                                                       |
-| `qa`               | `string`      | -        | -       | QA/test identifier                                                                         |
-| `transformOptions` | `OptionsType` | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package |
+| Prop                | Type          | Required | Default | Description                                                                                                                                                                                                             |
+| ------------------- | ------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content`           | `string`      | Yes      | -       | YFM markdown content to render                                                                                                                                                                                          |
+| `className`         | `string`      | -        | -       | Additional CSS class                                                                                                                                                                                                    |
+| `qa`                | `string`      | -        | -       | QA/test identifier                                                                                                                                                                                                      |
+| `transformOptions`  | `OptionsType` | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                                              |
+| `openLinksInNewTab` | `boolean`     | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and relative same-document anchors with matching path and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
 
 ## Styling
 
 The component uses CSS variables for theming:
 
-| Variable                 | Description |
-| ------------------------ | ----------- |
-| `--g-color-text-primary` | Text color  |
+| Variable                                           | Default | Description                                     |
+| -------------------------------------------------- | ------- | ----------------------------------------------- |
+| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                      |
+| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps |
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 
-**Markdown tables**: Wide tables scroll horizontally on the renderer root; `th` / `td` use single-line cells by default so table column layout stays stable inside message wrappers (e.g. `BaseMessage`).
+**Markdown tables**: a markdown-it plugin (via `@diplodoc/transform`) wraps each `<table>` in `__table-wrap` with `overflow-x: auto` so only the table scrolls horizontally. Table CSS resets inherited `word-break` from message wrappers. `min-width: 100%` stretches narrow tables; `width: max-content` sizes columns to content.

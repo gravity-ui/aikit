@@ -1,16 +1,17 @@
 # Hooks
 
-AIKit exports 7 public hooks. All are re-exported from the package root and from the `@gravity-ui/aikit/hooks` subpath.
+AIKit exports 8 public hooks. All are re-exported from the package root and from the `@gravity-ui/aikit/hooks` subpath.
 
-| Hook                                                        | Purpose                                                      |
-| ----------------------------------------------------------- | ------------------------------------------------------------ |
-| [`useDateFormatter`](#usedateformatter)                     | Format chat timestamps with locale and relative-date logic   |
-| [`useToolMessage`](#usetoolmessage)                         | Tool-message state machine (expand/collapse based on status) |
-| [`useSmartScroll`](#usesmartscroll)                         | Auto-scroll to bottom while respecting user scroll-up        |
-| [`useScrollPreservation`](#usescrollpreservation)           | Preserve scroll position when items are prepended            |
-| [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess)     | Collapse a section when its async operation succeeds         |
-| [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled) | Collapse a section when its async operation is cancelled     |
-| [`useFileUploadStore`](#usefileuploadstore)                 | Standalone file-upload store with progress/error states      |
+| Hook                                                        | Purpose                                                                        |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [`useDateFormatter`](#usedateformatter)                     | Format chat timestamps with locale and relative-date logic                     |
+| [`useToolMessage`](#usetoolmessage)                         | Tool-message state machine (expand/collapse based on status)                   |
+| [`useSmartScroll`](#usesmartscroll)                         | Auto-scroll to bottom while respecting user scroll-up                          |
+| [`useScrollPreservation`](#usescrollpreservation)           | Preserve scroll position when items are prepended                              |
+| [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess)     | Collapse a section when its async operation succeeds                           |
+| [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled) | Collapse a section when its async operation is cancelled                       |
+| [`useFileUploadStore`](#usefileuploadstore)                 | Standalone file-upload store with progress/error states                        |
+| [`useToolset`](#usetoolset)                                 | Wire a toolset into the chat: renderer registry + history merge for tool calls |
 
 ## `useDateFormatter`
 
@@ -129,3 +130,56 @@ type UseFileUploadStoreReturn<Meta> = {
 ```
 
 See `src/hooks/useFileUploadStore.ts` for the complete type signature.
+
+## `useToolset`
+
+Wires a `Toolset` into the chat: returns a `MessageRendererRegistry` whose `tool`
+dispatcher renders your tool components, and a `handleToolResult` callback that
+merges results into history via `applyToolResult`. It does not run model
+continuation side effects; pair it with `useToolResultContinuation` when you
+need to re-send the updated conversation after a tool completes.
+
+```typescript
+function useToolset<TCustom extends TMessageContent = never>(
+  options: UseToolsetOptions<TCustom>,
+): UseToolsetReturn;
+
+type UseToolsetOptions<TCustom> = {
+  toolset: Toolset;
+  setMessages: Dispatch<SetStateAction<TChatMessage<TCustom>[]>>;
+  registry?: MessageRendererRegistry;
+};
+
+type UseToolsetReturn = {
+  messageRendererRegistry: MessageRendererRegistry;
+  handleToolResult: (event: ToolsetResultEvent) => void;
+};
+```
+
+## `useToolResultContinuation`
+
+Observes `messages` and calls `onSettled` once when a tool part moves from a
+pending status (`loading`, `waitingConfirmation`, `waitingSubmission`) to a
+terminal status (`success`, `error`, `cancelled`). Tools that are already
+terminal in the first observed snapshot do not fire, so replay/restore is silent
+by default.
+
+```typescript
+function useToolResultContinuation<TCustom extends TMessageContent = never>(
+  options: UseToolResultContinuationOptions<TCustom>,
+): void;
+
+type UseToolResultContinuationOptions<TCustom> = {
+  messages: TChatMessage<TCustom>[];
+  onSettled: (event: ToolSettledEvent<TCustom>) => void;
+};
+
+type ToolSettledEvent<TCustom> = {
+  toolCallId: string;
+  toolName: string;
+  status: 'success' | 'error' | 'cancelled';
+  messages: TChatMessage<TCustom>[];
+};
+```
+
+See [GENUI.md](./GENUI.md) for an end-to-end example with a live model adapter.

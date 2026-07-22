@@ -1,5 +1,7 @@
 import {expect, test} from '~playwright/core';
 
+import {ChatContainer} from '../ChatContainer';
+
 import {ChatContainerStories} from './helpersPlaywright';
 
 test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
@@ -85,6 +87,38 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expect(page.getByPlaceholder('E2E History search ph')).toBeVisible();
     });
 
+    test('should open markdown links in new tab when enabled', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithMarkdownLinksInNewTab />);
+
+        const externalLink = page.getByRole('link', {name: 'external docs'});
+        const anchorLink = page.getByRole('link', {name: 'local section'});
+
+        await expect(externalLink).toHaveAttribute('target', '_blank');
+        await expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(anchorLink).not.toHaveAttribute('target', '_blank');
+        await expect(anchorLink).not.toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    test('should keep default markdown link target behavior', async ({mount, page}) => {
+        await mount(
+            <ChatContainer
+                messages={[
+                    {
+                        id: 'assistant-link',
+                        role: 'assistant',
+                        content: '[Open docs](https://gravity-ui.com)',
+                    },
+                ]}
+                onSendMessage={async () => {}}
+            />,
+        );
+
+        const link = page.getByRole('link', {name: 'Open docs'});
+
+        await expect(link).not.toHaveAttribute('target', '_blank');
+        await expect(link).not.toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
     test('should apply texts.submitButtonCancelableText in streaming state', async ({
         mount,
         page,
@@ -122,6 +156,22 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
 
         // Check that user message appeared
         await expect(page.locator('.g-aikit-user-message')).toBeVisible();
+    });
+
+    test('should call suggestion item callback in addition to sending a message', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<ChatContainerStories.WithSuggestionItemCallback />);
+
+        await page.getByRole('button', {name: 'Suggestion content'}).click();
+
+        await expect(page.locator('[data-qa="welcome-suggestion-click"]')).toHaveText(
+            'Suggestion content:suggestion-1',
+        );
+        await expect(page.locator('[data-qa="welcome-suggestion-send"]')).toHaveText(
+            'Suggestion content',
+        );
     });
 
     test('should send message via prompt input', async ({mount, page}) => {
@@ -514,5 +564,13 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
 
             await expect(page.getByText('What went wrong?')).not.toBeVisible();
         });
+    });
+
+    // The chart renderer is loaded via React.lazy; assert its content appears once the lazy
+    // chunk resolves, which exercises the Suspense boundary inside the registered renderer.
+    test('should render lazily code-split custom message type', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithLazyCustomMessageType />);
+
+        await expect(page.getByText('Sales by quarter, $K')).toBeVisible();
     });
 });

@@ -10,6 +10,8 @@ Component for displaying a list of messages. Supports custom message renderers t
 - **Customizable**: Supports custom className, QA attributes, and display options
 - **Smart Action Filtering**: Automatically excludes assistantActions for thinking messages
 - **User rating**: `userRating` on assistant messages sets filled state of like/dislike icons
+- **Virtualization (opt-in)**: With `virtualized`, only the rows near the viewport are rendered via [`react-window`](https://github.com/bvaughn/react-window), keeping the DOM size roughly constant for very large histories
+- **Optimized re-renders**: Each message is memoized, so during streaming only the message that actually changes re-renders
 
 ## Usage
 
@@ -273,6 +275,8 @@ The `getContent` function receives a context object with the following methods:
 - `setSubtitle(subtitle: string | undefined)` — Update popup subtitle dynamically (pass `undefined` to hide)
 - `closePopup()` — Programmatically close the popup
 
+When `showActionsOnHover` is enabled, `MessageList` temporarily disables hover-hiding for the message whose action popup is open, so users can interact with the popup without losing the anchor buttons.
+
 **ActionPopup Configuration:**
 
 ```typescript
@@ -296,6 +300,58 @@ actionPopupProps?: {
   className?: string;       // Additional CSS class for all popups
   qa?: string;              // QA/test identifier for all popups
 }
+```
+
+### Virtualization for Large Histories
+
+For chats with hundreds or thousands of messages, enable `virtualized` so only the rows near the
+viewport are mounted. Row heights are measured dynamically, the list stays pinned to the bottom
+while streaming (unless the user scrolls up), and scroll position is preserved when older messages
+are prepended via `onLoadPreviousMessages`.
+
+```tsx
+import {MessageList} from '@gravity-ui/aikit';
+
+// The container must have a constrained height so the windowed list can scroll.
+<div style={{height: 600, display: 'flex'}}>
+  <MessageList messages={messages} virtualized />
+</div>;
+```
+
+The prop is **off by default**: the standard (non-virtualized) rendering path is preserved for
+existing usage and is preferable for short conversations.
+
+> **Note:** With virtualization, off-screen messages are not in the DOM, so browser find-in-page
+> (Ctrl/Cmd+F) and screen readers only see the rendered window. Leave `virtualized` off if you rely
+> on those for the full transcript.
+
+### Code-splitting Custom Message Types
+
+Because a registered renderer is just a React component, a heavy custom type (charts, editors,
+maps, ...) can be loaded lazily with `React.lazy`, so it ships in a separate chunk and is fetched
+only when a message of that type is rendered. Wrap the lazy component in its own `Suspense`
+boundary inside the renderer:
+
+```tsx
+import React, {Suspense, lazy} from 'react';
+import {
+  createMessageRendererRegistry,
+  registerMessageRenderer,
+  type MessageContentComponentProps,
+} from '@gravity-ui/aikit';
+
+const LazyChartView = lazy(() => import('./ChartView'));
+
+const ChartRenderer: React.FC<MessageContentComponentProps<ChartMessageContent>> = (props) => (
+  <Suspense fallback={<span>Loading chart…</span>}>
+    <LazyChartView {...props} />
+  </Suspense>
+);
+
+const registry = createMessageRendererRegistry();
+registerMessageRenderer<ChartMessageContent>(registry, 'chart', {component: ChartRenderer});
+
+<MessageList messages={messages} messageRendererRegistry={registry} />;
 ```
 
 ### With Custom Loader Statuses
@@ -322,10 +378,12 @@ import {MessageList} from '@/components/organisms';
 | `messages`                      | [TChatMessage[]](../../../types/messages.ts)                     | ✓        | -                                    | Array of messages to render                                                                                                                                |
 | `status`                        | `ChatStatus`                                                     | -        | -                                    | Current chat status: `'submitted'` \| `'streaming'` \| `'streaming_loading'` \| `'ready'` \| `'error'`                                                     |
 | `errorMessage`                  | `AlertProps`                                                     | -        | -                                    | Error message to display when status is `'error'`                                                                                                          |
+| `loaderMessage`                 | `string`                                                         | -        | -                                    | Loader message next to a loader                                                                                                                            |
 | `onRetry`                       | `() => void`                                                     | -        | -                                    | Callback when user clicks retry button in error state                                                                                                      |
 | `messageRendererRegistry`       | [MessageRendererRegistry](../../../utils/messageTypeRegistry.ts) | -        | -                                    | Custom message renderer registry                                                                                                                           |
 | `transformOptions`              | `OptionsType`                                                    | -        | -                                    | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                 |
 | `shouldParseIncompleteMarkdown` | `boolean`                                                        | -        | -                                    | Parse incomplete markdown (useful during streaming)                                                                                                        |
+| `openMarkdownLinksInNewTab`     | `boolean`                                                        | -        | `false`                              | Open markdown links rendered by default message renderers in a new tab, except hash-only and relative same-document anchors                                |
 | `showActionsOnHover`            | `boolean`                                                        | -        | -                                    | Show message actions on hover                                                                                                                              |
 | `showTimestamp`                 | `boolean`                                                        | -        | -                                    | Show message timestamp                                                                                                                                     |
 | `showAvatar`                    | `boolean`                                                        | -        | -                                    | Show avatar for user messages                                                                                                                              |
@@ -336,6 +394,7 @@ import {MessageList} from '@/components/organisms';
 | `loaderStatuses`                | `ChatStatus[]`                                                   | -        | `['submitted', 'streaming_loading']` | Array of chat statuses that should display the loader                                                                                                      |
 | `ratingBlockProps`              | `RatingBlockProps`                                               | -        | -                                    | Rating block configuration (for CSAT or other feedback use cases) - renders after messages list                                                            |
 | `actionPopupProps`              | `MessageListActionPopupConfig`                                   | -        | -                                    | Global configuration for action popups (title, subtitle, placement, className, qa)                                                                         |
+| `virtualized`                   | `boolean`                                                        | -        | `false`                              | Enable windowed rendering via `react-window` for very large histories. Requires a height-constrained container.                                            |
 | `hasPreviousMessages`           | `boolean`                                                        | -        | `false`                              | Whether there are older messages to load (shows scroll trigger with loader)                                                                                |
 | `onLoadPreviousMessages`        | `() => void`                                                     | -        | -                                    | Callback to load previous messages when user scrolls to the top                                                                                            |
 | `className`                     | `string`                                                         | -        | -                                    | Additional CSS class                                                                                                                                       |

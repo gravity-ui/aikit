@@ -174,6 +174,20 @@ export const mockChatMessages: Record<string, TChatMessage[]> = {
 // Default messages for first chat
 export const mockMessages: TChatMessage[] = mockChatMessages['1'];
 
+// Monotonic counter guarantees unique ids even for messages created within the same millisecond.
+// Timestamp-only ids (e.g. `Date.now()` and `Date.now() + 1`) can collide between consecutive
+// messages, which makes React reuse a component under the same `key` and render new streaming
+// content into an already-written message.
+let messageIdCounter = 0;
+
+/**
+ * Create a collision-free message id.
+ * @param role - Message role (user or assistant)
+ * @returns A unique message identifier
+ */
+export const createMessageId = (role: 'user' | 'assistant'): string =>
+    `${role}-${Date.now()}-${messageIdCounter++}`;
+
 /**
  * Create message actions with handlers
  * @param messageId - Message identifier

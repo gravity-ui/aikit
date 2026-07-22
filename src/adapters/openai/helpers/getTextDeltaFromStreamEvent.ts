@@ -1,7 +1,7 @@
 import {OpenAIStreamEventLike} from '../types';
 
 import {getDeltaForEventTypes} from './eventTypeUtils';
-import {isOutputTextOrContentPartDone} from './isOutputTextOrContentPartDone';
+import {isTerminalTextLikeDoneEvent} from './isTerminalTextLikeDoneEvent';
 
 /** Text delta from event; *.done ignored to avoid duplicate accumulation. */
 
@@ -15,7 +15,7 @@ export function getTextDeltaFromStreamEvent(
     const e = event as Record<string, unknown>;
     const data = e.data as Record<string, unknown> | undefined;
 
-    if (isOutputTextOrContentPartDone(e, data)) {
+    if (isTerminalTextLikeDoneEvent(e, data)) {
         return null;
     }
 

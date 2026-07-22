@@ -28,4 +28,6 @@ export type SuggestionsItem = {
     view?: ButtonButtonProps['view'];
     /** Icon position: 'left' for ChevronLeft, 'right' for ChevronRight */
     icon?: 'left' | 'right';
+    /** Additional callback invoked when this suggestion is clicked */
+    onClick?: (content: string, id?: string) => void | Promise<void>;
 };

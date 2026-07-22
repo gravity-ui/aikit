@@ -20,4 +20,10 @@ test.describe('Loader', {tag: '@Loader'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with message', async ({mount, expectScreenshot}) => {
+        await mount(<LoaderStories.WithMessage />);
+
+        await expectScreenshot();
+    });
 });

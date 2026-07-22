@@ -1,6 +1,10 @@
-import {memo} from 'react';
+import {memo, useMemo} from 'react';
 
-import {OptionsType} from '@diplodoc/transform/lib/typings';
+import type {
+    ExtendedPluginWithCollect,
+    MarkdownIt,
+    OptionsType,
+} from '@diplodoc/transform/lib/typings';
 
 import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
 import {useRemend} from '../../../hooks/useRemend';
@@ -17,7 +21,52 @@ export interface MarkdownRendererProps {
     qa?: string;
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    openLinksInNewTab?: boolean;
 }
+
+const ABSOLUTE_HTTP_URL_RE = /^(https?:)?\/\//i;
+
+const isSameDocumentAnchor = (href: string) => {
+    if (href.startsWith('#')) {
+        return true;
+    }
+
+    if (ABSOLUTE_HTTP_URL_RE.test(href) || typeof window === 'undefined') {
+        return false;
+    }
+
+    try {
+        const url = new URL(href, window.location.href);
+
+        return (
+            Boolean(url.hash) &&
+            url.origin === window.location.origin &&
+            url.pathname === window.location.pathname &&
+            url.search === window.location.search
+        );
+    } catch {
+        return false;
+    }
+};
+
+const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => {
+    const rendererRules = md.renderer.rules;
+    const defaultRender =
+        rendererRules.link_open ||
+        function (tokens, idx, options, _env, self) {
+            return self.renderToken(tokens, idx, options);
+        };
+
+    rendererRules.link_open = function (tokens, idx, options, env, self) {
+        const href = tokens[idx].attrGet('href');
+        if (!href || !isSameDocumentAnchor(href)) {
+            tokens[idx].attrSet('target', '_blank');
+            tokens[idx].attrSet('rel', 'noopener noreferrer');
+        }
+
+        return defaultRender(tokens, idx, options, env, self);
+    };
+}) as ExtendedPluginWithCollect;
 
 function MarkdownRendererComponent({
     content,
@@ -25,9 +74,20 @@ function MarkdownRendererComponent({
     qa,
     transformOptions,
     shouldParseIncompleteMarkdown = false,
+    openLinksInNewTab = false,
 }: MarkdownRendererProps) {
     const closedContent = useRemend(content, shouldParseIncompleteMarkdown);
-    const html = useMarkdownTransform(closedContent, transformOptions);
+    const finalTransformOptions = useMemo<OptionsType | undefined>(() => {
+        if (!openLinksInNewTab) {
+            return transformOptions;
+        }
+
+        return {
+            ...transformOptions,
+            plugins: [...(transformOptions?.plugins ?? []), openLinksInNewTabPlugin],
+        };
+    }, [openLinksInNewTab, transformOptions]);
+    const html = useMarkdownTransform(closedContent, finalTransformOptions);
 
     return (
         <div
@@ -44,6 +104,10 @@ export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, next
     }
 
     if (prevProps.shouldParseIncompleteMarkdown !== nextProps.shouldParseIncompleteMarkdown) {
+        return false;
+    }
+
+    if (prevProps.openLinksInNewTab !== nextProps.openLinksInNewTab) {
         return false;
     }
 

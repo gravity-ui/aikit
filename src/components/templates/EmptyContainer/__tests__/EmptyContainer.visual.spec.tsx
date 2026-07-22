@@ -30,6 +30,12 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render scrollable suggestions', async ({mount, expectScreenshot}) => {
+        await mount(<EmptyContainerStories.ScrollableSuggestions />);
+
+        await expectScreenshot();
+    });
+
     test('should render minimal content', async ({mount, expectScreenshot}) => {
         await mount(<EmptyContainerStories.MinimalContent />);
 

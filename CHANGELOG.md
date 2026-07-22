@@ -1,5 +1,122 @@
 # Changelog
 
+## [2.12.0](https://github.com/gravity-ui/aikit/compare/v2.11.0...v2.12.0) (2026-07-20)
+
+
+### Features
+
+* **SuggestionItem:** add a extra onclick callback ([#208](https://github.com/gravity-ui/aikit/issues/208)) ([d8173b5](https://github.com/gravity-ui/aikit/commit/d8173b52891a17dc912ff0e9721b1a612c3fa0fd))
+
+## [2.11.0](https://github.com/gravity-ui/aikit/compare/v2.10.0...v2.11.0) (2026-07-09)
+
+
+### Features
+
+* open markdown links in new tab ([#200](https://github.com/gravity-ui/aikit/issues/200)) ([ae2068c](https://github.com/gravity-ui/aikit/commit/ae2068c7c82b5e16f93e42ac50afdbe6d0abfabe))
+
+## [2.10.0](https://github.com/gravity-ui/aikit/compare/v2.9.3...v2.10.0) (2026-07-09)
+
+
+### Features
+
+* **PromptInputWithSuggestions:** use wrapText on the Suggestions ([#205](https://github.com/gravity-ui/aikit/issues/205)) ([ae785cd](https://github.com/gravity-ui/aikit/commit/ae785cd6c6ccd8f2337de3a04525e661c4d89264))
+
+## [2.9.3](https://github.com/gravity-ui/aikit/compare/v2.9.2...v2.9.3) (2026-07-08)
+
+
+### Bug Fixes
+
+* **markdown:** fix import for esm ([#203](https://github.com/gravity-ui/aikit/issues/203)) ([e468036](https://github.com/gravity-ui/aikit/commit/e4680361162850a5d7fff58de071931956ab9f27))
+
+## [2.9.2](https://github.com/gravity-ui/aikit/compare/v2.9.1...v2.9.2) (2026-07-08)
+
+
+### Bug Fixes
+
+* **MarkdownRenderer:** stabilize markdown table layout in messages ([#194](https://github.com/gravity-ui/aikit/issues/194)) ([4643463](https://github.com/gravity-ui/aikit/commit/46434636a53c61cb31305453c8b7a61c872c55a4))
+
+## [2.9.1](https://github.com/gravity-ui/aikit/compare/v2.9.0...v2.9.1) (2026-07-07)
+
+
+### Bug Fixes
+
+* **actions:** show actions when popup open ([#197](https://github.com/gravity-ui/aikit/issues/197)) ([427041b](https://github.com/gravity-ui/aikit/commit/427041bcc8d3d490ad166edcf3eec81eb8e0708a))
+
+## [2.9.0](https://github.com/gravity-ui/aikit/compare/v2.8.0...v2.9.0) (2026-07-06)
+
+
+### Features
+
+* **EmptyContainer:** add scrollable suggestion on empty container ([#198](https://github.com/gravity-ui/aikit/issues/198)) ([7b335b7](https://github.com/gravity-ui/aikit/commit/7b335b71e8503e5a11b7ec8c6d979f42485c67ab))
+
+## [2.8.0](https://github.com/gravity-ui/aikit/compare/v2.7.0...v2.8.0) (2026-07-03)
+
+
+### Features
+
+* **PromptInput:** expose textarea control ref ([#195](https://github.com/gravity-ui/aikit/issues/195)) ([940b83e](https://github.com/gravity-ui/aikit/commit/940b83ecc56990ede78484f16e44d17f6e86f9b0))
+
+## [2.7.0](https://github.com/gravity-ui/aikit/compare/v2.6.2...v2.7.0) (2026-06-23)
+
+
+### Features
+
+* **loader:** add-message ([#193](https://github.com/gravity-ui/aikit/issues/193)) ([551eca3](https://github.com/gravity-ui/aikit/commit/551eca339986cbd50b3e075a52cf9252b4637761))
+
+
+### Bug Fixes
+
+* **css-variables:** move css variables to common.css ([be5ef8d](https://github.com/gravity-ui/aikit/commit/be5ef8dabec5d9f34f48a4e394324e973b6c945f))
+
+## [2.6.2](https://github.com/gravity-ui/aikit/compare/v2.6.1...v2.6.2) (2026-06-22)
+
+
+### Bug Fixes
+
+* **csat:** fix ui/ux csat ([#190](https://github.com/gravity-ui/aikit/issues/190)) ([fbda7f5](https://github.com/gravity-ui/aikit/commit/fbda7f55dd454bac83e1a7dff77e6a25da4e4542))
+
+## [2.6.1](https://github.com/gravity-ui/aikit/compare/v2.6.0...v2.6.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* **OpenaiAdapter:** reasoning problem [COMRADEAGENT-776] ([#187](https://github.com/gravity-ui/aikit/issues/187)) ([36dc29d](https://github.com/gravity-ui/aikit/commit/36dc29d297649893dd5b5f29801eb4057a662216))
+
+## [2.6.0](https://github.com/gravity-ui/aikit/compare/v2.5.1...v2.6.0) (2026-06-18)
+
+
+### Features
+
+* **messages:** add virtualization and memoization calculating ([#179](https://github.com/gravity-ui/aikit/issues/179)) ([1a8be79](https://github.com/gravity-ui/aikit/commit/1a8be796e081abfeb498b92d39597bc19fb871d6))
+
+## [2.5.1](https://github.com/gravity-ui/aikit/compare/v2.5.0...v2.5.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* **MarkdownRenderer:** scope yfm theme to the renderer ([#184](https://github.com/gravity-ui/aikit/issues/184)) ([48ac1c1](https://github.com/gravity-ui/aikit/commit/48ac1c10a2bc5722ae009a2732e1b576dc33e325))
+
+## [2.5.0](https://github.com/gravity-ui/aikit/compare/v2.4.0...v2.5.0) (2026-06-11)
+
+
+### Features
+
+* add AIAgentContext and AIData ([#146](https://github.com/gravity-ui/aikit/issues/146)) ([9718e85](https://github.com/gravity-ui/aikit/commit/9718e85620521a3184023fade409f18102e8bffd))
+
+## [2.4.0](https://github.com/gravity-ui/aikit/compare/v2.3.0...v2.4.0) (2026-06-10)
+
+
+### Features
+
+* **genui:** add GenUI toolset renderer and hook ([#173](https://github.com/gravity-ui/aikit/issues/173)) ([76c651b](https://github.com/gravity-ui/aikit/commit/76c651b1439488d10e4a604283ae87a23568946c))
+
+## [2.3.0](https://github.com/gravity-ui/aikit/compare/v2.2.0...v2.3.0) (2026-06-09)
+
+
+### Features
+
+* add usage example to readme ([#180](https://github.com/gravity-ui/aikit/issues/180)) ([4b45ee7](https://github.com/gravity-ui/aikit/commit/4b45ee72a71194d4f96a2c31a1eea1d00f3126b7))
+
 ## [2.2.0](https://github.com/gravity-ui/aikit/compare/v2.1.0...v2.2.0) (2026-06-04)
 
 

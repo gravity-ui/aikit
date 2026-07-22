@@ -33,6 +33,7 @@ export type ThinkingMessageProps = DOMProps &
          * Shallow-merged with the component defaults (`disableCommonAnchors: true`).
          */
         transformOptions?: OptionsType;
+        openMarkdownLinksInNewTab?: boolean;
     };
 
 const defaultTransformOptions: OptionsType = {
@@ -48,7 +49,15 @@ const defaultTransformOptions: OptionsType = {
  * @returns Rendered thinking message component
  */
 export const ThinkingMessage = (props: ThinkingMessageProps) => {
-    const {className, qa, style, format = 'plain', transformOptions, ...data} = props;
+    const {
+        className,
+        qa,
+        style,
+        format = 'plain',
+        transformOptions,
+        openMarkdownLinksInNewTab,
+        ...data
+    } = props;
 
     const markdownTransformOptions: OptionsType = {
         ...defaultTransformOptions,
@@ -91,6 +100,7 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
                                 key={index}
                                 content={item}
                                 transformOptions={markdownTransformOptions}
+                                openLinksInNewTab={openMarkdownLinksInNewTab}
                             />
                         ) : (
                             <Text className={b('content')} key={index}>

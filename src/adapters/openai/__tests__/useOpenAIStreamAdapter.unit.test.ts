@@ -337,7 +337,88 @@ describe('useOpenAIStreamAdapter', () => {
         expect(result.current.messages[0].content).toBe('I cannot do that.');
     });
 
-    it('should append reasoning_summary_text deltas to thinking block', async () => {
+    it('should not leak reasoning_text.done into main text', async () => {
+        const reasoningText =
+            'The user is asking 1+1. I should answer 2. No need to overcomplicate.';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {type: 'reasoning', id: 'rsn-1'},
+            },
+            {type: 'response.reasoning_text.delta', item_id: 'rsn-1', delta: 'The user '},
+            {type: 'response.reasoning_text.delta', item_id: 'rsn-1', delta: 'is asking 1+1.'},
+            {type: 'response.reasoning_text.done', item_id: 'rsn-1', text: reasoningText},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'reasoning',
+                    id: 'rsn-1',
+                    content: [{type: 'reasoning_text', text: reasoningText}],
+                },
+            },
+            {
+                type: 'response.output_item.added',
+                item: {type: 'message', id: 'msg-1', role: 'assistant', content: []},
+            },
+            {type: 'response.output_text.delta', item_id: 'msg-1', delta: '\n\n2'},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: 'msg-1',
+                    role: 'assistant',
+                    content: [{type: 'output_text', text: '\n\n2'}],
+                },
+            },
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        const content = result.current.messages[0].content as Array<{
+            type: string;
+            data?: {content?: string; text?: string};
+        }>;
+        const textPart = content.find((c) => c.type === 'text');
+        const thinkingPart = content.find((c) => c.type === 'thinking');
+
+        expect(thinkingPart?.data?.content).toBe(reasoningText);
+        expect(textPart?.data?.text).toBe('\n\n2');
+        expect(textPart?.data?.text).not.toContain('1+1');
+    });
+
+    it('should accumulate reasoning and summary deltas in thinking block', async () => {
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {type: 'reasoning', id: 'reason-1'},
+            },
+            {type: 'response.reasoning_text.delta', item_id: 'reason-1', delta: 'Thinking... '},
+            {type: 'response.reasoning_summary_text.delta', item_id: 'reason-1', delta: 'Summary '},
+            {type: 'response.reasoning_summary_text.delta', item_id: 'reason-1', delta: 'text.'},
+            {type: 'response.done'},
+        ]);
+
+        const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        const content = result.current.messages[0].content as Array<{
+            type: string;
+            data?: {content?: string};
+        }>;
+        const thinkingPart = content.find((c) => c.type === 'thinking');
+        expect(thinkingPart).toBeDefined();
+        expect(thinkingPart?.data?.content).toBe('Thinking... Summary text.');
+    });
+
+    it('should finalize thinking block from reasoning_summary_text.done without leaking to main text', async () => {
         const stream = createMockStream([
             {
                 type: 'response.output_item.added',
@@ -362,13 +443,15 @@ describe('useOpenAIStreamAdapter', () => {
 
         const content = result.current.messages[0].content as Array<{
             type: string;
-            data?: {content?: string};
+            data?: {content?: string; text?: string; status?: string};
         }>;
         const thinkingPart = content.find((c) => c.type === 'thinking');
+        const textPart = content.find((c) => c.type === 'text');
+
         expect(thinkingPart).toBeDefined();
-        // Deltas (reasoning_text + reasoning_summary_text) are accumulated; summary .done may finalize
-        expect(thinkingPart?.data?.content).toContain('Thinking... ');
-        expect(thinkingPart?.data?.content).toContain('Summary text.');
+        expect(thinkingPart?.data?.content).toBe('Summary text.');
+        expect(thinkingPart?.data?.status).toBe('thought');
+        expect(textPart).toBeUndefined();
     });
 
     it('should add tool for file_search_call and update on progress events', async () => {

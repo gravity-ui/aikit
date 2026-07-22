@@ -145,6 +145,7 @@ export function ChatContainer(props: ChatContainerProps) {
         contextIndicatorProps,
         transformOptions,
         shouldParseIncompleteMarkdown,
+        openMarkdownLinksInNewTab,
         messageListConfig,
         headerProps = {},
         contentProps = {},
@@ -325,6 +326,7 @@ export function ChatContainer(props: ChatContainerProps) {
             showActionsOnHover,
             transformOptions,
             shouldParseIncompleteMarkdown,
+            openMarkdownLinksInNewTab,
             qa:
                 resolveChatContainerQa(qaMap, 'messageList', 'message-list') ??
                 messageListConfig?.qa,
@@ -343,6 +345,7 @@ export function ChatContainer(props: ChatContainerProps) {
             showActionsOnHover,
             transformOptions,
             shouldParseIncompleteMarkdown,
+            openMarkdownLinksInNewTab,
             messageListConfig,
             qaMap,
             texts.errorText,

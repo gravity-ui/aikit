@@ -1,6 +1,6 @@
 {
   "name": "@gravity-ui/aikit",
-  "version": "2.2.0",
+  "version": "2.12.0",
   "description": "Gravity UI base kit for building ai assistant chats",
   "license": "MIT",
   "type": "commonjs",
@@ -96,6 +96,26 @@
       "require": {
         "types": "./build/cjs/utils/clipboardUtils.d.ts",
         "default": "./build/cjs/utils/clipboardUtils.js"
+      }
+    },
+    "./utils/aiAgentContext": {
+      "import": {
+        "types": "./build/esm/utils/aiAgentContext/index.d.ts",
+        "default": "./build/esm/utils/aiAgentContext/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/utils/aiAgentContext/index.d.ts",
+        "default": "./build/cjs/utils/aiAgentContext/index.js"
+      }
+    },
+    "./utils/toolset": {
+      "import": {
+        "types": "./build/esm/utils/toolset/index.d.ts",
+        "default": "./build/esm/utils/toolset/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/utils/toolset/index.d.ts",
+        "default": "./build/cjs/utils/toolset/index.js"
       }
     },
     "./adapters": {

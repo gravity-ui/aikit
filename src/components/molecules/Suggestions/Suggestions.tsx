@@ -52,8 +52,9 @@ export function Suggestions(props: SuggestionsProps) {
         qa,
     } = props;
 
-    const handleClick = (item: {id?: string; title: string}) => {
-        onClick(item.title, item.id);
+    const handleClick = async (item: SuggestionsItem) => {
+        await item.onClick?.(item.title, item.id);
+        await onClick(item.title, item.id);
     };
 
     const renderButton = (item: SuggestionsItem, index: number) => {

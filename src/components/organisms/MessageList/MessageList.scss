@@ -4,9 +4,13 @@ $block: '.#{variables.$ns}message-list';
 
 #{$block} {
     overflow-y: auto;
+    // Scroll position on prepend is managed manually (useScrollPreservation); disable the browser's
+    // native scroll anchoring so it doesn't also compensate and double-shift the viewport.
+    overflow-anchor: none;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    min-width: 0;
     flex: 1;
     align-self: stretch;
 
@@ -14,6 +18,58 @@ $block: '.#{variables.$ns}message-list';
         display: flex;
         flex-direction: column;
         gap: var(--g-spacing-4);
+        min-width: 0;
+    }
+
+    // Virtualized variant: react-window's List owns the scroll container, so the root must not
+    // scroll as well. Rows are absolutely positioned and cannot use flex `gap` for spacing.
+    // `position: relative` anchors the prepend shimmer overlay below.
+    &_virtualized {
+        overflow: hidden;
+        position: relative;
+    }
+
+    // Shimmer shown over the list while older messages are prepended and the scroll is restored,
+    // so the brief react-window reflow reads as an intentional loading animation, not a flash.
+    &__shimmer {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: var(--g-spacing-4);
+        padding: var(--g-spacing-3);
+        background: var(--g-color-base-background);
+    }
+
+    &__shimmer-row {
+        height: 56px;
+        flex-shrink: 0;
+        inline-size: 70%;
+        align-self: flex-start;
+        border-radius: 12px;
+        background: linear-gradient(
+            90deg,
+            var(--g-color-base-generic) 25%,
+            var(--g-color-base-generic-hover) 37%,
+            var(--g-color-base-generic) 63%
+        );
+        background-size: 400% 100%;
+        animation: g-aikit-message-list-shimmer 1.4s ease infinite;
+
+        &_assistant {
+            align-self: flex-end;
+            inline-size: 55%;
+        }
+    }
+
+    &__list {
+        flex: 1;
+        min-height: 0;
+    }
+
+    &__row {
+        padding-block-end: var(--g-spacing-4);
     }
 
     &__retry-button {
@@ -39,5 +95,15 @@ $block: '.#{variables.$ns}message-list';
         margin-top: var(--g-spacing-4);
         background: var(--g-color-base-background);
         z-index: 1;
+    }
+}
+
+@keyframes g-aikit-message-list-shimmer {
+    0% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0 50%;
     }
 }

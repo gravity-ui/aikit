@@ -347,44 +347,45 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 
 ## Props
 
-| Prop                   | Type                                   | Required           | Default   | Description                                                                    |
-| ---------------------- | -------------------------------------- | ------------------ | --------- | ------------------------------------------------------------------------------ | ----------------------------------------- |
-| `messages`             | `TMessage[]`                           | -                  | `[]`      | Array of messages in current chat                                              |
-| `onSendMessage`        | `(data: TSubmitData) => Promise<void>` | ✓                  | -         | Callback when user sends a message                                             |
-| `chats`                | `ChatType[]`                           | -                  | `[]`      | Array of chats for history                                                     |
-| `activeChat`           | `ChatType \| null`                     | -                  | `null`    | Currently active chat                                                          |
-| `onSelectChat`         | `(chat: ChatType) => void`             | -                  | -         | Callback when user selects a chat from history                                 |
-| `onCreateChat`         | `() => void`                           | -                  | -         | Callback when user creates a new chat                                          |
-| `onDeleteChat`         | `(chat: ChatType) => void`             | -                  | -         | Callback when user deletes a chat                                              |
-| `onDeleteAllChats`     | `() => Promise<void>`                  | -                  | -         | Callback when user deletes all chats                                           |
-| `onFold`               | `(value: 'collapsed'                   | 'opened') => void` | -         | -                                                                              | Callback when user folds/unfolds the chat |
-| `onClose`              | `() => void`                           | -                  | -         | Callback when user closes the chat                                             |
-| `onCancel`             | `() => Promise<void>`                  | -                  | -         | Callback when user cancels streaming                                           |
-| `status`               | `ChatStatus`                           | -                  | `'ready'` | Chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'`          |
-| `error`                | `Error \| null`                        | -                  | `null`    | Error state                                                                    |
-| `onRetry`              | `() => void`                           | -                  | -         | Callback to retry after error                                                  |
-| `showActionsOnHover`   | `boolean`                              | -                  | `false`   | Show message actions (copy, like, edit) on hover                               |
-| `contextItems`         | `ContextItemConfig[]`                  | -                  | `[]`      | Array of context items to display in prompt input header                       |
-| `transformOptions`     | `OptionsType`                          | -                  | -         | Transform options for markdown rendering                                       |
-| `messageListConfig`    | `MessageListConfig`                    | -                  | -         | Configuration for MessageList (actions, loader statuses)                       |
-| `headerProps`          | `Partial<HeaderProps>`                 | -                  | -         | Props override for Header component                                            |
-| `contentProps`         | `Partial<ChatContentProps>`            | -                  | -         | Props override for ChatContent component                                       |
-| `emptyContainerProps`  | `Partial<EmptyContainerProps>`         | -                  | -         | Props override for EmptyContainer                                              |
-| `promptInputProps`     | `Partial<PromptInputProps>`            | -                  | -         | Props override for PromptInput component                                       |
-| `disclaimerProps`      | `Partial<DisclaimerProps>`             | -                  | -         | Props override for Disclaimer component                                        |
-| `historyProps`         | `Partial<HistoryProps>`                | -                  | -         | Props override for History component                                           |
-| `welcomeConfig`        | `WelcomeConfig`                        | -                  | -         | Welcome screen configuration for empty state                                   |
-| `texts`                | `ChatContainerTexts`                   | -                  | -         | Flat unified copy overrides (see **Texts**)                                    |
-| `showHistory`          | `boolean`                              | -                  | `true`    | Show chat history feature                                                      |
-| `showNewChat`          | `boolean`                              | -                  | `true`    | Show new chat button                                                           |
-| `showFolding`          | `boolean`                              | -                  | `false`   | Show folding button                                                            |
-| `showClose`            | `boolean`                              | -                  | `false`   | Show close button                                                              |
-| `hideTitleOnEmptyChat` | `boolean`                              | -                  | `false`   | Hide header title and preview when chat is empty                               |
-| `className`            | `string`                               | -                  | -         | Additional CSS class                                                           |
-| `headerClassName`      | `string`                               | -                  | -         | Additional CSS class for header section                                        |
-| `contentClassName`     | `string`                               | -                  | -         | Additional CSS class for content section                                       |
-| `footerClassName`      | `string`                               | -                  | -         | Additional CSS class for footer section                                        |
-| `qa`                   | `string \| ChatContainerQa`            | -                  | -         | QA/test identifiers: string = root only; object = map or `prefix` (see **QA**) |
+| Prop                        | Type                                   | Required           | Default   | Description                                                                                                                 |
+| --------------------------- | -------------------------------------- | ------------------ | --------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `messages`                  | `TMessage[]`                           | -                  | `[]`      | Array of messages in current chat                                                                                           |
+| `onSendMessage`             | `(data: TSubmitData) => Promise<void>` | ✓                  | -         | Callback when user sends a message                                                                                          |
+| `chats`                     | `ChatType[]`                           | -                  | `[]`      | Array of chats for history                                                                                                  |
+| `activeChat`                | `ChatType \| null`                     | -                  | `null`    | Currently active chat                                                                                                       |
+| `onSelectChat`              | `(chat: ChatType) => void`             | -                  | -         | Callback when user selects a chat from history                                                                              |
+| `onCreateChat`              | `() => void`                           | -                  | -         | Callback when user creates a new chat                                                                                       |
+| `onDeleteChat`              | `(chat: ChatType) => void`             | -                  | -         | Callback when user deletes a chat                                                                                           |
+| `onDeleteAllChats`          | `() => Promise<void>`                  | -                  | -         | Callback when user deletes all chats                                                                                        |
+| `onFold`                    | `(value: 'collapsed'                   | 'opened') => void` | -         | -                                                                                                                           | Callback when user folds/unfolds the chat |
+| `onClose`                   | `() => void`                           | -                  | -         | Callback when user closes the chat                                                                                          |
+| `onCancel`                  | `() => Promise<void>`                  | -                  | -         | Callback when user cancels streaming                                                                                        |
+| `status`                    | `ChatStatus`                           | -                  | `'ready'` | Chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'`                                                       |
+| `error`                     | `Error \| null`                        | -                  | `null`    | Error state                                                                                                                 |
+| `onRetry`                   | `() => void`                           | -                  | -         | Callback to retry after error                                                                                               |
+| `showActionsOnHover`        | `boolean`                              | -                  | `false`   | Show message actions (copy, like, edit) on hover                                                                            |
+| `contextItems`              | `ContextItemConfig[]`                  | -                  | `[]`      | Array of context items to display in prompt input header                                                                    |
+| `transformOptions`          | `OptionsType`                          | -                  | -         | Transform options for markdown rendering                                                                                    |
+| `openMarkdownLinksInNewTab` | `boolean`                              | -                  | `false`   | Open markdown links rendered by default message renderers in a new tab, except hash-only and relative same-document anchors |
+| `messageListConfig`         | `MessageListConfig`                    | -                  | -         | Configuration for MessageList (actions, loader statuses)                                                                    |
+| `headerProps`               | `Partial<HeaderProps>`                 | -                  | -         | Props override for Header component                                                                                         |
+| `contentProps`              | `Partial<ChatContentProps>`            | -                  | -         | Props override for ChatContent component                                                                                    |
+| `emptyContainerProps`       | `Partial<EmptyContainerProps>`         | -                  | -         | Props override for EmptyContainer                                                                                           |
+| `promptInputProps`          | `Partial<PromptInputProps>`            | -                  | -         | Props override for PromptInput component                                                                                    |
+| `disclaimerProps`           | `Partial<DisclaimerProps>`             | -                  | -         | Props override for Disclaimer component                                                                                     |
+| `historyProps`              | `Partial<HistoryProps>`                | -                  | -         | Props override for History component                                                                                        |
+| `welcomeConfig`             | `WelcomeConfig`                        | -                  | -         | Welcome screen configuration for empty state                                                                                |
+| `texts`                     | `ChatContainerTexts`                   | -                  | -         | Flat unified copy overrides (see **Texts**)                                                                                 |
+| `showHistory`               | `boolean`                              | -                  | `true`    | Show chat history feature                                                                                                   |
+| `showNewChat`               | `boolean`                              | -                  | `true`    | Show new chat button                                                                                                        |
+| `showFolding`               | `boolean`                              | -                  | `false`   | Show folding button                                                                                                         |
+| `showClose`                 | `boolean`                              | -                  | `false`   | Show close button                                                                                                           |
+| `hideTitleOnEmptyChat`      | `boolean`                              | -                  | `false`   | Hide header title and preview when chat is empty                                                                            |
+| `className`                 | `string`                               | -                  | -         | Additional CSS class                                                                                                        |
+| `headerClassName`           | `string`                               | -                  | -         | Additional CSS class for header section                                                                                     |
+| `contentClassName`          | `string`                               | -                  | -         | Additional CSS class for content section                                                                                    |
+| `footerClassName`           | `string`                               | -                  | -         | Additional CSS class for footer section                                                                                     |
+| `qa`                        | `string \| ChatContainerQa`            | -                  | -         | QA/test identifiers: string = root only; object = map or `prefix` (see **QA**)                                              |
 
 ## Types
 
@@ -433,7 +434,19 @@ interface WelcomeConfig {
 
 #### Suggestions Properties
 
-The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is clicked, its `title` value is sent as the message content.
+The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is clicked, its optional `onClick` callback is called before its `title` value is sent as the message content.
+
+```tsx
+welcomeConfig={{
+  suggestions: [{
+    id: 'explain-cloud',
+    title: 'Explain Yandex Cloud',
+    onClick: (content, id) => {
+      sendMetric('welcome_suggestion_click', {content, id});
+    },
+  }],
+}}
+```
 
 **SuggestionsItem Properties:**
 
@@ -441,6 +454,7 @@ The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is cl
 - **`id`** (optional): Unique identifier for the suggestion
 - **`view`** (optional): Button styling - `'normal'`, `'action'`, `'outlined'`, `'flat'`, `'flat-secondary'`, `'outlined-info'`
 - **`icon`** (optional): Icon position - `'left'` displays ChevronLeft, `'right'` displays ChevronRight
+- **`onClick`** (optional): Additional callback called with the suggestion title and optional ID before the default click handler
 
 **Text Wrapping:**
 
@@ -616,6 +630,8 @@ const messages: TMessage[] = [
 
 <ChatContainer messages={messages} onSendMessage={handleSendMessage} showActionsOnHover={true} />;
 ```
+
+When `showActionsOnHover` is enabled and an action opens a popup (for example, a dislike feedback form), action buttons on that message stay visible while the popup is open so users can fill the form without losing the anchor buttons. This is handled by the library; no extra configuration is required.
 
 ### 2. Default Actions (Recommended)
 

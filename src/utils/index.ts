@@ -4,3 +4,5 @@ export * from './messageUtils';
 export * from './validation';
 export * from './messageTypeRegistry';
 export * from './clipboardUtils';
+export * from './aiAgentContext';
+export * from './toolset';

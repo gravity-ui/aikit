@@ -126,7 +126,8 @@ export function FeedbackForm({
                         value={comment}
                         onUpdate={setComment}
                         placeholder={displayCommentPlaceholder}
-                        rows={2}
+                        minRows={2}
+                        maxRows={6}
                         className={b('comment')}
                         disabled={disabled}
                         qa={qa ? `${qa}-comment` : undefined}

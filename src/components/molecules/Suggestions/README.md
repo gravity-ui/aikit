@@ -10,7 +10,7 @@ A Suggestions component displays a group of clickable suggestion buttons arrange
 - **Click handling**: Callback function receives both content and optional ID
 - **Text alignment**: Control text alignment inside buttons (left, center, right)
 - **Icon support**: Add ChevronLeft or ChevronRight icons to suggestion buttons
-- **Tooltips**: Automatic tooltips displaying the suggestion title on hover
+- **Tooltips**: Automatic tooltips displaying the suggestion title on hover (disabled when `wrapText` is enabled)
 
 ## Usage
 
@@ -115,25 +115,26 @@ import {Suggestions} from '@/components/molecules/Suggestions';
 
 ## Props
 
-| Prop        | Type                                                      | Required | Default  | Description                                                    |
-| ----------- | --------------------------------------------------------- | -------- | -------- | -------------------------------------------------------------- |
-| `items`     | `SuggestionsItem[]`                                       | Yes      | -        | Array of suggestion items to display                           |
-| `onClick`   | `(content: string, id?: string) => void \| Promise<void>` | Yes      | -        | Callback function called when a suggestion is clicked          |
-| `title`     | `string`                                                  | No       | -        | Title to display above suggestions                             |
-| `layout`    | `'grid' \| 'list'`                                        | No       | `'list'` | Layout orientation: 'grid' for horizontal, 'list' for vertical |
-| `textAlign` | `'left' \| 'center' \| 'right'`                           | No       | `'left'` | Text alignment inside buttons                                  |
-| `wrapText`  | `boolean`                                                 | No       | `false`  | Enable text wrapping inside buttons instead of ellipsis        |
-| `className` | `string`                                                  | No       | -        | Additional CSS class                                           |
-| `qa`        | `string`                                                  | No       | -        | QA/test identifier                                             |
+| Prop        | Type                                                      | Required | Default  | Description                                                                                      |
+| ----------- | --------------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `items`     | `SuggestionsItem[]`                                       | Yes      | -        | Array of suggestion items to display                                                             |
+| `onClick`   | `(content: string, id?: string) => void \| Promise<void>` | Yes      | -        | Callback function called when a suggestion is clicked                                            |
+| `title`     | `string`                                                  | No       | -        | Title to display above suggestions                                                               |
+| `layout`    | `'grid' \| 'list'`                                        | No       | `'list'` | Layout orientation: 'grid' for horizontal, 'list' for vertical                                   |
+| `textAlign` | `'left' \| 'center' \| 'right'`                           | No       | `'left'` | Text alignment inside buttons                                                                    |
+| `wrapText`  | `boolean`                                                 | No       | `false`  | Wrap text inside buttons instead of truncating with ellipsis; also disables the per-item tooltip |
+| `className` | `string`                                                  | No       | -        | Additional CSS class                                                                             |
+| `qa`        | `string`                                                  | No       | -        | QA/test identifier                                                                               |
 
 ### SuggestionsItem
 
-| Prop    | Type                        | Required | Default      | Description                                                     |
-| ------- | --------------------------- | -------- | ------------ | --------------------------------------------------------------- |
-| `id`    | `string`                    | No       | -            | Optional unique identifier for the item                         |
-| `title` | `string`                    | Yes      | -            | Title text to display on the button                             |
-| `view`  | `ButtonButtonProps['view']` | No       | `'outlined'` | Button view style                                               |
-| `icon`  | `'left' \| 'right'`         | No       | -            | Icon position: 'left' for ChevronLeft, 'right' for ChevronRight |
+| Prop      | Type                                                      | Required | Default      | Description                                                               |
+| --------- | --------------------------------------------------------- | -------- | ------------ | ------------------------------------------------------------------------- |
+| `id`      | `string`                                                  | No       | -            | Optional unique identifier for the item                                   |
+| `title`   | `string`                                                  | Yes      | -            | Title text to display on the button                                       |
+| `view`    | `ButtonButtonProps['view']`                               | No       | `'outlined'` | Button view style                                                         |
+| `icon`    | `'left' \| 'right'`                                       | No       | -            | Icon position: 'left' for ChevronLeft, 'right' for ChevronRight           |
+| `onClick` | `(content: string, id?: string) => void \| Promise<void>` | No       | -            | Additional callback invoked before the component-level `onClick` callback |
 
 ## Styling
 
