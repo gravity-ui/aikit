@@ -55,7 +55,9 @@ import {InputContextProvider, mockInputContextFileUpload} from '@gravity-ui/aiki
 
 `AIStudioChat` wraps children with `InputContextProvider` automatically. Pass `fileUpload` or `fileDialogTitle` on `AIStudioChat` to customize behavior.
 
-## Props (`InputContextProvider`)
+## Properties
+
+Props of the `InputContextProvider`:
 
 | Prop              | Type                                          | Required | Default                | Description                               |
 | ----------------- | --------------------------------------------- | -------- | ---------------------- | ----------------------------------------- |

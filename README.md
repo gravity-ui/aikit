@@ -202,3 +202,26 @@ Development and contribution instructions are available in [CONTRIBUTING.md](./C
 ## License
 
 MIT
+
+## For AI agents
+
+A React component library for building AI chat interfaces, organized by Atomic Design (atoms → molecules → organisms → templates → pages) and SDK-agnostic — reach for it to assemble a chat UI (message lists, prompt input, tool calls, attachments) instead of composing those primitives out of `@gravity-ui/uikit` by hand.
+
+### When to use
+
+- Building an AI/LLM chat UI (assistant/user/tool messages, prompt input with suggestions, attachment uploads, thinking states).
+- Wanting ready-made chat layouts (`ChatContainer`, `MessageList`, `PromptInput`) plus hooks to customize behavior.
+- Embedding into the Gravity UI ecosystem with shared theming via CSS variables.
+
+### When not to use
+
+- For general-purpose UI primitives (buttons, inputs, modals), use [`@gravity-ui/uikit`](https://gravity-ui.com/uikit) directly — AIKit builds on top of it for chat-specific needs.
+- To render rich markdown in messages, AIKit's `MarkdownRenderer` wraps [`@gravity-ui/markdown-editor`](https://github.com/gravity-ui/markdown-editor); for standalone markdown rendering use that package directly.
+- For a single chat bubble without chat orchestration, a uikit `MarkdownRenderer`/text block is lighter than the full AIKit message pipeline.
+
+### Common pitfalls
+
+- **Hallucinating an AI SDK import** — AIKit is SDK-agnostic; it provides components/hooks, not an LLM client. Bring your own data source and feed messages via props.
+- **Reaching for `<Chat>` / `<AIChat>`** — the page-level export is `ChatContainer` (and `AIStudioChat`); there is no component literally named `Chat`.
+- **Skipping message-type registration for custom types** — custom message kinds must be registered in the message type system, or they render as unknown.
+- **Editing base components instead of using hooks** — the two-level design expects you to customize via hooks/composition; overriding internals directly breaks upgrades.
