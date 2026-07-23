@@ -178,6 +178,87 @@ export const WithAdditionalActions: Story = {
     decorators: defaultDecorators,
 };
 
+const headerMenuItemsConfig = [
+    {
+        id: 'settings',
+        label: 'Settings',
+        onClick: () => console.log('Settings clicked'),
+    },
+    {
+        id: 'export',
+        label: 'Export chat',
+        onClick: () => console.log('Export clicked'),
+    },
+];
+
+/**
+ * With Header overflow menu (menuItems)
+ */
+export const WithHeaderMenu: Story = {
+    args: {
+        messages: mockMessages,
+        chats: mockChats,
+        activeChat: mockChats[0],
+        showHistory: true,
+        showNewChat: true,
+    },
+    render: (args) => {
+        const initialChat = mockChats[0];
+        const [messages, setMessages] = useState<TChatMessage[]>(
+            () => mockChatMessages[initialChat.id] || [],
+        );
+        const [status, setStatus] = useState<ChatStatus>('ready');
+        const [activeChat, setActiveChat] = useState<ChatType | null>(initialChat);
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const timestamp = Date.now();
+            const userMessage: TChatMessage = {
+                id: `user-${timestamp}`,
+                role: 'user',
+                content: data.content,
+                timestamp: new Date().toISOString(),
+            };
+
+            setMessages((prev) => [...prev, userMessage]);
+            setStatus('streaming');
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: `assistant-${timestamp + 1}`,
+                    role: 'assistant',
+                    content: `Response to: "${data.content}"`,
+                    timestamp: new Date().toISOString(),
+                },
+            ]);
+            setStatus('ready');
+        };
+
+        return (
+            <ChatContainer
+                {...args}
+                messages={messages}
+                activeChat={activeChat}
+                onSendMessage={handleSendMessage}
+                onCancel={async () => setStatus('ready')}
+                onSelectChat={(chat) => {
+                    setActiveChat(chat);
+                    setMessages(mockChatMessages[chat.id] || []);
+                }}
+                onCreateChat={() => {
+                    setActiveChat(null);
+                    setMessages([]);
+                }}
+                status={status}
+                headerProps={{
+                    menuItems: headerMenuItemsConfig,
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
 /**
  * Like / Dislike actions with local rating state.
  * Only like and dislike actions; rating toggles on repeated click (like → clear, dislike → clear).

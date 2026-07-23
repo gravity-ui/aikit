@@ -1,5 +1,12 @@
 import type {Action} from '../../../types/common';
 
+export type HeaderMenuItem = {
+    id: string;
+    label: string;
+    onClick: () => void;
+    disabled?: boolean;
+};
+
 export enum HeaderAction {
     NewChat = 'newChat',
     History = 'history',
@@ -27,6 +34,18 @@ export type HeaderProps = {
     handleFolding?: (value: 'collapsed' | 'opened') => void;
     handleClose?: () => void;
     additionalActions?: Action[];
+
+    /**
+     * Overflow "..." menu items. Labels and handlers are provided by the consumer.
+     * The menu button is rendered only when the array is non-empty.
+     */
+    menuItems?: HeaderMenuItem[];
+    /** Tooltip for the overflow menu button (default: built-in i18n) */
+    menuButtonTooltip?: string;
+    /** data-qa for the overflow menu button (default: `header-menu-button`) */
+    menuButtonQa?: string;
+    /** data-qa overrides per menu item id (default: `header-menu-item-${id}`) */
+    menuItemQa?: Partial<Record<string, string>>;
 
     /**
      * Notification callback fired by ChatContainer when the history popup is toggled

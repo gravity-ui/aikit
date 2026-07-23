@@ -1,14 +1,15 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 
 import {
     ChevronsCollapseUpRight,
     ChevronsExpandUpRight,
     ClockArrowRotateLeft,
+    Ellipsis,
     Plus,
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {Icon, Text} from '@gravity-ui/uikit';
+import {DropdownMenu, Icon, Text} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
@@ -52,6 +53,10 @@ export function Header(props: HeaderProps) {
         icon,
         baseActions,
         additionalActions,
+        menuItems,
+        menuButtonTooltip,
+        menuButtonQa,
+        menuItemQa,
         titlePosition,
         withIcon,
         showTitle = true,
@@ -132,6 +137,41 @@ export function Header(props: HeaderProps) {
         );
     }, []);
 
+    const dropdownMenuItems = useMemo(
+        () =>
+            menuItems.map((item) => ({
+                text: item.label,
+                action: item.onClick,
+                disabled: item.disabled,
+                qa: menuItemQa?.[item.id] ?? `header-menu-item-${item.id}`,
+            })),
+        [menuItems, menuItemQa],
+    );
+
+    const overflowMenu = useMemo(() => {
+        if (menuItems.length === 0) {
+            return null;
+        }
+
+        return (
+            <DropdownMenu
+                items={dropdownMenuItems}
+                renderSwitcher={(props) => (
+                    <ActionButton
+                        {...props}
+                        tooltipTitle={menuButtonTooltip ?? i18n('action-tooltip-menu')}
+                        size="m"
+                        view="flat"
+                        className={b('action-button')}
+                        qa={menuButtonQa ?? 'header-menu-button'}
+                    >
+                        <Icon data={Ellipsis} size={16} />
+                    </ActionButton>
+                )}
+            />
+        );
+    }, [dropdownMenuItems, menuButtonQa, menuButtonTooltip, menuItems.length]);
+
     return (
         <div className={b('', className)} data-qa={qa}>
             {/* Left part: icon */}
@@ -152,6 +192,7 @@ export function Header(props: HeaderProps) {
             {/* Right part: additional and base actions */}
             <ButtonGroup>
                 {additionalActions.map((action, index) => renderAdditionalAction(action, index))}
+                {overflowMenu}
                 {baseActions.map((action) => renderBaseAction(action, historyButtonRef))}
             </ButtonGroup>
         </div>
