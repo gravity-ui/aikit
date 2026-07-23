@@ -255,7 +255,7 @@ The component uses CSS variables for theming:
 --g-spacing-2                /* Header padding and gap between elements */
 ```
 
-## API
+## Properties
 
 ### HeaderProps
 
