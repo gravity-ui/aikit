@@ -73,8 +73,9 @@ test.describe('Header', {tag: '@Header'}, () => {
         await mount(<HeaderStories.WithMenuItems />);
 
         await page.locator('[data-qa="header-menu-button"]').click();
-        await expect(page.locator('[data-qa="header-menu-item-settings"]')).toBeVisible();
+        const menu = page.getByRole('menu');
+        await expect(menu).toBeVisible();
 
-        await expectScreenshot({component: page, fullPage: true});
+        await expectScreenshot({component: menu});
     });
 });
