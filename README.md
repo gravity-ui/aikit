@@ -225,3 +225,7 @@ A React component library for building AI chat interfaces, organized by Atomic D
 - **Reaching for `<Chat>` / `<AIChat>`** — the page-level export is `ChatContainer` (and `AIStudioChat`); there is no component literally named `Chat`.
 - **Skipping message-type registration for custom types** — custom message kinds must be registered in the message type system, or they render as unknown.
 - **Editing base components instead of using hooks** — the two-level design expects you to customize via hooks/composition; overriding internals directly breaks upgrades.
+
+## Documentation for AI agents
+
+Agent-readable documentation for the installed version is located in `node_modules/@gravity-ui/aikit/build/docs/INDEX.md`.
