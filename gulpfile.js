@@ -113,11 +113,28 @@ task('copy-themes', () => {
 });
 
 // Bundles the AI-facing docs tree (cleaned READMEs + guides) into build/docs so it
-// ships in the npm tarball. See scripts/build-docs.mjs.
+// ships in the npm tarball.
 task('copy-docs', (done) => {
-    const {execFileSync} = require('child_process');
-    execFileSync(process.execPath, [path.resolve(__dirname, 'scripts/build-docs.mjs')], {
-        stdio: 'inherit',
+    const {buildDocs} = require('@gravity-ui/readme-validator');
+    buildDocs({
+        rootDir: __dirname,
+        outDir: path.join(__dirname, 'build', 'docs'),
+        sources: [
+            {
+                title: 'Guides',
+                kind: 'markdown',
+                baseDir: 'docs',
+                outPrefix: 'guides',
+                nameFromTitle: true,
+            },
+            {
+                title: 'Components',
+                kind: 'readme',
+                baseDir: 'src/components',
+                outPrefix: 'components',
+                exclude: ['legacy'],
+            },
+        ],
     });
     done();
 });

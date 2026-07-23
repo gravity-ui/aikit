@@ -716,7 +716,7 @@
     "generate:exports:check": "node scripts/generate-exports.js --check",
     "clean": "gulp clean",
     "build": "gulp && npm run build:server",
-    "build:docs": "node scripts/build-docs.mjs",
+    "build:docs": "gulp copy-docs",
     "build:server": "tsc -p src/server/tsconfig.esm.json && tsc -p src/server/tsconfig.cjs.json",
     "start": "TS_NODE_PROJECT=.storybook/tsconfig.json storybook dev",
     "prepublishOnly": "npm run build",
