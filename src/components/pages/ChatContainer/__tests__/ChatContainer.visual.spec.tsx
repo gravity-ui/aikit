@@ -170,7 +170,7 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
             'Suggestion content:suggestion-1',
         );
         await expect(page.locator('[data-qa="welcome-suggestion-send"]')).toHaveText(
-            'Suggestion content',
+            'Suggestion content:suggestion-1',
         );
     });
 

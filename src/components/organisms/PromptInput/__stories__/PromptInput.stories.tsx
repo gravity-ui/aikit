@@ -109,6 +109,36 @@ export const WithSuggestions: Story = {
     decorators: defaultDecorators,
 };
 
+export const WithSuggestionIdCallback: Story = {
+    render: () => {
+        const [clickedSuggestion, setClickedSuggestion] = useState('');
+
+        return (
+            <>
+                <div data-qa="suggestion-click">{clickedSuggestion}</div>
+                <PromptInput
+                    view="simple"
+                    onSend={handleSend}
+                    bodyProps={{
+                        placeholder: 'Plan, code, build and test anything',
+                    }}
+                    suggestionsProps={{
+                        showSuggestions: true,
+                        suggestions: [
+                            {id: 'approve', title: 'Yes', view: 'action'},
+                            {id: 'reject', title: 'No'},
+                        ],
+                        onSuggestionClick: (content, id) => {
+                            setClickedSuggestion(`${content}:${id}`);
+                        },
+                    }}
+                />
+            </>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
 export const WithSuggestionsAndTitle: Story = {
     args: {
         view: 'simple',

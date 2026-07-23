@@ -178,8 +178,12 @@ export const WithSuggestionItemCallback: Story = {
                             },
                         ],
                     }}
-                    onSendMessage={async ({content}) => {
-                        setSentSuggestion(content);
+                    onSendMessage={async ({content, metadata}) => {
+                        const suggestionId =
+                            typeof metadata?.suggestion_id === 'string'
+                                ? metadata.suggestion_id
+                                : '';
+                        setSentSuggestion(`${content}:${suggestionId}`);
                     }}
                 />
             </>

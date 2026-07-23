@@ -298,8 +298,11 @@ export function ChatContainer(props: ChatContainerProps) {
                 welcomeConfig?.showMoreText ??
                 emptyContainerProps.showMoreText ??
                 i18n('empty-state-show-more'),
-            onSuggestionClick: async (clickedTitle: string) => {
-                await onSendMessage({content: clickedTitle});
+            onSuggestionClick: async (content: string, suggestionId?: string) => {
+                await onSendMessage({
+                    content,
+                    ...(suggestionId && {metadata: {suggestion_id: suggestionId}}),
+                });
             },
         };
     }, [
