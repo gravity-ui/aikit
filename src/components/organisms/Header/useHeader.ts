@@ -27,6 +27,7 @@ export function useHeader(props: HeaderProps): {
     actionTooltipTexts?: HeaderProps['actionTooltipTexts'];
     menuItems: HeaderMenuItem[];
     menuButtonTooltip?: string;
+    menuButtonIcon?: React.ReactNode;
     menuButtonQa?: string;
     menuItemQa?: HeaderProps['menuItemQa'];
 } {
@@ -43,6 +44,7 @@ export function useHeader(props: HeaderProps): {
         additionalActions = [],
         menuItems = [],
         menuButtonTooltip,
+        menuButtonIcon,
         menuButtonQa,
         menuItemQa,
         titlePosition = 'left',
@@ -110,6 +112,7 @@ export function useHeader(props: HeaderProps): {
         actionTooltipTexts,
         menuItems,
         menuButtonTooltip,
+        menuButtonIcon,
         menuButtonQa,
         menuItemQa,
     };

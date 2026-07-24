@@ -55,6 +55,7 @@ export function Header(props: HeaderProps) {
         additionalActions,
         menuItems,
         menuButtonTooltip,
+        menuButtonIcon,
         menuButtonQa,
         menuItemQa,
         titlePosition,
@@ -166,12 +167,12 @@ export function Header(props: HeaderProps) {
                         className={b('action-button')}
                         qa={menuButtonQa ?? 'header-menu-button'}
                     >
-                        <Icon data={Ellipsis} size={16} />
+                        {menuButtonIcon ?? <Icon data={Ellipsis} size={16} />}
                     </ActionButton>
                 )}
             />
         );
-    }, [dropdownMenuItems, menuButtonQa, menuButtonTooltip, menuItems.length]);
+    }, [dropdownMenuItems, menuButtonIcon, menuButtonQa, menuButtonTooltip, menuItems.length]);
 
     return (
         <div className={b('', className)} data-qa={qa}>

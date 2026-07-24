@@ -283,6 +283,18 @@ Via `ChatContainer`:
 
 Default `data-qa` values: `header-menu-button`, `header-menu-item-${id}`.
 
+Optional `menuButtonIcon` overrides the default horizontal `...` icon on the overflow button:
+
+```tsx
+import {EllipsisVertical} from '@gravity-ui/icons';
+import {Icon} from '@gravity-ui/uikit';
+
+<Header
+  menuItems={[...]}
+  menuButtonIcon={<Icon data={EllipsisVertical} size={16} />}
+/>
+```
+
 ## Styling
 
 The component uses CSS variables for theming:
@@ -313,6 +325,7 @@ The component uses CSS variables for theming:
 | `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type)                                                                                          |
 | `menuItems`           | `HeaderMenuItem[]`                         | -        | `[]`       | Overflow menu items; `...` button renders only when non-empty                                                                              |
 | `menuButtonTooltip`   | `string`                                   | -        | -          | Tooltip for overflow menu button (default: built-in i18n)                                                                                  |
+| `menuButtonIcon`      | `React.ReactNode`                          | -        | -          | Overflow menu button icon (default: horizontal Ellipsis)                                                                                   |
 | `menuButtonQa`        | `string`                                   | -        | -          | `data-qa` for overflow menu button (default: `header-menu-button`)                                                                         |
 | `menuItemQa`          | `Partial<Record<string, string>>`          | -        | -          | `data-qa` overrides per menu item id (default: `header-menu-item-${id}`)                                                                   |
 | `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)                                                                                             |

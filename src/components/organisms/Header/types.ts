@@ -44,6 +44,8 @@ export type HeaderProps = {
     menuItems?: HeaderMenuItem[];
     /** Tooltip for the overflow menu button (default: built-in i18n) */
     menuButtonTooltip?: string;
+    /** Custom overflow menu button icon (default: horizontal Ellipsis) */
+    menuButtonIcon?: React.ReactNode;
     /** data-qa for the overflow menu button (default: `header-menu-button`) */
     menuButtonQa?: string;
     /** data-qa overrides per menu item id (default: `header-menu-item-${id}`) */
