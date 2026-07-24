@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.13.0](https://github.com/gravity-ui/aikit/compare/v2.12.0...v2.13.0) (2026-07-24)
+
+
+### Features
+
+* **getFunctionCallDoneUpdate:** add able pass agruments from function_call ([#210](https://github.com/gravity-ui/aikit/issues/210)) ([d7a8bf0](https://github.com/gravity-ui/aikit/commit/d7a8bf09614361e2d8951b75493a45b2d41edfeb))
+* **suggestions:** pass suggestion context on click ([#212](https://github.com/gravity-ui/aikit/issues/212)) ([e263a87](https://github.com/gravity-ui/aikit/commit/e263a87fc64f33d5961868e9ae7af30a4c011c6f))
+
 ## [2.12.0](https://github.com/gravity-ui/aikit/compare/v2.11.0...v2.12.0) (2026-07-20)
 
 
