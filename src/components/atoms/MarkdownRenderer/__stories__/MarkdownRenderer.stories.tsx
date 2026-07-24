@@ -21,15 +21,9 @@ import '../../../organisms/AssistantMessage/AssistantMessage.scss';
 const assistantMessageB = block('assistant-message');
 
 /** Same DOM as AssistantMessage: BaseMessage + __content wrapper (width 100%). */
-function MarkdownTableInAssistantMessage({
-    content,
-    width = '380px',
-}: {
-    content: string;
-    width?: string;
-}) {
+function MarkdownTableInAssistantMessage({content}: {content: string}) {
     return (
-        <ContentWrapper width={width}>
+        <ContentWrapper width="380px">
             <BaseMessage role="assistant">
                 <div className={assistantMessageB('content')}>
                     <MarkdownRenderer content={content} />
@@ -211,25 +205,13 @@ const MARKDOWN_TABLE_LONG_CELL = `| Field | Value |
 | --- | --- |
 | Name | Anna |
 | Notes | This is a very long description with many words separated by spaces that should wrap inside the cell instead of stretching the table on one line. |
-| Token | super-long-unbroken-token-without-any-spaces-in-the-middle |`;
+| Token | super-long-unbroken-token-without-any-spaces-in-the-middle |
+| Member ref | \`anna-morgan-member-reference-verification-east-01\` |
+| Profile | \`{"name": "Anna Morgan", "code": "XM-901", "joined": "2023-06-12", "units": 12, "location": "New York"}\` |`;
 
-/** Multi-word and unbroken tokens wrap at `--g-aikit-markdown-renderer-table-cell-max-width`. */
+/** Multi-word text, unbroken tokens, and inline code wrap at `--g-aikit-markdown-renderer-table-cell-max-width`. */
 export const WithMarkdownTableLongCellInMessage: StoryObj<typeof MarkdownRenderer> = {
     render: () => <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE_LONG_CELL} />,
-    decorators: defaultDecorators,
-};
-
-const MARKDOWN_TABLE_LONG_WORDS = `| Full name | Code | Notes |
-| --- | --- | --- |
-| \`anna-morgan-member-reference-verification-east-01\` | XM-901 | \`{"name": "Anna Morgan", "code": "XM-901", "joined": "2023-06-12", "units": 12, "location": "New York"}\` |
-| Wei Chen | BR-204 | Pending verification for apac region |
-| \`olivia-nielsen-member-reference-premium-tier-771\` | DK-771 | \`{"type": "object", "properties": {"email": {"type": "string"}, "phone": {"type": "string"}, "timezone": {"type": "string"}}}\` |`;
-
-/** Long identifiers in backticks and inline code wrap inside cells instead of overlapping columns. */
-export const WithMarkdownTableLongWordsInMessage: StoryObj<typeof MarkdownRenderer> = {
-    render: () => (
-        <MarkdownTableInAssistantMessage content={MARKDOWN_TABLE_LONG_WORDS} width="600px" />
-    ),
     decorators: defaultDecorators,
 };
 
