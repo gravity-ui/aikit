@@ -62,6 +62,7 @@ export {EmbeddedInPageWithStreaming} from './parts/states';
 
 export {
     WithAdditionalActions,
+    WithHeaderMenu,
     WithLikeDislikeActions,
     WithRatingBlock,
     WithRatingBlockDynamicScenarios,

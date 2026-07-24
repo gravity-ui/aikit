@@ -12,6 +12,7 @@ import {
     normalizeChatContainerQa,
     resolveChatContainerQa,
     resolveChatContainerRootQa,
+    resolveHeaderMenuItemQa,
 } from './chatContainerQa';
 import {i18n} from './i18n';
 import type {ChatContainerProps, ChatContainerTexts} from './types';
@@ -260,6 +261,15 @@ export function ChatContainer(props: ChatContainerProps) {
             qa: resolveChatContainerQa(qaMap, 'header', 'header') ?? headerProps.qa,
             actionQa,
             actionTooltipTexts,
+            menuButtonQa:
+                resolveChatContainerQa(qaMap, 'headerMenuButton', 'header-menu-button') ??
+                headerProps.menuButtonQa,
+            menuButtonTooltip: texts.headerMenuTooltip ?? headerProps.menuButtonTooltip,
+            menuItemQa: resolveHeaderMenuItemQa(
+                qaMap,
+                headerProps.menuItems,
+                headerProps.menuItemQa,
+            ),
         };
     }, [
         headerTitle,
@@ -277,6 +287,7 @@ export function ChatContainer(props: ChatContainerProps) {
         texts.headerCloseTooltip,
         texts.headerFoldingCollapsedTooltip,
         texts.headerFoldingOpenedTooltip,
+        texts.headerMenuTooltip,
     ]);
 
     // Build props for EmptyContainer
