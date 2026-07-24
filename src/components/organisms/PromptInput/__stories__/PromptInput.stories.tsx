@@ -125,11 +125,19 @@ export const WithSuggestionIdCallback: Story = {
                     suggestionsProps={{
                         showSuggestions: true,
                         suggestions: [
-                            {id: 'approve', title: 'Yes', view: 'action'},
+                            {
+                                id: 'approve',
+                                title: 'Yes',
+                                view: 'action',
+                                data: {reason: 'confirmed'},
+                            },
                             {id: 'reject', title: 'No'},
                         ],
-                        onSuggestionClick: (content, id) => {
-                            setClickedSuggestion(`${content}:${id}`);
+                        onSuggestionClick: (content, id, data) => {
+                            const reason = data?.reason;
+                            setClickedSuggestion(
+                                `${content}:${id}:${typeof reason === 'string' ? reason : ''}`,
+                            );
                         },
                     }}
                 />

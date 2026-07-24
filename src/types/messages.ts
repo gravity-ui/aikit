@@ -103,10 +103,18 @@ export type BaseMessageProps<TMessage = unknown> = {
 
 export type TMessageMetadata = Record<string, unknown>;
 
+/** Context passed when a message is sent via suggestion click */
+export type TSuggestionContext = {
+    id?: string;
+    data?: Record<string, unknown>;
+};
+
 export type TSubmitData = {
     content: string;
     attachments?: File[];
     metadata?: TMessageMetadata;
+    /** Set when the message is sent by clicking a suggestion */
+    suggestion?: TSuggestionContext;
 };
 
 export type TMessageRole = 'user' | 'assistant' | 'system';

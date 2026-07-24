@@ -1,5 +1,6 @@
 import {type ReactNode, useMemo} from 'react';
 
+import type {TSuggestionContext} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {Disclaimer} from '../../atoms/Disclaimer';
 import {Header, HeaderAction, type HeaderProps} from '../../organisms/Header';
@@ -21,6 +22,20 @@ import './ChatContainer.scss';
 const b = block('chat-container');
 
 type NormalizedChatContainerQa = ReturnType<typeof normalizeChatContainerQa>;
+
+function toSuggestionContext(
+    id?: string,
+    data?: Record<string, unknown>,
+): TSuggestionContext | undefined {
+    if (!id && !data) {
+        return undefined;
+    }
+
+    return {
+        ...(id && {id}),
+        ...(data && {data}),
+    };
+}
 
 function mergePromptInputSuggestionsProps(
     fromProps: PromptInputProps['suggestionsProps'] | undefined,
@@ -298,10 +313,16 @@ export function ChatContainer(props: ChatContainerProps) {
                 welcomeConfig?.showMoreText ??
                 emptyContainerProps.showMoreText ??
                 i18n('empty-state-show-more'),
-            onSuggestionClick: async (content: string, suggestionId?: string) => {
+            onSuggestionClick: async (
+                content: string,
+                suggestionId?: string,
+                suggestionData?: Record<string, unknown>,
+            ) => {
+                const suggestion = toSuggestionContext(suggestionId, suggestionData);
+
                 await onSendMessage({
                     content,
-                    ...(suggestionId && {metadata: {suggestion_id: suggestionId}}),
+                    ...(suggestion && {suggestion}),
                 });
             },
         };

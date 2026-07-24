@@ -26,7 +26,9 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
 
         await page.getByRole('button', {name: 'Yes'}).click();
 
-        await expect(page.locator('[data-qa="suggestion-click"]')).toHaveText('Yes:approve');
+        await expect(page.locator('[data-qa="suggestion-click"]')).toHaveText(
+            'Yes:approve:confirmed',
+        );
     });
 
     test('should render with suggestions and title', async ({mount, expectScreenshot}) => {

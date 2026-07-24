@@ -1,6 +1,6 @@
 import {ReactNode, type Ref} from 'react';
 
-import type {SuggestionsItem} from '../../../types/common';
+import type {SuggestionClickHandler, SuggestionsItem} from '../../../types/common';
 import {PromptInputHeaderProps} from '../../molecules/PromptInputHeader';
 import type {SuggestionsProps} from '../../molecules/Suggestions';
 
@@ -108,5 +108,5 @@ export type PromptInputSuggestionsConfig = {
     /** Text alignment inside suggestion buttons */
     suggestionsTextAlign?: SuggestionsProps['textAlign'];
     /** Callback when suggestion is clicked */
-    onSuggestionClick?: (content: string, id?: string) => void;
+    onSuggestionClick?: SuggestionClickHandler;
 };

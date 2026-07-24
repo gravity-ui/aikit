@@ -174,6 +174,16 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         );
     });
 
+    test('should pass suggestion data to onSendMessage on welcome click', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithSuggestionDataCallback />);
+
+        await page.getByRole('button', {name: 'Suggestion content'}).click();
+
+        await expect(page.locator('[data-qa="welcome-suggestion-send"]')).toHaveText(
+            'Suggestion content:suggestion-1:Focus on billing',
+        );
+    });
+
     test('should send message via prompt input', async ({mount, page}) => {
         await mount(<ChatContainerStories.EmptyState />);
 

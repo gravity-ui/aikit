@@ -3,7 +3,7 @@ import React from 'react';
 import {ArrowRotateRight} from '@gravity-ui/icons';
 import {Button, Text} from '@gravity-ui/uikit';
 
-import type {SuggestionsItem} from '../../../types/common';
+import type {SuggestionClickHandler, SuggestionsItem} from '../../../types/common';
 import {block} from '../../../utils/cn';
 import {Suggestions} from '../../molecules/Suggestions';
 
@@ -50,7 +50,7 @@ export interface EmptyContainerProps {
     /** Array of suggestion items */
     suggestions?: Suggestion[];
     /** Callback when a suggestion is clicked */
-    onSuggestionClick?: (content: string, id?: string) => void;
+    onSuggestionClick?: SuggestionClickHandler;
     /** Alignment configuration for image, title, and description */
     alignment?: AlignmentConfig;
     /** Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical */

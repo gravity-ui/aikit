@@ -17,6 +17,15 @@ export type ActionConfig = {
 export type Action = ActionConfig | React.ReactNode;
 
 /**
+ * Callback invoked when a suggestion is clicked
+ */
+export type SuggestionClickHandler = (
+    content: string,
+    id?: string,
+    data?: Record<string, unknown>,
+) => void | Promise<void>;
+
+/**
  * Single suggestion item displayed as a button
  */
 export type SuggestionsItem = {
@@ -24,10 +33,12 @@ export type SuggestionsItem = {
     id?: string;
     /** Title text to display on the button */
     title: string;
+    /** Optional payload passed to click handlers and submit data */
+    data?: Record<string, unknown>;
     /** Button view */
     view?: ButtonButtonProps['view'];
     /** Icon position: 'left' for ChevronLeft, 'right' for ChevronRight */
     icon?: 'left' | 'right';
     /** Additional callback invoked when this suggestion is clicked */
-    onClick?: (content: string, id?: string) => void | Promise<void>;
+    onClick?: SuggestionClickHandler;
 };
