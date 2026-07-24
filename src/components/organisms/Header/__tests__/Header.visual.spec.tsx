@@ -1,4 +1,4 @@
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {HeaderStories} from './helpersPlaywright';
 
@@ -61,5 +61,21 @@ test.describe('Header', {tag: '@Header'}, () => {
         await mount(<HeaderStories.FullExample />);
 
         await expectScreenshot();
+    });
+
+    test('should render overflow menu button', async ({mount, expectScreenshot}) => {
+        await mount(<HeaderStories.WithMenuItems />);
+
+        await expectScreenshot();
+    });
+
+    test('should render overflow menu open', async ({mount, page, expectScreenshot}) => {
+        await mount(<HeaderStories.WithMenuItems />);
+
+        await page.locator('[data-qa="header-menu-button"]').click();
+        const menu = page.getByRole('menu');
+        await expect(menu).toBeVisible();
+
+        await expectScreenshot({component: menu});
     });
 });

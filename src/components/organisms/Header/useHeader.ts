@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 
 import type {Action} from '../../../types/common';
 
-import {HeaderAction, type HeaderProps} from './types';
+import {HeaderAction, type HeaderMenuItem, type HeaderProps} from './types';
 
 export type ActionItem = {
     id: string;
@@ -25,6 +25,11 @@ export function useHeader(props: HeaderProps): {
     qa?: string;
     actionQa?: HeaderProps['actionQa'];
     actionTooltipTexts?: HeaderProps['actionTooltipTexts'];
+    menuItems: HeaderMenuItem[];
+    menuButtonTooltip?: string;
+    menuButtonIcon?: React.ReactNode;
+    menuButtonQa?: string;
+    menuItemQa?: HeaderProps['menuItemQa'];
 } {
     const {
         icon,
@@ -37,6 +42,11 @@ export function useHeader(props: HeaderProps): {
         handleFolding,
         foldingState = 'opened',
         additionalActions = [],
+        menuItems = [],
+        menuButtonTooltip,
+        menuButtonIcon,
+        menuButtonQa,
+        menuItemQa,
         titlePosition = 'left',
         withIcon = true,
         showTitle = true,
@@ -100,5 +110,10 @@ export function useHeader(props: HeaderProps): {
         qa,
         actionQa,
         actionTooltipTexts,
+        menuItems,
+        menuButtonTooltip,
+        menuButtonIcon,
+        menuButtonQa,
+        menuItemQa,
     };
 }

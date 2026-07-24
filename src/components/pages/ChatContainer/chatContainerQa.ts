@@ -1,3 +1,5 @@
+import type {HeaderMenuItem} from '../../organisms/Header';
+
 import type {ChatContainerQa} from './types';
 
 /**
@@ -52,4 +54,26 @@ export function resolveChatContainerQa(
  */
 export function resolveChatContainerRootQa(qaMap: ChatContainerQa): string | undefined {
     return qaMap.root ?? qaMap.prefix;
+}
+
+/**
+ * Merges explicit menu item qa overrides with `${prefix}-header-menu-item-${id}` when `prefix` is set.
+ */
+export function resolveHeaderMenuItemQa(
+    qaMap: ChatContainerQa,
+    menuItems: HeaderMenuItem[] | undefined,
+    overrides: Partial<Record<string, string>> | undefined,
+): Partial<Record<string, string>> | undefined {
+    const result: Partial<Record<string, string>> = {...overrides};
+
+    for (const item of menuItems ?? []) {
+        if (result[item.id] !== undefined) {
+            continue;
+        }
+        if (qaMap.prefix) {
+            result[item.id] = `${qaMap.prefix}-header-menu-item-${item.id}`;
+        }
+    }
+
+    return Object.keys(result).length > 0 ? result : undefined;
 }

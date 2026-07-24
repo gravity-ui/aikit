@@ -329,7 +329,40 @@ export const FullExample: StoryFn<HeaderProps> = (args) => {
     );
 };
 
-// Interactive story to demonstrate folding state toggle
+const menuItemsConfig = [
+    {
+        id: 'settings',
+        label: 'Settings',
+        icon: <Icon data={Gear} size={16} />,
+        onClick: () => {
+            // eslint-disable-next-line no-console
+            console.log('Settings clicked');
+        },
+    },
+    {
+        id: 'export',
+        label: 'Export chat',
+        onClick: () => {
+            // eslint-disable-next-line no-console
+            console.log('Export clicked');
+        },
+    },
+];
+
+export const WithMenuItems: StoryFn<HeaderProps> = (args) => {
+    return (
+        <ContentWrapper width="480px">
+            <Header
+                title="With Overflow Menu"
+                baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
+                menuItems={[...menuItemsConfig]}
+                {...mockHandlers}
+                {...args}
+            />
+        </ContentWrapper>
+    );
+};
+
 export const FoldingInteractive: StoryFn<HeaderProps> = (args) => {
     const [foldingState, setFoldingState] = useState<'collapsed' | 'opened'>('opened');
 

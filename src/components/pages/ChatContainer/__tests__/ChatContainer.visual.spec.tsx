@@ -50,6 +50,12 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render with header overflow menu', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContainerStories.WithHeaderMenu />);
+
+        await expectScreenshot();
+    });
+
     test('should apply unified qa config from ChatContainerQa', async ({mount, page}) => {
         await mount(<ChatContainerStories.WithQaExplicit />);
 

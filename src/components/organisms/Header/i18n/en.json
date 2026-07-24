@@ -3,5 +3,6 @@
   "action-tooltip-history": "History",
   "action-tooltip-folding-collapsed": "Expand",
   "action-tooltip-folding-opened": "Collapse",
-  "action-tooltip-close": "Close"
+  "action-tooltip-close": "Close",
+  "action-tooltip-menu": "More actions"
 }

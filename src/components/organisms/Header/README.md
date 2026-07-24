@@ -243,6 +243,58 @@ You can pass any React element directly for complete customization:
 
 Additional actions appear before base actions in the header's action bar.
 
+### Overflow menu
+
+Pass `menuItems` to render a `...` overflow menu. The button appears **only when `menuItems` is a non-empty array**. Labels and click handlers are provided by the consumer (no built-in menu entries).
+
+```tsx
+<Header
+  title="Chat Header"
+  baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
+  menuItems={[
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: <Icon data={Gear} size={16} />,
+      onClick: () => console.log('Settings'),
+    },
+    {
+      id: 'export',
+      label: 'Export',
+      onClick: () => console.log('Export'),
+    },
+  ]}
+  handleNewChat={() => console.log('New chat')}
+  handleHistoryToggle={() => console.log('History')}
+  handleClose={() => console.log('Close')}
+/>
+```
+
+Via `ChatContainer`:
+
+```tsx
+<ChatContainer
+  headerProps={{
+    menuItems: [{id: 'export', label: 'Export', onClick: handleExport}],
+  }}
+  // ...
+/>
+```
+
+Default `data-qa` values: `header-menu-button`, `header-menu-item-${id}`.
+
+Optional `menuButtonIcon` overrides the default horizontal `...` icon on the overflow button:
+
+```tsx
+import {EllipsisVertical} from '@gravity-ui/icons';
+import {Icon} from '@gravity-ui/uikit';
+
+<Header
+  menuItems={[...]}
+  menuButtonIcon={<Icon data={EllipsisVertical} size={16} />}
+/>
+```
+
 ## Styling
 
 The component uses CSS variables for theming:
@@ -271,6 +323,11 @@ The component uses CSS variables for theming:
 | `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                                                                                                                 |
 | `handleClose`         | `() => void`                               | -        | -          | Handler for close action                                                                                                                   |
 | `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type)                                                                                          |
+| `menuItems`           | `HeaderMenuItem[]`                         | -        | `[]`       | Overflow menu items; `...` button renders only when non-empty                                                                              |
+| `menuButtonTooltip`   | `string`                                   | -        | -          | Tooltip for overflow menu button (default: built-in i18n)                                                                                  |
+| `menuButtonIcon`      | `React.ReactNode`                          | -        | -          | Overflow menu button icon (default: horizontal Ellipsis)                                                                                   |
+| `menuButtonQa`        | `string`                                   | -        | -          | `data-qa` for overflow menu button (default: `header-menu-button`)                                                                         |
+| `menuItemQa`          | `Partial<Record<string, string>>`          | -        | -          | `data-qa` overrides per menu item id (default: `header-menu-item-${id}`)                                                                   |
 | `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)                                                                                             |
 | `foldingState`        | `'collapsed' \| 'opened'`                  | -        | `'opened'` | Current folding state                                                                                                                      |
 | `titlePosition`       | `'left' \| 'center'`                       | -        | `'left'`   | Title alignment position                                                                                                                   |
@@ -290,4 +347,16 @@ enum HeaderAction {
   Folding = 'folding',
   Close = 'close',
 }
+```
+
+### HeaderMenuItem
+
+```tsx
+type HeaderMenuItem = {
+  id: string;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  icon?: React.ReactNode; // optional; omitted when not needed
+};
 ```

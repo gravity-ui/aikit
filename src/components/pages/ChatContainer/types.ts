@@ -75,6 +75,8 @@ export interface ChatContainerTexts {
     headerFoldingCollapsedTooltip?: string;
     /** Tooltip for the folding header button when opened (collapse action) */
     headerFoldingOpenedTooltip?: string;
+    /** Tooltip for the header overflow menu button */
+    headerMenuTooltip?: string;
     /** Empty state / welcome title */
     emptyStateTitle?: React.ReactNode;
     /** Empty state / welcome description */
@@ -127,6 +129,8 @@ export interface ChatContainerQa {
     headerFolding?: string;
     /** Overrides default `header-action-close` */
     headerClose?: string;
+    /** Overrides default `header-menu-button` */
+    headerMenuButton?: string;
     /** ChatContent root */
     content?: string;
     /** Empty state (EmptyContainer) */

@@ -264,7 +264,9 @@ Use the `qa` prop to set `data-qa` attributes for automated tests.
 | `qa={{ prefix: 'chat' }}`            | Opt-in: applies `${prefix}-${slot}` to major slots (root uses `prefix` if `root` is omitted).                                                                                 |
 | `qa={{ root: '…', header: '…', … }}` | Explicit per-slot values. Each key wins over `prefix`.                                                                                                                        |
 
-Explicit keys (all optional) on `ChatContainerQa`: `prefix`, `root`, `header`, `headerNewChat`, `headerHistory`, `headerFolding`, `headerClose`, `content`, `emptyState`, `messageList`, `actionPopup`, `promptInput`, `promptInputHeader`, `promptInputBody`, `promptInputFooter`, `submitButton`, `disclaimer`, `history`.
+Explicit keys (all optional) on `ChatContainerQa`: `prefix`, `root`, `header`, `headerNewChat`, `headerHistory`, `headerFolding`, `headerClose`, `headerMenuButton`, `content`, `emptyState`, `messageList`, `actionPopup`, `promptInput`, `promptInputHeader`, `promptInputBody`, `promptInputFooter`, `submitButton`, `disclaimer`, `history`.
+
+When `prefix` is set and `headerProps.menuItems` is non-empty, each menu item gets `data-qa="${prefix}-header-menu-item-${id}"` unless overridden via `headerProps.menuItemQa`.
 
 Nested `*Props.qa` (e.g. `promptInputProps.qa`, `messageListConfig.qa`) still work; values from the top-level `qa` object take precedence when both are set.
 
@@ -302,6 +304,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | ------------------------------------------------------- | ----------------------------------------------------------- |
 | Header title                                            | `headerProps.title` → active chat name → default `i18n()`   |
 | Header action tooltips                                  | `headerProps.actionTooltipTexts` → Header built-in `i18n()` |
+| Header overflow menu tooltip                            | `headerProps.menuButtonTooltip` → Header built-in `i18n()`  |
 | Empty / welcome copy                                    | `welcomeConfig` → `emptyContainerProps` → default `i18n()`  |
 | Prompt placeholder / submit tooltips / cancelable label | `promptInputProps.*` → PromptInput defaults                 |
 | Prompt suggestions title (above input chips)            | `promptInputProps.suggestionsProps.suggestTitle`            |
@@ -317,6 +320,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `headerCloseTooltip`              | Tooltip on the close header action                                               |
 | `headerFoldingCollapsedTooltip`   | Tooltip when folding is collapsed (expand)                                       |
 | `headerFoldingOpenedTooltip`      | Tooltip when folding is opened (collapse)                                        |
+| `headerMenuTooltip`               | Tooltip on the header overflow menu (`...`) button                               |
 | `emptyStateTitle`                 | Welcome / empty state title (`ReactNode`)                                        |
 | `emptyStateDescription`           | Welcome description (`ReactNode`)                                                |
 | `emptyStateSuggestionsTitle`      | Title above suggestions (`ReactNode`)                                            |
@@ -743,6 +747,22 @@ Override Header component props (icon, title, actions, etc.):
           children: 'Settings',
           onClick: handleSettings,
         },
+      },
+    ],
+  }}
+/>
+```
+
+Overflow menu (`...` button) — pass `menuItems` (rendered only when the array is non-empty):
+
+```tsx
+<ChatContainer
+  headerProps={{
+    menuItems: [
+      {
+        id: 'settings',
+        label: 'Settings',
+        onClick: handleSettings,
       },
     ],
   }}
