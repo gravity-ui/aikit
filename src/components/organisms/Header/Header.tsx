@@ -144,6 +144,7 @@ export function Header(props: HeaderProps) {
                 action: item.onClick,
                 disabled: item.disabled,
                 qa: menuItemQa?.[item.id] ?? `header-menu-item-${item.id}`,
+                ...(item.icon ? {iconStart: item.icon} : {}),
             })),
         [menuItems, menuItemQa],
     );

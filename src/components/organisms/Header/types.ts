@@ -5,6 +5,8 @@ export type HeaderMenuItem = {
     label: string;
     onClick: () => void;
     disabled?: boolean;
+    /** Optional leading icon (rendered only when provided) */
+    icon?: React.ReactNode;
 };
 
 export enum HeaderAction {

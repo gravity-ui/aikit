@@ -333,6 +333,7 @@ const menuItemsConfig = [
     {
         id: 'settings',
         label: 'Settings',
+        icon: <Icon data={Gear} size={16} />,
         onClick: () => {
             // eslint-disable-next-line no-console
             console.log('Settings clicked');
@@ -346,7 +347,7 @@ const menuItemsConfig = [
             console.log('Export clicked');
         },
     },
-] as const;
+];
 
 export const WithMenuItems: StoryFn<HeaderProps> = (args) => {
     return (

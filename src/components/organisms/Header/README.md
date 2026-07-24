@@ -255,7 +255,13 @@ Pass `menuItems` to render a `...` overflow menu. The button appears **only when
     {
       id: 'settings',
       label: 'Settings',
+      icon: <Icon data={Gear} size={16} />,
       onClick: () => console.log('Settings'),
+    },
+    {
+      id: 'export',
+      label: 'Export',
+      onClick: () => console.log('Export'),
     },
   ]}
   handleNewChat={() => console.log('New chat')}
@@ -328,4 +334,16 @@ enum HeaderAction {
   Folding = 'folding',
   Close = 'close',
 }
+```
+
+### HeaderMenuItem
+
+```tsx
+type HeaderMenuItem = {
+  id: string;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  icon?: React.ReactNode; // optional; omitted when not needed
+};
 ```
