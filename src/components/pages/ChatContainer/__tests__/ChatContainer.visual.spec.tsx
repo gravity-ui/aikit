@@ -170,7 +170,17 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
             'Suggestion content:suggestion-1',
         );
         await expect(page.locator('[data-qa="welcome-suggestion-send"]')).toHaveText(
-            'Suggestion content',
+            'Suggestion content:suggestion-1',
+        );
+    });
+
+    test('should pass suggestion data to onSendMessage on welcome click', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithSuggestionDataCallback />);
+
+        await page.getByRole('button', {name: 'Suggestion content'}).click();
+
+        await expect(page.locator('[data-qa="welcome-suggestion-send"]')).toHaveText(
+            'Suggestion content:suggestion-1:Focus on billing',
         );
     });
 

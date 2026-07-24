@@ -1,4 +1,4 @@
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {PromptInputStories} from './helpersPlaywright';
 
@@ -19,6 +19,16 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await mount(<PromptInputStories.WithSuggestions />);
 
         await expectScreenshot();
+    });
+
+    test('should forward suggestion id to onSuggestionClick', async ({mount, page}) => {
+        await mount(<PromptInputStories.WithSuggestionIdCallback />);
+
+        await page.getByRole('button', {name: 'Yes'}).click();
+
+        await expect(page.locator('[data-qa="suggestion-click"]')).toHaveText(
+            'Yes:approve:confirmed',
+        );
     });
 
     test('should render with suggestions and title', async ({mount, expectScreenshot}) => {

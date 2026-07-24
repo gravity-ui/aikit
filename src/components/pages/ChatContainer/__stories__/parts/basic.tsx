@@ -178,8 +178,46 @@ export const WithSuggestionItemCallback: Story = {
                             },
                         ],
                     }}
-                    onSendMessage={async ({content}) => {
-                        setSentSuggestion(content);
+                    onSendMessage={async ({content, suggestion}) => {
+                        const suggestionId = suggestion?.id ?? '';
+                        setSentSuggestion(`${content}:${suggestionId}`);
+                    }}
+                />
+            </>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+/**
+ * Empty state fixture for verifying suggestion data is passed to onSendMessage.
+ */
+export const WithSuggestionDataCallback: Story = {
+    args: {
+        messages: [],
+        welcomeConfig: {
+            suggestions: [
+                {
+                    id: 'suggestion-1',
+                    title: 'Suggestion content',
+                    data: {additional_prompt: 'Focus on billing'},
+                },
+            ],
+        },
+    },
+    render: (args) => {
+        const [sentSuggestion, setSentSuggestion] = useState('');
+
+        return (
+            <>
+                <div data-qa="welcome-suggestion-send">{sentSuggestion}</div>
+                <ChatContainer
+                    {...args}
+                    onSendMessage={async ({content, suggestion}) => {
+                        const additionalPrompt = suggestion?.data?.additional_prompt;
+                        setSentSuggestion(
+                            `${content}:${suggestion?.id ?? ''}:${typeof additionalPrompt === 'string' ? additionalPrompt : ''}`,
+                        );
                     }}
                 />
             </>

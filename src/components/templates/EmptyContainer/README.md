@@ -129,21 +129,21 @@ import {EmptyContainer} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop                | Type                                     | Required | Default  | Description                                                                    |
-| ------------------- | ---------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------ |
-| `image`             | `ReactNode`                              | -        | -        | Image or icon to display at the top                                            |
-| `title`             | `string \| ReactNode`                    | -        | -        | Title text or custom React element for the welcome screen                      |
-| `description`       | `string \| ReactNode`                    | -        | -        | Description text or custom React element                                       |
-| `suggestionTitle`   | `string`                                 | -        | -        | Title for the suggestions section                                              |
-| `suggestions`       | `Suggestion[]`                           | -        | `[]`     | Array of suggestion items                                                      |
-| `onSuggestionClick` | `(content: string, id?: string) => void` | -        | -        | Callback when a suggestion is clicked                                          |
-| `alignment`         | `AlignmentConfig`                        | -        | -        | Alignment configuration for image, title, and description                      |
-| `layout`            | `'grid' \| 'list'`                       | -        | `'grid'` | Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical |
-| `wrapText`          | `boolean`                                | -        | `false`  | Enable text wrapping inside suggestion buttons instead of ellipsis             |
-| `showMore`          | `() => void`                             | -        | -        | Callback for showing more suggestions (displays a button)                      |
-| `showMoreText`      | `string`                                 | -        | -        | Custom text for the show more button (overrides i18n localization)             |
-| `className`         | `string`                                 | -        | -        | Additional CSS class                                                           |
-| `qa`                | `string`                                 | -        | -        | QA/test identifier                                                             |
+| Prop                | Type                     | Required | Default  | Description                                                                    |
+| ------------------- | ------------------------ | -------- | -------- | ------------------------------------------------------------------------------ |
+| `image`             | `ReactNode`              | -        | -        | Image or icon to display at the top                                            |
+| `title`             | `string \| ReactNode`    | -        | -        | Title text or custom React element for the welcome screen                      |
+| `description`       | `string \| ReactNode`    | -        | -        | Description text or custom React element                                       |
+| `suggestionTitle`   | `string`                 | -        | -        | Title for the suggestions section                                              |
+| `suggestions`       | `Suggestion[]`           | -        | `[]`     | Array of suggestion items                                                      |
+| `onSuggestionClick` | `SuggestionClickHandler` | -        | -        | Callback when a suggestion is clicked                                          |
+| `alignment`         | `AlignmentConfig`        | -        | -        | Alignment configuration for image, title, and description                      |
+| `layout`            | `'grid' \| 'list'`       | -        | `'grid'` | Layout orientation for suggestions: 'grid' for horizontal, 'list' for vertical |
+| `wrapText`          | `boolean`                | -        | `false`  | Enable text wrapping inside suggestion buttons instead of ellipsis             |
+| `showMore`          | `() => void`             | -        | -        | Callback for showing more suggestions (displays a button)                      |
+| `showMoreText`      | `string`                 | -        | -        | Custom text for the show more button (overrides i18n localization)             |
+| `className`         | `string`                 | -        | -        | Additional CSS class                                                           |
+| `qa`                | `string`                 | -        | -        | QA/test identifier                                                             |
 
 ### AlignmentConfig Type
 
@@ -201,7 +201,7 @@ The layout consists of two main areas:
 
 ## Suggestions Behavior
 
-When a suggestion is clicked, the `onSuggestionClick` callback will be called with the suggestion content and ID (if provided).
+When a suggestion is clicked, the `onSuggestionClick` callback will be called with the suggestion `title`, optional `id`, and optional `data` payload.
 
 ### Show More Button
 

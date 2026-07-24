@@ -87,11 +87,15 @@ export function PromptInput(props: PromptInputProps) {
     });
 
     // Handle suggestion click with custom handler or default to input change
-    const handleSuggestionClick = (suggestion: string) => {
+    const handleSuggestionClick = (
+        content: string,
+        id?: string,
+        data?: Record<string, unknown>,
+    ) => {
         if (suggestionsProps?.onSuggestionClick) {
-            suggestionsProps.onSuggestionClick(suggestion);
+            suggestionsProps.onSuggestionClick(content, id, data);
         } else {
-            hookState.handleChange(suggestion);
+            hookState.handleChange(content);
         }
     };
 

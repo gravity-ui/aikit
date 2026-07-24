@@ -3,7 +3,7 @@ import React from 'react';
 import {ChevronLeft, ChevronRight} from '@gravity-ui/icons';
 import {Icon, Text} from '@gravity-ui/uikit';
 
-import type {SuggestionsItem} from '../../../types/common';
+import type {SuggestionClickHandler, SuggestionsItem} from '../../../types/common';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 
@@ -18,7 +18,7 @@ export type SuggestionsProps = {
     /** Array of suggestion items to display */
     items: SuggestionsItem[];
     /** Callback function called when a suggestion is clicked */
-    onClick: (content: string, id?: string) => void | Promise<void>;
+    onClick: SuggestionClickHandler;
     /** Title to display above suggestions - can be string or custom React element */
     title?: React.ReactNode;
     /** Layout orientation: 'grid' for horizontal, 'list' for vertical */
@@ -53,8 +53,8 @@ export function Suggestions(props: SuggestionsProps) {
     } = props;
 
     const handleClick = async (item: SuggestionsItem) => {
-        await item.onClick?.(item.title, item.id);
-        await onClick(item.title, item.id);
+        await item.onClick?.(item.title, item.id, item.data);
+        await onClick(item.title, item.id, item.data);
     };
 
     const renderButton = (item: SuggestionsItem, index: number) => {

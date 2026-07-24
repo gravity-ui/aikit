@@ -22,6 +22,7 @@ export {
     Playground,
     EmptyState,
     WithSuggestionItemCallback,
+    WithSuggestionDataCallback,
     WithMessages,
     WithStreaming,
     WithVirtualizedStreaming,

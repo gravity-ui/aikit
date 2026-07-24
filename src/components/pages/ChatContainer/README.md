@@ -434,17 +434,25 @@ interface WelcomeConfig {
 
 #### Suggestions Properties
 
-The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is clicked, its optional `onClick` callback is called before its `title` value is sent as the message content.
+The `suggestions` array uses the `SuggestionsItem` type. When a suggestion is clicked, its optional `onClick` callback is called before `onSendMessage` is invoked with the suggestion context.
 
 ```tsx
 welcomeConfig={{
   suggestions: [{
     id: 'explain-cloud',
     title: 'Explain Yandex Cloud',
-    onClick: (content, id) => {
-      sendMetric('welcome_suggestion_click', {content, id});
+    data: {source: 'welcome-screen', category: 'getting-started'},
+    onClick: (content, id, data) => {
+      sendMetric('welcome_suggestion_click', {content, id, data});
     },
   }],
+}}
+
+// In onSendMessage:
+onSendMessage={async ({content, suggestion}) => {
+  // content — suggestion title
+  // suggestion?.id — stable identifier
+  // suggestion?.data — optional custom payload from the suggestion item
 }}
 ```
 
@@ -452,9 +460,10 @@ welcomeConfig={{
 
 - **`title`** (required): The text displayed on the button and sent as message content
 - **`id`** (optional): Unique identifier for the suggestion
+- **`data`** (optional): Custom payload passed through to click handlers and `TSubmitData.suggestion.data`
 - **`view`** (optional): Button styling - `'normal'`, `'action'`, `'outlined'`, `'flat'`, `'flat-secondary'`, `'outlined-info'`
 - **`icon`** (optional): Icon position - `'left'` displays ChevronLeft, `'right'` displays ChevronRight
-- **`onClick`** (optional): Additional callback called with the suggestion title and optional ID before the default click handler
+- **`onClick`** (optional): Additional callback called with `title`, optional `id`, and optional `data` before the default click handler
 
 **Text Wrapping:**
 

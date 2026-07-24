@@ -175,14 +175,14 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ### PromptInputSuggestionsConfig
 
-| Prop                   | Type                                     | Required | Default    | Description                       |
-| ---------------------- | ---------------------------------------- | -------- | ---------- | --------------------------------- |
-| `suggestions`          | `SuggestionsItem[]`                      | -        | -          | Submit suggestions array          |
-| `showSuggestions`      | `boolean`                                | -        | `false`    | Show submit suggestions           |
-| `suggestTitle`         | `string`                                 | -        | -          | Title for the suggestions section |
-| `suggestionsLayout`    | `'grid' \| 'list'`                       | -        | -          | Layout orientation                |
-| `suggestionsTextAlign` | `'left' \| 'center' \| 'right'`          | -        | `'center'` | Text alignment                    |
-| `onSuggestionClick`    | `(content: string, id?: string) => void` | -        | -          | Callback when suggestion clicked  |
+| Prop                   | Type                            | Required | Default    | Description                       |
+| ---------------------- | ------------------------------- | -------- | ---------- | --------------------------------- |
+| `suggestions`          | `SuggestionsItem[]`             | -        | -          | Submit suggestions array          |
+| `showSuggestions`      | `boolean`                       | -        | `false`    | Show submit suggestions           |
+| `suggestTitle`         | `string`                        | -        | -          | Title for the suggestions section |
+| `suggestionsLayout`    | `'grid' \| 'list'`              | -        | -          | Layout orientation                |
+| `suggestionsTextAlign` | `'left' \| 'center' \| 'right'` | -        | `'center'` | Text alignment                    |
+| `onSuggestionClick`    | `SuggestionClickHandler`        | -        | -          | Callback when suggestion clicked  |
 
 Suggestions always render with text wrapping enabled: full suggestion text wraps to multiple lines instead of being truncated with an ellipsis. This is not configurable, since prompt suggestions are full-length phrases that must stay readable.
 
