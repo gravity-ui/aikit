@@ -50,7 +50,7 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
-    test('should render with header overflow menu', async ({mount, expectScreenshot}) => {
+    test('should render with header menu', async ({mount, expectScreenshot}) => {
         await mount(<ChatContainerStories.WithHeaderMenu />);
 
         await expectScreenshot();

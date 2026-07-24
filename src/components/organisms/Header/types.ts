@@ -38,15 +38,15 @@ export type HeaderProps = {
     additionalActions?: Action[];
 
     /**
-     * Overflow "..." menu items. Labels and handlers are provided by the consumer.
+     * Menu items for the "..." dropdown. Labels and handlers are provided by the consumer.
      * The menu button is rendered only when the array is non-empty.
      */
     menuItems?: HeaderMenuItem[];
-    /** Tooltip for the overflow menu button (default: built-in i18n) */
+    /** Tooltip for the menu button (default: built-in i18n) */
     menuButtonTooltip?: string;
-    /** Custom overflow menu button icon (default: horizontal Ellipsis) */
+    /** Custom menu button icon (default: horizontal Ellipsis) */
     menuButtonIcon?: React.ReactNode;
-    /** data-qa for the overflow menu button (default: `header-menu-button`) */
+    /** data-qa for the menu button (default: `header-menu-button`) */
     menuButtonQa?: string;
     /** data-qa overrides per menu item id (default: `header-menu-item-${id}`) */
     menuItemQa?: Partial<Record<string, string>>;

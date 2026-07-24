@@ -192,7 +192,7 @@ const headerMenuItemsConfig = [
 ];
 
 /**
- * With Header overflow menu (menuItems)
+ * With Header menu (menuItems)
  */
 export const WithHeaderMenu: Story = {
     args: {

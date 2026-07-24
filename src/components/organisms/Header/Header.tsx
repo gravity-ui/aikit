@@ -150,7 +150,7 @@ export function Header(props: HeaderProps) {
         [menuItems, menuItemQa],
     );
 
-    const overflowMenu = useMemo(() => {
+    const headerMenu = useMemo(() => {
         if (menuItems.length === 0) {
             return null;
         }
@@ -158,9 +158,9 @@ export function Header(props: HeaderProps) {
         return (
             <DropdownMenu
                 items={dropdownMenuItems}
-                renderSwitcher={(props) => (
+                renderSwitcher={(switcherProps) => (
                     <ActionButton
-                        {...props}
+                        {...switcherProps}
                         tooltipTitle={menuButtonTooltip ?? i18n('action-tooltip-menu')}
                         size="m"
                         view="flat"
@@ -194,7 +194,7 @@ export function Header(props: HeaderProps) {
             {/* Right part: additional and base actions */}
             <ButtonGroup>
                 {additionalActions.map((action, index) => renderAdditionalAction(action, index))}
-                {overflowMenu}
+                {headerMenu}
                 {baseActions.map((action) => renderBaseAction(action, historyButtonRef))}
             </ButtonGroup>
         </div>

@@ -304,7 +304,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | ------------------------------------------------------- | ----------------------------------------------------------- |
 | Header title                                            | `headerProps.title` → active chat name → default `i18n()`   |
 | Header action tooltips                                  | `headerProps.actionTooltipTexts` → Header built-in `i18n()` |
-| Header overflow menu tooltip                            | `headerProps.menuButtonTooltip` → Header built-in `i18n()`  |
+| Header menu tooltip                                     | `headerProps.menuButtonTooltip` → Header built-in `i18n()`  |
 | Empty / welcome copy                                    | `welcomeConfig` → `emptyContainerProps` → default `i18n()`  |
 | Prompt placeholder / submit tooltips / cancelable label | `promptInputProps.*` → PromptInput defaults                 |
 | Prompt suggestions title (above input chips)            | `promptInputProps.suggestionsProps.suggestTitle`            |
@@ -320,7 +320,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `headerCloseTooltip`              | Tooltip on the close header action                                               |
 | `headerFoldingCollapsedTooltip`   | Tooltip when folding is collapsed (expand)                                       |
 | `headerFoldingOpenedTooltip`      | Tooltip when folding is opened (collapse)                                        |
-| `headerMenuTooltip`               | Tooltip on the header overflow menu (`...`) button                               |
+| `headerMenuTooltip`               | Tooltip on the header menu (`...`) button                                        |
 | `emptyStateTitle`                 | Welcome / empty state title (`ReactNode`)                                        |
 | `emptyStateDescription`           | Welcome description (`ReactNode`)                                                |
 | `emptyStateSuggestionsTitle`      | Title above suggestions (`ReactNode`)                                            |
@@ -753,7 +753,7 @@ Override Header component props (icon, title, actions, etc.):
 />
 ```
 
-Overflow menu (`...` button) — pass `menuItems` (rendered only when the array is non-empty):
+Header menu (`...` button) — pass `menuItems` (rendered only when the array is non-empty):
 
 ```tsx
 <ChatContainer

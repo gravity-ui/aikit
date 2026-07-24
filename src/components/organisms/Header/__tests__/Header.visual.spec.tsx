@@ -63,13 +63,13 @@ test.describe('Header', {tag: '@Header'}, () => {
         await expectScreenshot();
     });
 
-    test('should render overflow menu button', async ({mount, expectScreenshot}) => {
+    test('should render with menu items', async ({mount, expectScreenshot}) => {
         await mount(<HeaderStories.WithMenuItems />);
 
         await expectScreenshot();
     });
 
-    test('should render overflow menu open', async ({mount, page, expectScreenshot}) => {
+    test('should render with menu items open', async ({mount, page, expectScreenshot}) => {
         await mount(<HeaderStories.WithMenuItems />);
 
         await page.locator('[data-qa="header-menu-button"]').click();

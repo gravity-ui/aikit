@@ -243,9 +243,9 @@ You can pass any React element directly for complete customization:
 
 Additional actions appear before base actions in the header's action bar.
 
-### Overflow menu
+### Menu items
 
-Pass `menuItems` to render a `...` overflow menu. The button appears **only when `menuItems` is a non-empty array**. Labels and click handlers are provided by the consumer (no built-in menu entries).
+Pass `menuItems` to render a `...` dropdown menu. The button appears **only when `menuItems` is a non-empty array**. Labels and click handlers are provided by the consumer (no built-in menu entries).
 
 ```tsx
 <Header
@@ -283,7 +283,7 @@ Via `ChatContainer`:
 
 Default `data-qa` values: `header-menu-button`, `header-menu-item-${id}`.
 
-Optional `menuButtonIcon` overrides the default horizontal `...` icon on the overflow button:
+Optional `menuButtonIcon` overrides the default horizontal `...` icon on the menu button:
 
 ```tsx
 import {EllipsisVertical} from '@gravity-ui/icons';
@@ -323,10 +323,10 @@ The component uses CSS variables for theming:
 | `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                                                                                                                 |
 | `handleClose`         | `() => void`                               | -        | -          | Handler for close action                                                                                                                   |
 | `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type)                                                                                          |
-| `menuItems`           | `HeaderMenuItem[]`                         | -        | `[]`       | Overflow menu items; `...` button renders only when non-empty                                                                              |
-| `menuButtonTooltip`   | `string`                                   | -        | -          | Tooltip for overflow menu button (default: built-in i18n)                                                                                  |
-| `menuButtonIcon`      | `React.ReactNode`                          | -        | -          | Overflow menu button icon (default: horizontal Ellipsis)                                                                                   |
-| `menuButtonQa`        | `string`                                   | -        | -          | `data-qa` for overflow menu button (default: `header-menu-button`)                                                                         |
+| `menuItems`           | `HeaderMenuItem[]`                         | -        | `[]`       | Menu items for the `...` dropdown; button renders only when non-empty                                                                      |
+| `menuButtonTooltip`   | `string`                                   | -        | -          | Tooltip for menu button (default: built-in i18n)                                                                                           |
+| `menuButtonIcon`      | `React.ReactNode`                          | -        | -          | Menu button icon (default: horizontal Ellipsis)                                                                                            |
+| `menuButtonQa`        | `string`                                   | -        | -          | `data-qa` for menu button (default: `header-menu-button`)                                                                                  |
 | `menuItemQa`          | `Partial<Record<string, string>>`          | -        | -          | `data-qa` overrides per menu item id (default: `header-menu-item-${id}`)                                                                   |
 | `historyButtonRef`    | `React.RefObject<HTMLElement>`             | -        | -          | Ref for history button (used to anchor popups)                                                                                             |
 | `foldingState`        | `'collapsed' \| 'opened'`                  | -        | `'opened'` | Current folding state                                                                                                                      |

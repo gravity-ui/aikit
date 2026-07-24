@@ -353,7 +353,7 @@ export const WithMenuItems: StoryFn<HeaderProps> = (args) => {
     return (
         <ContentWrapper width="480px">
             <Header
-                title="With Overflow Menu"
+                title="With Menu Items"
                 baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
                 menuItems={[...menuItemsConfig]}
                 {...mockHandlers}
