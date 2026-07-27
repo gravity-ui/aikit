@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {TrashBin} from '@gravity-ui/icons';
-import {Icon, Text} from '@gravity-ui/uikit';
+import {Icon, Text, Tooltip} from '@gravity-ui/uikit';
 
 import {ChatType} from '../../../types';
 import {block} from '../../../utils/cn';
@@ -28,6 +28,14 @@ export interface ChatItemProps {
  */
 export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemProps) {
     const [isDeleteProccesing, setIsDeleteProcessing] = useState(false);
+    const [hasOverflow, setHasOverflow] = useState(false);
+    const labelRef = useRef<HTMLDivElement>(null);
+    const chatLabel = chat.lastMessage || chat.name;
+
+    useEffect(() => {
+        const label = labelRef.current;
+        setHasOverflow(Boolean(label && label.scrollWidth > label.clientWidth));
+    }, [chatLabel]);
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (isDeleteProccesing) {
@@ -46,6 +54,14 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
 
     const showDeleteAction = isDeleteProccesing || (showActions && onDeleteClick);
 
+    const label = (
+        <div className={b('chat-content')}>
+            <Text variant="body-1" ref={labelRef}>
+                {chatLabel}
+            </Text>
+        </div>
+    );
+
     return (
         <div
             className={b('chat-item', {
@@ -54,9 +70,13 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
             })}
             onClick={handleClick}
         >
-            <div className={b('chat-content')}>
-                <Text variant="body-1">{chat.lastMessage || chat.name}</Text>
-            </div>
+            {hasOverflow ? (
+                <Tooltip content={chatLabel} openDelay={300}>
+                    {label}
+                </Tooltip>
+            ) : (
+                label
+            )}
 
             {showDeleteAction ? (
                 <ActionButton

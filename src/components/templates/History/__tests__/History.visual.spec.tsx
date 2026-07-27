@@ -1,4 +1,4 @@
-import {test} from '~playwright/core';
+import {expect, test} from '~playwright/core';
 
 import {HistoryStories} from './helpersPlaywright';
 
@@ -7,6 +7,25 @@ test.describe('History', {tag: '@History'}, () => {
         await mount(<HistoryStories.Playground />);
 
         await expectScreenshot();
+    });
+
+    test('should add a tooltip for an overflowing chat label', async ({mount, page}) => {
+        await mount(<HistoryStories.Playground />);
+
+        const label = page.locator('.g-aikit-history__chat-content').first();
+        const tooltipText = 'Looooooooong last message for example ellipsis from chat 1';
+
+        await label.hover();
+        await expect(page.getByRole('tooltip')).toHaveText(tooltipText);
+    });
+
+    test('should not add a tooltip for a label without overflow', async ({mount, page}) => {
+        await mount(<HistoryStories.Playground />);
+
+        await page.locator('.g-aikit-history__chat-content').nth(1).hover();
+        await page.waitForTimeout(400);
+
+        await expect(page.getByRole('tooltip')).toHaveCount(0);
     });
 
     test('should render with selected chat', async ({mount, expectScreenshot}) => {
