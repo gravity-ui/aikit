@@ -45,4 +45,4 @@ The component uses CSS variables for theming:
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 
-**Markdown tables**: a markdown-it plugin (via `@diplodoc/transform`) wraps each `<table>` in `__table-wrap` with `overflow-x: auto` so only the table scrolls horizontally. Table CSS resets inherited `word-break` from message wrappers. `min-width: 100%` stretches narrow tables; `width: max-content` sizes columns to content.
+**Markdown tables**: a markdown-it plugin (via `@diplodoc/transform`) wraps each `<table>` in `__table-wrap` with `overflow-x: auto` so only the table scrolls horizontally when the table is wider than the message. Long words and inline `` `code` `` in cells wrap within `--g-aikit-markdown-renderer-table-cell-max-width`. `min-width: 100%` stretches narrow tables; `width: max-content` sizes columns to content.

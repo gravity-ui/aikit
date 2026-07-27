@@ -111,10 +111,7 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expectScreenshot();
     });
 
-    test('should scroll horizontally for long markdown table cell text', async ({
-        mount,
-        expectScreenshot,
-    }) => {
+    test('should wrap long markdown table cell text', async ({mount, expectScreenshot}) => {
         await mount(<MarkdownRendererStories.WithMarkdownTableLongCellInMessage />);
 
         await expectScreenshot();
