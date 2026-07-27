@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.14.0](https://github.com/gravity-ui/aikit/compare/v2.13.0...v2.14.0) (2026-07-27)
+
+
+### Features
+
+* **History:** add Tooltip wrapper to history list row ([#215](https://github.com/gravity-ui/aikit/issues/215)) ([3ee7dfb](https://github.com/gravity-ui/aikit/commit/3ee7dfb2e54f947524c8ce99c990e25c03d8b7f0))
+
+
+### Bug Fixes
+
+* **markdown:** wrap long words and inline code in table cells ([#216](https://github.com/gravity-ui/aikit/issues/216)) ([7f65982](https://github.com/gravity-ui/aikit/commit/7f6598255d60a38fc91f93d1e88aaf050d83769e))
+
 ## [2.13.0](https://github.com/gravity-ui/aikit/compare/v2.12.0...v2.13.0) (2026-07-24)
 
 
