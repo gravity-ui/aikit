@@ -139,6 +139,7 @@ function MarkdownRendererComponent({
         html,
         components: mdxComponents,
         mdxArtifacts,
+        contextList: [MdxDataContext],
     });
 
     return (
