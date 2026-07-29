@@ -539,12 +539,20 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             promptInputProps={{
                 ...chatContainerProps.promptInputProps,
                 view: 'full',
-                headerProps: {
-                    ...chatContainerProps.promptInputProps?.headerProps,
-                    contextItems:
-                        chatContainerProps.promptInputProps?.headerProps?.contextItems ??
-                        contextItems,
-                },
+                headerProps: chatContainerProps.promptInputProps?.headerProps?.topContent
+                    ? chatContainerProps.promptInputProps.headerProps
+                    : {
+                          qa: chatContainerProps.promptInputProps?.headerProps?.qa,
+                          showContextIndicator:
+                              chatContainerProps.promptInputProps?.headerProps
+                                  ?.showContextIndicator,
+                          contextIndicatorProps:
+                              chatContainerProps.promptInputProps?.headerProps
+                                  ?.contextIndicatorProps,
+                          contextItems:
+                              chatContainerProps.promptInputProps?.headerProps?.contextItems ??
+                              contextItems,
+                      },
                 footerProps: {
                     ...chatContainerProps.promptInputProps?.footerProps,
                     attachmentContent:

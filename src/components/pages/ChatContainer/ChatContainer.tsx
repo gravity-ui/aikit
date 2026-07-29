@@ -53,6 +53,29 @@ function mergePromptInputSuggestionsProps(
     };
 }
 
+function buildFinalPromptInputHeaderProps(args: {
+    headerProps: NonNullable<ChatContainerProps['promptInputProps']>['headerProps'];
+    contextItems: ChatContainerProps['contextItems'];
+    showContextIndicator: ChatContainerProps['showContextIndicator'];
+    contextIndicatorProps: ChatContainerProps['contextIndicatorProps'];
+    qa: string | undefined;
+}): NonNullable<ChatContainerProps['promptInputProps']>['headerProps'] {
+    const {headerProps, contextItems, showContextIndicator, contextIndicatorProps, qa} = args;
+
+    // topContent replaces the default header entirely, so context-related
+    // props are not allowed (and would be ignored) alongside it
+    if (headerProps?.topContent) {
+        return {topContent: headerProps.topContent, qa};
+    }
+
+    return {
+        contextItems,
+        showContextIndicator: showContextIndicator ?? headerProps?.showContextIndicator,
+        contextIndicatorProps: contextIndicatorProps ?? headerProps?.contextIndicatorProps,
+        qa,
+    };
+}
+
 function buildFinalPromptInputProps(args: {
     promptInputProps: ChatContainerProps['promptInputProps'];
     onSendMessage: ChatContainerProps['onSendMessage'];
@@ -98,17 +121,15 @@ function buildFinalPromptInputProps(args: {
         onCancel,
         status,
         suggestionsProps,
-        headerProps: {
-            ...promptInputProps?.headerProps,
+        headerProps: buildFinalPromptInputHeaderProps({
+            headerProps: promptInputProps?.headerProps,
             contextItems,
-            showContextIndicator:
-                showContextIndicator ?? promptInputProps?.headerProps?.showContextIndicator,
-            contextIndicatorProps:
-                contextIndicatorProps ?? promptInputProps?.headerProps?.contextIndicatorProps,
+            showContextIndicator,
+            contextIndicatorProps,
             qa:
                 resolveChatContainerQa(qaMap, 'promptInputHeader', 'prompt-input-header') ??
                 promptInputProps?.headerProps?.qa,
-        },
+        }),
         bodyProps: {
             ...restBodyProps,
             placeholder:
