@@ -1,5 +1,7 @@
 'use client';
 
+import type {HTMLAttributes} from 'react';
+
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 import {ChevronDown, ChevronUp, Copy} from '@gravity-ui/icons';
 import {Button, DOMProps, Icon, QAProps, Text} from '@gravity-ui/uikit';
@@ -8,7 +10,7 @@ import type {ThinkingMessageContentData} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 import {Loader} from '../../atoms/Loader';
-import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
+import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 
 import {useThinkingMessage} from './useThinkingMessage';
 
@@ -34,6 +36,10 @@ export type ThinkingMessageProps = DOMProps &
          */
         transformOptions?: OptionsType;
         openMarkdownLinksInNewTab?: boolean;
+        mdxOptions?: MarkdownRendererMdxOptions;
+        mdxContext?: unknown;
+        /** Extra props forwarded to the root container `div` of each rendered markdown block. */
+        markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
     };
 
 const defaultTransformOptions: OptionsType = {
@@ -56,6 +62,9 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
         format = 'plain',
         transformOptions,
         openMarkdownLinksInNewTab,
+        mdxOptions,
+        mdxContext,
+        markdownExtraProps,
         ...data
     } = props;
 
@@ -101,6 +110,9 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
                                 content={item}
                                 transformOptions={markdownTransformOptions}
                                 openLinksInNewTab={openMarkdownLinksInNewTab}
+                                mdxOptions={mdxOptions}
+                                mdxContext={mdxContext}
+                                extraProps={markdownExtraProps}
                             />
                         ) : (
                             <Text className={b('content')} key={index}>

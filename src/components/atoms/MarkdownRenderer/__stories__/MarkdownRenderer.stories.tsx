@@ -7,12 +7,13 @@ import type {
 } from '@diplodoc/transform/lib/typings';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
-import {MarkdownRenderer, MarkdownRendererProps} from '..';
+import {MarkdownRenderer, MarkdownRendererProps, useMdxContext} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 import {block} from '../../../../utils/cn';
 import {BaseMessage} from '../../../molecules/BaseMessage';
+import type {MarkdownRendererMdxOptions} from '../MarkdownRenderer';
 
 import MDXDocs from './Docs.mdx';
 
@@ -234,5 +235,197 @@ export const StyleIsolation: StoryObj<typeof MarkdownRenderer> = {
             />
         </>
     ),
+    decorators: defaultDecorators,
+};
+
+/**
+ * MDX support via `@diplodoc/mdx-extension`. Passing `mdxOptions` enables MDX
+ * processing: custom tags embedded in the markdown are replaced with the React
+ * components provided in `mdxOptions.components`. Use `mdxOptions.tagNames` to
+ * limit which tags are treated as MDX components.
+ */
+const MDX_CONTENT = `# Release notes
+
+Here is an inline status badge rendered from MDX: <StatusBadge status="success" />
+
+You can also embed a richer callout component:
+
+<Callout title="Heads up">
+This block is rendered by a **React component**, not plain HTML.
+</Callout>
+
+Regular markdown such as *emphasis*, \`inline code\`, and [links](https://gravity-ui.com/ru/libraries/aikit) keeps working alongside MDX components.`;
+
+const MDX_TAG_NAMES = ['StatusBadge', 'Callout'];
+
+const StatusBadge = ({status}: {status?: string}) => {
+    const isSuccess = status === 'success';
+    return (
+        <span
+            style={{
+                display: 'inline-block',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: '#fff',
+                backgroundColor: isSuccess ? '#3aa13a' : '#c94040',
+            }}
+        >
+            {isSuccess ? 'SUCCESS' : 'FAILED'}
+        </span>
+    );
+};
+
+const Callout = ({title, children}: {title?: string; children?: React.ReactNode}) => (
+    <div
+        style={{
+            margin: '12px 0',
+            padding: '12px 16px',
+            borderLeft: '4px solid #4d8fea',
+            borderRadius: '4px',
+            backgroundColor: 'rgba(77, 143, 234, 0.1)',
+        }}
+    >
+        {title ? <div style={{fontWeight: 600, marginBottom: '4px'}}>{title}</div> : null}
+        <div>{children}</div>
+    </div>
+);
+
+const MDX_COMPONENTS = {
+    StatusBadge,
+    Callout,
+} satisfies MarkdownRendererMdxOptions['components'];
+
+const MDX_OPTIONS: MarkdownRendererMdxOptions = {
+    components: MDX_COMPONENTS,
+    tagNames: MDX_TAG_NAMES,
+};
+
+/**
+ * Renders markdown that embeds custom MDX components (`<StatusBadge />` and
+ * `<Callout />`) resolved from `mdxOptions.components`.
+ */
+export const WithMdxComponents: StoryObj<typeof MarkdownRenderer> = {
+    render: () => (
+        <ContentWrapper width="480px">
+            <MarkdownRenderer content={MDX_CONTENT} mdxOptions={MDX_OPTIONS} />
+        </ContentWrapper>
+    ),
+    decorators: defaultDecorators,
+};
+
+type MessageMdxContext = {
+    messageId: string;
+    onAction: (messageId: string) => void;
+};
+
+/**
+ * MDX component that reads per-message data from `useMdxContext`. The same
+ * component instance is reused across messages, but each `MarkdownRenderer`
+ * provides its own `mdxContext`, so the button always acts on the message it
+ * belongs to.
+ */
+const MessageActionButton = ({label}: {label?: string}) => {
+    const ctx = useMdxContext<MessageMdxContext>();
+
+    return (
+        <button
+            type="button"
+            onClick={() => ctx?.onAction(ctx.messageId)}
+            style={{
+                padding: '4px 10px',
+                borderRadius: '4px',
+                border: '1px solid #4d8fea',
+                background: 'transparent',
+                color: '#4d8fea',
+                cursor: 'pointer',
+            }}
+        >
+            {label ?? 'Action'} (message {ctx?.messageId})
+        </button>
+    );
+};
+
+const MDX_CONTEXT_COMPONENTS = {
+    MessageActionButton,
+} satisfies MarkdownRendererMdxOptions['components'];
+
+const MDX_CONTEXT_OPTIONS: MarkdownRendererMdxOptions = {
+    components: MDX_CONTEXT_COMPONENTS,
+    tagNames: ['MessageActionButton'],
+};
+
+/**
+ * Demonstrates per-message context: two `MarkdownRenderer` instances share the
+ * same `mdxOptions.components` map but receive different `mdxContext` values.
+ * The embedded `<MessageActionButton />` reads its message-specific data with
+ * `useMdxContext`.
+ */
+export const WithMdxContext: StoryObj<typeof MarkdownRenderer> = {
+    render: () => {
+        const onAction = (messageId: string) => {
+            // eslint-disable-next-line no-alert
+            window.alert(`Action from message ${messageId}`);
+        };
+
+        return (
+            <ContentWrapper width="480px">
+                <MarkdownRenderer
+                    content={'First message:\n\n<MessageActionButton label="Run" />'}
+                    mdxOptions={MDX_CONTEXT_OPTIONS}
+                    mdxContext={{messageId: 'msg-1', onAction} satisfies MessageMdxContext}
+                />
+                <MarkdownRenderer
+                    content={'Second message:\n\n<MessageActionButton label="Run" />'}
+                    mdxOptions={MDX_CONTEXT_OPTIONS}
+                    mdxContext={{messageId: 'msg-2', onAction} satisfies MessageMdxContext}
+                />
+            </ContentWrapper>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+/**
+ * Demonstrates `extraProps` — arbitrary `div` attributes forwarded to the root
+ * container of the rendered markdown. Useful for attaching event handlers
+ * (e.g. `onClick`), `data-*` attributes, `title`, `role`, etc.
+ *
+ * To bind a handler to a specific message, resolve `extraProps` per message
+ * (this is exactly what `MessageList` / `ChatContainer` do via the
+ * `getMarkdownExtraProps(message)` resolver).
+ */
+export const WithExtraProps: StoryObj<typeof MarkdownRenderer> = {
+    render: () => {
+        const messages = [
+            {id: 'msg-1', text: 'First message: **click me**.'},
+            {id: 'msg-2', text: 'Second message: **click me too**.'},
+        ];
+
+        // Mirrors `getMarkdownExtraProps(message)`: each message gets its own
+        // handler bound to its id, so the click knows which message fired it.
+        const getExtraProps = (messageId: string) => ({
+            role: 'button',
+            'data-message-id': messageId,
+            style: {cursor: 'pointer'},
+            onClick: () => {
+                // eslint-disable-next-line no-alert
+                window.alert(`Clicked message ${messageId}`);
+            },
+        });
+
+        return (
+            <ContentWrapper width="480px">
+                {messages.map((message) => (
+                    <MarkdownRenderer
+                        key={message.id}
+                        content={message.text}
+                        extraProps={getExtraProps(message.id)}
+                    />
+                ))}
+            </ContentWrapper>
+        );
+    },
     decorators: defaultDecorators,
 };

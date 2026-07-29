@@ -1,5 +1,7 @@
 import {useMemo, useRef} from 'react';
 
+import {isWithMdxArtifacts} from '@diplodoc/mdx-extension';
+import type {MdxArtifacts} from '@diplodoc/mdx-extension';
 import transform from '@diplodoc/transform';
 import '@diplodoc/transform/dist/js/yfm.js';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
@@ -7,13 +9,22 @@ import {OptionsType} from '@diplodoc/transform/lib/typings';
 import {areOptionsEqual, mergeMarkdownTransformOptions} from '../utils/markdownUtils';
 import {parseMarkdownIntoBlocks} from '../utils/parse-blocks';
 
-export function useMarkdownTransform(content: string, options?: OptionsType): string {
+export interface MarkdownTransformResult {
+    html: string;
+    mdxArtifacts?: MdxArtifacts;
+}
+
+export function useMarkdownTransform(
+    content: string,
+    options?: OptionsType,
+    enableMdx = false,
+): MarkdownTransformResult {
     const cacheRef = useRef<Map<string, string>>(new Map());
     const prevOptionsRef = useRef<OptionsType | undefined>(options);
 
     return useMemo(() => {
         if (!content) {
-            return '';
+            return {html: ''};
         }
 
         const optionsChanged = !areOptionsEqual(prevOptionsRef.current, options);
@@ -23,6 +34,23 @@ export function useMarkdownTransform(content: string, options?: OptionsType): st
         }
 
         const transformOptions = mergeMarkdownTransformOptions(options);
+
+        // MDX components (and their collected artifacts) can span multiple markdown
+        // blocks, so the block-level caching used for streaming would break artifact
+        // collection. Transform the whole content in a single pass when MDX is enabled.
+        if (enableMdx) {
+            try {
+                const {result} = transform(content, transformOptions);
+                isWithMdxArtifacts(result);
+
+                return {
+                    html: result.html ?? '',
+                    mdxArtifacts: result.mdxArtifacts,
+                };
+            } catch {
+                return {html: ''};
+            }
+        }
 
         try {
             const blocks = parseMarkdownIntoBlocks(content);
@@ -50,9 +78,9 @@ export function useMarkdownTransform(content: string, options?: OptionsType): st
                 }
             }
 
-            return htmlParts.join('');
+            return {html: htmlParts.join('')};
         } catch {
-            return '';
+            return {html: ''};
         }
-    }, [content, options]);
+    }, [content, options, enableMdx]);
 }

@@ -1,4 +1,4 @@
-import {memo} from 'react';
+import {type HTMLAttributes, memo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
@@ -19,6 +19,7 @@ import {
     resolveMessageActions,
 } from '../../../utils';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
+import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
@@ -32,6 +33,21 @@ export type MessageItemConfig<TContent extends TMessageContent = never> = {
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     openMarkdownLinksInNewTab?: boolean;
+    mdxOptions?: MarkdownRendererMdxOptions;
+    /**
+     * Resolves the extra props forwarded to the root container `div` of each rendered
+     * markdown block. Called with the concrete message so handlers (e.g. `onClick`) can
+     * identify the message they belong to.
+     */
+    getMarkdownExtraProps?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => HTMLAttributes<HTMLDivElement> | undefined;
+    /**
+     * Resolves the per-message value exposed to MDX components (via `useMdxContext`).
+     * Called with the concrete message so embedded MDX components can read data
+     * unique to the message they belong to.
+     */
+    getMdxContext?: (message: TChatMessage<TContent, TMessageMetadata>) => unknown;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -65,6 +81,9 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     transformOptions,
     shouldParseIncompleteMarkdown,
     openMarkdownLinksInNewTab,
+    mdxOptions,
+    getMarkdownExtraProps,
+    getMdxContext,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -74,6 +93,9 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     assistantExtraInfo: AssistantExtraInfo,
     onActionPopup,
 }: MessageItemProps<TContent>) {
+    const mdxContext = getMdxContext?.(message);
+    const markdownExtraProps = getMarkdownExtraProps?.(message);
+
     if (isUserMessage<TMessageMetadata, TContent>(message)) {
         const actions = resolveMessageActions(message, userActions);
 
@@ -90,6 +112,9 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                 openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                mdxOptions={mdxOptions}
+                mdxContext={mdxContext}
+                markdownExtraProps={markdownExtraProps}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 showAvatar={showAvatar}
@@ -119,6 +144,9 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                 openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                mdxOptions={mdxOptions}
+                mdxContext={mdxContext}
+                markdownExtraProps={markdownExtraProps}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 userRating={message.userRating}

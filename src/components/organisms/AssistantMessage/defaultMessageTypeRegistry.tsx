@@ -1,3 +1,5 @@
+import type {HTMLAttributes} from 'react';
+
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import type {
@@ -10,7 +12,7 @@ import {
     createMessageRendererRegistry,
     registerMessageRenderer,
 } from '../../../utils/messageTypeRegistry';
-import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
+import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 import {ThinkingMessage} from '../ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
 
@@ -18,6 +20,9 @@ export function createDefaultMessageRegistry(
     transformOptions?: OptionsType,
     shouldParseIncompleteMarkdown?: boolean,
     openMarkdownLinksInNewTab?: boolean,
+    mdxOptions?: MarkdownRendererMdxOptions,
+    mdxContext?: unknown,
+    markdownExtraProps?: HTMLAttributes<HTMLDivElement>,
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
@@ -31,6 +36,9 @@ export function createDefaultMessageRegistry(
                     transformOptions={transformOptions}
                     shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                     openLinksInNewTab={openMarkdownLinksInNewTab}
+                    mdxOptions={mdxOptions}
+                    mdxContext={mdxContext}
+                    extraProps={markdownExtraProps}
                 />
             ),
         },
@@ -58,6 +66,9 @@ export function createDefaultMessageRegistry(
                 <ThinkingMessage
                     {...part.data}
                     openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                    mdxOptions={mdxOptions}
+                    mdxContext={mdxContext}
+                    markdownExtraProps={markdownExtraProps}
                 />
             ),
         },
