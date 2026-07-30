@@ -15,20 +15,35 @@ export type PromptInputPanelConfig = {
 };
 
 /**
- * Props for the header section of PromptInput
+ * Props for the header section of PromptInput.
+ * Custom content (`topContent`) and default header props are mutually exclusive:
+ * `topContent` replaces the default header entirely.
  */
 export type PromptInputHeaderConfig = {
     /** QA/test identifier for header wrapper */
     qa?: string;
-    /** Custom content for header area */
-    topContent?: ReactNode;
-    /** Array of context items to display on the left */
-    contextItems?: PromptInputHeaderProps['contextItems'];
-    /** Show context indicator in header */
-    showContextIndicator?: boolean;
-    /** Props for context indicator */
-    contextIndicatorProps?: PromptInputHeaderProps['contextIndicatorProps'];
-};
+} & (
+    | {
+          /** Custom content for header area (replaces the default header) */
+          topContent?: ReactNode;
+          /** Not allowed together with custom content */
+          contextItems?: never;
+          /** Not allowed together with custom content */
+          showContextIndicator?: never;
+          /** Not allowed together with custom content */
+          contextIndicatorProps?: never;
+      }
+    | {
+          /** Not allowed together with default header props */
+          topContent?: never;
+          /** Array of context items to display on the left */
+          contextItems?: PromptInputHeaderProps['contextItems'];
+          /** Show context indicator in header */
+          showContextIndicator?: boolean;
+          /** Props for context indicator */
+          contextIndicatorProps?: PromptInputHeaderProps['contextIndicatorProps'];
+      }
+);
 
 /**
  * Props for the body/textarea section of PromptInput

@@ -47,7 +47,8 @@ export const WithContextItems: Story = {
 
         return (
             <PromptInputHeader
-                {...args}
+                className={args.className}
+                qa={args.qa}
                 contextItems={items.map((item) => ({
                     ...item,
                     onRemove: () => handleRemove(item.id),

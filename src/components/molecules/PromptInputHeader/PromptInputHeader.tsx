@@ -21,22 +21,43 @@ export type ContextItemConfig = {
 };
 
 /**
- * Props for the PromptInputHeader component
+ * Props for the default header layout (context items and indicator)
  */
-export type PromptInputHeaderProps = {
+type PromptInputHeaderDefaultProps = {
     /** Array of context items to display on the left */
     contextItems?: ContextItemConfig[];
     /** Show context indicator */
     showContextIndicator?: boolean;
     /** Props for the context indicator */
     contextIndicatorProps?: ContextIndicatorProps;
+    /** Custom content is not allowed together with default header props */
+    children?: never;
+};
+
+/**
+ * Props for the custom content mode (replaces the default header entirely)
+ */
+type PromptInputHeaderCustomProps = {
     /** Custom content to replace the default header */
     children?: ReactNode;
+    /** Not allowed together with custom content */
+    contextItems?: never;
+    /** Not allowed together with custom content */
+    showContextIndicator?: never;
+    /** Not allowed together with custom content */
+    contextIndicatorProps?: never;
+};
+
+/**
+ * Props for the PromptInputHeader component.
+ * Custom content (`children`) and default header props are mutually exclusive.
+ */
+export type PromptInputHeaderProps = {
     /** Additional CSS class */
     className?: string;
     /** QA/test identifier */
     qa?: string;
-};
+} & (PromptInputHeaderDefaultProps | PromptInputHeaderCustomProps);
 
 /**
  * PromptInputHeader component displays the header section of prompt input

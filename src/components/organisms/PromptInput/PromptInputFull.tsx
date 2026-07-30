@@ -74,16 +74,17 @@ export function PromptInputFull(props: PromptInputFullProps) {
 
     return (
         <div className={b({view: 'full'}, className)} data-qa={qa}>
-            {shouldShowHeader && (
-                <PromptInputHeader
-                    contextItems={contextItems}
-                    showContextIndicator={showContextIndicator}
-                    contextIndicatorProps={contextIndicatorProps}
-                    qa={headerQa}
-                >
-                    {topContent}
-                </PromptInputHeader>
-            )}
+            {shouldShowHeader &&
+                (topContent ? (
+                    <PromptInputHeader qa={headerQa}>{topContent}</PromptInputHeader>
+                ) : (
+                    <PromptInputHeader
+                        contextItems={contextItems}
+                        showContextIndicator={showContextIndicator}
+                        contextIndicatorProps={contextIndicatorProps}
+                        qa={headerQa}
+                    />
+                ))}
 
             <PromptInputBody
                 value={value}
