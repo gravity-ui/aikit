@@ -21,7 +21,7 @@ export function createDefaultMessageRegistry(
     shouldParseIncompleteMarkdown?: boolean,
     openMarkdownLinksInNewTab?: boolean,
     mdxOptions?: MarkdownRendererMdxOptions,
-    mdxContext?: unknown,
+    mdxContext?: Record<string, unknown>,
     markdownExtraProps?: HTMLAttributes<HTMLDivElement>,
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();

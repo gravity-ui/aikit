@@ -71,7 +71,9 @@ export type MdxProps<TContent extends TMessageContent = never> = {
      * Called with the concrete message so embedded MDX components can read data
      * unique to the message they belong to.
      */
-    getMdxContext?: (message: TChatMessage<TContent, TMessageMetadata>) => unknown;
+    getMdxContext?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => Record<string, unknown> | undefined;
 };
 
 export type MessageListProps<TContent extends TMessageContent = never> = {

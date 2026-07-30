@@ -38,7 +38,9 @@ export type MessageItemConfig<TContent extends TMessageContent = never> = {
         message: TChatMessage<TContent, TMessageMetadata>,
     ) => HTMLAttributes<HTMLDivElement> | undefined;
 
-    getMdxContext?: (message: TChatMessage<TContent, TMessageMetadata>) => unknown;
+    getMdxContext?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => Record<string, unknown> | undefined;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
