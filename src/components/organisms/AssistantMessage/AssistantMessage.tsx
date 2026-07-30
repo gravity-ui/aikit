@@ -39,7 +39,7 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
         shouldParseIncompleteMarkdown?: boolean;
         openMarkdownLinksInNewTab?: boolean;
         mdxOptions?: MarkdownRendererMdxOptions;
-        mdxContext?: unknown;
+        mdxContext?: Record<string, unknown>;
         /** Extra props forwarded to the root container `div` of each rendered markdown block. */
         markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
         className?: string;

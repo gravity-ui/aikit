@@ -50,16 +50,13 @@ export interface MessageListActionPopupConfig {
     qa?: string;
 }
 
-export type MessageListProps<TContent extends TMessageContent = never> = {
-    messages: TChatMessage<TContent, TMessageMetadata>[];
-    status?: ChatStatus;
-    errorMessage?: AlertProps;
-    loaderMessage?: string;
-    onRetry?: () => void;
-    messageRendererRegistry?: MessageRendererRegistry;
-    transformOptions?: OptionsType;
-    shouldParseIncompleteMarkdown?: boolean;
-    openMarkdownLinksInNewTab?: boolean;
+/**
+ * Grouped MDX/markdown rendering props exposed as a single object on `MessageList` and
+ * `ChatContainer`. They are destructured back into individual props before being handed to
+ * the low-level `MessageItem` renderer.
+ */
+export type MdxProps<TContent extends TMessageContent = never> = {
+    /** Options for rendering MDX (`@diplodoc/mdx-extension`) in the default message renderers */
     mdxOptions?: MarkdownRendererMdxOptions;
     /**
      * Resolves the extra props forwarded to the root container `div` of each rendered
@@ -75,6 +72,20 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
      * unique to the message they belong to.
      */
     getMdxContext?: (message: TChatMessage<TContent, TMessageMetadata>) => unknown;
+};
+
+export type MessageListProps<TContent extends TMessageContent = never> = {
+    messages: TChatMessage<TContent, TMessageMetadata>[];
+    status?: ChatStatus;
+    errorMessage?: AlertProps;
+    loaderMessage?: string;
+    onRetry?: () => void;
+    messageRendererRegistry?: MessageRendererRegistry;
+    transformOptions?: OptionsType;
+    shouldParseIncompleteMarkdown?: boolean;
+    openMarkdownLinksInNewTab?: boolean;
+    /** Grouped MDX/markdown rendering props (`mdxOptions`, `getMarkdownExtraProps`, `getMdxContext`). */
+    mdxProps?: MdxProps<TContent>;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -118,9 +129,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     transformOptions,
     shouldParseIncompleteMarkdown,
     openMarkdownLinksInNewTab,
-    mdxOptions,
-    getMarkdownExtraProps,
-    getMdxContext,
+    mdxProps,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -185,9 +194,9 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                         transformOptions={transformOptions}
                         shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                         openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
-                        mdxOptions={mdxOptions}
-                        getMarkdownExtraProps={getMarkdownExtraProps}
-                        getMdxContext={getMdxContext}
+                        mdxOptions={mdxProps?.mdxOptions}
+                        getMarkdownExtraProps={mdxProps?.getMarkdownExtraProps}
+                        getMdxContext={mdxProps?.getMdxContext}
                         showTimestamp={showTimestamp}
                         showAvatar={showAvatar}
                         userActions={userActions}

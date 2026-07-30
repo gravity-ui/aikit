@@ -30,7 +30,7 @@ export type UserMessageProps = Pick<
     shouldParseIncompleteMarkdown?: boolean;
     openMarkdownLinksInNewTab?: boolean;
     mdxOptions?: MarkdownRendererMdxOptions;
-    mdxContext?: unknown;
+    mdxContext?: Record<string, unknown>;
     /** Extra props forwarded to the root container `div` of the rendered markdown block. */
     markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
     className?: string;

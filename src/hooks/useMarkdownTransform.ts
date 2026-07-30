@@ -22,6 +22,8 @@ export function useMarkdownTransform(
     const cacheRef = useRef<Map<string, string>>(new Map());
     const prevOptionsRef = useRef<OptionsType | undefined>(options);
 
+    const lastMdxResultRef = useRef<MarkdownTransformResult | null>(null);
+
     return useMemo(() => {
         if (!content) {
             return {html: ''};
@@ -30,6 +32,7 @@ export function useMarkdownTransform(
         const optionsChanged = !areOptionsEqual(prevOptionsRef.current, options);
         if (optionsChanged) {
             cacheRef.current.clear();
+            lastMdxResultRef.current = null;
             prevOptionsRef.current = options;
         }
 
@@ -43,12 +46,16 @@ export function useMarkdownTransform(
                 const {result} = transform(content, transformOptions);
                 isWithMdxArtifacts(result);
 
-                return {
+                const mdxResult: MarkdownTransformResult = {
                     html: result.html ?? '',
                     mdxArtifacts: result.mdxArtifacts,
                 };
+
+                lastMdxResultRef.current = mdxResult;
+
+                return mdxResult;
             } catch {
-                return {html: ''};
+                return lastMdxResultRef.current ?? {html: ''};
             }
         }
 

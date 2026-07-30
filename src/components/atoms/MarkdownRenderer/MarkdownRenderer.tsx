@@ -1,6 +1,6 @@
 import {Fragment, type HTMLAttributes, memo, useMemo, useRef} from 'react';
 
-import {mdxPlugin, useMdx} from '@diplodoc/mdx-extension';
+import {mdxPlugin} from '@diplodoc/mdx-extension';
 import type {
     ExtendedPluginWithCollect,
     MarkdownIt,
@@ -13,7 +13,7 @@ import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
 
-import {MdxDataContext} from './MdxContext';
+import {MdxPortals} from './MdxPortals';
 
 import './MarkdownRenderer.scss';
 
@@ -38,7 +38,7 @@ export interface MarkdownRendererProps {
     shouldParseIncompleteMarkdown?: boolean;
     openLinksInNewTab?: boolean;
     mdxOptions?: MarkdownRendererMdxOptions;
-    mdxContext?: unknown;
+    mdxContext?: Record<string, unknown>;
     /** Extra props forwarded to the root container `div` element. */
     extraProps?: HTMLAttributes<HTMLDivElement>;
 }
@@ -134,25 +134,23 @@ function MarkdownRendererComponent({
         enableMdx,
     );
 
-    const portals = useMdx({
-        refCtr: containerRef,
-        html,
-        components: mdxComponents,
-        mdxArtifacts,
-        contextList: [MdxDataContext],
-    });
-
     return (
         <Fragment>
             <div
-                {...extraProps}
                 ref={containerRef}
                 className={b(null, [className, 'yfm'])}
                 data-qa={qa}
                 dangerouslySetInnerHTML={{__html: html}}
+                {...extraProps}
             />
             {enableMdx ? (
-                <MdxDataContext.Provider value={mdxContext}>{portals}</MdxDataContext.Provider>
+                <MdxPortals
+                    refCtr={containerRef}
+                    html={html}
+                    components={mdxComponents}
+                    mdxArtifacts={mdxArtifacts}
+                    mdxContext={mdxContext}
+                />
             ) : null}
         </Fragment>
     );

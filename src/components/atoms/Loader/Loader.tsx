@@ -4,6 +4,7 @@ import {block} from '../../../utils/cn';
 import {Shimmer} from '../Shimmer';
 
 import './Loader.scss';
+
 const b = block('loader');
 
 export type LoaderSize = 'xs' | 's' | 'm';
@@ -14,9 +15,17 @@ export interface LoaderProps {
     message?: string;
     className?: string;
     qa?: string;
+    withMessageShimmer?: boolean;
 }
 
-export function Loader({view = 'streaming', size = 's', message, className, qa}: LoaderProps) {
+export function Loader({
+    view = 'streaming',
+    size = 's',
+    message,
+    className,
+    withMessageShimmer,
+    qa,
+}: LoaderProps) {
     const loader =
         view === 'streaming' ? (
             <div className={b({size}, message ? '' : className)} data-qa={qa}>
@@ -32,14 +41,16 @@ export function Loader({view = 'streaming', size = 's', message, className, qa}:
         return loader;
     }
 
+    const messageContent = (
+        <Text variant="body-1" color="secondary">
+            {message}
+        </Text>
+    );
+
     return (
         <Flex gap={2} className={b(null, className)}>
             {loader}
-            <Shimmer>
-                <Text variant="body-1" color="secondary">
-                    {message}
-                </Text>
-            </Shimmer>
+            {withMessageShimmer ? <Shimmer>{messageContent}</Shimmer> : messageContent}
         </Flex>
     );
 }

@@ -37,7 +37,7 @@ export type ThinkingMessageProps = DOMProps &
         transformOptions?: OptionsType;
         openMarkdownLinksInNewTab?: boolean;
         mdxOptions?: MarkdownRendererMdxOptions;
-        mdxContext?: unknown;
+        mdxContext?: Record<string, unknown>;
         /** Extra props forwarded to the root container `div` of each rendered markdown block. */
         markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
     };

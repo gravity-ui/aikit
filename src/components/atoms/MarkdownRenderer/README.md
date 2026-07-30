@@ -94,8 +94,10 @@ instead of a static value. It is called with the concrete message and its return
 ```tsx
 <ChatContainer
   messages={messages}
-  messageListConfig={{mdxOptions: {components: {ActionButton}}}}
-  getMdxContext={(message) => ({messageId: message.id, onAction})}
+  mdxProps={{
+    mdxOptions: {components: {ActionButton}},
+    getMdxContext: (message) => ({messageId: message.id, onAction}),
+  }}
 />
 ```
 

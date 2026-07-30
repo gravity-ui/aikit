@@ -1,14 +1,11 @@
-import type {HTMLAttributes} from 'react';
-
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import {MessageListProps} from 'src/components/organisms/MessageList';
+import {MdxProps, MessageListProps} from 'src/components/organisms/MessageList';
 
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
-import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {HeaderProps} from '../../organisms/Header';
 import type {PromptInputProps} from '../../organisms/PromptInput';
@@ -57,9 +54,7 @@ export type MessageListConfig = Omit<
     | 'showActionsOnHover'
     | 'transformOptions'
     | 'openMarkdownLinksInNewTab'
-    | 'mdxOptions'
-    | 'getMarkdownExtraProps'
-    | 'getMdxContext'
+    | 'mdxProps'
 >;
 
 /**
@@ -211,20 +206,11 @@ export interface ChatContainerProps {
     shouldParseIncompleteMarkdown?: boolean;
     /** Open all markdown links rendered by the default message renderers in a new tab */
     openMarkdownLinksInNewTab?: boolean;
-    /** Options for rendering MDX (`@diplodoc/mdx-extension`) in the default message renderers */
-    mdxOptions?: MarkdownRendererMdxOptions;
     /**
-     * Resolves the extra props forwarded to the root container `div` of each rendered
-     * markdown block. Called with the concrete message so handlers (e.g. `onClick`) can
-     * identify the message they belong to.
+     * Grouped MDX/markdown rendering props forwarded to the message list:
+     * `mdxOptions`, `getMarkdownExtraProps` and `getMdxContext`.
      */
-    getMarkdownExtraProps?: (message: TChatMessage) => HTMLAttributes<HTMLDivElement> | undefined;
-    /**
-     * Resolves the per-message value exposed to MDX components (via `useMdxContext`).
-     * Called with the concrete message so embedded MDX components can read data
-     * unique to the message they belong to (id, metadata, callbacks, etc.).
-     */
-    getMdxContext?: (message: TChatMessage) => unknown;
+    mdxProps?: MdxProps;
 
     // Configuration
     /** MessageList configuration for actions and loader behavior */
