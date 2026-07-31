@@ -1,3 +1,5 @@
+import type {HTMLAttributes} from 'react';
+
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import type {PopupPlacement} from '@gravity-ui/uikit';
 
@@ -17,6 +19,7 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
+import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 import {type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 
 import {MessageItem} from './MessageItem';
@@ -47,6 +50,32 @@ export interface MessageListActionPopupConfig {
     qa?: string;
 }
 
+/**
+ * Grouped MDX/markdown rendering props exposed as a single object on `MessageList` and
+ * `ChatContainer`. They are destructured back into individual props before being handed to
+ * the low-level `MessageItem` renderer.
+ */
+export type MdxProps<TContent extends TMessageContent = never> = {
+    /** Options for rendering MDX (`@diplodoc/mdx-extension`) in the default message renderers */
+    mdxOptions?: MarkdownRendererMdxOptions;
+    /**
+     * Resolves the extra props forwarded to the root container `div` of each rendered
+     * markdown block. Called with the concrete message so handlers (e.g. `onClick`) can
+     * identify the message they belong to.
+     */
+    getMarkdownExtraProps?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => HTMLAttributes<HTMLDivElement> | undefined;
+    /**
+     * Resolves the per-message value exposed to MDX components (via `useMdxContext`).
+     * Called with the concrete message so embedded MDX components can read data
+     * unique to the message they belong to.
+     */
+    getMdxContext?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => Record<string, unknown> | undefined;
+};
+
 export type MessageListProps<TContent extends TMessageContent = never> = {
     messages: TChatMessage<TContent, TMessageMetadata>[];
     status?: ChatStatus;
@@ -57,6 +86,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     openMarkdownLinksInNewTab?: boolean;
+    /** Grouped MDX/markdown rendering props (`mdxOptions`, `getMarkdownExtraProps`, `getMdxContext`). */
+    mdxProps?: MdxProps<TContent>;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -100,6 +131,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     transformOptions,
     shouldParseIncompleteMarkdown,
     openMarkdownLinksInNewTab,
+    mdxProps,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -164,6 +196,9 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                         transformOptions={transformOptions}
                         shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                         openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                        mdxOptions={mdxProps?.mdxOptions}
+                        getMarkdownExtraProps={mdxProps?.getMarkdownExtraProps}
+                        getMdxContext={mdxProps?.getMdxContext}
                         showTimestamp={showTimestamp}
                         showAvatar={showAvatar}
                         userActions={userActions}

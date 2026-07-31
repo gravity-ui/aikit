@@ -133,4 +133,10 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         // and stay untouched by AIKit's `.yfm` overrides.
         await expect.poll(() => fontWeight('[data-qa="standalone-yfm"] strong')).toBe('700');
     });
+
+    test('should render with mdx compoentns', async ({mount, expectScreenshot}) => {
+        await mount(<MarkdownRendererStories.WithMdxComponents />);
+
+        await expectScreenshot();
+    });
 });

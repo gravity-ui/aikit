@@ -1,19 +1,34 @@
-import {memo, useMemo} from 'react';
+import {Fragment, type HTMLAttributes, memo, useMemo, useRef} from 'react';
 
+import {mdxPlugin} from '@diplodoc/mdx-extension';
 import type {
     ExtendedPluginWithCollect,
     MarkdownIt,
     OptionsType,
 } from '@diplodoc/transform/lib/typings';
+import type {MDXComponents} from 'mdx/types';
 
 import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
 import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
 
+import {MdxPortals} from './MdxPortals';
+
 import './MarkdownRenderer.scss';
 
 const b = block('markdown-renderer');
+
+/**
+ * Options for rendering embedded MDX/JSX in the markdown content via
+ * `@diplodoc/mdx-extension`. Passing `mdxOptions` enables MDX processing.
+ */
+export interface MarkdownRendererMdxOptions {
+    /** Map of components rendered from embedded MDX/JSX in the markdown content. */
+    components: MDXComponents;
+    /** Optional list of tag names to limit which components are processed as MDX. */
+    tagNames?: string[];
+}
 
 export interface MarkdownRendererProps {
     content: string;
@@ -22,6 +37,10 @@ export interface MarkdownRendererProps {
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     openLinksInNewTab?: boolean;
+    mdxOptions?: MarkdownRendererMdxOptions;
+    mdxContext?: Record<string, unknown>;
+    /** Extra props forwarded to the root container `div` element. */
+    extraProps?: HTMLAttributes<HTMLDivElement>;
 }
 
 const ABSOLUTE_HTTP_URL_RE = /^(https?:)?\/\//i;
@@ -75,26 +94,65 @@ function MarkdownRendererComponent({
     transformOptions,
     shouldParseIncompleteMarkdown = false,
     openLinksInNewTab = false,
+    mdxOptions,
+    mdxContext,
+    extraProps,
 }: MarkdownRendererProps) {
     const closedContent = useRemend(content, shouldParseIncompleteMarkdown);
+    const enableMdx = Boolean(mdxOptions);
+    const mdxComponents = mdxOptions?.components;
+    const mdxTagNames = mdxOptions?.tagNames;
     const finalTransformOptions = useMemo<OptionsType | undefined>(() => {
-        if (!openLinksInNewTab) {
+        const plugins = [...(transformOptions?.plugins ?? [])];
+
+        if (openLinksInNewTab) {
+            plugins.push(openLinksInNewTabPlugin);
+        }
+
+        if (enableMdx) {
+            plugins.push(
+                mdxPlugin(
+                    mdxTagNames ? {tagNames: mdxTagNames} : undefined,
+                ) as unknown as ExtendedPluginWithCollect,
+            );
+        }
+
+        if (plugins.length === 0) {
             return transformOptions;
         }
 
         return {
             ...transformOptions,
-            plugins: [...(transformOptions?.plugins ?? []), openLinksInNewTabPlugin],
+            plugins,
         };
-    }, [openLinksInNewTab, transformOptions]);
-    const html = useMarkdownTransform(closedContent, finalTransformOptions);
+    }, [openLinksInNewTab, transformOptions, enableMdx, mdxTagNames]);
+
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const {html, mdxArtifacts} = useMarkdownTransform(
+        closedContent,
+        finalTransformOptions,
+        enableMdx,
+    );
 
     return (
-        <div
-            className={b(null, [className, 'yfm'])}
-            data-qa={qa}
-            dangerouslySetInnerHTML={{__html: html}}
-        />
+        <Fragment>
+            <div
+                ref={containerRef}
+                className={b(null, [className, 'yfm'])}
+                data-qa={qa}
+                dangerouslySetInnerHTML={{__html: html}}
+                {...extraProps}
+            />
+            {enableMdx ? (
+                <MdxPortals
+                    refCtr={containerRef}
+                    html={html}
+                    components={mdxComponents}
+                    mdxArtifacts={mdxArtifacts}
+                    mdxContext={mdxContext}
+                />
+            ) : null}
+        </Fragment>
     );
 }
 
@@ -116,6 +174,22 @@ export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, next
     }
 
     if (prevProps.qa !== nextProps.qa) {
+        return false;
+    }
+
+    if (prevProps.mdxOptions?.components !== nextProps.mdxOptions?.components) {
+        return false;
+    }
+
+    if (prevProps.mdxOptions?.tagNames !== nextProps.mdxOptions?.tagNames) {
+        return false;
+    }
+
+    if (prevProps.mdxContext !== nextProps.mdxContext) {
+        return false;
+    }
+
+    if (prevProps.extraProps !== nextProps.extraProps) {
         return false;
     }
 

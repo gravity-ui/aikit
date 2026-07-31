@@ -1,4 +1,4 @@
-import {memo, useMemo} from 'react';
+import {type HTMLAttributes, memo, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
@@ -16,6 +16,7 @@ import {
     mergeMessageRendererRegistries,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
+import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
 import {createDefaultMessageRegistry} from './defaultMessageTypeRegistry';
@@ -37,6 +38,10 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
         transformOptions?: OptionsType;
         shouldParseIncompleteMarkdown?: boolean;
         openMarkdownLinksInNewTab?: boolean;
+        mdxOptions?: MarkdownRendererMdxOptions;
+        mdxContext?: Record<string, unknown>;
+        /** Extra props forwarded to the root container `div` of each rendered markdown block. */
+        markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
         className?: string;
         qa?: string;
     };
@@ -53,6 +58,9 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
     transformOptions,
     shouldParseIncompleteMarkdown,
     openMarkdownLinksInNewTab,
+    mdxOptions,
+    mdxContext,
+    markdownExtraProps,
     showActionsOnHover,
     showTimestamp,
     userRating,
@@ -65,6 +73,9 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             transformOptions,
             shouldParseIncompleteMarkdown,
             openMarkdownLinksInNewTab,
+            mdxOptions,
+            mdxContext,
+            markdownExtraProps,
         );
         if (messageRendererRegistry) {
             return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
@@ -76,6 +87,9 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
         transformOptions,
         shouldParseIncompleteMarkdown,
         openMarkdownLinksInNewTab,
+        mdxOptions,
+        mdxContext,
+        markdownExtraProps,
     ]);
 
     const parts = useMemo(() => normalizeContent<TContent>(content), [content]);

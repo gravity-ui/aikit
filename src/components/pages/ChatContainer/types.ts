@@ -1,6 +1,6 @@
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
-import {MessageListProps} from 'src/components/organisms/MessageList';
+import {MdxProps, MessageListProps} from 'src/components/organisms/MessageList';
 
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
@@ -54,6 +54,7 @@ export type MessageListConfig = Omit<
     | 'showActionsOnHover'
     | 'transformOptions'
     | 'openMarkdownLinksInNewTab'
+    | 'mdxProps'
 >;
 
 /**
@@ -205,6 +206,11 @@ export interface ChatContainerProps {
     shouldParseIncompleteMarkdown?: boolean;
     /** Open all markdown links rendered by the default message renderers in a new tab */
     openMarkdownLinksInNewTab?: boolean;
+    /**
+     * Grouped MDX/markdown rendering props forwarded to the message list:
+     * `mdxOptions`, `getMarkdownExtraProps` and `getMdxContext`.
+     */
+    mdxProps?: MdxProps;
 
     // Configuration
     /** MessageList configuration for actions and loader behavior */

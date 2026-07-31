@@ -809,6 +809,7 @@
   },
   "dependencies": {
     "@bem-react/classname": "^1.7.0",
+    "@diplodoc/mdx-extension": "^1.10.1",
     "dayjs": "^1.11.19",
     "marked": "^17.0.1",
     "react-window": "^2.2.1",

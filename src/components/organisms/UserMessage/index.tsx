@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {type HTMLAttributes} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import {Avatar} from '@gravity-ui/uikit';
@@ -6,7 +6,7 @@ import {Avatar} from '@gravity-ui/uikit';
 import type {BaseMessageProps, FileAttachment} from '../../../types/messages';
 import {block, modsClassName} from '../../../utils/cn';
 import {FileIcon} from '../../atoms/FileIcon';
-import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
+import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 import {MessageBalloon} from '../../atoms/MessageBalloon';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
@@ -29,6 +29,10 @@ export type UserMessageProps = Pick<
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     openMarkdownLinksInNewTab?: boolean;
+    mdxOptions?: MarkdownRendererMdxOptions;
+    mdxContext?: Record<string, unknown>;
+    /** Extra props forwarded to the root container `div` of the rendered markdown block. */
+    markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
     className?: string;
     qa?: string;
 };
@@ -51,6 +55,9 @@ export const UserMessage = (props: UserMessageProps) => {
         transformOptions,
         shouldParseIncompleteMarkdown,
         openMarkdownLinksInNewTab,
+        mdxOptions,
+        mdxContext,
+        markdownExtraProps,
         onActionPopup,
     } = props;
 
@@ -78,6 +85,9 @@ export const UserMessage = (props: UserMessageProps) => {
                             transformOptions={transformOptions}
                             shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                             openLinksInNewTab={openMarkdownLinksInNewTab}
+                            mdxOptions={mdxOptions}
+                            mdxContext={mdxContext}
+                            extraProps={markdownExtraProps}
                         />
                     ) : (
                         content

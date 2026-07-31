@@ -1,4 +1,4 @@
-import {memo} from 'react';
+import {type HTMLAttributes, memo, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
@@ -19,6 +19,7 @@ import {
     resolveMessageActions,
 } from '../../../utils';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
+import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
@@ -32,6 +33,14 @@ export type MessageItemConfig<TContent extends TMessageContent = never> = {
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     openMarkdownLinksInNewTab?: boolean;
+    mdxOptions?: MarkdownRendererMdxOptions;
+    getMarkdownExtraProps?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => HTMLAttributes<HTMLDivElement> | undefined;
+
+    getMdxContext?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => Record<string, unknown> | undefined;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -65,6 +74,9 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     transformOptions,
     shouldParseIncompleteMarkdown,
     openMarkdownLinksInNewTab,
+    mdxOptions,
+    getMarkdownExtraProps,
+    getMdxContext,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -74,6 +86,15 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     assistantExtraInfo: AssistantExtraInfo,
     onActionPopup,
 }: MessageItemProps<TContent>) {
+    const mdxContext = useMemo(
+        () => getMdxContext?.(message) as Record<string, unknown> | undefined,
+        [getMdxContext, message],
+    );
+    const markdownExtraProps = useMemo(
+        () => getMarkdownExtraProps?.(message),
+        [getMarkdownExtraProps, message],
+    );
+
     if (isUserMessage<TMessageMetadata, TContent>(message)) {
         const actions = resolveMessageActions(message, userActions);
 
@@ -90,6 +111,9 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                 openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                mdxOptions={mdxOptions}
+                mdxContext={mdxContext}
+                markdownExtraProps={markdownExtraProps}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 showAvatar={showAvatar}
@@ -119,6 +143,9 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                 openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                mdxOptions={mdxOptions}
+                mdxContext={mdxContext}
+                markdownExtraProps={markdownExtraProps}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 userRating={message.userRating}
