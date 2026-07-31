@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.15.0](https://github.com/gravity-ui/aikit/compare/v2.14.0...v2.15.0) (2026-07-31)
+
+
+### Features
+
+* **markdownrenderer:** support mdx plugin and extraProps ([#219](https://github.com/gravity-ui/aikit/issues/219)) ([9a96b5e](https://github.com/gravity-ui/aikit/commit/9a96b5ea8ca99b61a7599cd73736c30e305d947c))
+
+
+### Bug Fixes
+
+* **PrompInput:** fix types for right suggest logic ([#218](https://github.com/gravity-ui/aikit/issues/218)) ([71c301d](https://github.com/gravity-ui/aikit/commit/71c301dc1d1c8651adc9890277b59cf2b6ffb8fc))
+
 ## [2.14.0](https://github.com/gravity-ui/aikit/compare/v2.13.0...v2.14.0) (2026-07-27)
 
 
