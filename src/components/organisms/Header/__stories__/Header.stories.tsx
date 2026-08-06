@@ -363,6 +363,22 @@ export const WithMenuItems: StoryFn<HeaderProps> = (args) => {
     );
 };
 
+export const ActionsPlacementLeft: StoryFn<HeaderProps> = (args) => (
+    <ContentWrapper width="480px">
+        <Header
+            title="Menu and history on the left"
+            baseActions={[HeaderAction.History, HeaderAction.Close]}
+            menuItems={[...menuItemsConfig]}
+            actionsPlacement={{
+                menu: 'left',
+                base: {[HeaderAction.History]: 'left'},
+            }}
+            {...mockHandlers}
+            {...args}
+        />
+    </ContentWrapper>
+);
+
 export const FoldingInteractive: StoryFn<HeaderProps> = (args) => {
     const [foldingState, setFoldingState] = useState<'collapsed' | 'opened'>('opened');
 

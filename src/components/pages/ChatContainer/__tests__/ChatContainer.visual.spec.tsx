@@ -589,4 +589,33 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
 
         await expect(page.getByText('Sales by quarter, $K')).toBeVisible();
     });
+
+    test('should render mascot support', async ({mount, page}) => {
+        await mount(<ChatContainerStories.WithMascot />);
+
+        await expect(page.getByLabel(/Mascot: idle/)).toBeVisible();
+    });
+
+    test('should align a chat mascot with the left edge of assistant messages', async ({
+        mount,
+        page,
+    }) => {
+        await mount(
+            <ChatContainer
+                messages={[{id: 'assistant', role: 'assistant', content: 'Message'}]}
+                onSendMessage={async () => {}}
+                mascotConfig={{
+                    stateOverride: 'idle',
+                    mascots: {chat: {idle: <div aria-label="Chat mascot">Mascot</div>}},
+                }}
+            />,
+        );
+
+        const messageBox = await page.locator('.g-aikit-assistant-message').boundingBox();
+        const mascotBox = await page.getByLabel('Chat mascot').boundingBox();
+
+        expect(messageBox).not.toBeNull();
+        expect(mascotBox).not.toBeNull();
+        expect(mascotBox?.x).toBe(messageBox?.x);
+    });
 });

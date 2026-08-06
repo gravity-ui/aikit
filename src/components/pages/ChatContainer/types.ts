@@ -2,7 +2,16 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {MdxProps, MessageListProps} from 'src/components/organisms/MessageList';
 
-import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../types';
+import type {
+    ChatStatus,
+    ChatType,
+    MascotAssets,
+    MascotCollection,
+    MascotRenderContext,
+    MascotState,
+    TChatMessage,
+    TSubmitData,
+} from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
@@ -41,6 +50,24 @@ export interface WelcomeConfig {
     showMore?: () => void;
     /** Show more button text */
     showMoreText?: string;
+}
+
+export interface MascotConfig<TAsset = string> {
+    /** External state override, primarily for audio states or full consumer control. */
+    stateOverride?: MascotState;
+    assets?: MascotAssets<TAsset>;
+    defaultAssets?: MascotAssets<TAsset>;
+    /** Ready-to-render animated mascots grouped by welcome/chat surface and state. */
+    mascots?: MascotCollection;
+    /** Product-wide fallback mascots merged underneath `mascots`. */
+    defaultMascots?: MascotCollection;
+    /** Advanced renderer. Takes precedence over `mascots` when provided. */
+    renderMascot?: (context: MascotRenderContext<TAsset>) => React.ReactNode;
+    showOnWelcome?: boolean;
+    showInChat?: boolean;
+    sleepDelayMs?: number | null;
+    onceDurations?: Partial<Record<'reveal' | 'done' | 'error' | 'stopped', number>>;
+    onStateChange?: (state: MascotState) => void;
 }
 
 /**
@@ -215,6 +242,8 @@ export interface ChatContainerProps {
     // Configuration
     /** MessageList configuration for actions and loader behavior */
     messageListConfig?: MessageListConfig;
+    /** Mascot renderer, assets and lifecycle configuration. */
+    mascotConfig?: MascotConfig;
 
     // Component props overrides
     /** Props override for Header component */

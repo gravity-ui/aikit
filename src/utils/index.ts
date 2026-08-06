@@ -6,3 +6,4 @@ export * from './messageTypeRegistry';
 export * from './clipboardUtils';
 export * from './aiAgentContext';
 export * from './toolset';
+export * from './mascot';

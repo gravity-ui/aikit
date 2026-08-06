@@ -284,3 +284,5 @@ The component is built as a composition of:
 - **Text** components from Gravity UI for typography
 
 The layout uses flexbox to ensure proper vertical centering and responsive behavior. The content area is scrollable if the content exceeds the available height.
+Use `heroContent` to render custom welcome artwork. It replaces `image` when both are provided;
+`alignment.hero` controls its alignment and falls back to `alignment.image`.

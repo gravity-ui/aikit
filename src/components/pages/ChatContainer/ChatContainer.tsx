@@ -1,7 +1,9 @@
-import {type ReactNode, useMemo} from 'react';
+import {Fragment, type ReactNode, useCallback, useMemo} from 'react';
 
+import {getMascotAnimationType} from '../../../hooks';
 import type {TSuggestionContext} from '../../../types/messages';
 import {block} from '../../../utils/cn';
+import {getMascotNode, resolveMascotAssets, resolveMascotCollection} from '../../../utils/mascot';
 import {Disclaimer} from '../../atoms/Disclaimer';
 import {Header, HeaderAction, type HeaderProps} from '../../organisms/Header';
 import {PromptInput, type PromptInputProps} from '../../organisms/PromptInput';
@@ -17,6 +19,7 @@ import {
 import {i18n} from './i18n';
 import type {ChatContainerProps, ChatContainerTexts} from './types';
 import {useChatContainer} from './useChatContainer';
+import {useChatContainerMascot} from './useChatContainerMascot';
 
 import './ChatContainer.scss';
 
@@ -87,6 +90,7 @@ function buildFinalPromptInputProps(args: {
     texts: ChatContainerTexts;
     promptInputKey: number;
     qaMap: NormalizedChatContainerQa;
+    onValueChange?: (value: string) => void;
 }) {
     const {
         promptInputProps,
@@ -99,6 +103,7 @@ function buildFinalPromptInputProps(args: {
         texts: textsArg,
         promptInputKey,
         qaMap,
+        onValueChange,
     } = args;
 
     const texts = textsArg ?? {};
@@ -116,6 +121,13 @@ function buildFinalPromptInputProps(args: {
 
     return {
         ...promptInputProps,
+        onValueChange:
+            onValueChange || promptInputProps?.onValueChange
+                ? (value: string) => {
+                      onValueChange?.(value);
+                      promptInputProps?.onValueChange?.(value);
+                  }
+                : undefined,
         qa: resolveChatContainerQa(qaMap, 'promptInput', 'prompt-input') ?? promptInputProps?.qa,
         onSend: onSendMessage,
         onCancel,
@@ -185,6 +197,7 @@ export function ChatContainer(props: ChatContainerProps) {
         openMarkdownLinksInNewTab,
         mdxProps,
         messageListConfig,
+        mascotConfig,
         headerProps = {},
         contentProps = {},
         emptyContainerProps = {},
@@ -202,6 +215,74 @@ export function ChatContainer(props: ChatContainerProps) {
     } = props;
 
     const hookState = useChatContainer(props);
+
+    const mascotState = useChatContainerMascot({
+        config: mascotConfig,
+        view: hookState.chatContentView === 'empty' ? 'hero' : 'chat',
+        status,
+        messagesCount: messages.length,
+        activeChatId: hookState.activeChat?.id,
+        promptInputKey: hookState.promptInputKey,
+    });
+
+    const wrappedOnSendMessage = useCallback(
+        async (...args: Parameters<typeof onSendMessage>) => {
+            mascotState.notifyActivity();
+            return onSendMessage(...args);
+        },
+        [mascotState.notifyActivity, onSendMessage],
+    );
+    const wrappedOnCancel = useMemo(() => {
+        if (!onCancel) {
+            return undefined;
+        }
+        return async () => {
+            await onCancel();
+            mascotState.handleCancelResolved();
+        };
+    }, [mascotState.handleCancelResolved, onCancel]);
+    const wrappedOnRetry = useMemo(() => {
+        if (!onRetry) {
+            return undefined;
+        }
+        return () => {
+            mascotState.notifyActivity();
+            onRetry();
+        };
+    }, [mascotState.notifyActivity, onRetry]);
+
+    const resolvedMascotAssets = useMemo(
+        () => resolveMascotAssets(mascotConfig?.defaultAssets, mascotConfig?.assets),
+        [mascotConfig?.assets, mascotConfig?.defaultAssets],
+    );
+    const resolvedMascots = useMemo(
+        () => resolveMascotCollection(mascotConfig?.defaultMascots, mascotConfig?.mascots),
+        [mascotConfig?.defaultMascots, mascotConfig?.mascots],
+    );
+    const mascotView = hookState.chatContentView === 'empty' ? 'hero' : 'chat';
+    const mascotNode = useMemo(() => {
+        if (!mascotConfig) {
+            return undefined;
+        }
+        if (mascotView === 'hero' && mascotConfig.showOnWelcome === false) {
+            return undefined;
+        }
+        if (mascotView === 'chat' && mascotConfig.showInChat === false) {
+            return undefined;
+        }
+        const node = mascotConfig.renderMascot
+            ? mascotConfig.renderMascot({
+                  view: mascotView,
+                  state: mascotState.state,
+                  animationType: getMascotAnimationType(mascotState.state),
+                  assets: resolvedMascotAssets,
+              })
+            : getMascotNode(resolvedMascots, mascotView, mascotState.state);
+        if (node === undefined || node === null) {
+            return undefined;
+        }
+        return <div className={b('mascot', {view: mascotView})}>{node}</div>;
+    }, [mascotConfig, mascotState.state, mascotView, resolvedMascotAssets, resolvedMascots]);
 
     const qaMap = useMemo(() => normalizeChatContainerQa(qa), [qa]);
 
@@ -337,7 +418,18 @@ export function ChatContainer(props: ChatContainerProps) {
                 welcomeConfig?.suggestionTitle ??
                 emptyContainerProps.suggestionTitle,
             suggestions: welcomeConfig?.suggestions,
-            alignment: welcomeConfig?.alignment,
+            alignment: {
+                ...emptyContainerProps.alignment,
+                ...welcomeConfig?.alignment,
+                ...(mascotView === 'hero' &&
+                mascotNode &&
+                emptyContainerProps.alignment?.hero === undefined &&
+                welcomeConfig?.alignment?.hero === undefined
+                    ? {hero: 'center' as const}
+                    : {}),
+            },
+            heroContent:
+                emptyContainerProps.heroContent ?? (mascotView === 'hero' ? mascotNode : undefined),
             layout: welcomeConfig?.layout,
             wrapText: welcomeConfig?.wrapText,
             showMore: welcomeConfig?.showMore,
@@ -353,7 +445,7 @@ export function ChatContainer(props: ChatContainerProps) {
             ) => {
                 const suggestion = toSuggestionContext(suggestionId, suggestionData);
 
-                await onSendMessage({
+                await wrappedOnSendMessage({
                     content,
                     ...(suggestion && {suggestion}),
                 });
@@ -362,12 +454,14 @@ export function ChatContainer(props: ChatContainerProps) {
     }, [
         welcomeConfig,
         emptyContainerProps,
-        onSendMessage,
+        wrappedOnSendMessage,
         qaMap,
         texts.emptyStateTitle,
         texts.emptyStateDescription,
         texts.emptyStateSuggestionsTitle,
         texts.emptyStateShowMoreText,
+        mascotNode,
+        mascotView,
     ]);
 
     // Build props for MessageList
@@ -379,7 +473,7 @@ export function ChatContainer(props: ChatContainerProps) {
             errorMessage: texts.errorText
                 ? {...(messageListConfig?.errorMessage ?? {}), text: texts.errorText}
                 : messageListConfig?.errorMessage || (error ? {text: error.message} : undefined),
-            onRetry,
+            onRetry: wrappedOnRetry,
             showActionsOnHover,
             transformOptions,
             shouldParseIncompleteMarkdown,
@@ -394,12 +488,21 @@ export function ChatContainer(props: ChatContainerProps) {
                     resolveChatContainerQa(qaMap, 'actionPopup', 'action-popup') ??
                     messageListConfig?.actionPopupProps?.qa,
             },
+            footerContent:
+                mascotView === 'chat' && mascotNode !== undefined && mascotNode !== null ? (
+                    <Fragment>
+                        {messageListConfig?.footerContent}
+                        {mascotNode}
+                    </Fragment>
+                ) : (
+                    messageListConfig?.footerContent
+                ),
         }),
         [
             messages,
             status,
             error,
-            onRetry,
+            wrappedOnRetry,
             showActionsOnHover,
             transformOptions,
             shouldParseIncompleteMarkdown,
@@ -408,6 +511,8 @@ export function ChatContainer(props: ChatContainerProps) {
             messageListConfig,
             qaMap,
             texts.errorText,
+            mascotNode,
+            mascotView,
         ],
     );
 
@@ -416,8 +521,8 @@ export function ChatContainer(props: ChatContainerProps) {
         () =>
             buildFinalPromptInputProps({
                 promptInputProps,
-                onSendMessage,
-                onCancel,
+                onSendMessage: wrappedOnSendMessage,
+                onCancel: wrappedOnCancel,
                 status,
                 contextItems,
                 showContextIndicator,
@@ -425,10 +530,11 @@ export function ChatContainer(props: ChatContainerProps) {
                 texts,
                 promptInputKey: hookState.promptInputKey,
                 qaMap,
+                onValueChange: mascotConfig ? mascotState.handleValueChange : undefined,
             }),
         [
-            onSendMessage,
-            onCancel,
+            wrappedOnSendMessage,
+            wrappedOnCancel,
             status,
             contextItems,
             showContextIndicator,
@@ -441,6 +547,8 @@ export function ChatContainer(props: ChatContainerProps) {
             texts.submitSendTooltip,
             texts.submitCancelTooltip,
             texts.submitButtonCancelableText,
+            mascotState.handleValueChange,
+            mascotConfig,
         ],
     );
 

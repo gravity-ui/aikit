@@ -82,3 +82,5 @@ export {
 export {VirtualizationComparison} from './parts/previousMessages';
 
 export {WithExtraInfo} from './parts/basic';
+
+export {WithFooterContent, VirtualizedWithFooterContent} from './parts/footerContent';

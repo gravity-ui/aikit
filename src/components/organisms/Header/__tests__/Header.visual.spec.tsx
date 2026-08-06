@@ -69,6 +69,14 @@ test.describe('Header', {tag: '@Header'}, () => {
         await expectScreenshot();
     });
 
+    test('should render actions on the left', async ({mount, page}) => {
+        await mount(<HeaderStories.ActionsPlacementLeft />);
+
+        const title = page.getByText('Menu and history on the left');
+        const history = page.locator('[data-qa="header-action-history"]');
+        expect((await history.boundingBox())?.x).toBeLessThan((await title.boundingBox())?.x ?? 0);
+    });
+
     test('should render with menu items open', async ({mount, page, expectScreenshot}) => {
         await mount(<HeaderStories.WithMenuItems />);
 
