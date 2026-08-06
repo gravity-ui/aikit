@@ -32,7 +32,8 @@
         gap: var(--g-spacing-3);
     }
 
-    &__image-container {
+    &__image-container,
+    &__hero-container {
         display: flex;
         flex: 1;
 

@@ -17,6 +17,7 @@ export function useHeader(props: HeaderProps): {
     icon: React.ReactNode | undefined;
     baseActions: ActionItem[];
     additionalActions: Action[];
+    actionsPlacement: NonNullable<HeaderProps['actionsPlacement']>;
     titlePosition: 'left' | 'center';
     withIcon: boolean;
     showTitle: boolean;
@@ -42,6 +43,7 @@ export function useHeader(props: HeaderProps): {
         handleFolding,
         foldingState = 'opened',
         additionalActions = [],
+        actionsPlacement = {},
         menuItems = [],
         menuButtonTooltip,
         menuButtonIcon,
@@ -102,6 +104,7 @@ export function useHeader(props: HeaderProps): {
         icon,
         baseActions: baseActionsList,
         additionalActions,
+        actionsPlacement,
         titlePosition,
         withIcon,
         showTitle,

@@ -53,6 +53,7 @@ export function Header(props: HeaderProps) {
         icon,
         baseActions,
         additionalActions,
+        actionsPlacement,
         menuItems,
         menuButtonTooltip,
         menuButtonIcon,
@@ -174,10 +175,47 @@ export function Header(props: HeaderProps) {
         );
     }, [dropdownMenuItems, menuButtonIcon, menuButtonQa, menuButtonTooltip, menuItems.length]);
 
+    const [leftBaseActions, rightBaseActions] = useMemo(() => {
+        const left: ActionItem[] = [];
+        const right: ActionItem[] = [];
+        baseActions.forEach((action) => {
+            (actionsPlacement.base?.[action.id as HeaderAction] === 'left' ? left : right).push(
+                action,
+            );
+        });
+        return [left, right];
+    }, [actionsPlacement.base, baseActions]);
+
+    const renderActions = (side: 'left' | 'right') => {
+        const sideAdditionalActions =
+            (actionsPlacement.additional ?? 'right') === side ? additionalActions : [];
+        const sideMenu = (actionsPlacement.menu ?? 'right') === side ? headerMenu : null;
+        const sideBaseActions = side === 'left' ? leftBaseActions : rightBaseActions;
+        if (sideAdditionalActions.length === 0 && !sideMenu && sideBaseActions.length === 0) {
+            return null;
+        }
+        return (
+            <ButtonGroup>
+                {sideAdditionalActions.map((action, index) =>
+                    renderAdditionalAction(action, index),
+                )}
+                {sideMenu}
+                {sideBaseActions.map((action) => renderBaseAction(action, historyButtonRef))}
+            </ButtonGroup>
+        );
+    };
+
+    const leftActions = renderActions('left');
+    const rightActions = renderActions('right');
+
     return (
         <div className={b('', className)} data-qa={qa}>
-            {/* Left part: icon */}
-            {withIcon && iconElement}
+            {(withIcon || leftActions) && (
+                <div className={b('left')}>
+                    {withIcon && iconElement}
+                    {leftActions}
+                </div>
+            )}
 
             {/* Center part: title with preview */}
             {showTitle && (
@@ -191,12 +229,7 @@ export function Header(props: HeaderProps) {
                 </div>
             )}
 
-            {/* Right part: additional and base actions */}
-            <ButtonGroup>
-                {additionalActions.map((action, index) => renderAdditionalAction(action, index))}
-                {headerMenu}
-                {baseActions.map((action) => renderBaseAction(action, historyButtonRef))}
-            </ButtonGroup>
+            {rightActions}
         </div>
     );
 }

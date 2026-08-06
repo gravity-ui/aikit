@@ -15,6 +15,8 @@ UI component library for AI chats built with Atomic Design principles.
 
 ![Cover image](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/aikit_cover.png)
 
+![Example image](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/aikit_example.png)
+
 ## Resources
 
 ### ![Globe Logo Light](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/globe_light.svg#gh-light-mode-only) ![Globe Logo Dark](https://raw.githubusercontent.com/gravity-ui/aikit/main/docs/assets/globe_dark.svg#gh-dark-mode-only) [Website](https://gravity-ui.com/libraries/aikit)
@@ -210,6 +212,33 @@ Development and contribution instructions are available in [CONTRIBUTING.md](./C
 
 MIT
 
+## For AI agents
+
+A React component library for building AI chat interfaces, organized by Atomic Design (atoms → molecules → organisms → templates → pages) and SDK-agnostic — reach for it to assemble a chat UI (message lists, prompt input, tool calls, attachments) instead of composing those primitives out of `@gravity-ui/uikit` by hand.
+
+### When to use
+
+- Building an AI/LLM chat UI (assistant/user/tool messages, prompt input with suggestions, attachment uploads, thinking states).
+- Wanting ready-made chat layouts (`ChatContainer`, `MessageList`, `PromptInput`) plus hooks to customize behavior.
+- Embedding into the Gravity UI ecosystem with shared theming via CSS variables.
+
+### When not to use
+
+- For general-purpose UI primitives (buttons, inputs, modals), use [`@gravity-ui/uikit`](https://gravity-ui.com/uikit) directly — AIKit builds on top of it for chat-specific needs.
+- To render rich markdown in messages, AIKit's `MarkdownRenderer` wraps [`@gravity-ui/markdown-editor`](https://github.com/gravity-ui/markdown-editor); for standalone markdown rendering use that package directly.
+- For a single chat bubble without chat orchestration, a uikit `MarkdownRenderer`/text block is lighter than the full AIKit message pipeline.
+
+### Common pitfalls
+
+- **Hallucinating an AI SDK import** — AIKit is SDK-agnostic; it provides components/hooks, not an LLM client. Bring your own data source and feed messages via props.
+- **Reaching for `<Chat>` / `<AIChat>`** — the page-level export is `ChatContainer` (and `AIStudioChat`); there is no component literally named `Chat`.
+- **Skipping message-type registration for custom types** — custom message kinds must be registered in the message type system, or they render as unknown.
+- **Editing base components instead of using hooks** — the two-level design expects you to customize via hooks/composition; overriding internals directly breaks upgrades.
+
+## Documentation for AI agents
+
+Agent-readable documentation for the installed version is located in `node_modules/@gravity-ui/aikit/build/docs/INDEX.md`.
+
 
 --- file: docs/GETTING_STARTED.md ---
 
@@ -252,38 +281,38 @@ import {ChatContainer} from '@gravity-ui/aikit';
 import type {ChatType, TChatMessage, TSubmitData} from '@gravity-ui/aikit';
 
 function App() {
-    const [chats, setChats] = useState<ChatType[]>([]);
-    const [activeChat, setActiveChat] = useState<ChatType | null>(null);
-    const [messages, setMessages] = useState<TChatMessage[]>([]);
+  const [chats, setChats] = useState<ChatType[]>([]);
+  const [activeChat, setActiveChat] = useState<ChatType | null>(null);
+  const [messages, setMessages] = useState<TChatMessage[]>([]);
 
-    const handleSendMessage = async (data: TSubmitData) => {
-        // Append the user message immediately
-        setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
+  const handleSendMessage = async (data: TSubmitData) => {
+    // Append the user message immediately
+    setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
 
-        // Call your backend, then append the assistant message
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            body: JSON.stringify({message: data.content}),
-        });
-        const assistant = await response.json();
-        setMessages((prev) => [...prev, {role: 'assistant', content: assistant.content}]);
-    };
+    // Call your backend, then append the assistant message
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({message: data.content}),
+    });
+    const assistant = await response.json();
+    setMessages((prev) => [...prev, {role: 'assistant', content: assistant.content}]);
+  };
 
-    return (
-        <ChatContainer
-            chats={chats}
-            activeChat={activeChat}
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onSelectChat={setActiveChat}
-            onCreateChat={() => {
-                /* create chat */
-            }}
-            onDeleteChat={(chat) => {
-                /* delete chat */
-            }}
-        />
-    );
+  return (
+    <ChatContainer
+      chats={chats}
+      activeChat={activeChat}
+      messages={messages}
+      onSendMessage={handleSendMessage}
+      onSelectChat={setActiveChat}
+      onCreateChat={() => {
+        /* create chat */
+      }}
+      onDeleteChat={(chat) => {
+        /* delete chat */
+      }}
+    />
+  );
 }
 ```
 
@@ -295,13 +324,18 @@ For more control, compose `Header`, `MessageList`, and `PromptInput` directly:
 import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
 
 function CustomChat() {
-    return (
-        <div className="custom-chat">
-            <Header title="AI Assistant" onNewChat={() => {/* ... */}} />
-            <MessageList messages={messages} status="ready" />
-            <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
-        </div>
-    );
+  return (
+    <div className="custom-chat">
+      <Header
+        title="AI Assistant"
+        onNewChat={() => {
+          /* ... */
+        }}
+      />
+      <MessageList messages={messages} status="ready" />
+      <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
+    </div>
+  );
 }
 ```
 
@@ -317,23 +351,23 @@ Messages are typed by `role` (`'user'` | `'assistant'` | `'system'`). Assistant 
 
 ### Built-in content types
 
-| Type | Description |
-| --- | --- |
-| `text` | Plain text or markdown |
+| Type       | Description                       |
+| ---------- | --------------------------------- |
+| `text`     | Plain text or markdown            |
 | `thinking` | AI thinking process (collapsible) |
-| `tool` | Tool execution with status |
+| `tool`     | Tool execution with status        |
 
 ```tsx
 import type {TAssistantMessage} from '@gravity-ui/aikit';
 
 const message: TAssistantMessage = {
-    role: 'assistant',
-    timestamp: new Date().toISOString(),
-    content: [
-        {type: 'text', data: {text: 'Let me think…'}},
-        {type: 'thinking', data: {content: 'Analyzing the request', status: 'thinking'}},
-        {type: 'text', data: {text: 'Here is the answer.'}},
-    ],
+  role: 'assistant',
+  timestamp: new Date().toISOString(),
+  content: [
+    {type: 'text', data: {text: 'Let me think…'}},
+    {type: 'thinking', data: {content: 'Analyzing the request', status: 'thinking'}},
+    {type: 'text', data: {text: 'Here is the answer.'}},
+  ],
 };
 ```
 
@@ -343,19 +377,19 @@ Register a custom renderer with `MessageRendererRegistry`:
 
 ```tsx
 import {
-    createMessageRendererRegistry,
-    registerMessageRenderer,
-    type MessageRendererRegistry,
+  createMessageRendererRegistry,
+  registerMessageRenderer,
+  type MessageRendererRegistry,
 } from '@gravity-ui/aikit';
 
 type ChartMessageContent = {
-    type: 'chart';
-    data: {points: number[]};
+  type: 'chart';
+  data: {points: number[]};
 };
 
 const renderers: MessageRendererRegistry = createMessageRendererRegistry();
 registerMessageRenderer<ChartMessageContent>(renderers, 'chart', {
-    render: ({content}) => <Chart points={content.data.points} />,
+  render: ({content}) => <Chart points={content.data.points} />,
 });
 
 <MessageList messages={messages} messageRendererRegistry={renderers} />;
@@ -375,28 +409,28 @@ Stream tokens by mutating an in-flight assistant message with `status: 'streamin
 
 ```tsx
 const handleSendMessage = async (data: TSubmitData) => {
-    setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
+  setMessages((prev) => [...prev, {role: 'user', content: data.content}]);
 
-    const response = await fetch('/api/chat/stream', {
-        method: 'POST',
-        body: JSON.stringify({message: data.content}),
+  const response = await fetch('/api/chat/stream', {
+    method: 'POST',
+    body: JSON.stringify({message: data.content}),
+  });
+  const reader = response.body!.getReader();
+  let accumulated = '';
+
+  // Insert a placeholder assistant message
+  setMessages((prev) => [...prev, {role: 'assistant', content: ''}]);
+
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) break;
+    accumulated += new TextDecoder().decode(value);
+    setMessages((prev) => {
+      const next = [...prev];
+      next[next.length - 1] = {role: 'assistant', content: accumulated};
+      return next;
     });
-    const reader = response.body!.getReader();
-    let accumulated = '';
-
-    // Insert a placeholder assistant message
-    setMessages((prev) => [...prev, {role: 'assistant', content: ''}]);
-
-    while (true) {
-        const {done, value} = await reader.read();
-        if (done) break;
-        accumulated += new TextDecoder().decode(value);
-        setMessages((prev) => {
-            const next = [...prev];
-            next[next.length - 1] = {role: 'assistant', content: accumulated};
-            return next;
-        });
-    }
+  }
 };
 ```
 
@@ -407,13 +441,15 @@ For an end-to-end working example with OpenAI on the server side, see [EXAMPLES.
 A server-side helper (`@gravity-ui/aikit/server/openai`) wraps the OpenAI Responses API:
 
 ```typescript
-const service = new OpenAIService({/* config */});
+const service = new OpenAIService({
+  /* config */
+});
 
 const stream = await service.createResponseStream({input: 'Hello world'});
 stream.start();
-stream.onEventChunk(console.log);    // typed event chunks
-stream.onBufferChunk(console.log);   // raw chunks (e.g. to forward over HTTP)
-stream.abort();                       // cancel
+stream.onEventChunk(console.log); // typed event chunks
+stream.onBufferChunk(console.log); // raw chunks (e.g. to forward over HTTP)
+stream.abort(); // cancel
 ```
 
 `openai` and `semver` are listed as `optionalDependencies` — install them only if you use the server adapter.
@@ -528,13 +564,13 @@ The library offers two ways to integrate a chat:
 import {ChatContainer} from '@gravity-ui/aikit';
 
 <ChatContainer
-    chats={chats}
-    activeChat={activeChat}
-    messages={messages}
-    onSendMessage={handleSend}
-    onSelectChat={setActiveChat}
-    onCreateChat={createChat}
-    onDeleteChat={deleteChat}
+  chats={chats}
+  activeChat={activeChat}
+  messages={messages}
+  onSendMessage={handleSend}
+  onSelectChat={setActiveChat}
+  onCreateChat={createChat}
+  onDeleteChat={deleteChat}
 />;
 ```
 
@@ -546,13 +582,13 @@ Drop down to individual organisms when you need a custom layout:
 import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
 
 function CustomChat() {
-    return (
-        <div className="custom-chat">
-            <Header title="AI Assistant" onNewChat={createChat} />
-            <MessageList messages={messages} status="ready" />
-            <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
-        </div>
-    );
+  return (
+    <div className="custom-chat">
+      <Header title="AI Assistant" onNewChat={createChat} />
+      <MessageList messages={messages} status="ready" />
+      <PromptInput onSubmit={handleSend} placeholder="Enter message…" />
+    </div>
+  );
 }
 ```
 
@@ -573,14 +609,14 @@ const [messages, setMessages] = useState<TChatMessage[]>([]);
 const [status, setStatus] = useState<ChatStatus>('ready');
 
 <ChatContainer
-    messages={messages}
-    status={status}
-    onSendMessage={async (data) => {
-        setStatus('streaming');
-        const reply = await fetchAssistantReply(data.content);
-        setMessages((prev) => [...prev, reply]);
-        setStatus('ready');
-    }}
+  messages={messages}
+  status={status}
+  onSendMessage={async (data) => {
+    setStatus('streaming');
+    const reply = await fetchAssistantReply(data.content);
+    setMessages((prev) => [...prev, reply]);
+    setStatus('ready');
+  }}
 />;
 ```
 
@@ -592,24 +628,22 @@ const [status, setStatus] = useState<ChatStatus>('ready');
 export type TMessageRole = 'user' | 'assistant' | 'system';
 
 export type TUserMessage = {
-    role: 'user';
-    content: string;
-    timestamp?: string;
-    format?: 'plain' | 'markdown';
-    images?: string[];
-    fileAttachments?: FileAttachment[];
+  role: 'user';
+  content: string;
+  timestamp?: string;
+  format?: 'plain' | 'markdown';
+  images?: string[];
+  fileAttachments?: FileAttachment[];
 };
 
 export type TAssistantMessage<TCustomContent = never> = {
-    role: 'assistant';
-    content: string | TMessageContent | TMessageContent[];
-    timestamp?: string;
-    userRating?: 'like' | 'dislike';
+  role: 'assistant';
+  content: string | TMessageContent | TMessageContent[];
+  timestamp?: string;
+  userRating?: 'like' | 'dislike';
 };
 
-export type TChatMessage<TCustomContent = never> =
-    | TUserMessage
-    | TAssistantMessage<TCustomContent>;
+export type TChatMessage<TCustomContent = never> = TUserMessage | TAssistantMessage<TCustomContent>;
 ```
 
 Assistant content can be a plain string, a single typed part (`'text'` | `'thinking'` | `'tool'`), or an array of parts. Custom part types extend via the `TCustomContent` generic.
@@ -618,11 +652,11 @@ Assistant content can be a plain string, a single typed part (`'text'` | `'think
 
 ```typescript
 export type ChatType = {
-    id: string;
-    name: string;
-    createTime: string | null;
-    lastMessage?: string;
-    metadata?: Record<string, unknown>;
+  id: string;
+  name: string;
+  createTime: string | null;
+  lastMessage?: string;
+  metadata?: Record<string, unknown>;
 };
 
 export type ChatStatus = 'submitted' | 'streaming' | 'streaming_loading' | 'ready' | 'error';
@@ -638,19 +672,19 @@ Register custom content types via `MessageRendererRegistry`:
 
 ```tsx
 import {
-    createMessageRendererRegistry,
-    registerMessageRenderer,
-    type MessageRendererRegistry,
+  createMessageRendererRegistry,
+  registerMessageRenderer,
+  type MessageRendererRegistry,
 } from '@gravity-ui/aikit';
 
 type ChartMessageContent = {
-    type: 'chart';
-    data: {points: number[]};
+  type: 'chart';
+  data: {points: number[]};
 };
 
 const renderers: MessageRendererRegistry = createMessageRendererRegistry();
 registerMessageRenderer<ChartMessageContent>(renderers, 'chart', {
-    render: ({content}) => <Chart points={content.data.points} />,
+  render: ({content}) => <Chart points={content.data.points} />,
 });
 
 <MessageList messages={messages} messageRendererRegistry={renderers} />;
@@ -670,11 +704,11 @@ All styles are controlled through CSS variables in the `--g-aikit-*` namespace, 
 
 ```css
 .g-root {
-    --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-float));
+  --g-aikit-color-bg-primary: var(--g-aikit-bg-primary, var(--g-color-base-float));
 }
 
 [data-theme='dark'] {
-    --g-aikit-bg-message-user: #0066cc;
+  --g-aikit-bg-message-user: #0066cc;
 }
 ```
 
@@ -735,76 +769,76 @@ Each component also has a dedicated subpath export for tree-shaking — `import 
 
 ## Atoms (16)
 
-| Component | Description |
-| --- | --- |
-| [ActionButton](../src/components/atoms/ActionButton/README.md) | Button with integrated tooltip (Button + ActionTooltip from Gravity UI). |
-| [Alert](../src/components/atoms/Alert/README.md) | Alert message with type indicator and optional button. |
-| [ChatDate](../src/components/atoms/ChatDate/README.md) | Formatted date with time and locale support. |
-| [ContextIndicator](../src/components/atoms/ContextIndicator/README.md) | Circular progress indicator for context usage (0–100%). |
-| [ContextItem](../src/components/atoms/ContextItem/README.md) | Label for rendering a context chip. |
-| [DiffStat](../src/components/atoms/DiffStat/README.md) | Diff statistics — added/deleted line counts. |
-| [Disclaimer](../src/components/atoms/Disclaimer/README.md) | Informational or warning message block. |
-| [FileIcon](../src/components/atoms/FileIcon/README.md) | Icon for a file based on MIME type or extension. |
-| InlineCitation | Citation link rendered inline in markdown. |
+| Component                                                                        | Description                                                                |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [ActionButton](../src/components/atoms/ActionButton/README.md)                   | Button with integrated tooltip (Button + ActionTooltip from Gravity UI).   |
+| [Alert](../src/components/atoms/Alert/README.md)                                 | Alert message with type indicator and optional button.                     |
+| [ChatDate](../src/components/atoms/ChatDate/README.md)                           | Formatted date with time and locale support.                               |
+| [ContextIndicator](../src/components/atoms/ContextIndicator/README.md)           | Circular progress indicator for context usage (0–100%).                    |
+| [ContextItem](../src/components/atoms/ContextItem/README.md)                     | Label for rendering a context chip.                                        |
+| [DiffStat](../src/components/atoms/DiffStat/README.md)                           | Diff statistics — added/deleted line counts.                               |
+| [Disclaimer](../src/components/atoms/Disclaimer/README.md)                       | Informational or warning message block.                                    |
+| [FileIcon](../src/components/atoms/FileIcon/README.md)                           | Icon for a file based on MIME type or extension.                           |
+| InlineCitation                                                                   | Citation link rendered inline in markdown.                                 |
 | [IntersectionContainer](../src/components/atoms/IntersectionContainer/README.md) | Intersection Observer wrapper (used by `MessageList` for infinite scroll). |
-| [Loader](../src/components/atoms/Loader/README.md) | Loading-state indicator. |
-| [MarkdownRenderer](../src/components/atoms/MarkdownRenderer/README.md) | Yandex Flavored Markdown (YFM) → HTML renderer. |
-| [MessageBalloon](../src/components/atoms/MessageBalloon/README.md) | Visual wrapper for a user message. |
-| [Shimmer](../src/components/atoms/Shimmer/README.md) | Shimmer animation overlay for loading state. |
-| [SubmitButton](../src/components/atoms/SubmitButton/README.md) | Submit button with send/cancel state switching. |
-| [ToolIndicator](../src/components/atoms/ToolIndicator/README.md) | Tool-execution status icon. |
+| [Loader](../src/components/atoms/Loader/README.md)                               | Loading-state indicator.                                                   |
+| [MarkdownRenderer](../src/components/atoms/MarkdownRenderer/README.md)           | Yandex Flavored Markdown (YFM) → HTML renderer.                            |
+| [MessageBalloon](../src/components/atoms/MessageBalloon/README.md)               | Visual wrapper for a user message.                                         |
+| [Shimmer](../src/components/atoms/Shimmer/README.md)                             | Shimmer animation overlay for loading state.                               |
+| [SubmitButton](../src/components/atoms/SubmitButton/README.md)                   | Submit button with send/cancel state switching.                            |
+| [ToolIndicator](../src/components/atoms/ToolIndicator/README.md)                 | Tool-execution status icon.                                                |
 
 ## Molecules (19)
 
-| Component | Description |
-| --- | --- |
-| [ActionPopup](../src/components/molecules/ActionPopup/README.md) | Anchored popup container for action-button content. |
-| [BaseMessage](../src/components/molecules/BaseMessage/README.md) | Base wrapper with support for action buttons. |
-| [ButtonGroup](../src/components/molecules/ButtonGroup/README.md) | Wrapper for a button group with orientation support. |
-| [FeedbackForm](../src/components/molecules/FeedbackForm/README.md) | Reusable feedback form with reason selection and comment. |
-| [FileDropZone](../src/components/molecules/FileDropZone/README.md) | Drag-and-drop area with hidden file input (native HTML5). |
-| [FileItem](../src/components/molecules/FileItem/README.md) | File row: icon, name, size, status, remove button. |
-| [InputContext](../src/components/molecules/InputContext/README.md) | React context for prompt-input attachments and chips. |
-| [PromptInputBody](../src/components/molecules/PromptInputBody/README.md) | Textarea body for prompt input with auto-grow. |
-| [PromptInputFooter](../src/components/molecules/PromptInputFooter/README.md) | Footer with action icons and submit button. |
-| [PromptInputHeader](../src/components/molecules/PromptInputHeader/README.md) | Header with context items / context indicator. |
-| [PromptInputPanel](../src/components/molecules/PromptInputPanel/README.md) | Panel container for custom prompt content. |
-| [RatingBlock](../src/components/molecules/RatingBlock/README.md) | Rating block with title and star rating. |
-| [StarRating](../src/components/molecules/StarRating/README.md) | 1–5 star rating component. |
-| [Suggestions](../src/components/molecules/Suggestions/README.md) | Clickable suggestion buttons in grid or list layout. |
-| [Tabs](../src/components/molecules/Tabs/README.md) | Section tabs with optional delete (built on uikit `Label`). |
-| [ToolFooter](../src/components/molecules/ToolFooter/README.md) | Tool-message footer with action buttons and status. |
-| [ToolHeader](../src/components/molecules/ToolHeader/README.md) | Tool-message header with icon, name, actions, indicators. |
-| [ToolStatus](../src/components/molecules/ToolStatus/README.md) | Tool-status indicator with localized text. |
+| Component                                                                    | Description                                                 |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| [ActionPopup](../src/components/molecules/ActionPopup/README.md)             | Anchored popup container for action-button content.         |
+| [BaseMessage](../src/components/molecules/BaseMessage/README.md)             | Base wrapper with support for action buttons.               |
+| [ButtonGroup](../src/components/molecules/ButtonGroup/README.md)             | Wrapper for a button group with orientation support.        |
+| [FeedbackForm](../src/components/molecules/FeedbackForm/README.md)           | Reusable feedback form with reason selection and comment.   |
+| [FileDropZone](../src/components/molecules/FileDropZone/README.md)           | Drag-and-drop area with hidden file input (native HTML5).   |
+| [FileItem](../src/components/molecules/FileItem/README.md)                   | File row: icon, name, size, status, remove button.          |
+| [InputContext](../src/components/molecules/InputContext/README.md)           | React context for prompt-input attachments and chips.       |
+| [PromptInputBody](../src/components/molecules/PromptInputBody/README.md)     | Textarea body for prompt input with auto-grow.              |
+| [PromptInputFooter](../src/components/molecules/PromptInputFooter/README.md) | Footer with action icons and submit button.                 |
+| [PromptInputHeader](../src/components/molecules/PromptInputHeader/README.md) | Header with context items / context indicator.              |
+| [PromptInputPanel](../src/components/molecules/PromptInputPanel/README.md)   | Panel container for custom prompt content.                  |
+| [RatingBlock](../src/components/molecules/RatingBlock/README.md)             | Rating block with title and star rating.                    |
+| [StarRating](../src/components/molecules/StarRating/README.md)               | 1–5 star rating component.                                  |
+| [Suggestions](../src/components/molecules/Suggestions/README.md)             | Clickable suggestion buttons in grid or list layout.        |
+| [Tabs](../src/components/molecules/Tabs/README.md)                           | Section tabs with optional delete (built on uikit `Label`). |
+| [ToolFooter](../src/components/molecules/ToolFooter/README.md)               | Tool-message footer with action buttons and status.         |
+| [ToolHeader](../src/components/molecules/ToolHeader/README.md)               | Tool-message header with icon, name, actions, indicators.   |
+| [ToolStatus](../src/components/molecules/ToolStatus/README.md)               | Tool-status indicator with localized text.                  |
 
 ## Organisms (9)
 
-| Component | Description |
-| --- | --- |
-| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md) | Assistant message with multi-part content and custom renderers. |
-| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md) | Paperclip button that opens the file upload dialog. |
-| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md) | Dialog with drag-and-drop and queued/uploaded files list. |
-| [Header](../src/components/organisms/Header/README.md) | Chat header with navigation and actions. |
-| [MessageList](../src/components/organisms/MessageList/README.md) | Message list with custom renderer registry support. |
-| [PromptInput](../src/components/organisms/PromptInput/README.md) | Flexible chat input — simple/full views, panels, suggestions, attachments. |
-| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md) | AI thinking process with collapsible content and status. |
-| [ToolMessage](../src/components/organisms/ToolMessage/README.md) | Tool message with automatic expand/collapse and status behavior. |
-| [UserMessage](../src/components/organisms/UserMessage/README.md) | User message renderer. |
+| Component                                                                  | Description                                                                |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md) | Assistant message with multi-part content and custom renderers.            |
+| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md) | Paperclip button that opens the file upload dialog.                        |
+| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md) | Dialog with drag-and-drop and queued/uploaded files list.                  |
+| [Header](../src/components/organisms/Header/README.md)                     | Chat header with navigation and actions.                                   |
+| [MessageList](../src/components/organisms/MessageList/README.md)           | Message list with custom renderer registry support.                        |
+| [PromptInput](../src/components/organisms/PromptInput/README.md)           | Flexible chat input — simple/full views, panels, suggestions, attachments. |
+| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md)   | AI thinking process with collapsible content and status.                   |
+| [ToolMessage](../src/components/organisms/ToolMessage/README.md)           | Tool message with automatic expand/collapse and status behavior.           |
+| [UserMessage](../src/components/organisms/UserMessage/README.md)           | User message renderer.                                                     |
 
 ## Templates (3)
 
-| Component | Description |
-| --- | --- |
-| [ChatContent](../src/components/templates/ChatContent/README.md) | Chat content container — empty state vs message list switching. |
-| [EmptyContainer](../src/components/templates/EmptyContainer/README.md) | Welcome screen with image, title, description, suggestions. |
-| [History](../src/components/templates/History/README.md) | Chat history popup — list, search, grouping, actions. |
+| Component                                                              | Description                                                     |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [ChatContent](../src/components/templates/ChatContent/README.md)       | Chat content container — empty state vs message list switching. |
+| [EmptyContainer](../src/components/templates/EmptyContainer/README.md) | Welcome screen with image, title, description, suggestions.     |
+| [History](../src/components/templates/History/README.md)               | Chat history popup — list, search, grouping, actions.           |
 
 ## Pages (2)
 
-| Component | Description |
-| --- | --- |
-| [AIStudioChat](../src/components/pages/AIStudioChat/README.md) | Ready-to-use chat with built-in OpenAI streaming — needs only an API URL. |
-| [ChatContainer](../src/components/pages/ChatContainer/README.md) | Fully assembled chat — integrates Header, ChatContent, and History. |
+| Component                                                        | Description                                                               |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [AIStudioChat](../src/components/pages/AIStudioChat/README.md)   | Ready-to-use chat with built-in OpenAI streaming — needs only an API URL. |
+| [ChatContainer](../src/components/pages/ChatContainer/README.md) | Fully assembled chat — integrates Header, ChatContent, and History.       |
 
 
 --- file: docs/THEMING.md ---
@@ -840,116 +874,116 @@ Defined under `.g-root`, applied regardless of theme.
 
 ### Colors
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-color-bg-primary` | `var(--g-aikit-bg-primary, var(--g-color-base-float))` | Primary background |
-| `--g-aikit-color-bg-secondary` | `#f5f5f5` | Secondary background |
-| `--g-aikit-color-bg-message-user` | `#0077ff` | User message bubble background |
-| `--g-aikit-color-bg-message-assistant` | `#f0f0f0` | Assistant message bubble background |
+| Variable                               | Default                                                | Description                         |
+| -------------------------------------- | ------------------------------------------------------ | ----------------------------------- |
+| `--g-aikit-color-bg-primary`           | `var(--g-aikit-bg-primary, var(--g-color-base-float))` | Primary background                  |
+| `--g-aikit-color-bg-secondary`         | `#f5f5f5`                                              | Secondary background                |
+| `--g-aikit-color-bg-message-user`      | `#0077ff`                                              | User message bubble background      |
+| `--g-aikit-color-bg-message-assistant` | `#f0f0f0`                                              | Assistant message bubble background |
 
 ### Layout
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-layout-base-padding-m` | `12px` | Base medium padding |
+| Variable                          | Default | Description         |
+| --------------------------------- | ------- | ------------------- |
+| `--g-aikit-layout-base-padding-m` | `12px`  | Base medium padding |
 
 ### Disclaimer / Suggestions / Header
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-disclaimer-gap` | `10px` | Gap inside `Disclaimer` |
+| Variable                           | Default                            | Description                   |
+| ---------------------------------- | ---------------------------------- | ----------------------------- |
+| `--g-aikit-disclaimer-gap`         | `10px`                             | Gap inside `Disclaimer`       |
 | `--g-aikit-suggestions-box-shadow` | `0 3px 10px rgba(198,172,255,.52)` | Shadow on `Suggestions` items |
-| `--g-aikit-header-background` | `none` | Header background |
+| `--g-aikit-header-background`      | `none`                             | Header background             |
 
 ### Context Indicator
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-ci-color-progress-1` | green | Low-usage segment |
-| `--g-aikit-ci-color-progress-2` | orange | Mid-usage segment |
-| `--g-aikit-ci-color-progress-3` | red | High-usage segment |
+| Variable                        | Default | Description        |
+| ------------------------------- | ------- | ------------------ |
+| `--g-aikit-ci-color-progress-1` | green   | Low-usage segment  |
+| `--g-aikit-ci-color-progress-2` | orange  | Mid-usage segment  |
+| `--g-aikit-ci-color-progress-3` | red     | High-usage segment |
 
 ### Shimmer
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-shimmer-color-from` | `rgba(0,0,0,.35)` | Shimmer gradient start |
-| `--g-aikit-shimmer-color-to` | `rgba(0,0,0,.85)` | Shimmer gradient end |
-| `--g-aikit-shimmer-duration` | `2.5s` | Animation duration |
-| `--g-aikit-shimmer-gradient-size` | `200%` | Gradient size |
+| Variable                          | Default           | Description            |
+| --------------------------------- | ----------------- | ---------------------- |
+| `--g-aikit-shimmer-color-from`    | `rgba(0,0,0,.35)` | Shimmer gradient start |
+| `--g-aikit-shimmer-color-to`      | `rgba(0,0,0,.85)` | Shimmer gradient end   |
+| `--g-aikit-shimmer-duration`      | `2.5s`            | Animation duration     |
+| `--g-aikit-shimmer-gradient-size` | `200%`            | Gradient size          |
 
 ### History
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-history-width` | `360px` | History popup width |
-| `--g-aikit-history-max-height` | `605px` | History popup max height |
-| `--g-aikit-history-item-height` | `24px` | Row height |
+| Variable                        | Default | Description              |
+| ------------------------------- | ------- | ------------------------ |
+| `--g-aikit-history-width`       | `360px` | History popup width      |
+| `--g-aikit-history-max-height`  | `605px` | History popup max height |
+| `--g-aikit-history-item-height` | `24px`  | Row height               |
 
 ### Prompt Input
 
-| Variable | Default | Description |
-| --- | --- | --- |
+| Variable                                  | Default | Description                    |
+| ----------------------------------------- | ------- | ------------------------------ |
 | `--g-aikit-prompt-input-panel-max-height` | `500px` | Max height of expandable panel |
 
 ### Empty Container
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-empty-container-background` | `var(--g-color-base-background)` | Empty-state background |
-| `--g-aikit-empty-container-content-gap` | `48px` | Gap between content blocks |
-| `--g-aikit-empty-container-padding` | `48px 32px` | Empty-state padding |
+| Variable                                | Default                          | Description                |
+| --------------------------------------- | -------------------------------- | -------------------------- |
+| `--g-aikit-empty-container-background`  | `var(--g-color-base-background)` | Empty-state background     |
+| `--g-aikit-empty-container-content-gap` | `48px`                           | Gap between content blocks |
+| `--g-aikit-empty-container-padding`     | `48px 32px`                      | Empty-state padding        |
 
 ### Chat Content / Container
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `--g-aikit-chat-content-background` | `var(--g-color-base-background)` | Content area background |
-| `--g-aikit-chat-content-padding` | derived | Content area padding |
-| `--g-aikit-chat-container-background` | `var(--g-color-base-background)` | Container background |
-| `--g-aikit-chat-container-header-background` | `var(--g-color-base-background)` | Header band background |
-| `--g-aikit-chat-container-content-background` | `var(--g-color-base-background)` | Content band background |
-| `--g-aikit-chat-container-footer-background` | `var(--g-color-base-background)` | Footer band background |
+| Variable                                            | Default                          | Description                    |
+| --------------------------------------------------- | -------------------------------- | ------------------------------ |
+| `--g-aikit-chat-content-background`                 | `var(--g-color-base-background)` | Content area background        |
+| `--g-aikit-chat-content-padding`                    | derived                          | Content area padding           |
+| `--g-aikit-chat-container-background`               | `var(--g-color-base-background)` | Container background           |
+| `--g-aikit-chat-container-header-background`        | `var(--g-color-base-background)` | Header band background         |
+| `--g-aikit-chat-container-content-background`       | `var(--g-color-base-background)` | Content band background        |
+| `--g-aikit-chat-container-footer-background`        | `var(--g-color-base-background)` | Footer band background         |
 | `--g-aikit-chat-container-content-empty-background` | `var(--g-color-base-background)` | Empty-state content background |
-| `--g-aikit-chat-container-content-chat-background` | `var(--g-color-base-background)` | Active-chat content background |
-| `--g-aikit-chat-container-footer-empty-background` | `var(--g-color-base-background)` | Empty-state footer background |
-| `--g-aikit-chat-container-footer-chat-background` | `var(--g-color-base-background)` | Active-chat footer background |
+| `--g-aikit-chat-container-content-chat-background`  | `var(--g-color-base-background)` | Active-chat content background |
+| `--g-aikit-chat-container-footer-empty-background`  | `var(--g-color-base-background)` | Empty-state footer background  |
+| `--g-aikit-chat-container-footer-chat-background`   | `var(--g-color-base-background)` | Active-chat footer background  |
 
 ## Light Theme Overrides (`light.css`)
 
 Applied under `[data-theme='light']`:
 
-| Variable | Value |
-| --- | --- |
-| `--g-aikit-bg-secondary` | `#f5f5f5` |
-| `--g-aikit-bg-message-user` | `#0077ff` |
-| `--g-aikit-bg-message-assistant` | `#f0f0f0` |
-| `--g-aikit-text-primary` | `#000000` |
-| `--g-aikit-text-secondary` | `#666666` |
-| `--g-aikit-text-message-user` | `#ffffff` |
-| `--g-aikit-text-message-assistant` | `#000000` |
-| `--g-aikit-border-color` | `#e0e0e0` |
-| `--g-aikit-accent-color` | `#0077ff` |
-| `--g-aikit-line-brand` | `var(--g-aikit-accent-color)` |
+| Variable                           | Value                         |
+| ---------------------------------- | ----------------------------- |
+| `--g-aikit-bg-secondary`           | `#f5f5f5`                     |
+| `--g-aikit-bg-message-user`        | `#0077ff`                     |
+| `--g-aikit-bg-message-assistant`   | `#f0f0f0`                     |
+| `--g-aikit-text-primary`           | `#000000`                     |
+| `--g-aikit-text-secondary`         | `#666666`                     |
+| `--g-aikit-text-message-user`      | `#ffffff`                     |
+| `--g-aikit-text-message-assistant` | `#000000`                     |
+| `--g-aikit-border-color`           | `#e0e0e0`                     |
+| `--g-aikit-accent-color`           | `#0077ff`                     |
+| `--g-aikit-line-brand`             | `var(--g-aikit-accent-color)` |
 
 ## Dark Theme Overrides (`dark.css`)
 
 Applied under `[data-theme='dark']`:
 
-| Variable | Value |
-| --- | --- |
-| `--g-aikit-bg-secondary` | `#2a2a2a` |
-| `--g-aikit-bg-message-user` | `#0066cc` |
-| `--g-aikit-bg-message-assistant` | `#2a2a2a` |
-| `--g-aikit-text-primary` | `#ffffff` |
-| `--g-aikit-text-secondary` | `#999999` |
-| `--g-aikit-text-message-user` | `#ffffff` |
-| `--g-aikit-text-message-assistant` | `#ffffff` |
-| `--g-aikit-border-color` | `#404040` |
-| `--g-aikit-accent-color` | `#0077ff` |
-| `--g-aikit-line-brand` | `var(--g-aikit-accent-color)` |
-| `--g-aikit-shimmer-color-from` | `rgba(255,255,255,.35)` |
-| `--g-aikit-shimmer-color-to` | `rgba(255,255,255,.85)` |
+| Variable                           | Value                         |
+| ---------------------------------- | ----------------------------- |
+| `--g-aikit-bg-secondary`           | `#2a2a2a`                     |
+| `--g-aikit-bg-message-user`        | `#0066cc`                     |
+| `--g-aikit-bg-message-assistant`   | `#2a2a2a`                     |
+| `--g-aikit-text-primary`           | `#ffffff`                     |
+| `--g-aikit-text-secondary`         | `#999999`                     |
+| `--g-aikit-text-message-user`      | `#ffffff`                     |
+| `--g-aikit-text-message-assistant` | `#ffffff`                     |
+| `--g-aikit-border-color`           | `#404040`                     |
+| `--g-aikit-accent-color`           | `#0077ff`                     |
+| `--g-aikit-line-brand`             | `var(--g-aikit-accent-color)` |
+| `--g-aikit-shimmer-color-from`     | `rgba(255,255,255,.35)`       |
+| `--g-aikit-shimmer-color-to`       | `rgba(255,255,255,.85)`       |
 
 ## Overriding Variables
 
@@ -957,8 +991,8 @@ Override at any selector level. Per-component scope is preferred:
 
 ```css
 .my-chat .g-root {
-    --g-aikit-color-bg-message-user: #6c5ce7;
-    --g-aikit-color-bg-message-assistant: #2d3436;
+  --g-aikit-color-bg-message-user: #6c5ce7;
+  --g-aikit-color-bg-message-assistant: #2d3436;
 }
 ```
 
@@ -989,17 +1023,18 @@ This means: if you already set `--g-color-base-float` via `@gravity-ui/uikit`'s 
 
 # Hooks
 
-AIKit exports 7 public hooks. All are re-exported from the package root and from the `@gravity-ui/aikit/hooks` subpath.
+AIKit exports 8 public hooks. All are re-exported from the package root and from the `@gravity-ui/aikit/hooks` subpath.
 
-| Hook | Purpose |
-| --- | --- |
-| [`useDateFormatter`](#usedateformatter) | Format chat timestamps with locale and relative-date logic |
-| [`useToolMessage`](#usetoolmessage) | Tool-message state machine (expand/collapse based on status) |
-| [`useSmartScroll`](#usesmartscroll) | Auto-scroll to bottom while respecting user scroll-up |
-| [`useScrollPreservation`](#usescrollpreservation) | Preserve scroll position when items are prepended |
-| [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess) | Collapse a section when its async operation succeeds |
-| [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled) | Collapse a section when its async operation is cancelled |
-| [`useFileUploadStore`](#usefileuploadstore) | Standalone file-upload store with progress/error states |
+| Hook                                                        | Purpose                                                                        |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [`useDateFormatter`](#usedateformatter)                     | Format chat timestamps with locale and relative-date logic                     |
+| [`useToolMessage`](#usetoolmessage)                         | Tool-message state machine (expand/collapse based on status)                   |
+| [`useSmartScroll`](#usesmartscroll)                         | Auto-scroll to bottom while respecting user scroll-up                          |
+| [`useScrollPreservation`](#usescrollpreservation)           | Preserve scroll position when items are prepended                              |
+| [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess)     | Collapse a section when its async operation succeeds                           |
+| [`useAutoCollapseOnCancelled`](#useautocollapseoncancelled) | Collapse a section when its async operation is cancelled                       |
+| [`useFileUploadStore`](#usefileuploadstore)                 | Standalone file-upload store with progress/error states                        |
+| [`useToolset`](#usetoolset)                                 | Wire a toolset into the chat: renderer registry + history merge for tool calls |
 
 ## `useDateFormatter`
 
@@ -1009,17 +1044,17 @@ Formats a single date with locale support and relative-date thresholding.
 function useDateFormatter(options: UseDateFormatterOptions): UseDateFormatterResult;
 
 interface UseDateFormatterOptions {
-    date: string | Date | number;
-    format?: string; // dayjs format token; defaults to library config
+  date: string | Date | number;
+  format?: string; // dayjs format token; defaults to library config
 }
 
 interface UseDateFormatterResult {
-    formattedDate: string;       // 'Today' | 'Yesterday' | 'Mar 12, 2026'
-    formattedTime: string;       // '15:42'
-    fullDate: string;            // combined date + time
-    dateObject: Dayjs | null;    // parsed dayjs instance
-    isValid: boolean;
-    diffDays: number | null;     // signed days from now (negative = past)
+  formattedDate: string; // 'Today' | 'Yesterday' | 'Mar 12, 2026'
+  formattedTime: string; // '15:42'
+  fullDate: string; // combined date + time
+  dateObject: Dayjs | null; // parsed dayjs instance
+  isValid: boolean;
+  diffDays: number | null; // signed days from now (negative = past)
 }
 ```
 
@@ -1041,12 +1076,12 @@ Keeps the scroll container pinned to the bottom while messages stream in, but yi
 
 ```typescript
 function useSmartScroll<T extends HTMLElement>(options?: {
-    threshold?: number;   // px from bottom to be "at bottom" — default 50
-    enabled?: boolean;
+  threshold?: number; // px from bottom to be "at bottom" — default 50
+  enabled?: boolean;
 }): {
-    ref: React.RefObject<T>;
-    isAtBottom: boolean;
-    scrollToBottom: () => void;
+  ref: React.RefObject<T>;
+  isAtBottom: boolean;
+  scrollToBottom: () => void;
 };
 ```
 
@@ -1056,7 +1091,7 @@ Preserves a container's visual scroll position when items are prepended (typical
 
 ```typescript
 function useScrollPreservation<T extends HTMLElement>(
-    deps: React.DependencyList,
+  deps: React.DependencyList,
 ): React.RefObject<T>;
 ```
 
@@ -1068,11 +1103,11 @@ Collapses a section automatically after its status transitions into a "success" 
 
 ```typescript
 function useAutoCollapseOnSuccess(options: {
-    status: string;
-    successStatuses: string[];     // statuses that should trigger collapse
-    isExpanded: boolean;
-    setIsExpanded: (v: boolean) => void;
-    delay?: number;                 // ms; default 0
+  status: string;
+  successStatuses: string[]; // statuses that should trigger collapse
+  isExpanded: boolean;
+  setIsExpanded: (v: boolean) => void;
+  delay?: number; // ms; default 0
 }): void;
 ```
 
@@ -1082,11 +1117,11 @@ Same as [`useAutoCollapseOnSuccess`](#useautocollapseonsuccess) but triggered on
 
 ```typescript
 function useAutoCollapseOnCancelled(options: {
-    status: string;
-    cancelledStatuses: string[];
-    isExpanded: boolean;
-    setIsExpanded: (v: boolean) => void;
-    delay?: number;
+  status: string;
+  cancelledStatuses: string[];
+  isExpanded: boolean;
+  setIsExpanded: (v: boolean) => void;
+  delay?: number;
 }): void;
 ```
 
@@ -1096,28 +1131,81 @@ A standalone, headless store for file uploads. Tracks queued / uploading / uploa
 
 ```typescript
 function useFileUploadStore<Meta = {id: string; name: string}>(
-    options: UseFileUploadStoreOptions<Meta>,
+  options: UseFileUploadStoreOptions<Meta>,
 ): UseFileUploadStoreReturn<Meta>;
 
 type FileUploadEntry<Meta> = {
-    file: File;
-    status: 'queued' | 'uploading' | 'uploaded' | 'error' | 'cancelled';
-    progress: number;
-    error?: unknown;
-    meta?: Meta;
+  file: File;
+  status: 'queued' | 'uploading' | 'uploaded' | 'error' | 'cancelled';
+  progress: number;
+  error?: unknown;
+  meta?: Meta;
 };
 
 type UseFileUploadStoreReturn<Meta> = {
-    files: FileUploadEntry<Meta>[];
-    add: (files: File[]) => void;
-    remove: (id: string) => void;
-    cancel: (id: string) => void;
-    clear: () => void;
-    // …additional helpers
+  files: FileUploadEntry<Meta>[];
+  add: (files: File[]) => void;
+  remove: (id: string) => void;
+  cancel: (id: string) => void;
+  clear: () => void;
+  // …additional helpers
 };
 ```
 
 See `src/hooks/useFileUploadStore.ts` for the complete type signature.
+
+## `useToolset`
+
+Wires a `Toolset` into the chat: returns a `MessageRendererRegistry` whose `tool`
+dispatcher renders your tool components, and a `handleToolResult` callback that
+merges results into history via `applyToolResult`. It does not run model
+continuation side effects; pair it with `useToolResultContinuation` when you
+need to re-send the updated conversation after a tool completes.
+
+```typescript
+function useToolset<TCustom extends TMessageContent = never>(
+  options: UseToolsetOptions<TCustom>,
+): UseToolsetReturn;
+
+type UseToolsetOptions<TCustom> = {
+  toolset: Toolset;
+  setMessages: Dispatch<SetStateAction<TChatMessage<TCustom>[]>>;
+  registry?: MessageRendererRegistry;
+};
+
+type UseToolsetReturn = {
+  messageRendererRegistry: MessageRendererRegistry;
+  handleToolResult: (event: ToolsetResultEvent) => void;
+};
+```
+
+## `useToolResultContinuation`
+
+Observes `messages` and calls `onSettled` once when a tool part moves from a
+pending status (`loading`, `waitingConfirmation`, `waitingSubmission`) to a
+terminal status (`success`, `error`, `cancelled`). Tools that are already
+terminal in the first observed snapshot do not fire, so replay/restore is silent
+by default.
+
+```typescript
+function useToolResultContinuation<TCustom extends TMessageContent = never>(
+  options: UseToolResultContinuationOptions<TCustom>,
+): void;
+
+type UseToolResultContinuationOptions<TCustom> = {
+  messages: TChatMessage<TCustom>[];
+  onSettled: (event: ToolSettledEvent<TCustom>) => void;
+};
+
+type ToolSettledEvent<TCustom> = {
+  toolCallId: string;
+  toolName: string;
+  status: 'success' | 'error' | 'cancelled';
+  messages: TChatMessage<TCustom>[];
+};
+```
+
+See [GENUI.md](./GENUI.md) for an end-to-end example with a live model adapter.
 
 
 --- file: docs/I18N.md ---
@@ -1169,8 +1257,8 @@ import {addKeysets} from '@gravity-ui/i18n';
 import esTabs from './my-translations/Tabs.es.json';
 
 addKeysets('es', {
-    'aikit.Tabs': esTabs,
-    // …repeat for each component you localize
+  'aikit.Tabs': esTabs,
+  // …repeat for each component you localize
 });
 
 configure({lang: 'es'});
@@ -1228,52 +1316,52 @@ import {ChatContainer} from '@gravity-ui/aikit';
 import type {ChatStatus, TChatMessage, TSubmitData} from '@gravity-ui/aikit';
 
 function StreamingChat() {
-    const [messages, setMessages] = useState<TChatMessage[]>([]);
-    const [status, setStatus] = useState<ChatStatus>('ready');
+  const [messages, setMessages] = useState<TChatMessage[]>([]);
+  const [status, setStatus] = useState<ChatStatus>('ready');
 
-    const handleSend = async (data: TSubmitData) => {
-        setMessages((prev) => [
-            ...prev,
-            {role: 'user', content: data.content, timestamp: new Date().toISOString()},
-            {role: 'assistant', content: '', timestamp: new Date().toISOString()},
-        ]);
-        setStatus('streaming');
+  const handleSend = async (data: TSubmitData) => {
+    setMessages((prev) => [
+      ...prev,
+      {role: 'user', content: data.content, timestamp: new Date().toISOString()},
+      {role: 'assistant', content: '', timestamp: new Date().toISOString()},
+    ]);
+    setStatus('streaming');
 
-        const response = await fetch('/api/chat/stream', {
-            method: 'POST',
-            body: JSON.stringify({message: data.content}),
-        });
+    const response = await fetch('/api/chat/stream', {
+      method: 'POST',
+      body: JSON.stringify({message: data.content}),
+    });
 
-        const reader = response.body!.getReader();
-        const decoder = new TextDecoder();
-        let accumulated = '';
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
+    let accumulated = '';
 
-        while (true) {
-            const {done, value} = await reader.read();
-            if (done) break;
-            accumulated += decoder.decode(value, {stream: true});
-            setMessages((prev) => {
-                const next = [...prev];
-                next[next.length - 1] = {...next[next.length - 1], content: accumulated};
-                return next;
-            });
-        }
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      accumulated += decoder.decode(value, {stream: true});
+      setMessages((prev) => {
+        const next = [...prev];
+        next[next.length - 1] = {...next[next.length - 1], content: accumulated};
+        return next;
+      });
+    }
 
-        setStatus('ready');
-    };
+    setStatus('ready');
+  };
 
-    return (
-        <ChatContainer
-            chats={[]}
-            activeChat={null}
-            messages={messages}
-            status={status}
-            onSendMessage={handleSend}
-            onSelectChat={() => {}}
-            onCreateChat={() => {}}
-            onDeleteChat={() => {}}
-        />
-    );
+  return (
+    <ChatContainer
+      chats={[]}
+      activeChat={null}
+      messages={messages}
+      status={status}
+      onSendMessage={handleSend}
+      onSelectChat={() => {}}
+      onCreateChat={() => {}}
+      onDeleteChat={() => {}}
+    />
+  );
 }
 ```
 
@@ -1287,22 +1375,22 @@ Server-side: AIKit ships an OpenAI streaming wrapper — see [§4](#4-server-sid
 import {AttachmentPicker, FileUploadDialog, useFileUploadStore} from '@gravity-ui/aikit';
 
 function PromptWithAttachments() {
-    const upload = useFileUploadStore({
-        async uploader(file, onProgress) {
-            // POST to your backend, return some metadata
-            const form = new FormData();
-            form.append('file', file);
-            const res = await fetch('/api/upload', {method: 'POST', body: form});
-            return await res.json(); // {id, name}
-        },
-    });
+  const upload = useFileUploadStore({
+    async uploader(file, onProgress) {
+      // POST to your backend, return some metadata
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/upload', {method: 'POST', body: form});
+      return await res.json(); // {id, name}
+    },
+  });
 
-    return (
-        <>
-            <AttachmentPicker store={upload} />
-            <FileUploadDialog store={upload} />
-        </>
-    );
+  return (
+    <>
+      <AttachmentPicker store={upload} />
+      <FileUploadDialog store={upload} />
+    </>
+  );
 }
 ```
 
@@ -1314,22 +1402,22 @@ Add a custom assistant content part (e.g. interactive chart) via `MessageRendere
 
 ```tsx
 import {
-    createMessageRendererRegistry,
-    registerMessageRenderer,
-    MessageList,
-    type MessageRendererRegistry,
-    type TMessageContent,
+  createMessageRendererRegistry,
+  registerMessageRenderer,
+  MessageList,
+  type MessageRendererRegistry,
+  type TMessageContent,
 } from '@gravity-ui/aikit';
 
 type ChartContent = TMessageContent<'chart', {points: number[]; label?: string}>;
 
 const renderers: MessageRendererRegistry = createMessageRendererRegistry();
 registerMessageRenderer<ChartContent>(renderers, 'chart', {
-    render: ({content}) => <Chart points={content.data.points} title={content.data.label} />,
+  render: ({content}) => <Chart points={content.data.points} title={content.data.label} />,
 });
 
 function ChatView({messages}: {messages: TChatMessage<ChartContent>[]}) {
-    return <MessageList messages={messages} messageRendererRegistry={renderers} status="ready" />;
+  return <MessageList messages={messages} messageRendererRegistry={renderers} status="ready" />;
 }
 ```
 
@@ -1337,11 +1425,11 @@ A produced assistant message may now mix text and custom parts:
 
 ```typescript
 const msg: TAssistantMessage<ChartContent> = {
-    role: 'assistant',
-    content: [
-        {type: 'text', data: {text: 'Here is the trend:'}},
-        {type: 'chart', data: {points: [1, 4, 9, 16, 25], label: 'Squares'}},
-    ],
+  role: 'assistant',
+  content: [
+    {type: 'text', data: {text: 'Here is the trend:'}},
+    {type: 'chart', data: {points: [1, 4, 9, 16, 25], label: 'Squares'}},
+  ],
 };
 ```
 
@@ -1357,31 +1445,31 @@ npm install openai
 import {OpenAIService} from '@gravity-ui/aikit/server/openai';
 
 const service = new OpenAIService({
-    apiKey: process.env.OPENAI_API_KEY!,
-    // Other OpenAI client options
+  apiKey: process.env.OPENAI_API_KEY!,
+  // Other OpenAI client options
 });
 
 // Streaming response
 app.post('/api/chat/stream', async (req, res) => {
-    const stream = await service.createResponseStream({input: req.body.message});
+  const stream = await service.createResponseStream({input: req.body.message});
 
-    stream.onBufferChunk((chunk) => res.write(chunk));
-    stream.onEventChunk((event) => {
-        if (event.type === 'response.completed') res.end();
-    });
+  stream.onBufferChunk((chunk) => res.write(chunk));
+  stream.onEventChunk((event) => {
+    if (event.type === 'response.completed') res.end();
+  });
 
-    stream.start();
+  stream.start();
 
-    req.on('close', () => stream.abort());
+  req.on('close', () => stream.abort());
 });
 
 // Conversation title summarization
 app.post('/api/chat/title', async (req, res) => {
-    const title = await service.summarizeConversationTitle({
-        conversation: req.body.conversationId,
-        byLastItems: 5, // or `byFirstItems`
-    });
-    res.json({title});
+  const title = await service.summarizeConversationTitle({
+    conversation: req.body.conversationId,
+    byLastItems: 5, // or `byFirstItems`
+  });
+  res.json({title});
 });
 ```
 
@@ -1407,13 +1495,13 @@ When `ChatContainer` is too opinionated, build your own layout from organisms:
 import {Header, MessageList, PromptInput} from '@gravity-ui/aikit';
 
 function MyChat() {
-    return (
-        <div className="my-chat">
-            <Header title="AI Assistant" onNewChat={createChat} onHistory={openHistory} />
-            <MessageList messages={messages} status={status} />
-            <PromptInput onSubmit={handleSend} placeholder="Ask me anything…" />
-        </div>
-    );
+  return (
+    <div className="my-chat">
+      <Header title="AI Assistant" onNewChat={createChat} onHistory={openHistory} />
+      <MessageList messages={messages} status={status} />
+      <PromptInput onSubmit={handleSend} placeholder="Ask me anything…" />
+    </div>
+  );
 }
 ```
 
@@ -1496,9 +1584,9 @@ See [TESTING.md](./TESTING.md) and the [Playwright dialog testing notes](./guide
 
 These were renamed. Use the current API:
 
-| Old | New |
-| --- | --- |
-| `PromptBox` | `PromptInput` |
+| Old            | New                                                                                       |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| `PromptBox`    | `PromptInput`                                                                             |
 | `usePromptBox` | no direct equivalent; compose `PromptInput` or build with `PromptInputBody/Header/Footer` |
 
 ## `import {…} from 'aikit'` Fails
@@ -1583,6 +1671,7 @@ description: Gravity UI AIKit (@gravity-ui/aikit) React component library for bu
 Read `node_modules/@gravity-ui/aikit/llms.txt` for the component catalog and `node_modules/@gravity-ui/aikit/llms-full.txt` for full documentation.
 
 Key conventions:
+
 - `ChatContainer` is the quickest integration; drop to organisms (`PromptInput`, `MessageList`, `Header`) for custom layouts.
 - Custom message content parts: `createMessageRendererRegistry` + `registerMessageRenderer<T>(reg, 'type', {render: …})`; pass via `messageRendererRegistry` prop on `MessageList`.
 - Theme CSS at app root: `@gravity-ui/aikit/themes/common` plus `/light` or `/dark`. Wrap tree in `<ThemeProvider>` from `@gravity-ui/uikit`.

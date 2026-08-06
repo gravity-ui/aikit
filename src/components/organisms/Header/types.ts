@@ -16,6 +16,17 @@ export enum HeaderAction {
     Close = 'close',
 }
 
+export type HeaderActionSide = 'left' | 'right';
+
+export type HeaderActionsPlacement = {
+    /** Side for individual built-in actions. Unspecified actions stay on the right. */
+    base?: Partial<Record<HeaderAction, HeaderActionSide>>;
+    /** Side for the menu button. */
+    menu?: HeaderActionSide;
+    /** Side for the whole additional actions group. */
+    additional?: HeaderActionSide;
+};
+
 export type HeaderActionTooltipTexts = Partial<
     Record<Exclude<HeaderAction, HeaderAction.Folding>, string>
 > & {
@@ -36,6 +47,7 @@ export type HeaderProps = {
     handleFolding?: (value: 'collapsed' | 'opened') => void;
     handleClose?: () => void;
     additionalActions?: Action[];
+    actionsPlacement?: HeaderActionsPlacement;
 
     /**
      * Menu items for the "..." dropdown. Labels and handlers are provided by the consumer.

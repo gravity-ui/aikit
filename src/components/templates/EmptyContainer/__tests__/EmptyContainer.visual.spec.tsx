@@ -94,6 +94,13 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render custom hero content', async ({mount, page}) => {
+        await mount(<EmptyContainerStories.WithHeroContent />);
+
+        await expect(page.locator('[data-qa="test-mascot"]')).toBeVisible();
+        await expect(page.locator('.g-aikit-empty-container__image-container')).toHaveCount(0);
+    });
+
     test('should render with show more button with custom text', async ({
         mount,
         expectScreenshot,

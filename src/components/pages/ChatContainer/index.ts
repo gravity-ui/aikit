@@ -5,4 +5,5 @@ export type {
     ChatContainerTexts,
     WelcomeConfig,
     MessageListConfig,
+    MascotConfig,
 } from './types';

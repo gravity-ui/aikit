@@ -7,6 +7,7 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {EmptyContainer} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
+import {TestMascot} from '../../../../demo/TestMascot';
 
 import MDXDocs from './Docs.mdx';
 
@@ -78,6 +79,16 @@ export const WithImage: Story = {
         ),
         title: 'Welcome to AI Chat',
         description: 'Ask me anything and I will help you with your tasks.',
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithHeroContent: Story = {
+    args: {
+        image: <Icon data={CircleInfo} size={120} />,
+        heroContent: <TestMascot state="idle" size="8rem" decorative />,
+        title: 'Custom hero replaces the image',
+        alignment: {hero: 'center', title: 'center'},
     },
     decorators: defaultDecorators,
 };

@@ -30,6 +30,7 @@ type MessageRowProps = {
     onLoadPreviousMessages?: () => void;
     popupState: PopupState;
     config: MessageItemConfig<TMessageContent>;
+    footerContent?: React.ReactNode;
 };
 
 function MessageRow({
@@ -43,6 +44,7 @@ function MessageRow({
     onLoadPreviousMessages,
     popupState,
     config,
+    footerContent,
 }: RowComponentProps<MessageRowProps>) {
     // Header row: the "load previous messages" intersection trigger.
     if (hasPreviousMessages && index === 0) {
@@ -61,6 +63,13 @@ function MessageRow({
     const messageIndex = index - headerOffset;
     const message = messages[messageIndex];
     if (!message) {
+        if (messageIndex === messages.length && footerContent !== undefined) {
+            return (
+                <div style={style} {...ariaAttributes}>
+                    <div className={b('footer-content')}>{footerContent}</div>
+                </div>
+            );
+        }
         return <div style={style} {...ariaAttributes} />;
     }
 
@@ -104,11 +113,13 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     qa,
     status,
     errorMessage,
+    loaderMessage,
     onRetry,
     hasPreviousMessages = false,
     onLoadPreviousMessages,
     ratingBlockProps,
     actionPopupProps,
+    footerContent,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
@@ -121,7 +132,9 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     >();
 
     const headerOffset = hasPreviousMessages ? 1 : 0;
-    const rowCount = messages.length + headerOffset;
+    const hasFooterContent = footerContent !== undefined && footerContent !== null;
+    const footerOffset = hasFooterContent ? 1 : 0;
+    const rowCount = messages.length + headerOffset + footerOffset;
 
     const config = useMemo<MessageItemConfig<TContent>>(
         () => ({
@@ -167,6 +180,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
             onLoadPreviousMessages,
             popupState,
             config: config as unknown as MessageItemConfig<TMessageContent>,
+            footerContent: hasFooterContent ? footerContent : undefined,
         }),
         [
             messages,
@@ -176,6 +190,8 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
             onLoadPreviousMessages,
             popupState,
             config,
+            hasFooterContent,
+            footerContent,
         ],
     );
 
@@ -191,6 +207,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
         // The last message reference changes on every streamed token, so it pins the view to the
         // growing last row even while react-window keeps the same set of rows mounted.
         streamingSignal: isNotCompleted ? messages[messages.length - 1] : undefined,
+        trailingContentSignal: footerOffset,
     });
 
     // Close a popup whose anchor row scrolls out of view (react-window unmounts off-screen rows,
@@ -240,6 +257,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
                 showLoader={showLoader}
                 status={status}
                 errorMessage={errorMessage}
+                loaderMessage={loaderMessage}
                 onRetry={onRetry}
                 ratingBlockProps={ratingBlockProps}
                 actionPopupProps={actionPopupProps}

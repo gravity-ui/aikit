@@ -29,6 +29,8 @@ export type ContentAlignment = 'left' | 'center' | 'right';
 export interface AlignmentConfig {
     /** Alignment for the image */
     image?: ContentAlignment;
+    /** Alignment for custom hero content; falls back to image alignment. */
+    hero?: ContentAlignment;
     /** Alignment for the title */
     title?: ContentAlignment;
     /** Alignment for the description */
@@ -41,6 +43,8 @@ export interface AlignmentConfig {
 export interface EmptyContainerProps {
     /** Image or icon to display at the top */
     image?: React.ReactNode;
+    /** Custom hero content that replaces image when provided. */
+    heroContent?: React.ReactNode;
     /** Title text or custom React element for the welcome screen */
     title?: React.ReactNode;
     /** Description text or custom React element explaining the functionality */
@@ -77,6 +81,7 @@ export interface EmptyContainerProps {
 export function EmptyContainer(props: EmptyContainerProps) {
     const {
         image,
+        heroContent,
         title,
         description,
         suggestionTitle,
@@ -91,15 +96,30 @@ export function EmptyContainer(props: EmptyContainerProps) {
         qa,
     } = props;
 
-    const hasContent = title || description || (suggestions && suggestions.length > 0);
+    const hasContent = [
+        heroContent !== undefined,
+        image,
+        title,
+        description,
+        suggestions.length,
+    ].some(Boolean);
 
     // Define alignment for each element
     const imageAlignment = alignment?.image || 'left';
+    const heroAlignment = alignment?.hero || imageAlignment;
     const titleAlignment = alignment?.title || 'left';
     const descriptionAlignment = alignment?.description || 'left';
 
     // Define text for "Show more" button with localization support
     const showMoreButtonText = showMoreText || i18n('show-more-button');
+    let heroOrImage: React.ReactNode;
+    if (heroContent !== undefined) {
+        heroOrImage = (
+            <div className={b('hero-container', {align: heroAlignment})}>{heroContent}</div>
+        );
+    } else if (image) {
+        heroOrImage = <div className={b('image-container', {align: imageAlignment})}>{image}</div>;
+    }
 
     return (
         <div className={b(null, className)} data-qa={qa}>
@@ -107,11 +127,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
                 {hasContent && (
                     <>
                         <div className={b('welcome-section')}>
-                            {image && (
-                                <div className={b('image-container', {align: imageAlignment})}>
-                                    {image}
-                                </div>
-                            )}
+                            {heroOrImage}
 
                             <div className={b('text-container')}>
                                 {title && (

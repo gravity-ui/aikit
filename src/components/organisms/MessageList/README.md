@@ -410,3 +410,8 @@ enum MessageListQa {
   Messages = 'message-list-messages',
 }
 ```
+
+`footerContent` renders as the final scrollable row after the messages. The plain and virtualized
+implementations share this behavior. Keep its outer box size stable while changing animated mascot
+states so scroll anchoring remains predictable. The row is aligned to the left edge, matching the
+assistant-message column.

@@ -360,3 +360,18 @@ type HeaderMenuItem = {
   icon?: React.ReactNode; // optional; omitted when not needed
 };
 ```
+
+Built-in actions, the menu, and additional actions can be placed on either side of the title:
+
+```tsx
+<Header
+  title="Assistant"
+  baseActions={[HeaderAction.History, HeaderAction.Close]}
+  actionsPlacement={{
+    menu: 'left',
+    base: {[HeaderAction.History]: 'left'},
+  }}
+/>
+```
+
+Unspecified groups and actions remain on the right.

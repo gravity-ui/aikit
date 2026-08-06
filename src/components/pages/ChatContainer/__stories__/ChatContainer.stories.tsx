@@ -75,3 +75,5 @@ export {WithActionPopup} from './parts/actions';
 export {WithAttachmentInput} from './parts/attachments';
 
 export {WithCustomMessageTypes, WithLazyCustomMessageType} from './parts/customMessageTypes';
+
+export {WithMascot} from './parts/mascot';

@@ -12,6 +12,7 @@ A fully assembled chat component - the main exportable component of the library 
 - **Streaming Support**: Built-in support for streaming responses
 - **Chat History**: Integrated popup-based chat history with search and grouping
 - **Input Autofocus**: Opt-in autofocus for the prompt input when a new chat is opened or a chat is selected from history
+- **Mascot Lifecycle**: Optional welcome/chat slots with derived reveal, thinking, done, error, stopped, reading, sleeping, and idle states
 
 ## Usage
 
@@ -253,6 +254,51 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
   }}
 />
 ```
+
+## Mascot support
+
+```tsx
+<ChatContainer
+  messages={messages}
+  status={status}
+  onSendMessage={handleSend}
+  mascotConfig={{
+    mascots: {
+      hero: {
+        idle: <img src="/mascot/hero-idle.svg" alt="" />,
+        reading: <img src="/mascot/hero-reading.svg" alt="" />,
+      },
+      chat: {
+        reveal: <img src="/mascot/chat-reveal.svg" alt="" />,
+        thinking: <img src="/mascot/chat-thinking.svg" alt="" />,
+        done: <img src="/mascot/chat-done.svg" alt="" />,
+        idle: <img src="/mascot/chat-idle.svg" alt="" />,
+        error: <img src="/mascot/chat-error.svg" alt="" />,
+        stopped: <img src="/mascot/chat-stopped.svg" alt="" />,
+        sleeping: <img src="/mascot/chat-sleeping.svg" alt="" />,
+        listening: <img src="/mascot/chat-listening.svg" alt="" />,
+        speaking: <img src="/mascot/chat-speaking.svg" alt="" />,
+      },
+    },
+  }}
+/>
+```
+
+`ChatContainer` derives states from chat status, prompt activity and cancel events. Use
+`stateOverride` for states that aikit cannot infer, such as `listening` and `speaking`. An override
+cancels the active one-shot animation; removing it recomputes the state from current inputs.
+
+AIKit owns placement: hero mascots are centered in the welcome area; chat mascots are rendered once
+as the final scrollable list row and aligned left. AIKit does not impose mascot dimensions, so the
+provided element or animation controls its own size. Missing states fall back to `idle` on the same
+surface. Use `defaultMascots` for a product-wide set and `mascots` for per-container overrides.
+`renderMascot` remains available for advanced asset-driven rendering and takes precedence over the
+collection.
+
+One-shot defaults are `reveal: 480ms`, `done: 600ms`, `error: 820ms`, and `stopped: 320ms`.
+Sleeping starts after 60 seconds of ready-state inactivity and can be configured or disabled with
+`sleepDelayMs`. Decorative renderers should use `aria-hidden`; meaningful mascot status should have
+an appropriate accessible label.
 
 ## QA (test identifiers)
 

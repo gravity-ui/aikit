@@ -34,6 +34,8 @@ export interface UseVirtualStickToBottomParams {
      * is needed to keep pinning to the bottom while a single row grows in place.
      */
     streamingSignal?: unknown;
+    /** Value that changes when a trailing non-message row appears or disappears. */
+    trailingContentSignal?: unknown;
 }
 
 /**
@@ -58,6 +60,7 @@ export function useVirtualStickToBottom({
     firstMessageId,
     headerOffset = 0,
     streamingSignal,
+    trailingContentSignal,
 }: UseVirtualStickToBottomParams) {
     const [listApi, listRef] = useListCallbackRef();
     // Drives a shimmer overlay while older messages are being prepended and the scroll is restored.
@@ -318,6 +321,10 @@ export function useVirtualStickToBottom({
             pinToBottom();
         }
     }, [messagesCount, pinToBottom]);
+
+    useEffect(() => {
+        pinToBottom();
+    }, [trailingContentSignal, pinToBottom]);
 
     // During streaming the last row grows in place without changing the rendered row set, so
     // `onRowsRendered` does not fire. Pin to the bottom whenever the streaming content signal

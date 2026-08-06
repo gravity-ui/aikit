@@ -112,6 +112,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
      * Off by default to preserve the existing rendering/scroll behavior.
      */
     virtualized?: boolean;
+    /** Last scrollable row rendered after all messages. */
+    footerContent?: React.ReactNode;
 };
 
 export function MessageList<TContent extends TMessageContent = never>(
@@ -150,6 +152,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     onLoadPreviousMessages,
     ratingBlockProps,
     actionPopupProps,
+    footerContent,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
@@ -222,6 +225,9 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                 popupState={popupState}
                 onPopupOpenChange={handlePopupOpenChange}
             />
+            {footerContent !== undefined && footerContent !== null && (
+                <div className={b('footer-content')}>{footerContent}</div>
+            )}
         </div>
     );
 }

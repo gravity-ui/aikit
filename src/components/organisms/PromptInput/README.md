@@ -113,22 +113,23 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop               | Type                                   | Required | Default    | Description                                             |
-| ------------------ | -------------------------------------- | -------- | ---------- | ------------------------------------------------------- |
-| `view`             | `'full' \| 'simple'`                   | -        | `'simple'` | View variant                                            |
-| `onSend`           | `(data: TSubmitData) => Promise<void>` | ✓        | -          | Callback when message is sent                           |
-| `onCancel`         | `() => Promise<void>`                  | -        | -          | Callback when sending is cancelled                      |
-| `disabled`         | `boolean`                              | -        | `false`    | Disabled state                                          |
-| `status`           | `ChatStatus`                           | -        | `'ready'`  | Chat status determining input behavior and button state |
-| `maxLength`        | `number`                               | -        | -          | Maximum length of input                                 |
-| `headerProps`      | `PromptInputHeaderConfig`              | -        | -          | Header-related props                                    |
-| `bodyProps`        | `PromptInputBodyConfig`                | -        | -          | Body/textarea-related props                             |
-| `footerProps`      | `PromptInputFooterConfig`              | -        | -          | Footer-related props                                    |
-| `suggestionsProps` | `PromptInputSuggestionsConfig`         | -        | -          | Suggestions-related props                               |
-| `topPanel`         | `PromptInputPanelConfig`               | -        | -          | Top panel configuration                                 |
-| `bottomPanel`      | `PromptInputPanelConfig`               | -        | -          | Bottom panel configuration                              |
-| `className`        | `string`                               | -        | -          | Additional CSS class                                    |
-| `qa`               | `string`                               | -        | -          | QA/test identifier                                      |
+| Prop               | Type                                   | Required | Default    | Description                                                                                     |
+| ------------------ | -------------------------------------- | -------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| `view`             | `'full' \| 'simple'`                   | -        | `'simple'` | View variant                                                                                    |
+| `onSend`           | `(data: TSubmitData) => Promise<void>` | ✓        | -          | Callback when message is sent                                                                   |
+| `onCancel`         | `() => Promise<void>`                  | -        | -          | Callback when sending is cancelled                                                              |
+| `disabled`         | `boolean`                              | -        | `false`    | Disabled state                                                                                  |
+| `status`           | `ChatStatus`                           | -        | `'ready'`  | Chat status determining input behavior and button state                                         |
+| `maxLength`        | `number`                               | -        | -          | Maximum length of input                                                                         |
+| `onValueChange`    | `(value: string) => void`              | -        | -          | Called for accepted input changes, built-in suggestions, inserted newlines, and submit clearing |
+| `headerProps`      | `PromptInputHeaderConfig`              | -        | -          | Header-related props                                                                            |
+| `bodyProps`        | `PromptInputBodyConfig`                | -        | -          | Body/textarea-related props                                                                     |
+| `footerProps`      | `PromptInputFooterConfig`              | -        | -          | Footer-related props                                                                            |
+| `suggestionsProps` | `PromptInputSuggestionsConfig`         | -        | -          | Suggestions-related props                                                                       |
+| `topPanel`         | `PromptInputPanelConfig`               | -        | -          | Top panel configuration                                                                         |
+| `bottomPanel`      | `PromptInputPanelConfig`               | -        | -          | Bottom panel configuration                                                                      |
+| `className`        | `string`                               | -        | -          | Additional CSS class                                                                            |
+| `qa`               | `string`                               | -        | -          | QA/test identifier                                                                              |
 
 ### PromptInputPanelConfig
 
