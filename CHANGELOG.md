@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.16.0](https://github.com/gravity-ui/aikit/compare/v2.15.0...v2.16.0) (2026-08-11)
+
+
+### Features
+
+* **ChatContainer:** add mascot lifecycle support ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([dc1e7fd](https://github.com/gravity-ui/aikit/commit/dc1e7fd465ddea41bf82a4132be5da0d5c0e0eb2))
+
 ## [2.15.0](https://github.com/gravity-ui/aikit/compare/v2.14.0...v2.15.0) (2026-07-31)
 
 
