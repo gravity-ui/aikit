@@ -5,7 +5,16 @@
 
 ### Features
 
-* **ChatContainer:** add mascot lifecycle support ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([dc1e7fd](https://github.com/gravity-ui/aikit/commit/dc1e7fd465ddea41bf82a4132be5da0d5c0e0eb2))
+* **ChatContainer:** add mascot lifecycle support ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([710488b](https://github.com/gravity-ui/aikit/commit/710488ba6a6f58fee2cbe4f7078dff7a8f00b5ce))
+* **PromptInput:** expose footer customization ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([5285086](https://github.com/gravity-ui/aikit/commit/52850861c8ba98219ee9ce0842297abee7094323))
+* **EmptyContainer:** add layout theme variables ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([9ec81bc](https://github.com/gravity-ui/aikit/commit/9ec81bc819568424851617edcfb74bb767ab2952))
+* **Header:** support custom action order and size ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([632976c](https://github.com/gravity-ui/aikit/commit/632976c0c563096964f00ffe98173cfc3f2be13c))
+* **Header:** add action group enum ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([af36e18](https://github.com/gravity-ui/aikit/commit/af36e1861655ef4d5518731dea9b752dbb91adf6))
+
+
+### Miscellaneous Chores
+
+* **aikit:** add agent development guidelines ([#221](https://github.com/gravity-ui/aikit/issues/221)) ([03574a0](https://github.com/gravity-ui/aikit/commit/03574a09224ca80eca5748180f14b7b967eb876c))
 
 ## [2.15.0](https://github.com/gravity-ui/aikit/compare/v2.14.0...v2.15.0) (2026-07-31)
 
