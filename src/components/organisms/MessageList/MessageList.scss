@@ -72,6 +72,17 @@ $block: '.#{variables.$ns}message-list';
         padding-block-end: var(--g-spacing-4);
     }
 
+    &__footer-content {
+        display: flex;
+        flex-shrink: 0;
+        min-width: 0;
+        align-self: stretch;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: var(--g-spacing-4) 0 var(--g-spacing-2);
+    }
+
     &__retry-button {
         display: flex;
         align-items: center;

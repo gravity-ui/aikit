@@ -8,3 +8,4 @@ export * from './useAutoCollapseOnCancelled';
 export * from './useFileUploadStore';
 export * from './useToolset';
 export * from './useToolResultContinuation';
+export * from './useMascotState';

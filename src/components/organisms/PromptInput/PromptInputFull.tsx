@@ -54,6 +54,10 @@ export function PromptInputFull(props: PromptInputFullProps) {
 
     const {
         bottomContent,
+        className: footerClassName,
+        contentClassName,
+        buttonSize,
+        submitButtonProps,
         showSettings = false,
         onSettingsClick,
         attachmentContent,
@@ -101,13 +105,17 @@ export function PromptInputFull(props: PromptInputFullProps) {
 
             <PromptInputFooter
                 qa={footerQa}
+                className={footerClassName}
+                contentClassName={contentClassName}
+                buttonSize={buttonSize}
                 submitButton={{
+                    ...submitButtonProps,
                     onClick: handleSubmit,
                     state: submitButtonState,
-                    tooltipSend: submitButtonTooltipSend,
-                    tooltipCancel: submitButtonTooltipCancel,
-                    cancelableText: submitButtonCancelableText,
-                    qa: submitButtonQa || 'submit-button-full',
+                    tooltipSend: submitButtonProps?.tooltipSend ?? submitButtonTooltipSend,
+                    tooltipCancel: submitButtonProps?.tooltipCancel ?? submitButtonTooltipCancel,
+                    cancelableText: submitButtonProps?.cancelableText ?? submitButtonCancelableText,
+                    qa: submitButtonProps?.qa ?? submitButtonQa ?? 'submit-button-full',
                 }}
                 showSettings={showSettings}
                 onSettingsClick={onSettingsClick}

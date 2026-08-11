@@ -7,7 +7,7 @@ import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import {Header, HeaderAction, type HeaderProps} from '../index';
+import {Header, HeaderAction, HeaderActionGroup, type HeaderProps} from '../index';
 
 import MDXDocs from './Docs.mdx';
 
@@ -362,6 +362,44 @@ export const WithMenuItems: StoryFn<HeaderProps> = (args) => {
         </ContentWrapper>
     );
 };
+
+export const ActionsPlacementLeft: StoryFn<HeaderProps> = (args) => (
+    <ContentWrapper width="480px">
+        <Header
+            title="Menu and history on the left"
+            baseActions={[HeaderAction.History, HeaderAction.Close]}
+            menuItems={[...menuItemsConfig]}
+            actionsPlacement={{
+                menu: 'left',
+                base: {[HeaderAction.History]: 'left'},
+            }}
+            {...mockHandlers}
+            {...args}
+        />
+    </ContentWrapper>
+);
+
+export const CustomActionsOrderAndSize: StoryFn<HeaderProps> = (args) => (
+    <ContentWrapper width="480px">
+        <Header
+            title="History before menu"
+            baseActions={[HeaderAction.NewChat, HeaderAction.History]}
+            menuItems={[...menuItemsConfig]}
+            additionalActions={additionalActionsConfig.slice(0, 1)}
+            actionsOrder={{
+                right: [
+                    HeaderAction.History,
+                    HeaderActionGroup.Menu,
+                    HeaderActionGroup.Additional,
+                    HeaderAction.NewChat,
+                ],
+            }}
+            actionSize="l"
+            {...mockHandlers}
+            {...args}
+        />
+    </ContentWrapper>
+);
 
 export const FoldingInteractive: StoryFn<HeaderProps> = (args) => {
     const [foldingState, setFoldingState] = useState<'collapsed' | 'opened'>('opened');

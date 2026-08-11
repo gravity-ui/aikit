@@ -33,6 +33,8 @@ export type PromptInputProps = {
     status?: ChatStatus;
     /** Maximum length of input */
     maxLength?: number;
+    /** Called whenever PromptInput changes its internal value. */
+    onValueChange?: (value: string) => void;
     /** Header-related props */
     headerProps?: PromptInputHeaderConfig;
     /** Body/textarea-related props */
@@ -67,6 +69,7 @@ export function PromptInput(props: PromptInputProps) {
         disabled = false,
         status = 'ready',
         maxLength,
+        onValueChange,
         headerProps,
         bodyProps,
         footerProps,
@@ -84,6 +87,7 @@ export function PromptInput(props: PromptInputProps) {
         disabled,
         status,
         maxLength,
+        onValueChange,
     });
 
     // Handle suggestion click with custom handler or default to input change

@@ -19,7 +19,12 @@ import {ActionButton} from '../../atoms/ActionButton';
 import {ButtonGroup} from '../../molecules/ButtonGroup';
 
 import {i18n} from './i18n';
-import {HeaderAction, type HeaderProps} from './types';
+import {
+    HeaderAction,
+    HeaderActionGroup,
+    type HeaderActionOrderItem,
+    type HeaderProps,
+} from './types';
 import {ActionItem, useHeader} from './useHeader';
 
 import './Header.scss';
@@ -53,6 +58,9 @@ export function Header(props: HeaderProps) {
         icon,
         baseActions,
         additionalActions,
+        actionsPlacement,
+        actionsOrder,
+        actionSize,
         menuItems,
         menuButtonTooltip,
         menuButtonIcon,
@@ -110,7 +118,7 @@ export function Header(props: HeaderProps) {
                     key={action.id}
                     ref={buttonRef as React.Ref<HTMLButtonElement>}
                     tooltipTitle={tooltipOverride ?? i18n(tooltipKey as Parameters<typeof i18n>[0])}
-                    size="m"
+                    size={actionSize}
                     view="flat"
                     onClick={action.onClick}
                     className={b('action-button')}
@@ -120,23 +128,31 @@ export function Header(props: HeaderProps) {
                 </ActionButton>
             );
         },
-        [actionQa, actionTooltipTexts],
+        [actionQa, actionSize, actionTooltipTexts],
     );
 
     // Render additional action
-    const renderAdditionalAction = useCallback((action: Action, index: number) => {
-        const id = `additional-${index}`;
+    const renderAdditionalAction = useCallback(
+        (action: Action, index: number) => {
+            const id = `additional-${index}`;
 
-        if (!isActionConfig(action)) {
-            return <React.Fragment key={id}>{action}</React.Fragment>;
-        }
+            if (!isActionConfig(action)) {
+                return <React.Fragment key={id}>{action}</React.Fragment>;
+            }
 
-        return (
-            <ActionButton key={`${index}`} {...action} view={action.view || 'flat'} size="m">
-                {action.icon || action.label}
-            </ActionButton>
-        );
-    }, []);
+            return (
+                <ActionButton
+                    key={`${index}`}
+                    {...action}
+                    view={action.view || 'flat'}
+                    size={action.size ?? actionSize}
+                >
+                    {action.icon || action.label}
+                </ActionButton>
+            );
+        },
+        [actionSize],
+    );
 
     const dropdownMenuItems = useMemo(
         () =>
@@ -162,7 +178,7 @@ export function Header(props: HeaderProps) {
                     <ActionButton
                         {...switcherProps}
                         tooltipTitle={menuButtonTooltip ?? i18n('action-tooltip-menu')}
-                        size="m"
+                        size={actionSize}
                         view="flat"
                         className={b('action-button')}
                         qa={menuButtonQa ?? 'header-menu-button'}
@@ -172,12 +188,72 @@ export function Header(props: HeaderProps) {
                 )}
             />
         );
-    }, [dropdownMenuItems, menuButtonIcon, menuButtonQa, menuButtonTooltip, menuItems.length]);
+    }, [
+        actionSize,
+        dropdownMenuItems,
+        menuButtonIcon,
+        menuButtonQa,
+        menuButtonTooltip,
+        menuItems.length,
+    ]);
+
+    const [leftBaseActions, rightBaseActions] = useMemo(() => {
+        const left: ActionItem[] = [];
+        const right: ActionItem[] = [];
+        baseActions.forEach((action) => {
+            (actionsPlacement.base?.[action.id as HeaderAction] === 'left' ? left : right).push(
+                action,
+            );
+        });
+        return [left, right];
+    }, [actionsPlacement.base, baseActions]);
+
+    const renderActions = (side: 'left' | 'right') => {
+        const sideAdditionalActions =
+            (actionsPlacement.additional ?? 'right') === side ? additionalActions : [];
+        const sideMenu = (actionsPlacement.menu ?? 'right') === side ? headerMenu : null;
+        const sideBaseActions = side === 'left' ? leftBaseActions : rightBaseActions;
+        if (sideAdditionalActions.length === 0 && !sideMenu && sideBaseActions.length === 0) {
+            return null;
+        }
+        const legacyOrder: HeaderActionOrderItem[] = [
+            ...(sideAdditionalActions.length > 0 ? [HeaderActionGroup.Additional] : []),
+            ...(sideMenu ? [HeaderActionGroup.Menu] : []),
+            ...sideBaseActions.map((action) => action.id as HeaderAction),
+        ];
+        const requestedOrder = actionsOrder[side] ?? [];
+        const available = new Set(legacyOrder);
+        const ordered = [...new Set([...requestedOrder, ...legacyOrder])].filter((item) =>
+            available.has(item),
+        );
+
+        const renderOrderedAction = (item: HeaderActionOrderItem) => {
+            if (item === HeaderActionGroup.Additional) {
+                return sideAdditionalActions.map((action, index) =>
+                    renderAdditionalAction(action, index),
+                );
+            }
+            if (item === HeaderActionGroup.Menu) {
+                return <React.Fragment key="menu">{sideMenu}</React.Fragment>;
+            }
+            const action = sideBaseActions.find((candidate) => candidate.id === item);
+            return action ? renderBaseAction(action, historyButtonRef) : null;
+        };
+
+        return <ButtonGroup>{ordered.map(renderOrderedAction)}</ButtonGroup>;
+    };
+
+    const leftActions = renderActions('left');
+    const rightActions = renderActions('right');
 
     return (
         <div className={b('', className)} data-qa={qa}>
-            {/* Left part: icon */}
-            {withIcon && iconElement}
+            {(withIcon || leftActions) && (
+                <div className={b('left')}>
+                    {withIcon && iconElement}
+                    {leftActions}
+                </div>
+            )}
 
             {/* Center part: title with preview */}
             {showTitle && (
@@ -191,12 +267,7 @@ export function Header(props: HeaderProps) {
                 </div>
             )}
 
-            {/* Right part: additional and base actions */}
-            <ButtonGroup>
-                {additionalActions.map((action, index) => renderAdditionalAction(action, index))}
-                {headerMenu}
-                {baseActions.map((action) => renderBaseAction(action, historyButtonRef))}
-            </ButtonGroup>
+            {rightActions}
         </div>
     );
 }

@@ -126,6 +126,7 @@ export function SubmitButton({
             className={b({size, loading: isLoading, cancelable: isCancelable}, className)}
             qa={qa}
             tooltipTitle={getTooltipTitle()}
+            data-state={state}
         >
             {renderContent()}
         </ActionButton>

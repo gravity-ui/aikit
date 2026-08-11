@@ -1,8 +1,32 @@
+import type {CSSProperties} from 'react';
+
 import {expect, test} from '~playwright/core';
 
 import {EmptyContainerStories} from './helpersPlaywright';
 
 test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
+    test('should apply public layout variables', async ({mount, page}) => {
+        await mount(
+            <div
+                style={
+                    {
+                        '--g-aikit-empty-container-content-justify-content': 'center',
+                        '--g-aikit-empty-container-suggestions-max-width': '320px',
+                        '--g-aikit-empty-container-suggestions-flex': '0 1 auto',
+                        '--g-aikit-empty-container-suggestions-align-self': 'center',
+                    } as CSSProperties
+                }
+            >
+                <EmptyContainerStories.WithSuggestions />
+            </div>,
+        );
+
+        const content = page.locator('.g-aikit-empty-container__content');
+        const suggestions = page.locator('.g-aikit-empty-container__suggestions-section');
+        await expect(content).toHaveCSS('justify-content', 'center');
+        await expect(suggestions).toHaveCSS('max-width', '320px');
+        await expect(suggestions).toHaveCSS('align-self', 'center');
+    });
     test('should render playground state', async ({mount, expectScreenshot}) => {
         await mount(<EmptyContainerStories.Playground />);
 
@@ -92,6 +116,13 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
         await mount(<EmptyContainerStories.WithShowMoreButton />);
 
         await expectScreenshot();
+    });
+
+    test('should render custom hero content', async ({mount, page}) => {
+        await mount(<EmptyContainerStories.WithHeroContent />);
+
+        await expect(page.locator('[data-qa="test-mascot"]')).toBeVisible();
+        await expect(page.locator('.g-aikit-empty-container__image-container')).toHaveCount(0);
     });
 
     test('should render with show more button with custom text', async ({

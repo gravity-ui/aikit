@@ -1,3 +1,5 @@
+import type {ButtonButtonProps} from '@gravity-ui/uikit';
+
 import type {Action} from '../../../types/common';
 
 export type HeaderMenuItem = {
@@ -15,6 +17,29 @@ export enum HeaderAction {
     Folding = 'folding',
     Close = 'close',
 }
+
+/** Composite and service action groups that can participate in header ordering. */
+export enum HeaderActionGroup {
+    Menu = 'menu',
+    Additional = 'additional',
+}
+
+export type HeaderActionSide = 'left' | 'right';
+
+export type HeaderActionsPlacement = {
+    /** Side for individual built-in actions. Unspecified actions stay on the right. */
+    base?: Partial<Record<HeaderAction, HeaderActionSide>>;
+    /** Side for the menu button. */
+    menu?: HeaderActionSide;
+    /** Side for the whole additional actions group. */
+    additional?: HeaderActionSide;
+};
+
+export type HeaderActionOrderItem = HeaderAction | HeaderActionGroup;
+
+export type HeaderActionsOrder = Partial<
+    Record<HeaderActionSide, readonly HeaderActionOrderItem[]>
+>;
 
 export type HeaderActionTooltipTexts = Partial<
     Record<Exclude<HeaderAction, HeaderAction.Folding>, string>
@@ -36,6 +61,11 @@ export type HeaderProps = {
     handleFolding?: (value: 'collapsed' | 'opened') => void;
     handleClose?: () => void;
     additionalActions?: Action[];
+    actionsPlacement?: HeaderActionsPlacement;
+    /** Order of action groups on each side. Unlisted available actions keep their legacy order. */
+    actionsOrder?: HeaderActionsOrder;
+    /** Default size for built-in, menu, and configured additional action buttons. */
+    actionSize?: ButtonButtonProps['size'];
 
     /**
      * Menu items for the "..." dropdown. Labels and handlers are provided by the consumer.

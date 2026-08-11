@@ -43,6 +43,10 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
 
     const {
         bottomContent,
+        className: footerClassName,
+        contentClassName,
+        buttonSize,
+        submitButtonProps,
         showAttachment = false,
         onAttachmentClick,
         attachmentContent,
@@ -73,20 +77,25 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                 />
                 <PromptInputFooter
                     qa={footerQa}
+                    className={footerClassName}
+                    contentClassName={contentClassName}
                     submitButton={{
+                        ...submitButtonProps,
                         onClick: handleSubmit,
                         state: submitButtonState,
-                        tooltipSend: submitButtonTooltipSend,
-                        tooltipCancel: submitButtonTooltipCancel,
-                        cancelableText: submitButtonCancelableText,
-                        qa: submitButtonQa || 'submit-button-simple',
+                        tooltipSend: submitButtonProps?.tooltipSend ?? submitButtonTooltipSend,
+                        tooltipCancel:
+                            submitButtonProps?.tooltipCancel ?? submitButtonTooltipCancel,
+                        cancelableText:
+                            submitButtonProps?.cancelableText ?? submitButtonCancelableText,
+                        qa: submitButtonProps?.qa ?? submitButtonQa ?? 'submit-button-simple',
                     }}
                     showAttachment={showAttachment}
                     onAttachmentClick={onAttachmentClick}
                     attachmentContent={attachmentContent}
                     showMicrophone={showMicrophone}
                     onMicrophoneClick={onMicrophoneClick}
-                    buttonSize="l"
+                    buttonSize={buttonSize ?? 'l'}
                 >
                     {bottomContent}
                 </PromptInputFooter>

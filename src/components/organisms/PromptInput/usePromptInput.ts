@@ -18,6 +18,8 @@ export type UsePromptInputProps = {
     disabled?: boolean;
     /** Chat status to determine input behavior */
     status?: ChatStatus;
+    /** Called whenever the hook changes its internal value. */
+    onValueChange?: (value: string) => void;
 };
 
 /**
@@ -26,8 +28,6 @@ export type UsePromptInputProps = {
 export type UsePromptInputReturn = {
     /** Current input value */
     value: string;
-    /** Set the input value */
-    setValue: (value: string) => void;
     /** Can submit the form */
     canSubmit: boolean;
     /** Submit button state */
@@ -60,10 +60,19 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
         maxLength,
         disabled = false,
         status = 'ready',
+        onValueChange,
     } = props;
 
     const [value, setValue] = useState(initialValue);
     const [attachments, setAttachments] = useState<File[]>([]);
+
+    const updateValue = useCallback(
+        (nextValue: string) => {
+            setValue(nextValue);
+            onValueChange?.(nextValue);
+        },
+        [onValueChange],
+    );
     const isSubmitted = status === 'submitted';
 
     const trimmedValue = value.trim();
@@ -108,9 +117,9 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
             if (maxLength && newValue.length > maxLength) {
                 return;
             }
-            setValue(newValue);
+            updateValue(newValue);
         },
-        [maxLength],
+        [maxLength, updateValue],
     );
 
     const handleSubmit = useCallback(async () => {
@@ -129,9 +138,9 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
         };
 
         onSend(submitData);
-        setValue('');
+        updateValue('');
         setAttachments([]);
-    }, [submitButtonState, canSubmit, trimmedValue, attachments, onSend, onCancel]);
+    }, [submitButtonState, canSubmit, trimmedValue, attachments, onSend, onCancel, updateValue]);
 
     const handleKeyDown = useCallback(
         (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -139,7 +148,7 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
 
             // Insert new line on Ctrl/Cmd + Enter
             if (isEnter && (event.ctrlKey || event.metaKey)) {
-                setValue((prev) => prev + '\n');
+                updateValue(`${value}\n`);
                 event.preventDefault();
                 return;
             }
@@ -156,12 +165,11 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
                 handleSubmit();
             }
         },
-        [canSubmit, handleSubmit],
+        [canSubmit, handleSubmit, updateValue, value],
     );
 
     return {
         value,
-        setValue,
         canSubmit,
         submitButtonState,
         isInputDisabled,

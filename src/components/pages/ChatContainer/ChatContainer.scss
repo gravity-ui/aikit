@@ -57,4 +57,17 @@
     &__footer_view_chat {
         background: var(--g-aikit-chat-container-footer-chat-background);
     }
+
+    &__mascot {
+        flex-shrink: 0;
+        max-width: 100%;
+    }
+
+    &__mascot_view_hero {
+        align-self: center;
+    }
+
+    &__mascot_view_chat {
+        align-self: flex-start;
+    }
 }

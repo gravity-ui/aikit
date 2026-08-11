@@ -1,6 +1,9 @@
 import {ReactNode, type Ref} from 'react';
 
+import type {ButtonButtonProps} from '@gravity-ui/uikit';
+
 import type {SuggestionClickHandler, SuggestionsItem} from '../../../types/common';
+import type {SubmitButtonProps} from '../../atoms/SubmitButton';
 import {PromptInputHeaderProps} from '../../molecules/PromptInputHeader';
 import type {SuggestionsProps} from '../../molecules/Suggestions';
 
@@ -79,6 +82,14 @@ export type PromptInputBodyConfig = {
 export type PromptInputFooterConfig = {
     /** QA/test identifier for footer wrapper */
     qa?: string;
+    /** Additional CSS class for the footer wrapper */
+    className?: string;
+    /** Additional CSS class for the custom content wrapper */
+    contentClassName?: string;
+    /** Size of footer action buttons */
+    buttonSize?: ButtonButtonProps['size'];
+    /** Props for the submit button. State, click handling, and size are managed by PromptInput. */
+    submitButtonProps?: Omit<SubmitButtonProps, 'state' | 'onClick' | 'size'>;
     /** Custom content for footer area (SubmitButton will still be shown) */
     bottomContent?: ReactNode;
     /** Show settings icon in footer */

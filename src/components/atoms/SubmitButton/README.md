@@ -88,6 +88,15 @@ const handleClick = async () => {
 
 The component uses CSS variables for theming:
 
+The button root exposes `data-state="enabled|disabled|loading|cancelable"` for stable
+state-specific styling. For example:
+
+```css
+.custom-submit[data-state='enabled'] {
+  background: radial-gradient(circle at top left, #b24dff, #4cb2ff);
+}
+```
+
 ### CSS Variables
 
 ```css

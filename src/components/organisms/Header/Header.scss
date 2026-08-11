@@ -17,6 +17,13 @@ $block: '.#{variables.$ns}header';
         flex-shrink: 0;
     }
 
+    &__left {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: var(--g-spacing-2);
+    }
+
     &__title-container {
         display: flex;
         gap: var(--g-spacing-1);

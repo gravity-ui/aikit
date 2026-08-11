@@ -113,22 +113,23 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop               | Type                                   | Required | Default    | Description                                             |
-| ------------------ | -------------------------------------- | -------- | ---------- | ------------------------------------------------------- |
-| `view`             | `'full' \| 'simple'`                   | -        | `'simple'` | View variant                                            |
-| `onSend`           | `(data: TSubmitData) => Promise<void>` | ✓        | -          | Callback when message is sent                           |
-| `onCancel`         | `() => Promise<void>`                  | -        | -          | Callback when sending is cancelled                      |
-| `disabled`         | `boolean`                              | -        | `false`    | Disabled state                                          |
-| `status`           | `ChatStatus`                           | -        | `'ready'`  | Chat status determining input behavior and button state |
-| `maxLength`        | `number`                               | -        | -          | Maximum length of input                                 |
-| `headerProps`      | `PromptInputHeaderConfig`              | -        | -          | Header-related props                                    |
-| `bodyProps`        | `PromptInputBodyConfig`                | -        | -          | Body/textarea-related props                             |
-| `footerProps`      | `PromptInputFooterConfig`              | -        | -          | Footer-related props                                    |
-| `suggestionsProps` | `PromptInputSuggestionsConfig`         | -        | -          | Suggestions-related props                               |
-| `topPanel`         | `PromptInputPanelConfig`               | -        | -          | Top panel configuration                                 |
-| `bottomPanel`      | `PromptInputPanelConfig`               | -        | -          | Bottom panel configuration                              |
-| `className`        | `string`                               | -        | -          | Additional CSS class                                    |
-| `qa`               | `string`                               | -        | -          | QA/test identifier                                      |
+| Prop               | Type                                   | Required | Default    | Description                                                                                     |
+| ------------------ | -------------------------------------- | -------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| `view`             | `'full' \| 'simple'`                   | -        | `'simple'` | View variant                                                                                    |
+| `onSend`           | `(data: TSubmitData) => Promise<void>` | ✓        | -          | Callback when message is sent                                                                   |
+| `onCancel`         | `() => Promise<void>`                  | -        | -          | Callback when sending is cancelled                                                              |
+| `disabled`         | `boolean`                              | -        | `false`    | Disabled state                                                                                  |
+| `status`           | `ChatStatus`                           | -        | `'ready'`  | Chat status determining input behavior and button state                                         |
+| `maxLength`        | `number`                               | -        | -          | Maximum length of input                                                                         |
+| `onValueChange`    | `(value: string) => void`              | -        | -          | Called for accepted input changes, built-in suggestions, inserted newlines, and submit clearing |
+| `headerProps`      | `PromptInputHeaderConfig`              | -        | -          | Header-related props                                                                            |
+| `bodyProps`        | `PromptInputBodyConfig`                | -        | -          | Body/textarea-related props                                                                     |
+| `footerProps`      | `PromptInputFooterConfig`              | -        | -          | Footer-related props                                                                            |
+| `suggestionsProps` | `PromptInputSuggestionsConfig`         | -        | -          | Suggestions-related props                                                                       |
+| `topPanel`         | `PromptInputPanelConfig`               | -        | -          | Top panel configuration                                                                         |
+| `bottomPanel`      | `PromptInputPanelConfig`               | -        | -          | Bottom panel configuration                                                                      |
+| `className`        | `string`                               | -        | -          | Additional CSS class                                                                            |
+| `qa`               | `string`                               | -        | -          | QA/test identifier                                                                              |
 
 ### PromptInputPanelConfig
 
@@ -160,18 +161,22 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ### PromptInputFooterConfig
 
-| Prop                        | Type         | Required | Default                                            | Description                                          |
-| --------------------------- | ------------ | -------- | -------------------------------------------------- | ---------------------------------------------------- |
-| `bottomContent`             | `ReactNode`  | -        | -                                                  | Custom content for footer area                       |
-| `showSettings`              | `boolean`    | -        | `false`                                            | Show settings icon                                   |
-| `onSettingsClick`           | `() => void` | -        | -                                                  | Settings icon click handler                          |
-| `showAttachment`            | `boolean`    | -        | `false`                                            | Show attachment icon                                 |
-| `onAttachmentClick`         | `() => void` | -        | -                                                  | Attachment icon click handler                        |
-| `showMicrophone`            | `boolean`    | -        | `false`                                            | Show microphone icon                                 |
-| `onMicrophoneClick`         | `() => void` | -        | -                                                  | Microphone icon click handler                        |
-| `submitButtonTooltipSend`   | `string`     | -        | -                                                  | Custom tooltip for submit button in enabled state    |
-| `submitButtonTooltipCancel` | `string`     | -        | -                                                  | Custom tooltip for submit button in cancelable state |
-| `submitButtonQa`            | `string`     | -        | `'submit-button-full'` or `'submit-button-simple'` | QA/test identifier for submit button                 |
+| Prop                        | Type                                                      | Required | Default                                            | Description                                                 |
+| --------------------------- | --------------------------------------------------------- | -------- | -------------------------------------------------- | ----------------------------------------------------------- |
+| `bottomContent`             | `ReactNode`                                               | -        | -                                                  | Custom content for footer area                              |
+| `className`                 | `string`                                                  | -        | -                                                  | Additional CSS class for the footer wrapper                 |
+| `contentClassName`          | `string`                                                  | -        | -                                                  | Additional CSS class for the custom content wrapper         |
+| `buttonSize`                | `ButtonButtonProps['size']`                               | -        | `'m'` in full view, `'l'` in simple view           | Size of footer action buttons                               |
+| `submitButtonProps`         | `Omit<SubmitButtonProps, 'state' \| 'onClick' \| 'size'>` | -        | -                                                  | Submit button customization; overrides legacy submit fields |
+| `showSettings`              | `boolean`                                                 | -        | `false`                                            | Show settings icon                                          |
+| `onSettingsClick`           | `() => void`                                              | -        | -                                                  | Settings icon click handler                                 |
+| `showAttachment`            | `boolean`                                                 | -        | `false`                                            | Show attachment icon                                        |
+| `onAttachmentClick`         | `() => void`                                              | -        | -                                                  | Attachment icon click handler                               |
+| `showMicrophone`            | `boolean`                                                 | -        | `false`                                            | Show microphone icon                                        |
+| `onMicrophoneClick`         | `() => void`                                              | -        | -                                                  | Microphone icon click handler                               |
+| `submitButtonTooltipSend`   | `string`                                                  | -        | -                                                  | Custom tooltip for submit button in enabled state           |
+| `submitButtonTooltipCancel` | `string`                                                  | -        | -                                                  | Custom tooltip for submit button in cancelable state        |
+| `submitButtonQa`            | `string`                                                  | -        | `'submit-button-full'` or `'submit-button-simple'` | QA/test identifier for submit button                        |
 
 ### PromptInputSuggestionsConfig
 

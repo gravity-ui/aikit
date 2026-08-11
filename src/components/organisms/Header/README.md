@@ -98,6 +98,35 @@ import {Header, HeaderAction} from '@gravity-ui/aikit';
 />;
 ```
 
+### Action order and size
+
+`actionsPlacement` selects the side for each action group. `actionsOrder` changes the order
+of the available groups on that side. Missing entries are appended in the backward-compatible
+order: additional actions, menu, then built-in actions. Duplicate and unavailable entries are ignored.
+
+```tsx
+import {Header, HeaderAction, HeaderActionGroup} from '@gravity-ui/aikit';
+
+<Header
+  baseActions={[HeaderAction.NewChat, HeaderAction.History]}
+  menuItems={menuItems}
+  additionalActions={additionalActions}
+  actionsOrder={{
+    right: [
+      HeaderAction.History,
+      HeaderActionGroup.Menu,
+      HeaderActionGroup.Additional,
+      HeaderAction.NewChat,
+    ],
+  }}
+  actionSize="l"
+/>;
+```
+
+`actionSize` sets the default size for built-in actions, the menu button, and configured
+additional actions. An explicit `size` on an additional action takes precedence. Custom
+React nodes in `additionalActions` are not modified.
+
 ### History toggle notification
 
 When `Header` is rendered inside `ChatContainer`, you can observe history popup toggles via the Header button by passing `onHistoryToggle` through `headerProps`. The callback receives the next open state — i.e. the state the chat will be in after the toggle:
@@ -323,6 +352,9 @@ The component uses CSS variables for theming:
 | `handleFolding`       | `(value: 'collapsed' \| 'opened') => void` | -        | -          | Handler for folding action                                                                                                                 |
 | `handleClose`         | `() => void`                               | -        | -          | Handler for close action                                                                                                                   |
 | `additionalActions`   | `Action[]`                                 | -        | `[]`       | Array of additional custom actions (unified type)                                                                                          |
+| `actionsPlacement`    | `HeaderActionsPlacement`                   | -        | `{}`       | Side for built-in actions, menu, and additional actions                                                                                    |
+| `actionsOrder`        | `HeaderActionsOrder`                       | -        | `{}`       | Order of available actions on each side                                                                                                    |
+| `actionSize`          | `ButtonButtonProps['size']`                | -        | `'m'`      | Default size for built-in, menu, and configured additional action buttons                                                                  |
 | `menuItems`           | `HeaderMenuItem[]`                         | -        | `[]`       | Menu items for the `...` dropdown; button renders only when non-empty                                                                      |
 | `menuButtonTooltip`   | `string`                                   | -        | -          | Tooltip for menu button (default: built-in i18n)                                                                                           |
 | `menuButtonIcon`      | `React.ReactNode`                          | -        | -          | Menu button icon (default: horizontal Ellipsis)                                                                                            |
@@ -360,3 +392,18 @@ type HeaderMenuItem = {
   icon?: React.ReactNode; // optional; omitted when not needed
 };
 ```
+
+Built-in actions, the menu, and additional actions can be placed on either side of the title:
+
+```tsx
+<Header
+  title="Assistant"
+  baseActions={[HeaderAction.History, HeaderAction.Close]}
+  actionsPlacement={{
+    menu: 'left',
+    base: {[HeaderAction.History]: 'left'},
+  }}
+/>
+```
+
+Unspecified groups and actions remain on the right.
