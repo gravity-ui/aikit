@@ -77,6 +77,18 @@ test.describe('Header', {tag: '@Header'}, () => {
         expect((await history.boundingBox())?.x).toBeLessThan((await title.boundingBox())?.x ?? 0);
     });
 
+    test('should apply custom action order and size', async ({mount, page, expectScreenshot}) => {
+        await mount(<HeaderStories.CustomActionsOrderAndSize />);
+
+        const buttons = page.locator('.g-aikit-header button');
+        await expect(buttons).toHaveCount(4);
+        await expect(buttons.nth(0)).toHaveAttribute('data-qa', 'header-action-history');
+        await expect(buttons.nth(1)).toHaveAttribute('data-qa', 'header-menu-button');
+        await expect(buttons.nth(3)).toHaveAttribute('data-qa', 'header-action-newChat');
+        await expect(buttons.nth(0)).toHaveClass(/g-button_size_l/);
+        await expectScreenshot();
+    });
+
     test('should render with menu items open', async ({mount, page, expectScreenshot}) => {
         await mount(<HeaderStories.WithMenuItems />);
 

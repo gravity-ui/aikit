@@ -379,6 +379,23 @@ export const ActionsPlacementLeft: StoryFn<HeaderProps> = (args) => (
     </ContentWrapper>
 );
 
+export const CustomActionsOrderAndSize: StoryFn<HeaderProps> = (args) => (
+    <ContentWrapper width="480px">
+        <Header
+            title="History before menu"
+            baseActions={[HeaderAction.NewChat, HeaderAction.History]}
+            menuItems={[...menuItemsConfig]}
+            additionalActions={additionalActionsConfig.slice(0, 1)}
+            actionsOrder={{
+                right: [HeaderAction.History, 'menu', 'additional', HeaderAction.NewChat],
+            }}
+            actionSize="l"
+            {...mockHandlers}
+            {...args}
+        />
+    </ContentWrapper>
+);
+
 export const FoldingInteractive: StoryFn<HeaderProps> = (args) => {
     const [foldingState, setFoldingState] = useState<'collapsed' | 'opened'>('opened');
 
