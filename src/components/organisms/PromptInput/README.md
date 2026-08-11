@@ -161,18 +161,22 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ### PromptInputFooterConfig
 
-| Prop                        | Type         | Required | Default                                            | Description                                          |
-| --------------------------- | ------------ | -------- | -------------------------------------------------- | ---------------------------------------------------- |
-| `bottomContent`             | `ReactNode`  | -        | -                                                  | Custom content for footer area                       |
-| `showSettings`              | `boolean`    | -        | `false`                                            | Show settings icon                                   |
-| `onSettingsClick`           | `() => void` | -        | -                                                  | Settings icon click handler                          |
-| `showAttachment`            | `boolean`    | -        | `false`                                            | Show attachment icon                                 |
-| `onAttachmentClick`         | `() => void` | -        | -                                                  | Attachment icon click handler                        |
-| `showMicrophone`            | `boolean`    | -        | `false`                                            | Show microphone icon                                 |
-| `onMicrophoneClick`         | `() => void` | -        | -                                                  | Microphone icon click handler                        |
-| `submitButtonTooltipSend`   | `string`     | -        | -                                                  | Custom tooltip for submit button in enabled state    |
-| `submitButtonTooltipCancel` | `string`     | -        | -                                                  | Custom tooltip for submit button in cancelable state |
-| `submitButtonQa`            | `string`     | -        | `'submit-button-full'` or `'submit-button-simple'` | QA/test identifier for submit button                 |
+| Prop                        | Type                                                      | Required | Default                                            | Description                                                 |
+| --------------------------- | --------------------------------------------------------- | -------- | -------------------------------------------------- | ----------------------------------------------------------- |
+| `bottomContent`             | `ReactNode`                                               | -        | -                                                  | Custom content for footer area                              |
+| `className`                 | `string`                                                  | -        | -                                                  | Additional CSS class for the footer wrapper                 |
+| `contentClassName`          | `string`                                                  | -        | -                                                  | Additional CSS class for the custom content wrapper         |
+| `buttonSize`                | `ButtonButtonProps['size']`                               | -        | `'m'` in full view, `'l'` in simple view           | Size of footer action buttons                               |
+| `submitButtonProps`         | `Omit<SubmitButtonProps, 'state' \| 'onClick' \| 'size'>` | -        | -                                                  | Submit button customization; overrides legacy submit fields |
+| `showSettings`              | `boolean`                                                 | -        | `false`                                            | Show settings icon                                          |
+| `onSettingsClick`           | `() => void`                                              | -        | -                                                  | Settings icon click handler                                 |
+| `showAttachment`            | `boolean`                                                 | -        | `false`                                            | Show attachment icon                                        |
+| `onAttachmentClick`         | `() => void`                                              | -        | -                                                  | Attachment icon click handler                               |
+| `showMicrophone`            | `boolean`                                                 | -        | `false`                                            | Show microphone icon                                        |
+| `onMicrophoneClick`         | `() => void`                                              | -        | -                                                  | Microphone icon click handler                               |
+| `submitButtonTooltipSend`   | `string`                                                  | -        | -                                                  | Custom tooltip for submit button in enabled state           |
+| `submitButtonTooltipCancel` | `string`                                                  | -        | -                                                  | Custom tooltip for submit button in cancelable state        |
+| `submitButtonQa`            | `string`                                                  | -        | `'submit-button-full'` or `'submit-button-simple'` | QA/test identifier for submit button                        |
 
 ### PromptInputSuggestionsConfig
 

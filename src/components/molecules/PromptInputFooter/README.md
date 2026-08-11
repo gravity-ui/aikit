@@ -53,18 +53,20 @@ import {PromptInputFooter} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop                | Type                | Required | Default | Description                                                         |
-| ------------------- | ------------------- | -------- | ------- | ------------------------------------------------------------------- |
-| `submitButton`      | `SubmitButtonProps` | ✓        | -       | Submit button props                                                 |
-| `showSettings`      | `boolean`           | -        | `false` | Show settings icon                                                  |
-| `onSettingsClick`   | `() => void`        | -        | -       | Settings icon click handler                                         |
-| `showAttachment`    | `boolean`           | -        | `false` | Show attachment icon                                                |
-| `onAttachmentClick` | `() => void`        | -        | -       | Attachment icon click handler                                       |
-| `showMicrophone`    | `boolean`           | -        | `false` | Show microphone icon                                                |
-| `onMicrophoneClick` | `() => void`        | -        | -       | Microphone icon click handler                                       |
-| `children`          | `ReactNode`         | -        | -       | Custom content to replace the default footer (SubmitButton remains) |
-| `className`         | `string`            | -        | -       | Additional CSS class                                                |
-| `qa`                | `string`            | -        | -       | QA/test identifier                                                  |
+| Prop                | Type                        | Required | Default | Description                                                         |
+| ------------------- | --------------------------- | -------- | ------- | ------------------------------------------------------------------- |
+| `submitButton`      | `SubmitButtonProps`         | ✓        | -       | Submit button props                                                 |
+| `showSettings`      | `boolean`                   | -        | `false` | Show settings icon                                                  |
+| `onSettingsClick`   | `() => void`                | -        | -       | Settings icon click handler                                         |
+| `showAttachment`    | `boolean`                   | -        | `false` | Show attachment icon                                                |
+| `onAttachmentClick` | `() => void`                | -        | -       | Attachment icon click handler                                       |
+| `showMicrophone`    | `boolean`                   | -        | `false` | Show microphone icon                                                |
+| `onMicrophoneClick` | `() => void`                | -        | -       | Microphone icon click handler                                       |
+| `children`          | `ReactNode`                 | -        | -       | Custom content to replace the default footer (SubmitButton remains) |
+| `className`         | `string`                    | -        | -       | Additional CSS class                                                |
+| `contentClassName`  | `string`                    | -        | -       | Additional CSS class for the custom content wrapper                 |
+| `buttonSize`        | `ButtonButtonProps['size']` | -        | `'m'`   | Size of all footer action buttons                                   |
+| `qa`                | `string`                    | -        | -       | QA/test identifier                                                  |
 
 ## Action Tooltips
 

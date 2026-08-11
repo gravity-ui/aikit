@@ -215,6 +215,26 @@ export const WithCustomBottomContent: Story = {
     decorators: defaultDecorators,
 };
 
+export const WithCustomizedFooter: Story = {
+    args: {
+        view: 'full',
+        initialValue: 'Ready to send',
+        onSend: handleSend,
+        footerProps: {
+            className: 'custom-footer',
+            contentClassName: 'custom-footer-content',
+            buttonSize: 'l',
+            bottomContent: <span>Custom footer content that can shrink without overlap</span>,
+            submitButtonProps: {
+                className: 'custom-submit',
+                tooltipSend: 'Send custom prompt',
+                qa: 'custom-submit',
+            },
+        },
+    },
+    decorators: defaultDecorators,
+};
+
 export const WithTopPanel: Story = {
     args: {
         view: 'simple',

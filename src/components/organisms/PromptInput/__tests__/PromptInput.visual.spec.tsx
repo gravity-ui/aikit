@@ -55,6 +55,15 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await expectScreenshot();
     });
 
+    test('should expose footer customization', async ({mount, page, expectScreenshot}) => {
+        await mount(<PromptInputStories.WithCustomizedFooter />);
+
+        await expect(page.locator('.custom-footer')).toBeVisible();
+        await expect(page.locator('.custom-footer-content')).toBeVisible();
+        await expect(page.locator('.custom-submit')).toHaveAttribute('data-state', 'enabled');
+        await expectScreenshot();
+    });
+
     test('should render with top panel', async ({mount, expectScreenshot}) => {
         await mount(<PromptInputStories.WithTopPanel />);
 

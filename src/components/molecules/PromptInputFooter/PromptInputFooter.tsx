@@ -42,6 +42,8 @@ export type PromptInputFooterProps = {
     children?: ReactNode;
     /** Additional CSS class */
     className?: string;
+    /** Additional CSS class for the custom content wrapper */
+    contentClassName?: string;
     /** Button size */
     buttonSize?: ButtonButtonProps['size'];
     /** QA/test identifier */
@@ -67,6 +69,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
         onMicrophoneClick,
         children,
         className,
+        contentClassName,
         buttonSize = 'm',
         qa,
     } = props;
@@ -75,7 +78,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
     if (children) {
         return (
             <div className={b(null, className)} data-qa={qa}>
-                <div className={b('content')}>{children}</div>
+                <div className={b('content', contentClassName)}>{children}</div>
                 <div className={b('submit')}>
                     <SubmitButton {...submitButton} size={buttonSize} />
                 </div>
