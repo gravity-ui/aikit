@@ -7,7 +7,7 @@ import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import {Header, HeaderAction, type HeaderProps} from '../index';
+import {Header, HeaderAction, HeaderActionGroup, type HeaderProps} from '../index';
 
 import MDXDocs from './Docs.mdx';
 
@@ -387,7 +387,12 @@ export const CustomActionsOrderAndSize: StoryFn<HeaderProps> = (args) => (
             menuItems={[...menuItemsConfig]}
             additionalActions={additionalActionsConfig.slice(0, 1)}
             actionsOrder={{
-                right: [HeaderAction.History, 'menu', 'additional', HeaderAction.NewChat],
+                right: [
+                    HeaderAction.History,
+                    HeaderActionGroup.Menu,
+                    HeaderActionGroup.Additional,
+                    HeaderAction.NewChat,
+                ],
             }}
             actionSize="l"
             {...mockHandlers}

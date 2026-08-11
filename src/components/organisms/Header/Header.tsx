@@ -19,7 +19,12 @@ import {ActionButton} from '../../atoms/ActionButton';
 import {ButtonGroup} from '../../molecules/ButtonGroup';
 
 import {i18n} from './i18n';
-import {HeaderAction, type HeaderActionOrderItem, type HeaderProps} from './types';
+import {
+    HeaderAction,
+    HeaderActionGroup,
+    type HeaderActionOrderItem,
+    type HeaderProps,
+} from './types';
 import {ActionItem, useHeader} from './useHeader';
 
 import './Header.scss';
@@ -212,8 +217,8 @@ export function Header(props: HeaderProps) {
             return null;
         }
         const legacyOrder: HeaderActionOrderItem[] = [
-            ...(sideAdditionalActions.length > 0 ? (['additional'] as const) : []),
-            ...(sideMenu ? (['menu'] as const) : []),
+            ...(sideAdditionalActions.length > 0 ? [HeaderActionGroup.Additional] : []),
+            ...(sideMenu ? [HeaderActionGroup.Menu] : []),
             ...sideBaseActions.map((action) => action.id as HeaderAction),
         ];
         const requestedOrder = actionsOrder[side] ?? [];
@@ -223,12 +228,12 @@ export function Header(props: HeaderProps) {
         );
 
         const renderOrderedAction = (item: HeaderActionOrderItem) => {
-            if (item === 'additional') {
+            if (item === HeaderActionGroup.Additional) {
                 return sideAdditionalActions.map((action, index) =>
                     renderAdditionalAction(action, index),
                 );
             }
-            if (item === 'menu') {
+            if (item === HeaderActionGroup.Menu) {
                 return <React.Fragment key="menu">{sideMenu}</React.Fragment>;
             }
             const action = sideBaseActions.find((candidate) => candidate.id === item);

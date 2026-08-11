@@ -98,8 +98,6 @@ import {Header, HeaderAction} from '@gravity-ui/aikit';
 />;
 ```
 
-### History toggle notification
-
 ### Action order and size
 
 `actionsPlacement` selects the side for each action group. `actionsOrder` changes the order
@@ -107,20 +105,29 @@ of the available groups on that side. Missing entries are appended in the backwa
 order: additional actions, menu, then built-in actions. Duplicate and unavailable entries are ignored.
 
 ```tsx
+import {Header, HeaderAction, HeaderActionGroup} from '@gravity-ui/aikit';
+
 <Header
   baseActions={[HeaderAction.NewChat, HeaderAction.History]}
   menuItems={menuItems}
   additionalActions={additionalActions}
   actionsOrder={{
-    right: [HeaderAction.History, 'menu', 'additional', HeaderAction.NewChat],
+    right: [
+      HeaderAction.History,
+      HeaderActionGroup.Menu,
+      HeaderActionGroup.Additional,
+      HeaderAction.NewChat,
+    ],
   }}
   actionSize="l"
-/>
+/>;
 ```
 
 `actionSize` sets the default size for built-in actions, the menu button, and configured
 additional actions. An explicit `size` on an additional action takes precedence. Custom
 React nodes in `additionalActions` are not modified.
+
+### History toggle notification
 
 When `Header` is rendered inside `ChatContainer`, you can observe history popup toggles via the Header button by passing `onHistoryToggle` through `headerProps`. The callback receives the next open state — i.e. the state the chat will be in after the toggle:
 

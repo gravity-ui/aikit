@@ -18,6 +18,12 @@ export enum HeaderAction {
     Close = 'close',
 }
 
+/** Composite and service action groups that can participate in header ordering. */
+export enum HeaderActionGroup {
+    Menu = 'menu',
+    Additional = 'additional',
+}
+
 export type HeaderActionSide = 'left' | 'right';
 
 export type HeaderActionsPlacement = {
@@ -29,7 +35,7 @@ export type HeaderActionsPlacement = {
     additional?: HeaderActionSide;
 };
 
-export type HeaderActionOrderItem = HeaderAction | 'menu' | 'additional';
+export type HeaderActionOrderItem = HeaderAction | HeaderActionGroup;
 
 export type HeaderActionsOrder = Partial<
     Record<HeaderActionSide, readonly HeaderActionOrderItem[]>
