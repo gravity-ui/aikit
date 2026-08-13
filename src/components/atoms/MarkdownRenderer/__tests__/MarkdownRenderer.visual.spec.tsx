@@ -106,15 +106,27 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
             />,
         );
 
-        await expect(page.getByTestId('code-action-0')).toHaveAttribute('data-code', 'SELECT 1;');
-        await expect(page.getByTestId('code-action-0')).toHaveAttribute('data-language', 'sql');
-        await expect(page.getByTestId('code-action-1')).toHaveAttribute('data-code', 'SELECT 2;');
-        await expect(page.getByTestId('code-action-1')).toHaveAttribute('data-language', 'yql');
+        await expect(page.locator('[data-qa="code-action-0"]')).toHaveAttribute(
+            'data-code',
+            'SELECT 1;',
+        );
+        await expect(page.locator('[data-qa="code-action-0"]')).toHaveAttribute(
+            'data-language',
+            'sql',
+        );
+        await expect(page.locator('[data-qa="code-action-1"]')).toHaveAttribute(
+            'data-code',
+            'SELECT 2;',
+        );
+        await expect(page.locator('[data-qa="code-action-1"]')).toHaveAttribute(
+            'data-language',
+            'yql',
+        );
         await expect(page.locator('.yfm-code-floating button, .yfm-clipboard-button')).toHaveCount(
             2,
         );
 
-        const firstAction = page.getByTestId('code-action-0');
+        const firstAction = page.locator('[data-qa="code-action-0"]');
         await expect
             .poll(() =>
                 firstAction.evaluate((action) => {
@@ -146,10 +158,10 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
     }) => {
         await mount(<MarkdownRendererStories.WithCodeBlockActions />);
 
-        const hoverRenderer = page.getByTestId('code-actions-hover');
+        const hoverRenderer = page.locator('[data-qa="code-actions-hover"]');
         const hoverCodeBlock = hoverRenderer.locator('[data-aikit-code-block]').first();
-        const hoverAction = page.getByTestId('hover-code-action-0');
-        const alwaysRenderer = page.getByTestId('code-actions-always');
+        const hoverAction = page.locator('[data-qa="hover-code-action-0"]');
+        const alwaysRenderer = page.locator('[data-qa="code-actions-always"]');
         const alwaysBlocks = alwaysRenderer.locator('[data-aikit-code-block]');
         const getPanelOpacity = () =>
             hoverCodeBlock.evaluate((codeBlock) => {
@@ -171,14 +183,14 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expect.poll(getPanelOpacity).toBe('1');
 
         await hoverAction.click();
-        await expect(page.getByTestId('hover-last-action')).toContainText(
+        await expect(page.locator('[data-qa="hover-last-action"]')).toContainText(
             'Last action: sql: SELECT * FROM users;',
         );
 
         await expect(alwaysBlocks.nth(0)).toHaveClass(/actionsVisible/);
         await expect(alwaysBlocks.nth(1)).toHaveClass(/actionsVisible/);
         await expect(alwaysBlocks.nth(2)).not.toHaveClass(/actionsVisible/);
-        await expect(page.getByTestId('always-code-action-2')).toHaveCount(0);
+        await expect(page.locator('[data-qa="always-code-action-2"]')).toHaveCount(0);
 
         await expectScreenshot();
     });

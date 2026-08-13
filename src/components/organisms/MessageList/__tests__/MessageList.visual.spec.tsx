@@ -90,9 +90,9 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
             />,
         );
 
-        await expect(page.getByTestId('open-user-markdown')).toBeVisible();
-        await expect(page.getByTestId('open-assistant-text')).toBeVisible();
-        await expect(page.getByTestId('open-assistant-thinking')).toHaveCount(0);
+        await expect(page.locator('[data-qa="open-user-markdown"]')).toHaveCount(1);
+        await expect(page.locator('[data-qa="open-assistant-text"]')).toHaveCount(1);
+        await expect(page.locator('[data-qa="open-assistant-thinking"]')).toHaveCount(0);
     });
 
     test.describe('actions visibility for assistant messages', () => {
