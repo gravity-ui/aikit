@@ -1,10 +1,20 @@
 /** @jest-environment node */
 
-import transform from '@diplodoc/transform';
+import {File as NodeFile} from 'node:buffer';
+
 import type {ExtendedPluginWithCollect, MarkdownIt} from '@diplodoc/transform/lib/typings';
 
 import {MARKDOWN_CODE_BLOCKS_ENV_KEY, markdownCodeBlockPlugin} from '../markdownCodeBlockPlugin';
 import {mergeMarkdownTransformOptions} from '../markdownUtils';
+
+if (typeof globalThis.File === 'undefined') {
+    Object.defineProperty(globalThis, 'File', {
+        configurable: true,
+        value: NodeFile,
+    });
+}
+
+const transform = jest.requireActual<typeof import('@diplodoc/transform')>('@diplodoc/transform');
 
 describe('markdownCodeBlockPlugin', () => {
     let consoleLogSpy: jest.SpyInstance;
