@@ -1,4 +1,4 @@
-import {Fragment, type HTMLAttributes, memo, useMemo, useRef} from 'react';
+import {Fragment, type HTMLAttributes, type ReactNode, memo, useMemo, useRef} from 'react';
 
 import {mdxPlugin} from '@diplodoc/mdx-extension';
 import type {
@@ -11,8 +11,10 @@ import type {MDXComponents} from 'mdx/types';
 import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
 import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
+import {markdownCodeBlockPlugin} from '../../../utils/markdownCodeBlockPlugin';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
 
+import {CodeBlockActionsPortals} from './CodeBlockActionsPortals';
 import {MdxPortals} from './MdxPortals';
 
 import './MarkdownRenderer.scss';
@@ -32,6 +34,24 @@ export interface MarkdownRendererMdxOptions {
     nonce?: string;
 }
 
+export interface MarkdownCodeBlock {
+    /** Fenced code content with one parser-added trailing line feed removed. */
+    code: string;
+    /** Lowercase language parsed from the first fence info token. */
+    language?: string;
+    /** Zero-based code block index within this MarkdownRenderer. */
+    index: number;
+}
+
+export type MarkdownCodeBlockActionsVisibility = 'hover' | 'always';
+
+export interface MarkdownCodeBlockActionsConfig {
+    /** Renders actions for a fenced code block. Return null to omit actions for the block. */
+    render: (block: MarkdownCodeBlock) => ReactNode;
+    /** Controls the native code toolbar visibility for blocks with rendered actions. */
+    visibility?: MarkdownCodeBlockActionsVisibility;
+}
+
 export interface MarkdownRendererProps {
     content: string;
     className?: string;
@@ -41,6 +61,7 @@ export interface MarkdownRendererProps {
     openLinksInNewTab?: boolean;
     mdxOptions?: MarkdownRendererMdxOptions;
     mdxContext?: Record<string, unknown>;
+    codeBlockActions?: MarkdownCodeBlockActionsConfig;
     /** Extra props forwarded to the root container `div` element. */
     extraProps?: HTMLAttributes<HTMLDivElement>;
 }
@@ -98,6 +119,7 @@ function MarkdownRendererComponent({
     openLinksInNewTab = false,
     mdxOptions,
     mdxContext,
+    codeBlockActions,
     extraProps,
 }: MarkdownRendererProps) {
     const closedContent = useRemend(content, shouldParseIncompleteMarkdown);
@@ -120,6 +142,10 @@ function MarkdownRendererComponent({
             );
         }
 
+        if (codeBlockActions) {
+            plugins.push(markdownCodeBlockPlugin);
+        }
+
         if (plugins.length === 0) {
             return transformOptions;
         }
@@ -128,14 +154,14 @@ function MarkdownRendererComponent({
             ...transformOptions,
             plugins,
         };
-    }, [openLinksInNewTab, transformOptions, enableMdx, mdxTagNames]);
+    }, [openLinksInNewTab, transformOptions, enableMdx, mdxTagNames, Boolean(codeBlockActions)]);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const {html, mdxArtifacts} = useMarkdownTransform(
-        closedContent,
-        finalTransformOptions,
-        enableMdx,
-    );
+    const {
+        html,
+        mdxArtifacts,
+        codeBlocks = [],
+    } = useMarkdownTransform(closedContent, finalTransformOptions, enableMdx);
 
     return (
         <Fragment>
@@ -154,6 +180,14 @@ function MarkdownRendererComponent({
                     mdxArtifacts={mdxArtifacts}
                     nonce={mdxNonce}
                     mdxContext={mdxContext}
+                />
+            ) : null}
+            {codeBlockActions ? (
+                <CodeBlockActionsPortals
+                    refCtr={containerRef}
+                    html={html}
+                    codeBlocks={codeBlocks}
+                    config={codeBlockActions}
                 />
             ) : null}
         </Fragment>
@@ -198,6 +232,14 @@ export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, next
     }
 
     if (prevProps.extraProps !== nextProps.extraProps) {
+        return false;
+    }
+
+    if (prevProps.codeBlockActions?.render !== nextProps.codeBlockActions?.render) {
+        return false;
+    }
+
+    if (prevProps.codeBlockActions?.visibility !== nextProps.codeBlockActions?.visibility) {
         return false;
     }
 

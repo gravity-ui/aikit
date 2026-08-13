@@ -12,7 +12,11 @@ import {
     createMessageRendererRegistry,
     registerMessageRenderer,
 } from '../../../utils/messageTypeRegistry';
-import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import {
+    type MarkdownCodeBlockActionsConfig,
+    MarkdownRenderer,
+    type MarkdownRendererMdxOptions,
+} from '../../atoms/MarkdownRenderer';
 import {ThinkingMessage} from '../ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
 
@@ -23,6 +27,7 @@ export function createDefaultMessageRegistry(
     mdxOptions?: MarkdownRendererMdxOptions,
     mdxContext?: Record<string, unknown>,
     markdownExtraProps?: HTMLAttributes<HTMLDivElement>,
+    codeBlockActions?: MarkdownCodeBlockActionsConfig,
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
@@ -39,6 +44,7 @@ export function createDefaultMessageRegistry(
                     mdxOptions={mdxOptions}
                     mdxContext={mdxContext}
                     extraProps={markdownExtraProps}
+                    codeBlockActions={codeBlockActions}
                 />
             ),
         },

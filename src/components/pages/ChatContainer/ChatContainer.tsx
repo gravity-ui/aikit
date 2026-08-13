@@ -198,6 +198,7 @@ export function ChatContainer(props: ChatContainerProps) {
         shouldParseIncompleteMarkdown,
         openMarkdownLinksInNewTab,
         mdxProps,
+        getMarkdownCodeBlockActions,
         messageListConfig,
         mascotConfig,
         headerProps = {},
@@ -494,6 +495,7 @@ export function ChatContainer(props: ChatContainerProps) {
             shouldParseIncompleteMarkdown,
             openMarkdownLinksInNewTab,
             mdxProps,
+            getMarkdownCodeBlockActions,
             qa:
                 resolveChatContainerQa(qaMap, 'messageList', 'message-list') ??
                 messageListConfig?.qa,
@@ -523,6 +525,7 @@ export function ChatContainer(props: ChatContainerProps) {
             shouldParseIncompleteMarkdown,
             openMarkdownLinksInNewTab,
             mdxProps,
+            getMarkdownCodeBlockActions,
             messageListConfig,
             qaMap,
             texts.errorText,

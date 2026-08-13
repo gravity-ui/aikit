@@ -15,6 +15,7 @@ import type {
 import type {SuggestionsItem} from '../../../types/common';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
+import type {MarkdownCodeBlockActionsConfig} from '../../atoms/MarkdownRenderer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {HeaderProps} from '../../organisms/Header';
 import type {PromptInputProps} from '../../organisms/PromptInput';
@@ -82,6 +83,7 @@ export type MessageListConfig = Omit<
     | 'transformOptions'
     | 'openMarkdownLinksInNewTab'
     | 'mdxProps'
+    | 'getMarkdownCodeBlockActions'
 >;
 
 /**
@@ -254,6 +256,10 @@ export interface ChatContainerProps {
      * `mdxOptions`, `getMarkdownExtraProps` and `getMdxContext`.
      */
     mdxProps?: MdxProps;
+    /** Resolves fenced-code actions for the default user and assistant text renderers. */
+    getMarkdownCodeBlockActions?: (
+        message: TChatMessage,
+    ) => MarkdownCodeBlockActionsConfig | undefined;
 
     // Configuration
     /** MessageList configuration for actions and loader behavior */

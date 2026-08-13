@@ -6,20 +6,38 @@ import transform from '@diplodoc/transform';
 import '@diplodoc/transform/dist/js/yfm.js';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import {
+    MARKDOWN_CODE_BLOCKS_ENV_KEY,
+    type MarkdownCodeBlockArtifact,
+} from '../utils/markdownCodeBlockPlugin';
 import {areOptionsEqual, mergeMarkdownTransformOptions} from '../utils/markdownUtils';
 import {parseMarkdownIntoBlocks} from '../utils/parse-blocks';
 
 export interface MarkdownTransformResult {
     html: string;
     mdxArtifacts?: MdxArtifacts;
+    codeBlocks?: MarkdownCodeBlockArtifact[];
 }
+
+interface CachedMarkdownBlock {
+    codeBlocks: MarkdownCodeBlockArtifact[];
+    html: string;
+}
+
+const getCodeBlocks = (result: object) => {
+    const codeBlocks = (result as {[MARKDOWN_CODE_BLOCKS_ENV_KEY]?: unknown})[
+        MARKDOWN_CODE_BLOCKS_ENV_KEY
+    ];
+
+    return Array.isArray(codeBlocks) ? (codeBlocks as MarkdownCodeBlockArtifact[]) : [];
+};
 
 export function useMarkdownTransform(
     content: string,
     options?: OptionsType,
     enableMdx = false,
 ): MarkdownTransformResult {
-    const cacheRef = useRef<Map<string, string>>(new Map());
+    const cacheRef = useRef<Map<string, CachedMarkdownBlock>>(new Map());
     const prevOptionsRef = useRef<OptionsType | undefined>(options);
 
     const lastMdxResultRef = useRef<MarkdownTransformResult | null>(null);
@@ -49,6 +67,7 @@ export function useMarkdownTransform(
                 const mdxResult: MarkdownTransformResult = {
                     html: result.html ?? '',
                     mdxArtifacts: result.mdxArtifacts,
+                    codeBlocks: getCodeBlocks(result),
                 };
 
                 lastMdxResultRef.current = mdxResult;
@@ -63,19 +82,24 @@ export function useMarkdownTransform(
             const blocks = parseMarkdownIntoBlocks(content);
             const cache = cacheRef.current;
             const htmlParts: string[] = [];
+            const codeBlocks: MarkdownCodeBlockArtifact[] = [];
 
             for (const block of blocks) {
-                let html = cache.get(block);
-                if (!html) {
+                let cachedBlock = cache.get(block);
+                if (!cachedBlock) {
                     try {
                         const result = transform(block, transformOptions);
-                        html = result.result.html;
-                        cache.set(block, html);
+                        cachedBlock = {
+                            html: result.result.html,
+                            codeBlocks: getCodeBlocks(result.result),
+                        };
+                        cache.set(block, cachedBlock);
                     } catch {
-                        html = '';
+                        cachedBlock = {html: '', codeBlocks: []};
                     }
                 }
-                htmlParts.push(html);
+                htmlParts.push(cachedBlock.html);
+                codeBlocks.push(...cachedBlock.codeBlocks);
             }
 
             const currentBlocksSet = new Set(blocks);
@@ -85,7 +109,7 @@ export function useMarkdownTransform(
                 }
             }
 
-            return {html: htmlParts.join('')};
+            return {html: htmlParts.join(''), codeBlocks};
         } catch {
             return {html: ''};
         }

@@ -10,6 +10,39 @@ $block: '.#{variables.$ns}markdown-renderer';
     max-width: 100%;
     min-width: 0;
 
+    .yfm-code-floating:focus-within {
+        opacity: 1;
+    }
+
+    &__code-block:focus-within > .yfm-clipboard-button,
+    &__code-block:focus-within > &__code-block-actions {
+        opacity: 1;
+    }
+
+    &__code-block_actionsVisible .yfm-code-floating,
+    &__code-block_actionsVisible > .yfm-clipboard-button,
+    &__code-block_actionsVisible > &__code-block-actions {
+        opacity: 1;
+    }
+
+    &__code-block-actions {
+        display: inline-flex;
+        flex-shrink: 0;
+        gap: var(--g-spacing-1);
+
+        &_legacy {
+            position: absolute;
+            top: 16px;
+            right: 44px;
+            z-index: 1;
+            opacity: 0;
+        }
+    }
+
+    .yfm-clipboard:hover > &__code-block-actions {
+        opacity: 1;
+    }
+
     /* Scroll container injected by markdownTableWrapPlugin; text outside stays fixed */
     &__table-wrap {
         width: 100%;

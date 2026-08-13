@@ -19,7 +19,10 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
-import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import type {
+    MarkdownCodeBlockActionsConfig,
+    MarkdownRendererMdxOptions,
+} from '../../atoms/MarkdownRenderer';
 import {type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 
 import {MessageItem} from './MessageItem';
@@ -89,6 +92,10 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     openMarkdownLinksInNewTab?: boolean;
     /** Grouped MDX/markdown rendering props (`mdxOptions`, `getMarkdownExtraProps`, `getMdxContext`). */
     mdxProps?: MdxProps<TContent>;
+    /** Resolves fenced-code actions for the default user and assistant text renderers. */
+    getMarkdownCodeBlockActions?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => MarkdownCodeBlockActionsConfig | undefined;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -135,6 +142,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     shouldParseIncompleteMarkdown,
     openMarkdownLinksInNewTab,
     mdxProps,
+    getMarkdownCodeBlockActions,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -204,6 +212,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                         mdxOptions={mdxProps?.mdxOptions}
                         getMarkdownExtraProps={mdxProps?.getMarkdownExtraProps}
                         getMdxContext={mdxProps?.getMdxContext}
+                        getMarkdownCodeBlockActions={getMarkdownCodeBlockActions}
                         showTimestamp={showTimestamp}
                         showAvatar={showAvatar}
                         userActions={userActions}

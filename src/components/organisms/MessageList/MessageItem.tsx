@@ -19,7 +19,10 @@ import {
     resolveMessageActions,
 } from '../../../utils';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
-import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import type {
+    MarkdownCodeBlockActionsConfig,
+    MarkdownRendererMdxOptions,
+} from '../../atoms/MarkdownRenderer';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
@@ -41,6 +44,9 @@ export type MessageItemConfig<TContent extends TMessageContent = never> = {
     getMdxContext?: (
         message: TChatMessage<TContent, TMessageMetadata>,
     ) => Record<string, unknown> | undefined;
+    getMarkdownCodeBlockActions?: (
+        message: TChatMessage<TContent, TMessageMetadata>,
+    ) => MarkdownCodeBlockActionsConfig | undefined;
     showActionsOnHover?: boolean;
     showTimestamp?: boolean;
     showAvatar?: boolean;
@@ -77,6 +83,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     mdxOptions,
     getMarkdownExtraProps,
     getMdxContext,
+    getMarkdownCodeBlockActions,
     showActionsOnHover,
     showTimestamp,
     showAvatar,
@@ -93,6 +100,10 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     const markdownExtraProps = useMemo(
         () => getMarkdownExtraProps?.(message),
         [getMarkdownExtraProps, message],
+    );
+    const codeBlockActions = useMemo(
+        () => getMarkdownCodeBlockActions?.(message),
+        [getMarkdownCodeBlockActions, message],
     );
 
     if (isUserMessage<TMessageMetadata, TContent>(message)) {
@@ -114,6 +125,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 mdxOptions={mdxOptions}
                 mdxContext={mdxContext}
                 markdownExtraProps={markdownExtraProps}
+                codeBlockActions={codeBlockActions}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 showAvatar={showAvatar}
@@ -146,6 +158,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 mdxOptions={mdxOptions}
                 mdxContext={mdxContext}
                 markdownExtraProps={markdownExtraProps}
+                codeBlockActions={codeBlockActions}
                 showActionsOnHover={showActionsOnHover}
                 showTimestamp={showTimestamp}
                 userRating={message.userRating}

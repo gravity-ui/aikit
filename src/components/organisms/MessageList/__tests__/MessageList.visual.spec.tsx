@@ -2,7 +2,7 @@ import type {Page} from '@playwright/test';
 
 import {expect, test} from '~playwright/core';
 
-import type {TAssistantMessage, TUserMessage} from '../../../../types/messages';
+import type {TAssistantMessage, TChatMessage, TUserMessage} from '../../../../types/messages';
 import {BaseMessageActionType} from '../../../../types/messages';
 import {MessageList} from '../MessageList';
 
@@ -48,6 +48,51 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         await mount(<MessageListStories.WithDefaultActions />);
 
         await expectScreenshot();
+    });
+
+    test('should resolve fenced-code actions for default markdown messages', async ({
+        mount,
+        page,
+    }) => {
+        const messages: TChatMessage[] = [
+            {
+                id: 'user-markdown',
+                role: 'user',
+                format: 'markdown',
+                content: '```sql\nSELECT 1;\n```',
+            },
+            {
+                id: 'assistant-text',
+                role: 'assistant',
+                content: '```yql\nSELECT 2;\n```',
+            },
+            {
+                id: 'assistant-thinking',
+                role: 'assistant',
+                content: {
+                    type: 'thinking',
+                    data: {content: '```sql\nSELECT 3;\n```', status: 'thought'},
+                },
+            },
+        ];
+
+        await mount(
+            <MessageList
+                messages={messages}
+                getMarkdownCodeBlockActions={(message) => ({
+                    render: ({language}) =>
+                        language === 'sql' || language === 'yql' ? (
+                            <button type="button" data-qa={`open-${message.id}`}>
+                                Open {message.id}
+                            </button>
+                        ) : null,
+                })}
+            />,
+        );
+
+        await expect(page.getByTestId('open-user-markdown')).toBeVisible();
+        await expect(page.getByTestId('open-assistant-text')).toBeVisible();
+        await expect(page.getByTestId('open-assistant-thinking')).toHaveCount(0);
     });
 
     test.describe('actions visibility for assistant messages', () => {

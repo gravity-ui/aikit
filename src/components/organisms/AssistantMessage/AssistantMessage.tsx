@@ -16,7 +16,10 @@ import {
     mergeMessageRendererRegistries,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
-import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import type {
+    MarkdownCodeBlockActionsConfig,
+    MarkdownRendererMdxOptions,
+} from '../../atoms/MarkdownRenderer';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
 import {createDefaultMessageRegistry} from './defaultMessageTypeRegistry';
@@ -40,6 +43,7 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
         openMarkdownLinksInNewTab?: boolean;
         mdxOptions?: MarkdownRendererMdxOptions;
         mdxContext?: Record<string, unknown>;
+        codeBlockActions?: MarkdownCodeBlockActionsConfig;
         /** Extra props forwarded to the root container `div` of each rendered markdown block. */
         markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
         className?: string;
@@ -61,6 +65,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
     mdxOptions,
     mdxContext,
     markdownExtraProps,
+    codeBlockActions,
     showActionsOnHover,
     showTimestamp,
     userRating,
@@ -76,6 +81,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             mdxOptions,
             mdxContext,
             markdownExtraProps,
+            codeBlockActions,
         );
         if (messageRendererRegistry) {
             return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
@@ -90,6 +96,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
         mdxOptions,
         mdxContext,
         markdownExtraProps,
+        codeBlockActions,
     ]);
 
     const parts = useMemo(() => normalizeContent<TContent>(content), [content]);

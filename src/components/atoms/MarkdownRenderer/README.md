@@ -8,6 +8,7 @@ A MarkdownRenderer component for rendering Yandex Flavored Markdown (YFM) conten
 - **HTML Output**: Converts markdown to HTML
 - **Transform Options**: Accepts custom options from the `@diplodoc/transform` package for advanced rendering control
 - **MDX Support**: Optionally renders embedded MDX/JSX components via `@diplodoc/mdx-extension` (see `mdxOptions`)
+- **Fenced code actions**: Mounts consumer-provided React actions into the native code block toolbar without replacing syntax highlighting, Copy, or Wrap controls
 
 ## Usage
 
@@ -24,6 +25,62 @@ const transformOptions: OptionsType = {
 
 <MarkdownRenderer content="# Hello World" transformOptions={transformOptions} />;
 ```
+
+### Fenced code block actions
+
+Pass `codeBlockActions` to render React content before the native fenced-code controls. The
+renderer can filter by language and return `null` for blocks that need no action. Inline code is
+not included.
+
+````tsx
+import {Button} from '@gravity-ui/uikit';
+import {MarkdownRenderer} from '@/components/atoms/MarkdownRenderer';
+
+<MarkdownRenderer
+  content={'```SQL\nSELECT * FROM users;\n```'}
+  codeBlockActions={{
+    render: ({code, language}) => {
+      if (language !== 'sql' && language !== 'yql') {
+        return null;
+      }
+
+      return <Button onClick={() => openInEditor(code)}>Open in editor</Button>;
+    },
+    // Optional. The default is "hover".
+    visibility: 'hover',
+  }}
+/>;
+````
+
+The callback receives:
+
+- `code`: the original fenced content with one parser-added trailing LF removed;
+- `language`: the lowercase first token from the fence info string, or `undefined`;
+- `index`: the zero-based fenced block position within this `MarkdownRenderer`.
+
+Keep `render` free of side effects. With `visibility: 'always'`, the complete native toolbar is
+always visible only for blocks where `render` returned content. Keyboard focus inside a custom
+action also keeps the toolbar visible.
+
+`MessageList` and `ChatContainer` accept a per-message resolver, so products can filter by role,
+streaming state, or any other message data before creating the low-level configuration:
+
+```tsx
+<ChatContainer
+  messages={messages}
+  getMarkdownCodeBlockActions={(message) =>
+    message.role === 'assistant' && status !== 'streaming'
+      ? {
+          render: (block) => <OpenCodeButton message={message} block={block} />,
+        }
+      : undefined
+  }
+/>
+```
+
+The resolver is used by the default assistant text renderer and by user messages with
+`format="markdown"`. Thinking parts, tool messages, inline code, plain user messages, and custom
+message renderers are unchanged.
 
 ### MDX components
 
@@ -111,16 +168,17 @@ instead of a static value. It is called with the concrete message and its return
 
 ## Props
 
-| Prop                            | Type                         | Required | Default | Description                                                                                                                                                                                                             |
-| ------------------------------- | ---------------------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `content`                       | `string`                     | Yes      | -       | YFM markdown content to render                                                                                                                                                                                          |
-| `className`                     | `string`                     | -        | -       | Additional CSS class                                                                                                                                                                                                    |
-| `qa`                            | `string`                     | -        | -       | QA/test identifier                                                                                                                                                                                                      |
-| `transformOptions`              | `OptionsType`                | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                                              |
-| `shouldParseIncompleteMarkdown` | `boolean`                    | -        | `false` | Fix up unterminated markdown blocks (e.g. during streaming) before rendering                                                                                                                                            |
-| `openLinksInNewTab`             | `boolean`                    | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and relative same-document anchors with matching path and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
-| `mdxOptions`                    | `MarkdownRendererMdxOptions` | -        | -       | Enables MDX rendering via [`@diplodoc/mdx-extension`](https://www.npmjs.com/package/@diplodoc/mdx-extension). When provided, embedded MDX/JSX tags are replaced with the supplied React components. See fields below.   |
-| `mdxContext`                    | `unknown`                    | -        | -       | Arbitrary value exposed to the MDX components (rendered via `mdxOptions`) through a React context. Read it inside those components with `useMdxContext<T>()`. Scoped per `MarkdownRenderer` instance, i.e. per message. |
+| Prop                            | Type                             | Required | Default | Description                                                                                                                                                                                                             |
+| ------------------------------- | -------------------------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content`                       | `string`                         | Yes      | -       | YFM markdown content to render                                                                                                                                                                                          |
+| `className`                     | `string`                         | -        | -       | Additional CSS class                                                                                                                                                                                                    |
+| `qa`                            | `string`                         | -        | -       | QA/test identifier                                                                                                                                                                                                      |
+| `transformOptions`              | `OptionsType`                    | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                                              |
+| `shouldParseIncompleteMarkdown` | `boolean`                        | -        | `false` | Fix up unterminated markdown blocks (e.g. during streaming) before rendering                                                                                                                                            |
+| `openLinksInNewTab`             | `boolean`                        | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and relative same-document anchors with matching path and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
+| `mdxOptions`                    | `MarkdownRendererMdxOptions`     | -        | -       | Enables MDX rendering via [`@diplodoc/mdx-extension`](https://www.npmjs.com/package/@diplodoc/mdx-extension). When provided, embedded MDX/JSX tags are replaced with the supplied React components. See fields below.   |
+| `mdxContext`                    | `unknown`                        | -        | -       | Arbitrary value exposed to the MDX components (rendered via `mdxOptions`) through a React context. Read it inside those components with `useMdxContext<T>()`. Scoped per `MarkdownRenderer` instance, i.e. per message. |
+| `codeBlockActions`              | `MarkdownCodeBlockActionsConfig` | -        | -       | Renders React actions in fenced code block toolbars. The default visibility is `hover`; use `always` to keep toolbars visible for blocks with rendered actions.                                                         |
 
 ### `mdxOptions` fields
 

@@ -6,7 +6,11 @@ import {Avatar, useMobile} from '@gravity-ui/uikit';
 import type {BaseMessageProps, FileAttachment} from '../../../types/messages';
 import {block, modsClassName} from '../../../utils/cn';
 import {FileIcon} from '../../atoms/FileIcon';
-import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import {
+    type MarkdownCodeBlockActionsConfig,
+    MarkdownRenderer,
+    type MarkdownRendererMdxOptions,
+} from '../../atoms/MarkdownRenderer';
 import {MessageBalloon} from '../../atoms/MessageBalloon';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
@@ -31,6 +35,7 @@ export type UserMessageProps = Pick<
     openMarkdownLinksInNewTab?: boolean;
     mdxOptions?: MarkdownRendererMdxOptions;
     mdxContext?: Record<string, unknown>;
+    codeBlockActions?: MarkdownCodeBlockActionsConfig;
     /** Extra props forwarded to the root container `div` of the rendered markdown block. */
     markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
     className?: string;
@@ -58,6 +63,7 @@ export const UserMessage = (props: UserMessageProps) => {
         openMarkdownLinksInNewTab,
         mdxOptions,
         mdxContext,
+        codeBlockActions,
         markdownExtraProps,
         onActionPopup,
     } = props;
@@ -88,6 +94,7 @@ export const UserMessage = (props: UserMessageProps) => {
                             openLinksInNewTab={openMarkdownLinksInNewTab}
                             mdxOptions={mdxOptions}
                             mdxContext={mdxContext}
+                            codeBlockActions={codeBlockActions}
                             extraProps={markdownExtraProps}
                         />
                     ) : (

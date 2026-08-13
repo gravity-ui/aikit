@@ -5,6 +5,7 @@ import type {
     MarkdownIt,
     OptionsType,
 } from '@diplodoc/transform/lib/typings';
+import {Button} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {MarkdownRenderer, MarkdownRendererProps, useMdxContext} from '..';
@@ -13,7 +14,11 @@ import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 import {block} from '../../../../utils/cn';
 import {BaseMessage} from '../../../molecules/BaseMessage';
-import type {MarkdownRendererMdxOptions} from '../MarkdownRenderer';
+import type {
+    MarkdownCodeBlockActionsConfig,
+    MarkdownCodeBlockActionsVisibility,
+    MarkdownRendererMdxOptions,
+} from '../MarkdownRenderer';
 
 import MDXDocs from './Docs.mdx';
 
@@ -99,6 +104,71 @@ export const WithTransformOptions: StoryFn<MarkdownRendererProps> = () => {
     const content = `# Custom Plugin Example\n\nThis is **bold text** with custom styling applied via plugin.`;
 
     return <MarkdownRenderer content={content} transformOptions={transformOptions} />;
+};
+
+const CODE_BLOCK_ACTIONS_CONTENT = [
+    '```SQL',
+    'SELECT * FROM users;',
+    '```',
+    '',
+    '~~~yQl showLineNumbers',
+    'UPSERT INTO users (id) VALUES (1);',
+    '~~~',
+    '',
+    '```javascript',
+    "console.log('This block is filtered out');",
+    '```',
+].join('\n');
+
+function CodeBlockActionsDemo({visibility}: {visibility?: MarkdownCodeBlockActionsVisibility}) {
+    const [lastAction, setLastAction] = useState('None');
+    const codeBlockActions = useMemo<MarkdownCodeBlockActionsConfig>(
+        () => ({
+            visibility,
+            render: ({code, language, index}) => {
+                if (language !== 'sql' && language !== 'yql') {
+                    return null;
+                }
+
+                return (
+                    <Button
+                        size="s"
+                        view="flat-secondary"
+                        qa={`${visibility ?? 'hover'}-code-action-${index}`}
+                        onClick={() => setLastAction(`${language}: ${code}`)}
+                    >
+                        Open
+                    </Button>
+                );
+            },
+        }),
+        [visibility],
+    );
+
+    return (
+        <ContentWrapper width="520px">
+            <MarkdownRenderer
+                qa={`code-actions-${visibility ?? 'hover'}`}
+                content={CODE_BLOCK_ACTIONS_CONTENT}
+                codeBlockActions={codeBlockActions}
+            />
+            <div data-qa={`${visibility ?? 'hover'}-last-action`}>Last action: {lastAction}</div>
+        </ContentWrapper>
+    );
+}
+
+/** Language-filtered React actions with the default hover and opt-in always-visible toolbars. */
+export const WithCodeBlockActions: StoryObj<typeof MarkdownRenderer> = {
+    render: () => (
+        <Showcase>
+            <ShowcaseItem title="Hover (default)">
+                <CodeBlockActionsDemo />
+            </ShowcaseItem>
+            <ShowcaseItem title="Always visible">
+                <CodeBlockActionsDemo visibility="always" />
+            </ShowcaseItem>
+        </Showcase>
+    ),
 };
 
 const STREAMING_CONTENT = `**This is a very long bold text that keeps going and going without a clear end, so you can see how unterminated bold blocks are handled by the renderer.**
