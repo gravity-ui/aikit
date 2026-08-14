@@ -57,6 +57,8 @@ export {Playground, WithSubmittedStatus, WithErrorMessage, WithToolMessage} from
 
 export {WithCustomMessageType} from './parts/customMessageType';
 
+export {WithMarkdownCodeBlockActions} from './parts/markdownCodeBlockActions';
+
 export {WithStreamingMessage} from './parts/basic';
 
 export {WithDefaultActions, WithUserRating} from './parts/actions';

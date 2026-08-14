@@ -32,6 +32,24 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         await expectScreenshot();
     });
 
+    test('should route markdown code block actions to default text renderers', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<MessageListStories.WithMarkdownCodeBlockActions />);
+
+        await expect(page.locator('[data-qa="markdown-code-action-user-markdown"]')).toHaveCount(1);
+        await expect(page.locator('[data-qa="markdown-code-action-assistant-text"]')).toHaveCount(
+            1,
+        );
+        await expect(
+            page.locator('[data-qa="markdown-code-action-assistant-thinking"]'),
+        ).toHaveCount(0);
+        await expect(page.locator('[data-qa="markdown-code-action-assistant-tool"]')).toHaveCount(
+            0,
+        );
+    });
+
     test('should render with submitted status', async ({mount, expectScreenshot}) => {
         await mount(<MessageListStories.WithSubmittedStatus />);
 
