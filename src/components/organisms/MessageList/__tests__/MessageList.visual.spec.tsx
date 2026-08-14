@@ -38,16 +38,33 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
     }) => {
         await mount(<MessageListStories.WithMarkdownCodeBlockActions />);
 
-        await expect(page.locator('[data-qa="markdown-code-action-user-markdown"]')).toHaveCount(1);
-        await expect(page.locator('[data-qa="markdown-code-action-assistant-text"]')).toHaveCount(
+        // MarkdownRenderer owns the visual coverage for the toolbar. This test verifies that
+        // MessageList routes the action config only through the supported renderer boundaries.
+        const defaultMessageList = page.locator('[data-qa="markdown-actions-default"]');
+        await expect(defaultMessageList.getByRole('button', {name: 'Open SELECT 1;'})).toHaveCount(
             1,
         );
-        await expect(
-            page.locator('[data-qa="markdown-code-action-assistant-thinking"]'),
-        ).toHaveCount(0);
-        await expect(page.locator('[data-qa="markdown-code-action-assistant-tool"]')).toHaveCount(
+        await expect(defaultMessageList.getByRole('button', {name: 'Open SELECT 2;'})).toHaveCount(
+            1,
+        );
+        await expect(defaultMessageList.getByRole('button', {name: 'Open SELECT 3;'})).toHaveCount(
             0,
         );
+        await expect(defaultMessageList.getByRole('button', {name: 'Open SELECT 4;'})).toHaveCount(
+            0,
+        );
+
+        const virtualizedAction = page
+            .locator('[data-qa="markdown-actions-virtualized"]')
+            .locator('[data-qa="markdown-code-action"]');
+        await expect(virtualizedAction).toHaveCount(1);
+        await expect(virtualizedAction).toHaveText('Open SELECT 5;');
+        await virtualizedAction.click();
+        await expect(virtualizedAction).toHaveText('Opened SELECT 5;');
+
+        const customRenderer = page.locator('[data-qa="markdown-actions-custom-renderer"]');
+        await expect(customRenderer.locator('[data-qa="custom-text-renderer"]')).toBeVisible();
+        await expect(customRenderer.getByRole('button', {name: 'Open SELECT 6;'})).toHaveCount(0);
     });
 
     test('should render with submitted status', async ({mount, expectScreenshot}) => {

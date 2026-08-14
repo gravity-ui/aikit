@@ -46,7 +46,10 @@ export interface MarkdownCodeBlock {
 export type MarkdownCodeBlockActionsVisibility = 'hover' | 'always';
 
 export interface MarkdownCodeBlockActionsConfig {
-    /** Renders actions for a fenced code block. Return null to omit actions for the block. */
+    /**
+     * Renders actions for a fenced code block. Keep this callback referentially stable and free
+     * of side effects. Return null to omit actions for the block.
+     */
     render: (block: MarkdownCodeBlock) => ReactNode;
     /** Controls the native code toolbar visibility for blocks with rendered actions. */
     visibility?: MarkdownCodeBlockActionsVisibility;
@@ -61,6 +64,7 @@ export interface MarkdownRendererProps {
     openLinksInNewTab?: boolean;
     mdxOptions?: MarkdownRendererMdxOptions;
     mdxContext?: Record<string, unknown>;
+    /** Keep the config and its render callback referentially stable across renders. */
     codeBlockActions?: MarkdownCodeBlockActionsConfig;
     /** Extra props forwarded to the root container `div` element. */
     extraProps?: HTMLAttributes<HTMLDivElement>;

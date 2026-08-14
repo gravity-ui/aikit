@@ -32,25 +32,43 @@ Pass `codeBlockActions` to render React content before the native fenced-code co
 renderer can filter by language and return `null` for blocks that need no action. Inline code is
 not included.
 
-````tsx
+```tsx
+import {useCallback, useMemo} from 'react';
 import {Button} from '@gravity-ui/uikit';
-import {MarkdownRenderer} from '@/components/atoms/MarkdownRenderer';
+import {
+  MarkdownRenderer,
+  type MarkdownCodeBlockActionsConfig,
+} from '@/components/atoms/MarkdownRenderer';
 
-<MarkdownRenderer
-  content={'```SQL\nSELECT * FROM users;\n```'}
-  codeBlockActions={{
-    render: ({code, language}) => {
+function QueryMarkdown({
+  content,
+  openInEditor,
+}: {
+  content: string;
+  openInEditor: (code: string) => void;
+}) {
+  const renderCodeBlockAction = useCallback<MarkdownCodeBlockActionsConfig['render']>(
+    ({code, language}) => {
       if (language !== 'sql' && language !== 'yql') {
         return null;
       }
 
       return <Button onClick={() => openInEditor(code)}>Open in editor</Button>;
     },
-    // Optional. The default is "hover".
-    visibility: 'hover',
-  }}
-/>;
-````
+    [openInEditor],
+  );
+  const codeBlockActions = useMemo<MarkdownCodeBlockActionsConfig>(
+    () => ({
+      render: renderCodeBlockAction,
+      // Optional. The default is "hover".
+      visibility: 'hover',
+    }),
+    [renderCodeBlockAction],
+  );
+
+  return <MarkdownRenderer content={content} codeBlockActions={codeBlockActions} />;
+}
+```
 
 The callback receives:
 
@@ -58,29 +76,51 @@ The callback receives:
 - `language`: the lowercase first token from the fence info string, or `undefined`;
 - `index`: the zero-based fenced block position within this `MarkdownRenderer`.
 
-Keep `render` free of side effects. With `visibility: 'always'`, the complete native toolbar is
-always visible only for blocks where `render` returned content. Keyboard focus inside a custom
-action also keeps the toolbar visible.
+Keep both the config object and `render` referentially stable across renders, and keep `render` free
+of side effects. Replacing `render` can remount the custom action and reset its local React state.
+With `visibility: 'always'`, the complete native toolbar is always visible only for blocks where
+`render` returned content. Keyboard focus inside a custom action also keeps the toolbar visible.
 
 `MessageList` and `ChatContainer` accept a per-message resolver, so products can filter by role,
 streaming state, or any other message data before creating the low-level configuration:
 
 ```tsx
-<ChatContainer
-  messages={messages}
-  getMarkdownCodeBlockActions={(message) =>
-    message.role === 'assistant' && status !== 'streaming'
-      ? {
-          render: (block) => <OpenCodeButton message={message} block={block} />,
-        }
-      : undefined
-  }
-/>
+import {useCallback, useMemo} from 'react';
+import {
+  ChatContainer,
+  type ChatStatus,
+  type MarkdownCodeBlockActionsConfig,
+  type TChatMessage,
+} from '@gravity-ui/aikit';
+
+function AssistantChat({messages, status}: {messages: TChatMessage[]; status: ChatStatus}) {
+  const renderCodeBlockAction = useCallback<MarkdownCodeBlockActionsConfig['render']>(
+    (block) => <OpenCodeButton block={block} />,
+    [],
+  );
+  const codeBlockActions = useMemo<MarkdownCodeBlockActionsConfig>(
+    () => ({render: renderCodeBlockAction}),
+    [renderCodeBlockAction],
+  );
+  const getMarkdownCodeBlockActions = useCallback(
+    (message: TChatMessage) =>
+      message.role === 'assistant' && status === 'ready' ? codeBlockActions : undefined,
+    [codeBlockActions, status],
+  );
+
+  return (
+    <ChatContainer
+      messages={messages}
+      status={status}
+      getMarkdownCodeBlockActions={getMarkdownCodeBlockActions}
+    />
+  );
+}
 ```
 
-The resolver is used by the default assistant text renderer and by user messages with
-`format="markdown"`. Thinking parts, tool messages, inline code, plain user messages, and custom
-message renderers are unchanged.
+Keep the resolver and each returned config referentially stable. The resolver is used by the
+default assistant text renderer and by user messages with `format="markdown"`. Thinking parts,
+tool messages, inline code, plain user messages, and custom message renderers are unchanged.
 
 ### MDX components
 
@@ -178,7 +218,7 @@ instead of a static value. It is called with the concrete message and its return
 | `openLinksInNewTab`             | `boolean`                        | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and relative same-document anchors with matching path and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
 | `mdxOptions`                    | `MarkdownRendererMdxOptions`     | -        | -       | Enables MDX rendering via [`@diplodoc/mdx-extension`](https://www.npmjs.com/package/@diplodoc/mdx-extension). When provided, embedded MDX/JSX tags are replaced with the supplied React components. See fields below.   |
 | `mdxContext`                    | `unknown`                        | -        | -       | Arbitrary value exposed to the MDX components (rendered via `mdxOptions`) through a React context. Read it inside those components with `useMdxContext<T>()`. Scoped per `MarkdownRenderer` instance, i.e. per message. |
-| `codeBlockActions`              | `MarkdownCodeBlockActionsConfig` | -        | -       | Renders React actions in fenced code block toolbars. The default visibility is `hover`; use `always` to keep toolbars visible for blocks with rendered actions.                                                         |
+| `codeBlockActions`              | `MarkdownCodeBlockActionsConfig` | -        | -       | Renders React actions in fenced code block toolbars. Keep the config and `render` referentially stable. The default visibility is `hover`; use `always` to keep toolbars visible for blocks with rendered actions.      |
 
 ### `mdxOptions` fields
 

@@ -92,7 +92,10 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     openMarkdownLinksInNewTab?: boolean;
     /** Grouped MDX/markdown rendering props (`mdxOptions`, `getMarkdownExtraProps`, `getMdxContext`). */
     mdxProps?: MdxProps<TContent>;
-    /** Resolves fenced-code actions for the default user and assistant text renderers. */
+    /**
+     * Resolves fenced-code actions for the default user and assistant text renderers. Keep the
+     * resolver and its returned config and render callback referentially stable across renders.
+     */
     getMarkdownCodeBlockActions?: (
         message: TChatMessage<TContent, TMessageMetadata>,
     ) => MarkdownCodeBlockActionsConfig | undefined;
