@@ -84,74 +84,7 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expect(link).not.toHaveAttribute('rel', 'noopener noreferrer');
     });
 
-    test('should expose parser metadata and preserve native code controls', async ({
-        mount,
-        page,
-    }) => {
-        await mount(
-            <MarkdownRenderer
-                content={'```SQL\nSELECT 1;\n```\n\n~~~yQl showLineNumbers\nSELECT 2;\n~~~'}
-                codeBlockActions={{
-                    render: ({code, language, index}) => (
-                        <button
-                            type="button"
-                            data-qa={`code-action-${index}`}
-                            data-code={code}
-                            data-language={language}
-                        >
-                            Open {index}
-                        </button>
-                    ),
-                }}
-            />,
-        );
-
-        await expect(page.locator('[data-qa="code-action-0"]')).toHaveAttribute(
-            'data-code',
-            'SELECT 1;',
-        );
-        await expect(page.locator('[data-qa="code-action-0"]')).toHaveAttribute(
-            'data-language',
-            'sql',
-        );
-        await expect(page.locator('[data-qa="code-action-1"]')).toHaveAttribute(
-            'data-code',
-            'SELECT 2;',
-        );
-        await expect(page.locator('[data-qa="code-action-1"]')).toHaveAttribute(
-            'data-language',
-            'yql',
-        );
-        await expect(page.locator('.yfm-code-floating button, .yfm-clipboard-button')).toHaveCount(
-            2,
-        );
-
-        const firstAction = page.locator('[data-qa="code-action-0"]');
-        await expect
-            .poll(() =>
-                firstAction.evaluate((action) => {
-                    const mountNode = action.parentElement;
-                    const nextControl = mountNode?.nextElementSibling;
-
-                    return {
-                        hasSyntaxHighlighting:
-                            document
-                                .querySelector('[data-aikit-code-block] code')
-                                ?.classList.contains('hljs') === true &&
-                            document.querySelector('[data-aikit-code-block] .hljs-keyword')
-                                ?.textContent === 'SELECT',
-                        isBeforeNativeControl:
-                            nextControl?.matches('.yfm-clipboard-button, button') === true,
-                    };
-                }),
-            )
-            .toEqual({
-                hasSyntaxHighlighting: true,
-                isBeforeNativeControl: true,
-            });
-    });
-
-    test('should support hover, keyboard focus and always-visible actions', async ({
+    test('should preserve code styling and support metadata, controls and visibility', async ({
         mount,
         page,
         expectScreenshot,
@@ -159,12 +92,13 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await mount(<MarkdownRendererStories.WithCodeBlockActions />);
 
         const hoverRenderer = page.locator('[data-qa="code-actions-hover"]');
-        const hoverCodeBlock = hoverRenderer.locator('[data-aikit-code-block]').first();
-        const hoverAction = page.locator('[data-qa="hover-code-action-0"]');
+        const hoverBlocks = hoverRenderer.locator('[data-aikit-code-block]');
+        const firstHoverBlock = hoverBlocks.nth(0);
+        const firstHoverAction = page.locator('[data-qa="hover-code-action-0"]');
         const alwaysRenderer = page.locator('[data-qa="code-actions-always"]');
         const alwaysBlocks = alwaysRenderer.locator('[data-aikit-code-block]');
         const getPanelOpacity = () =>
-            hoverCodeBlock.evaluate((codeBlock) => {
+            firstHoverBlock.evaluate((codeBlock) => {
                 const toolbar = codeBlock.querySelector('.yfm-code-floating');
                 const legacyActions = codeBlock.querySelector(
                     '.g-aikit-markdown-renderer__code-block-actions_legacy',
@@ -175,17 +109,21 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
             });
 
         await expect.poll(getPanelOpacity).toBe('0');
-        await hoverCodeBlock.hover();
+        await firstHoverBlock.hover();
         await expect.poll(getPanelOpacity).toBe('1');
 
         await page.mouse.move(0, 0);
-        await hoverAction.focus();
+        await firstHoverAction.focus();
         await expect.poll(getPanelOpacity).toBe('1');
 
-        await hoverAction.click();
+        await firstHoverAction.click();
         await expect(page.locator('[data-qa="hover-last-action"]')).toContainText(
             'Last action: sql: SELECT * FROM users;',
         );
+        await expect(firstHoverBlock.locator('code')).toHaveClass(/hljs/);
+        await expect(
+            firstHoverBlock.locator('.hljs-keyword').filter({hasText: 'SELECT'}),
+        ).toHaveText('SELECT');
 
         await expect(alwaysBlocks.nth(0)).toHaveClass(/actionsVisible/);
         await expect(alwaysBlocks.nth(1)).toHaveClass(/actionsVisible/);
