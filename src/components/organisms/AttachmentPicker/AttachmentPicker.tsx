@@ -4,6 +4,7 @@ import {Paperclip} from '@gravity-ui/icons';
 import {DropdownMenu, Icon} from '@gravity-ui/uikit';
 import type {ButtonButtonProps} from '@gravity-ui/uikit';
 
+import {getControlIconSize, useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 import {FileUploadDialog, FileUploadDialogProps} from '../FileUploadDialog';
@@ -41,11 +42,13 @@ export const AttachmentPicker = ({
     disabled = false,
     fileDialogProps,
     onSelectFromStorage,
-    buttonSize = 'm',
+    buttonSize: buttonSizeProp,
     uploadLabel = i18n('upload-label'),
     selectFromStorageLabel = i18n('select-from-storage-label'),
     className,
 }: AttachmentPickerProps) => {
+    const buttonSize = useMobileControlSize(buttonSizeProp, 'm', 'xl');
+    const iconSize = getControlIconSize(buttonSize);
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleUploadClick = () => setDialogOpen(true);
@@ -59,7 +62,7 @@ export const AttachmentPicker = ({
                 disabled={disabled}
                 className={b('button')}
             >
-                <Icon data={Paperclip} size={16} />
+                <Icon data={Paperclip} size={iconSize} />
             </ActionButton>
         </div>
     );
@@ -90,7 +93,7 @@ export const AttachmentPicker = ({
                                 className={b('button')}
                                 {...props}
                             >
-                                <Icon data={Paperclip} size={16} />
+                                <Icon data={Paperclip} size={iconSize} />
                             </ActionButton>
                         </div>
                     )}

@@ -38,6 +38,14 @@ $block: '.#{variables.$ns}suggestions';
         height: 100%;
         box-shadow: none;
 
+        &_mobile {
+            padding: spacing(3) spacing(6);
+        }
+
+        &_mobile#{&}_layout_grid {
+            padding: spacing(3) spacing(4);
+        }
+
         .g-button__text {
             width: 100%;
         }

@@ -1,6 +1,6 @@
 import {ReactNode, type Ref} from 'react';
 
-import type {ButtonButtonProps} from '@gravity-ui/uikit';
+import type {ButtonButtonProps, TextAreaProps} from '@gravity-ui/uikit';
 
 import type {SuggestionClickHandler, SuggestionsItem} from '../../../types/common';
 import type {SubmitButtonProps} from '../../atoms/SubmitButton';
@@ -58,6 +58,8 @@ export type PromptInputBodyConfig = {
     inputRef?: Ref<HTMLTextAreaElement>;
     /** Placeholder text for textarea */
     placeholder?: string;
+    /** Size of the textarea. Defaults to `l`, or `xl` in mobile mode */
+    size?: TextAreaProps['size'];
     /** Minimum number of textarea rows */
     minRows?: number;
     /** Maximum number of textarea rows */

@@ -436,8 +436,8 @@ export function ChatContainer(props: ChatContainerProps) {
             },
             heroContent:
                 emptyContainerProps.heroContent ?? (mascotView === 'hero' ? mascotNode : undefined),
-            layout: welcomeConfig?.layout,
-            wrapText: welcomeConfig?.wrapText,
+            layout: welcomeConfig?.layout ?? emptyContainerProps.layout,
+            wrapText: welcomeConfig?.wrapText ?? emptyContainerProps.wrapText,
             showMore: welcomeConfig?.showMore,
             showMoreText:
                 texts.emptyStateShowMoreText ??

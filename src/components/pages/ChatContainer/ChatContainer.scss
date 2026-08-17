@@ -8,6 +8,32 @@
     overflow: hidden;
     background: var(--g-aikit-chat-container-background);
 
+    &_mobile {
+        --g-aikit-layout-base-padding-m: var(--g-aikit-chat-container-mobile-padding);
+        --g-aikit-empty-container-mobile-padding: var(
+            --g-aikit-chat-container-mobile-empty-container-padding
+        );
+
+        font-size: var(--g-aikit-chat-container-mobile-font-size);
+        line-height: var(--g-aikit-chat-container-mobile-line-height);
+    }
+
+    &_mobile .#{variables.$ns}markdown-renderer {
+        --yfm-font-size: var(--g-aikit-chat-container-mobile-font-size);
+        --yfm-font-line-height: var(--g-aikit-chat-container-mobile-line-height);
+        --yfm-font-size-h4: calc(var(--g-aikit-chat-container-mobile-font-size) + 2px);
+        --yfm-font-line-height-h4: var(--g-aikit-chat-container-mobile-line-height);
+        --yfm-font-size-h5: var(--g-aikit-chat-container-mobile-font-size);
+        --yfm-font-line-height-h5: var(--g-aikit-chat-container-mobile-line-height);
+        --yfm-font-size-h6: var(--g-aikit-chat-container-mobile-font-size);
+        --yfm-font-line-height-h6: var(--g-aikit-chat-container-mobile-line-height);
+    }
+
+    &_mobile &__header,
+    &_mobile &__footer {
+        padding: var(--g-spacing-2) var(--g-aikit-layout-base-padding-m);
+    }
+
     &__header {
         display: flex;
         padding: var(--g-aikit-layout-base-padding-m);

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type {TextProps} from '@gravity-ui/uikit';
-import {Text} from '@gravity-ui/uikit';
+import {Text, useMobile} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
@@ -30,7 +30,10 @@ const b = block('disclaimer');
  * @returns React component
  */
 export function Disclaimer(props: DisclaimerProps) {
-    const {className, qa, children, text, variant} = props;
+    const {className, qa, children, text, variant: variantProp} = props;
+
+    const isMobile = useMobile();
+    const variant = variantProp ?? (isMobile ? 'body-2' : undefined);
 
     let textContent: React.ReactNode | null = null;
 
@@ -49,7 +52,7 @@ export function Disclaimer(props: DisclaimerProps) {
     }
 
     return (
-        <div className={b('container', className)} data-qa={qa}>
+        <div className={b('container', {mobile: isMobile}, className)} data-qa={qa}>
             {textContent}
             {children}
         </div>

@@ -13,6 +13,7 @@ import {DropdownMenu, Icon, Text} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
+import {getControlIconSize} from '../../../hooks/useMobileControlSize';
 import {isActionConfig} from '../../../utils/actionUtils';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
@@ -76,6 +77,8 @@ export function Header(props: HeaderProps) {
         actionTooltipTexts,
     } = useHeader(props);
 
+    const iconSize = getControlIconSize(actionSize);
+
     // Determine class for title positioning
     const titlePositionClass = b('title-container', {position: titlePosition});
 
@@ -124,11 +127,11 @@ export function Header(props: HeaderProps) {
                     className={b('action-button')}
                     qa={actionQa?.[action.id as HeaderAction] ?? `header-action-${action.id}`}
                 >
-                    <Icon data={IconComponent} size={16} />
+                    <Icon data={IconComponent} size={iconSize} />
                 </ActionButton>
             );
         },
-        [actionQa, actionSize, actionTooltipTexts],
+        [actionQa, actionSize, actionTooltipTexts, iconSize],
     );
 
     // Render additional action
@@ -183,13 +186,14 @@ export function Header(props: HeaderProps) {
                         className={b('action-button')}
                         qa={menuButtonQa ?? 'header-menu-button'}
                     >
-                        {menuButtonIcon ?? <Icon data={Ellipsis} size={16} />}
+                        {menuButtonIcon ?? <Icon data={Ellipsis} size={iconSize} />}
                     </ActionButton>
                 )}
             />
         );
     }, [
         actionSize,
+        iconSize,
         dropdownMenuItems,
         menuButtonIcon,
         menuButtonQa,

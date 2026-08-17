@@ -7,16 +7,9 @@ $block: '.#{variables.$ns}submit-button';
     justify-content: center;
     align-items: center;
 
-    &_size_s#{&}_loading {
-        padding: 4px;
-    }
-
-    &_size_m#{&}_loading {
-        padding: 6px;
-    }
-
-    &_size_l#{&}_loading {
-        padding: 10px;
+    &_loading {
+        padding: 0;
+        width: var(--_--height);
     }
 
     &__loader {

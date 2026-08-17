@@ -49,20 +49,21 @@ import {PromptInputBody} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop            | Type                                                        | Required | Default | Description                                    |
-| --------------- | ----------------------------------------------------------- | -------- | ------- | ---------------------------------------------- |
-| `value`         | `string`                                                    | -        | -       | Value of the textarea                          |
-| `placeholder`   | `string`                                                    | -        | -       | Placeholder text                               |
-| `maxLength`     | `number`                                                    | -        | -       | Maximum length of input                        |
-| `minRows`       | `number`                                                    | -        | `1`     | Minimum number of rows                         |
-| `maxRows`       | `number`                                                    | -        | `15`    | Maximum number of rows                         |
-| `autoFocus`     | `boolean`                                                   | -        | `false` | Auto focus on mount                            |
-| `disabledInput` | `boolean`                                                   | -        | `false` | Disabled state for input                       |
-| `onChange`      | `(value: string) => void`                                   | -        | -       | Change handler                                 |
-| `onKeyDown`     | `(event: React.KeyboardEvent<HTMLTextAreaElement>) => void` | -        | -       | Key down handler                               |
-| `children`      | `ReactNode`                                                 | -        | -       | Custom content to replace the default textarea |
-| `className`     | `string`                                                    | -        | -       | Additional CSS class                           |
-| `qa`            | `string`                                                    | -        | -       | QA/test identifier                             |
+| Prop            | Type                                                        | Required | Default                       | Description                                    |
+| --------------- | ----------------------------------------------------------- | -------- | ----------------------------- | ---------------------------------------------- |
+| `value`         | `string`                                                    | -        | -                             | Value of the textarea                          |
+| `placeholder`   | `string`                                                    | -        | -                             | Placeholder text                               |
+| `maxLength`     | `number`                                                    | -        | -                             | Maximum length of input                        |
+| `size`          | `TextAreaProps['size']`                                     | -        | `'l'` (`'xl'` in mobile mode) | Size of the textarea                           |
+| `minRows`       | `number`                                                    | -        | `1`                           | Minimum number of rows                         |
+| `maxRows`       | `number`                                                    | -        | `15`                          | Maximum number of rows                         |
+| `autoFocus`     | `boolean`                                                   | -        | `false`                       | Auto focus on mount                            |
+| `disabledInput` | `boolean`                                                   | -        | `false`                       | Disabled state for input                       |
+| `onChange`      | `(value: string) => void`                                   | -        | -                             | Change handler                                 |
+| `onKeyDown`     | `(event: React.KeyboardEvent<HTMLTextAreaElement>) => void` | -        | -                             | Key down handler                               |
+| `children`      | `ReactNode`                                                 | -        | -                             | Custom content to replace the default textarea |
+| `className`     | `string`                                                    | -        | -                             | Additional CSS class                           |
+| `qa`            | `string`                                                    | -        | -                             | QA/test identifier                             |
 
 ## Styling
 

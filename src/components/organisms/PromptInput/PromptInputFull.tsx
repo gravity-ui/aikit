@@ -45,6 +45,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
 
     const {
         placeholder = 'Plan, code, build and test anything',
+        size: bodySize,
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
@@ -93,6 +94,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
             <PromptInputBody
                 value={value}
                 placeholder={placeholder}
+                size={bodySize}
                 minRows={minRows}
                 maxRows={maxRows}
                 autoFocus={autoFocus}

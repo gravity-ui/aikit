@@ -32,6 +32,18 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render mobile mode', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContainerStories.MobileMode />);
+
+        await expectScreenshot();
+    });
+
+    test('should render mobile mode with messages', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContainerStories.MobileModeWithMessages />);
+
+        await expectScreenshot();
+    });
+
     test('should render with history', async ({mount, expectScreenshot}) => {
         await mount(<ChatContainerStories.WithHistory />);
 

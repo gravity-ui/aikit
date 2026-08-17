@@ -35,6 +35,8 @@ export {
     EmptyStateWithTextWrap,
     EmptyStateWithCustomElements,
     EmptyStateWithCenteredAlignment,
+    MobileMode,
+    MobileModeWithMessages,
 } from './parts/welcome';
 
 export {

@@ -1,7 +1,9 @@
 import {ReactNode, forwardRef} from 'react';
 
+import type {TextAreaProps} from '@gravity-ui/uikit';
 import {TextArea} from '@gravity-ui/uikit';
 
+import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
 
 import './PromptInputBody.scss';
@@ -18,6 +20,8 @@ export type PromptInputBodyProps = {
     placeholder?: string;
     /** Maximum length of input */
     maxLength?: number;
+    /** Size of the textarea. Defaults to `l`, or `xl` in mobile mode */
+    size?: TextAreaProps['size'];
     /** Minimum number of rows */
     minRows?: number;
     /** Maximum number of rows */
@@ -53,6 +57,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
             value,
             placeholder,
             maxLength,
+            size,
             minRows = 1,
             maxRows = 15,
             autoFocus = false,
@@ -64,6 +69,8 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
             inputClassName,
             qa,
         } = props;
+
+        const resolvedSize = useMobileControlSize(size, 'l', 'xl');
 
         // If custom content is provided, render it
         if (children) {
@@ -79,7 +86,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
             <div className={b(null, className)} data-qa={qa}>
                 <TextArea
                     controlRef={ref}
-                    size="l"
+                    size={resolvedSize}
                     value={value}
                     placeholder={placeholder}
                     minRows={minRows}

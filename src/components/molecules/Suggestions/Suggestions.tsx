@@ -1,8 +1,10 @@
 import React from 'react';
 
 import {ChevronLeft, ChevronRight} from '@gravity-ui/icons';
-import {Icon, Text} from '@gravity-ui/uikit';
+import type {ButtonButtonProps} from '@gravity-ui/uikit';
+import {Icon, Text, useMobile} from '@gravity-ui/uikit';
 
+import {getControlIconSize, useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import type {SuggestionClickHandler, SuggestionsItem} from '../../../types/common';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
@@ -23,9 +25,15 @@ export type SuggestionsProps = {
     title?: React.ReactNode;
     /** Layout orientation: 'grid' for horizontal, 'list' for vertical */
     layout?: 'grid' | 'list';
-    /** Text alignment inside buttons: 'left', 'center', or 'right' */
+    /** Text alignment inside buttons: 'left', 'center', or 'right'. A non-default value disables the mobile chevron */
     textAlign?: 'left' | 'center' | 'right';
-    /** Enable text wrapping inside buttons instead of ellipsis */
+    /**
+     * Size of suggestion buttons. Defaults to `m`, or `xl` in mobile mode.
+     * An explicit size also opts out of the rest of the mobile appearance:
+     * `normal` view, text wrapping, chevron and `body-2` typography.
+     */
+    size?: ButtonButtonProps['size'];
+    /** Enable text wrapping inside buttons instead of ellipsis. Defaults to true in mobile mode */
     wrapText?: boolean;
     /** Additional CSS class */
     className?: string;
@@ -47,10 +55,17 @@ export function Suggestions(props: SuggestionsProps) {
         title,
         layout = 'list',
         textAlign = 'left',
-        wrapText = false,
+        wrapText: wrapTextProp,
+        size,
         className,
         qa,
     } = props;
+
+    const isMobile = useMobile();
+    const isMobileAppearance = isMobile && size === undefined;
+    const wrapText = wrapTextProp ?? isMobileAppearance;
+    const buttonSize = useMobileControlSize(size, 'm', 'xl');
+    const iconSize = getControlIconSize(buttonSize);
 
     const handleClick = async (item: SuggestionsItem) => {
         await item.onClick?.(item.title, item.id, item.data);
@@ -58,33 +73,41 @@ export function Suggestions(props: SuggestionsProps) {
     };
 
     const renderButton = (item: SuggestionsItem, index: number) => {
+        const resolvedIcon =
+            item.icon ?? (isMobileAppearance && textAlign === 'left' ? 'right' : undefined);
+        const icon = resolvedIcon === 'none' ? undefined : resolvedIcon;
+
         return (
             <ActionButton
                 key={item.id || index}
                 tooltipTitle={wrapText ? undefined : item.title}
-                size="m"
-                view={item.view || 'outlined'}
+                size={buttonSize}
+                view={item.view || (isMobileAppearance ? 'normal' : 'outlined')}
                 onClick={() => handleClick(item)}
-                className={b('button', {layout})}
+                className={b('button', {layout, mobile: isMobileAppearance})}
                 width="auto"
             >
                 <div
                     className={b('button-content', {
                         layout,
-                        'text-align': item.icon ? undefined : textAlign,
+                        'text-align': icon ? undefined : textAlign,
                     })}
                 >
-                    {item.icon === 'left' && (
+                    {icon === 'left' && (
                         <div className={b('button-icon')}>
-                            <Icon data={ChevronLeft} size={16} />
+                            <Icon data={ChevronLeft} size={iconSize} />
                         </div>
                     )}
-                    <Text as="div" className={b(wrapText ? 'button-text-wrap' : 'button-text')}>
+                    <Text
+                        as="div"
+                        variant={isMobileAppearance ? 'body-2' : undefined}
+                        className={b(wrapText ? 'button-text-wrap' : 'button-text')}
+                    >
                         {item.title}
                     </Text>
-                    {item.icon === 'right' && (
+                    {icon === 'right' && (
                         <div className={b('button-icon')}>
-                            <Icon data={ChevronRight} size={16} />
+                            <Icon data={ChevronRight} size={iconSize} />
                         </div>
                     )}
                 </div>

@@ -47,13 +47,13 @@ import {Disclaimer} from '@/components/atoms/Disclaimer';
 
 ## Props
 
-| Prop        | Type                        | Required | Default    | Description                                                                      |
-| ----------- | --------------------------- | -------- | ---------- | -------------------------------------------------------------------------------- |
-| `text`      | `string \| React.ReactNode` | -        | -          | Disclaimer text — plain string or any React node                                 |
-| `variant`   | `TextProps['variant']`      | -        | `'body-1'` | Text variant for typography styling (applied only when `text` is a plain string) |
-| `children`  | `React.ReactNode`           | -        | -          | Custom content                                                                   |
-| `className` | `string`                    | -        | -          | Additional CSS class                                                             |
-| `qa`        | `string`                    | -        | -          | QA/test identifier                                                               |
+| Prop        | Type                        | Required | Default                               | Description                                                                                                                                                                           |
+| ----------- | --------------------------- | -------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `text`      | `string \| React.ReactNode` | -        | -                                     | Disclaimer text — plain string or any React node                                                                                                                                      |
+| `variant`   | `TextProps['variant']`      | -        | `'body-1'` desktop, `'body-2'` mobile | Text variant for typography styling (applied only when `text` is a plain string). In mobile mode the container also sets `body-2` typography, so React nodes and `children` scale too |
+| `children`  | `React.ReactNode`           | -        | -                                     | Custom content                                                                                                                                                                        |
+| `className` | `string`                    | -        | -                                     | Additional CSS class                                                                                                                                                                  |
+| `qa`        | `string`                    | -        | -                                     | QA/test identifier                                                                                                                                                                    |
 
 ## Text Variants
 

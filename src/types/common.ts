@@ -37,8 +37,8 @@ export type SuggestionsItem = {
     data?: Record<string, unknown>;
     /** Button view */
     view?: ButtonButtonProps['view'];
-    /** Icon position: 'left' for ChevronLeft, 'right' for ChevronRight */
-    icon?: 'left' | 'right';
+    /** Icon position: 'left' for ChevronLeft, 'right' for ChevronRight, 'none' to hide the mobile default */
+    icon?: 'left' | 'right' | 'none';
     /** Additional callback invoked when this suggestion is clicked */
     onClick?: SuggestionClickHandler;
 };

@@ -476,8 +476,8 @@ interface WelcomeConfig {
 - **`suggestionTitle`**: Title text above the suggestions section
 - **`suggestions`**: Array of `SuggestionsItem` objects (see below)
 - **`alignment`**: Alignment configuration for image, title, and description (see Alignment section)
-- **`layout`**: Layout orientation for suggestions - `'grid'` for horizontal (default), `'list'` for vertical
-- **`wrapText`**: Enable text wrapping inside suggestion buttons instead of ellipsis (default: `false`)
+- **`layout`**: Layout orientation for suggestions - `'grid'` for horizontal (default on desktop), `'list'` for vertical (default in mobile mode)
+- **`wrapText`**: Enable text wrapping inside suggestion buttons instead of ellipsis (default: `false` on desktop, `true` in mobile mode)
 - **`showDefaultTitle`**: Enable default title when neither `title` nor `texts.emptyStateTitle` / `emptyContainerProps.title` are provided (default: `true`)
 - **`showDefaultDescription`**: Enable default description when neither `description` nor `texts.emptyStateDescription` / `emptyContainerProps.description` are provided (default: `true`)
 - **`showMore`**: Callback function for "Show More" button
@@ -1046,20 +1046,41 @@ function App() {
 
 The component uses CSS variables for theming:
 
-| Variable                                            | Description                                                      |
-| --------------------------------------------------- | ---------------------------------------------------------------- |
-| `--g-aikit-chat-container-background`               | Background color of the entire chat container                    |
-| `--g-aikit-chat-container-header-background`        | Background color of the header section                           |
-| `--g-aikit-chat-container-content-background`       | Background color of the content section (general)                |
-| `--g-aikit-chat-container-content-empty-background` | Background color of the content section in empty view            |
-| `--g-aikit-chat-container-content-chat-background`  | Background color of the content section in chat view             |
-| `--g-aikit-chat-container-footer-background`        | Background color of the footer section (general)                 |
-| `--g-aikit-chat-container-footer-empty-background`  | Background color of the footer section in empty view             |
-| `--g-aikit-chat-container-footer-chat-background`   | Background color of the footer section in chat view              |
-| `--g-aikit-layout-base-padding-m`                   | Padding for header, content, and footer sections (default: 12px) |
-| `--g-spacing-1`                                     | Gap between footer elements (default: 4px)                       |
-| `--g-spacing-2`                                     | Gap between header elements (default: 8px)                       |
-| `--g-spacing-4`                                     | Bottom padding for content section (default: 16px)               |
+| Variable                                            | Description                                                                           |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `--g-aikit-chat-container-background`               | Background color of the entire chat container                                         |
+| `--g-aikit-chat-container-header-background`        | Background color of the header section                                                |
+| `--g-aikit-chat-container-content-background`       | Background color of the content section (general)                                     |
+| `--g-aikit-chat-container-content-empty-background` | Background color of the content section in empty view                                 |
+| `--g-aikit-chat-container-content-chat-background`  | Background color of the content section in chat view                                  |
+| `--g-aikit-chat-container-footer-background`        | Background color of the footer section (general)                                      |
+| `--g-aikit-chat-container-footer-empty-background`  | Background color of the footer section in empty view                                  |
+| `--g-aikit-chat-container-footer-chat-background`   | Background color of the footer section in chat view                                   |
+| `--g-aikit-layout-base-padding-m`                   | Padding for header, content, and footer sections (default: 12px; 16px in mobile mode) |
+| `--g-aikit-chat-container-mobile-font-size`         | Body text size inside the chat in mobile mode (default: 16px)                         |
+| `--g-aikit-chat-container-mobile-line-height`       | Body line height inside the chat in mobile mode (default: 24px)                       |
+| `--g-spacing-1`                                     | Gap between footer elements (default: 4px)                                            |
+| `--g-spacing-2`                                     | Gap between header elements (default: 8px)                                            |
+| `--g-spacing-4`                                     | Bottom padding for content section (default: 16px)                                    |
+
+### Mobile mode
+
+In mobile mode (`isMobile` prop, or the uikit `MobileProvider` context) the container
+rebinds its layout tokens to the mobile ones:
+
+| Token bound on the container               | Mobile source token                                       | Default              |
+| ------------------------------------------ | --------------------------------------------------------- | -------------------- |
+| `--g-aikit-layout-base-padding-m`          | `--g-aikit-chat-container-mobile-padding`                 | `var(--g-spacing-4)` |
+| `--g-aikit-empty-container-mobile-padding` | `--g-aikit-chat-container-mobile-empty-container-padding` | `80px 0 0`           |
+
+Horizontal padding of the empty state is zero inside the chat because the content
+section already provides it. The remaining mobile values of the empty state
+(`--g-aikit-empty-container-mobile-content-gap`, `--g-aikit-empty-container-mobile-welcome-gap`)
+are applied by `EmptyContainer` itself and work the same way standalone.
+
+All mobile values, including typography
+(`--g-aikit-chat-container-mobile-font-size` / `--g-aikit-chat-container-mobile-line-height`),
+are declared in the themes and can be overridden from `.g-root`.
 
 ```css
 /* Example: Custom theme */
