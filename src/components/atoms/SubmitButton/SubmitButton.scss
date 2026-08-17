@@ -9,7 +9,7 @@ $block: '.#{variables.$ns}submit-button';
 
     &_loading {
         padding: 0;
-        width: var(--_--height);
+        width: var(--g-button-height, var(--_--height));
     }
 
     &__loader {

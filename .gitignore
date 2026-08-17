@@ -14,7 +14,6 @@ coverage/
 # Production
 build/
 dist/
-*.tgz
 
 # IDE
 .vscode/
