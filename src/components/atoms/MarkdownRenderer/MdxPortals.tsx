@@ -11,6 +11,7 @@ import {asyncExecuteCode} from './asyncExecuteCode';
 
 interface MdxLoaderState extends IdMdxComponentLoader {
     idMdx?: Record<string, string>;
+    nonce?: string;
 }
 
 function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: string) {
@@ -18,6 +19,10 @@ function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: s
     const [state, setState] = useState<MdxLoaderState>({isSuccess: false});
 
     useEffect(() => {
+        if (!nonce) {
+            return () => undefined;
+        }
+
         let isActive = true;
 
         (async () => {
@@ -38,11 +43,11 @@ function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: s
                 }
 
                 if (isActive) {
-                    setState({idMdx, data, isSuccess: true});
+                    setState({idMdx, nonce, data, isSuccess: true});
                 }
             } catch {
                 if (isActive) {
-                    setState({idMdx, isSuccess: false});
+                    setState({idMdx, nonce, isSuccess: false});
                 }
             }
         })();
@@ -52,7 +57,11 @@ function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: s
         };
     }, [idMdx, nonce]);
 
-    if (state.idMdx !== idMdx) {
+    if (!nonce) {
+        return undefined;
+    }
+
+    if (state.idMdx !== idMdx || state.nonce !== nonce) {
         return {isSuccess: false};
     }
 
