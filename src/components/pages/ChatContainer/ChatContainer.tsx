@@ -1,5 +1,7 @@
 import {Fragment, type ReactNode, useCallback, useMemo} from 'react';
 
+import {MobileProvider, useMobile} from '@gravity-ui/uikit';
+
 import {getMascotAnimationType} from '../../../hooks';
 import type {TSuggestionContext} from '../../../types/messages';
 import {block} from '../../../utils/cn';
@@ -207,12 +209,16 @@ export function ChatContainer(props: ChatContainerProps) {
         welcomeConfig,
         texts = {},
         hideTitleOnEmptyChat = false,
+        isMobile: isMobileProp,
         className,
         headerClassName,
         contentClassName,
         footerClassName,
         qa,
     } = props;
+
+    const isMobileContext = useMobile();
+    const isMobile = isMobileProp ?? isMobileContext;
 
     const hookState = useChatContainer(props);
 
@@ -626,23 +632,33 @@ export function ChatContainer(props: ChatContainerProps) {
     const showFooter = finalPromptInputProps || finalDisclaimerProps;
 
     return (
-        <div className={b(null, className)} data-qa={resolveChatContainerRootQa(qaMap)}>
-            <div className={b('header', headerClassName)}>
-                <Header {...finalHeaderProps} />
-            </div>
-            <div className={b('content', {view: hookState.chatContentView}, contentClassName)}>
-                <ChatContent {...finalContentProps} />
-            </div>
-            {showFooter && (
-                <div className={b('footer', {view: hookState.chatContentView}, footerClassName)}>
-                    {finalPromptInputProps && (
-                        <PromptInput key={hookState.promptInputKey} {...finalPromptInputProps} />
-                    )}
-                    {finalDisclaimerProps && <Disclaimer {...finalDisclaimerProps} />}
+        <MobileProvider mobile={isMobile}>
+            <div
+                className={b({mobile: isMobile}, className)}
+                data-qa={resolveChatContainerRootQa(qaMap)}
+            >
+                <div className={b('header', headerClassName)}>
+                    <Header {...finalHeaderProps} />
                 </div>
-            )}
-            {/* History is integrated via popup anchored to button in Header */}
-            <History {...finalHistoryProps} />
-        </div>
+                <div className={b('content', {view: hookState.chatContentView}, contentClassName)}>
+                    <ChatContent {...finalContentProps} />
+                </div>
+                {showFooter && (
+                    <div
+                        className={b('footer', {view: hookState.chatContentView}, footerClassName)}
+                    >
+                        {finalPromptInputProps && (
+                            <PromptInput
+                                key={hookState.promptInputKey}
+                                {...finalPromptInputProps}
+                            />
+                        )}
+                        {finalDisclaimerProps && <Disclaimer {...finalDisclaimerProps} />}
+                    </div>
+                )}
+                {/* History is integrated via popup anchored to button in Header */}
+                <History {...finalHistoryProps} />
+            </div>
+        </MobileProvider>
     );
 }

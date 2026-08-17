@@ -210,6 +210,14 @@ export interface ChatContainerProps {
     /** Callback when user cancels streaming */
     onCancel?: () => Promise<void>;
 
+    // Layout
+    /**
+     * Enables mobile mode for the chat and all inner components.
+     * When omitted, falls back to the `useMobile()` value from the
+     * `@gravity-ui/uikit` `MobileProvider` context.
+     */
+    isMobile?: boolean;
+
     // States
     /** Chat status: submitted, streaming, ready, error */
     status?: ChatStatus;
