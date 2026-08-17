@@ -28,6 +28,8 @@ export interface MarkdownRendererMdxOptions {
     components: MDXComponents;
     /** Optional list of tag names to limit which components are processed as MDX. */
     tagNames?: string[];
+    /** CSP nonce applied to scripts that execute compiled MDX artifacts. */
+    nonce?: string;
 }
 
 export interface MarkdownRendererProps {
@@ -102,6 +104,7 @@ function MarkdownRendererComponent({
     const enableMdx = Boolean(mdxOptions);
     const mdxComponents = mdxOptions?.components;
     const mdxTagNames = mdxOptions?.tagNames;
+    const mdxNonce = mdxOptions?.nonce;
     const finalTransformOptions = useMemo<OptionsType | undefined>(() => {
         const plugins = [...(transformOptions?.plugins ?? [])];
 
@@ -149,6 +152,7 @@ function MarkdownRendererComponent({
                     html={html}
                     components={mdxComponents}
                     mdxArtifacts={mdxArtifacts}
+                    nonce={mdxNonce}
                     mdxContext={mdxContext}
                 />
             ) : null}
@@ -182,6 +186,10 @@ export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, next
     }
 
     if (prevProps.mdxOptions?.tagNames !== nextProps.mdxOptions?.tagNames) {
+        return false;
+    }
+
+    if (prevProps.mdxOptions?.nonce !== nextProps.mdxOptions?.nonce) {
         return false;
     }
 
