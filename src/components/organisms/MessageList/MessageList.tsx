@@ -81,6 +81,7 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     status?: ChatStatus;
     errorMessage?: AlertProps;
     loaderMessage?: string;
+    withLoaderShimmer?: boolean;
     onRetry?: () => void;
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
@@ -147,6 +148,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     status,
     errorMessage,
     loaderMessage,
+    withLoaderShimmer,
     onRetry,
     hasPreviousMessages = false,
     onLoadPreviousMessages,
@@ -217,6 +219,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                 status={status}
                 errorMessage={errorMessage}
                 loaderMessage={loaderMessage}
+                withLoaderShimmer={withLoaderShimmer}
                 onRetry={onRetry}
                 ratingBlockProps={ratingBlockProps}
                 actionPopupProps={actionPopupProps}
