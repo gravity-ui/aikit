@@ -10,4 +10,9 @@ $block: '.#{variables.$ns}disclaimer';
         gap: var(--g-aikit-disclaimer-gap);
         align-self: stretch;
     }
+
+    &__container_mobile {
+        font-size: var(--g-text-body-2-font-size);
+        line-height: var(--g-text-body-2-line-height);
+    }
 }

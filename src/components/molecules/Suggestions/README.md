@@ -115,27 +115,34 @@ import {Suggestions} from '@/components/molecules/Suggestions';
 
 ## Props
 
-| Prop        | Type                            | Required | Default  | Description                                                                                      |
-| ----------- | ------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------ |
-| `items`     | `SuggestionsItem[]`             | Yes      | -        | Array of suggestion items to display                                                             |
-| `onClick`   | `SuggestionClickHandler`        | Yes      | -        | Callback function called when a suggestion is clicked                                            |
-| `title`     | `string`                        | No       | -        | Title to display above suggestions                                                               |
-| `layout`    | `'grid' \| 'list'`              | No       | `'list'` | Layout orientation: 'grid' for horizontal, 'list' for vertical                                   |
-| `textAlign` | `'left' \| 'center' \| 'right'` | No       | `'left'` | Text alignment inside buttons                                                                    |
-| `wrapText`  | `boolean`                       | No       | `false`  | Wrap text inside buttons instead of truncating with ellipsis; also disables the per-item tooltip |
-| `className` | `string`                        | No       | -        | Additional CSS class                                                                             |
-| `qa`        | `string`                        | No       | -        | QA/test identifier                                                                               |
+| Prop        | Type                            | Required | Default                        | Description                                                                                                            |
+| ----------- | ------------------------------- | -------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `items`     | `SuggestionsItem[]`             | Yes      | -                              | Array of suggestion items to display                                                                                   |
+| `onClick`   | `SuggestionClickHandler`        | Yes      | -                              | Callback function called when a suggestion is clicked                                                                  |
+| `title`     | `string`                        | No       | -                              | Title to display above suggestions                                                                                     |
+| `layout`    | `'grid' \| 'list'`              | No       | `'list'`                       | Layout orientation: 'grid' for horizontal, 'list' for vertical                                                         |
+| `textAlign` | `'left' \| 'center' \| 'right'` | No       | `'left'`                       | Text alignment inside buttons; applies only when the item has no icon. A non-default value disables the mobile chevron |
+| `size`      | `ButtonButtonProps['size']`     | No       | `'m'` desktop, `'xl'` mobile   | Size of suggestion buttons; an explicit value also opts out of the rest of the mobile appearance                       |
+| `wrapText`  | `boolean`                       | No       | `false` desktop, `true` mobile | Wrap text inside buttons instead of truncating with ellipsis; also disables the per-item tooltip                       |
+| `className` | `string`                        | No       | -                              | Additional CSS class                                                                                                   |
+| `qa`        | `string`                        | No       | -                              | QA/test identifier                                                                                                     |
+
+On mobile (`useMobile()` from uikit) each item shows a right chevron unless `icon: 'none'` is set.
+
+Mobile mode changes the size, the `normal` view, text wrapping, `body-2` typography and the
+chevron as one package. Passing an explicit `size` turns the whole package off and keeps only
+the size you asked for, so a consumer can fall back to the desktop appearance with a single prop.
 
 ### SuggestionsItem
 
-| Prop      | Type                        | Required | Default      | Description                                                               |
-| --------- | --------------------------- | -------- | ------------ | ------------------------------------------------------------------------- |
-| `id`      | `string`                    | No       | -            | Optional unique identifier for the item                                   |
-| `title`   | `string`                    | Yes      | -            | Title text to display on the button                                       |
-| `data`    | `Record<string, unknown>`   | No       | -            | Optional custom payload passed through to click handlers                  |
-| `view`    | `ButtonButtonProps['view']` | No       | `'outlined'` | Button view style                                                         |
-| `icon`    | `'left' \| 'right'`         | No       | -            | Icon position: 'left' for ChevronLeft, 'right' for ChevronRight           |
-| `onClick` | `SuggestionClickHandler`    | No       | -            | Additional callback invoked before the component-level `onClick` callback |
+| Prop      | Type                          | Required | Default                                 | Description                                                                                              |
+| --------- | ----------------------------- | -------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `id`      | `string`                      | No       | -                                       | Optional unique identifier for the item                                                                  |
+| `title`   | `string`                      | Yes      | -                                       | Title text to display on the button                                                                      |
+| `data`    | `Record<string, unknown>`     | No       | -                                       | Optional custom payload passed through to click handlers                                                 |
+| `view`    | `ButtonButtonProps['view']`   | No       | `'outlined'` desktop, `'normal'` mobile | Button view style                                                                                        |
+| `icon`    | `'left' \| 'right' \| 'none'` | No       | `'right'` on mobile                     | Icon position: 'left' for ChevronLeft, 'right' for ChevronRight, 'none' to opt out of the mobile chevron |
+| `onClick` | `SuggestionClickHandler`      | No       | -                                       | Additional callback invoked before the component-level `onClick` callback                                |
 
 ## Styling
 

@@ -4,6 +4,7 @@ import {Microphone, Paperclip, Sliders} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 import type {ButtonButtonProps} from '@gravity-ui/uikit';
 
+import {getControlIconSize, useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 import {SubmitButton, SubmitButtonProps} from '../../atoms/SubmitButton';
@@ -70,9 +71,12 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
         children,
         className,
         contentClassName,
-        buttonSize = 'm',
+        buttonSize: buttonSizeProp,
         qa,
     } = props;
+
+    const buttonSize = useMobileControlSize(buttonSizeProp, 'm', 'xl');
+    const iconSize = getControlIconSize(buttonSize);
 
     // Render custom content with submit button
     if (children) {
@@ -97,7 +101,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
                 className={b('action-button')}
                 tooltipTitle={i18n('tooltip-attachment')}
             >
-                <Icon data={Paperclip} size={16} />
+                <Icon data={Paperclip} size={iconSize} />
             </ActionButton>
         );
     };
@@ -114,7 +118,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
                         className={b('action-button')}
                         tooltipTitle={i18n('tooltip-settings')}
                     >
-                        <Icon data={Sliders} size={16} />
+                        <Icon data={Sliders} size={iconSize} />
                     </ActionButton>
                 )}
             </ButtonGroup>
@@ -128,7 +132,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
                         className={b('action-button')}
                         tooltipTitle={i18n('tooltip-microphone')}
                     >
-                        <Icon data={Microphone} size={16} />
+                        <Icon data={Microphone} size={iconSize} />
                     </ActionButton>
                 )}
                 <SubmitButton {...submitButton} size={buttonSize} />

@@ -1,8 +1,10 @@
 import React from 'react';
 
 import {ArrowRotateRight} from '@gravity-ui/icons';
-import {Button, Text} from '@gravity-ui/uikit';
+import type {ButtonButtonProps} from '@gravity-ui/uikit';
+import {Button, Text, useMobile} from '@gravity-ui/uikit';
 
+import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import type {SuggestionClickHandler, SuggestionsItem} from '../../../types/common';
 import {block} from '../../../utils/cn';
 import {Suggestions} from '../../molecules/Suggestions';
@@ -61,8 +63,12 @@ export interface EmptyContainerProps {
     layout?: 'grid' | 'list';
     /** Enable text wrapping inside suggestion buttons instead of ellipsis */
     wrapText?: boolean;
+    /** Size of suggestion buttons. Defaults to `m`, or `xl` in mobile mode */
+    suggestionsSize?: ButtonButtonProps['size'];
     /** Callback for showing more suggestions */
     showMore?: () => void;
+    /** Size of the show more button. Defaults to `l`, or `xl` in mobile mode */
+    showMoreSize?: ButtonButtonProps['size'];
     /** Custom text for the show more button */
     showMoreText?: string;
     /** Additional CSS class */
@@ -88,13 +94,19 @@ export function EmptyContainer(props: EmptyContainerProps) {
         suggestions = [],
         onSuggestionClick,
         alignment,
-        layout = 'grid',
-        wrapText = false,
+        layout,
+        wrapText,
+        suggestionsSize,
         showMore,
+        showMoreSize: showMoreSizeProp,
         showMoreText,
         className,
         qa,
     } = props;
+
+    const isMobile = useMobile();
+    const resolvedLayout = layout ?? (isMobile ? 'list' : 'grid');
+    const showMoreSize = useMobileControlSize(showMoreSizeProp, 'l', 'xl');
 
     const hasContent = [
         heroContent !== undefined,
@@ -122,7 +134,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
     }
 
     return (
-        <div className={b(null, className)} data-qa={qa}>
+        <div className={b({mobile: isMobile}, className)} data-qa={qa}>
             <div className={b('content')}>
                 {hasContent && (
                     <>
@@ -168,15 +180,16 @@ export function EmptyContainer(props: EmptyContainerProps) {
                                     <Suggestions
                                         items={suggestions}
                                         onClick={onSuggestionClick}
-                                        layout={layout}
+                                        layout={resolvedLayout}
                                         wrapText={wrapText}
+                                        size={suggestionsSize}
                                     />
                                 </div>
                                 {showMore && (
                                     <div className={b('show-more')}>
                                         <Button
                                             view="flat-secondary"
-                                            size="l"
+                                            size={showMoreSize}
                                             onClick={showMore}
                                             className={b('show-more-button')}
                                         >

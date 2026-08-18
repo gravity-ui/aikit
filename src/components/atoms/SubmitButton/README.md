@@ -7,7 +7,7 @@ A submit button component with state management through props and send/cancel ic
 - **State management through props**: Component state is controlled via a single `state` prop
 - **Icon switching**: Automatically switches between ArrowUp (send) and Stop (cancel) icons depending on the state
 - **Disabled state handling**: Properly handles the disabled button state
-- **Sizes**: Supports three sizes: s, m, l
+- **Sizes**: Supports uikit button sizes; defaults to `m`, or `xl` in mobile mode
 
 ## Usage
 
@@ -35,13 +35,13 @@ const [state, setState] = useState<'enabled' | 'disabled' | 'loading' | 'cancela
 
 ## Props
 
-| Prop        | Type                                                   | Required | Default | Description          |
-| ----------- | ------------------------------------------------------ | -------- | ------- | -------------------- |
-| `onClick`   | `() => void \| Promise<void>`                          | Yes      | -       | Click handler        |
-| `state`     | `'enabled' \| 'disabled' \| 'loading' \| 'cancelable'` | Yes      | -       | Button state         |
-| `className` | `string`                                               | No       | -       | Additional CSS class |
-| `size`      | `'s' \| 'm' \| 'l'`                                    | No       | `'m'`   | Button size          |
-| `qa`        | `string`                                               | No       | -       | QA/test identifier   |
+| Prop        | Type                                                   | Required | Default                      | Description                                |
+| ----------- | ------------------------------------------------------ | -------- | ---------------------------- | ------------------------------------------ |
+| `onClick`   | `() => void \| Promise<void>`                          | Yes      | -                            | Click handler                              |
+| `state`     | `'enabled' \| 'disabled' \| 'loading' \| 'cancelable'` | Yes      | -                            | Button state                               |
+| `className` | `string`                                               | No       | -                            | Additional CSS class                       |
+| `size`      | `ButtonButtonProps['size']`                            | No       | `'m'` desktop, `'xl'` mobile | Button size; icon size follows (`16`/`20`) |
+| `qa`        | `string`                                               | No       | -                            | QA/test identifier                         |
 
 ## States
 

@@ -35,7 +35,11 @@ export {
     EmptyStateWithTextWrap,
     EmptyStateWithCustomElements,
     EmptyStateWithCenteredAlignment,
+    MobileMode,
+    MobileModeWithMessages,
 } from './parts/welcome';
+
+export {MobilePlayground, MobileModeWithContext} from './parts/mobile';
 
 export {
     WithCustomTexts,

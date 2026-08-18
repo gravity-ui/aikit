@@ -153,6 +153,7 @@ import {PromptInput} from '@gravity-ui/aikit';
 | `qa`                    | `string`                   | -        | -                                       | QA/test identifier for body wrapper         |
 | `inputRef`              | `Ref<HTMLTextAreaElement>` | -        | -                                       | Ref to the textarea input                   |
 | `placeholder`           | `string`                   | -        | `'Plan, code, build and test anything'` | Placeholder text for textarea               |
+| `size`                  | `TextAreaProps['size']`    | -        | `'l'` (`'xl'` in mobile mode)           | Size of the textarea                        |
 | `minRows`               | `number`                   | -        | `1`                                     | Minimum number of textarea rows             |
 | `maxRows`               | `number`                   | -        | `15`                                    | Maximum number of textarea rows             |
 | `autoFocus`             | `boolean`                  | -        | `false`                                 | Auto focus textarea on mount                |
@@ -161,33 +162,33 @@ import {PromptInput} from '@gravity-ui/aikit';
 
 ### PromptInputFooterConfig
 
-| Prop                        | Type                                                      | Required | Default                                            | Description                                                 |
-| --------------------------- | --------------------------------------------------------- | -------- | -------------------------------------------------- | ----------------------------------------------------------- |
-| `bottomContent`             | `ReactNode`                                               | -        | -                                                  | Custom content for footer area                              |
-| `className`                 | `string`                                                  | -        | -                                                  | Additional CSS class for the footer wrapper                 |
-| `contentClassName`          | `string`                                                  | -        | -                                                  | Additional CSS class for the custom content wrapper         |
-| `buttonSize`                | `ButtonButtonProps['size']`                               | -        | `'m'` in full view, `'l'` in simple view           | Size of footer action buttons                               |
-| `submitButtonProps`         | `Omit<SubmitButtonProps, 'state' \| 'onClick' \| 'size'>` | -        | -                                                  | Submit button customization; overrides legacy submit fields |
-| `showSettings`              | `boolean`                                                 | -        | `false`                                            | Show settings icon                                          |
-| `onSettingsClick`           | `() => void`                                              | -        | -                                                  | Settings icon click handler                                 |
-| `showAttachment`            | `boolean`                                                 | -        | `false`                                            | Show attachment icon                                        |
-| `onAttachmentClick`         | `() => void`                                              | -        | -                                                  | Attachment icon click handler                               |
-| `showMicrophone`            | `boolean`                                                 | -        | `false`                                            | Show microphone icon                                        |
-| `onMicrophoneClick`         | `() => void`                                              | -        | -                                                  | Microphone icon click handler                               |
-| `submitButtonTooltipSend`   | `string`                                                  | -        | -                                                  | Custom tooltip for submit button in enabled state           |
-| `submitButtonTooltipCancel` | `string`                                                  | -        | -                                                  | Custom tooltip for submit button in cancelable state        |
-| `submitButtonQa`            | `string`                                                  | -        | `'submit-button-full'` or `'submit-button-simple'` | QA/test identifier for submit button                        |
+| Prop                        | Type                                                      | Required | Default                                                         | Description                                                 |
+| --------------------------- | --------------------------------------------------------- | -------- | --------------------------------------------------------------- | ----------------------------------------------------------- |
+| `bottomContent`             | `ReactNode`                                               | -        | -                                                               | Custom content for footer area                              |
+| `className`                 | `string`                                                  | -        | -                                                               | Additional CSS class for the footer wrapper                 |
+| `contentClassName`          | `string`                                                  | -        | -                                                               | Additional CSS class for the custom content wrapper         |
+| `buttonSize`                | `ButtonButtonProps['size']`                               | -        | `'m'` in full view, `'l'` in simple view, `'xl'` in mobile mode | Size of footer action buttons                               |
+| `submitButtonProps`         | `Omit<SubmitButtonProps, 'state' \| 'onClick' \| 'size'>` | -        | -                                                               | Submit button customization; overrides legacy submit fields |
+| `showSettings`              | `boolean`                                                 | -        | `false`                                                         | Show settings icon                                          |
+| `onSettingsClick`           | `() => void`                                              | -        | -                                                               | Settings icon click handler                                 |
+| `showAttachment`            | `boolean`                                                 | -        | `false`                                                         | Show attachment icon                                        |
+| `onAttachmentClick`         | `() => void`                                              | -        | -                                                               | Attachment icon click handler                               |
+| `showMicrophone`            | `boolean`                                                 | -        | `false`                                                         | Show microphone icon                                        |
+| `onMicrophoneClick`         | `() => void`                                              | -        | -                                                               | Microphone icon click handler                               |
+| `submitButtonTooltipSend`   | `string`                                                  | -        | -                                                               | Custom tooltip for submit button in enabled state           |
+| `submitButtonTooltipCancel` | `string`                                                  | -        | -                                                               | Custom tooltip for submit button in cancelable state        |
+| `submitButtonQa`            | `string`                                                  | -        | `'submit-button-full'` or `'submit-button-simple'`              | QA/test identifier for submit button                        |
 
 ### PromptInputSuggestionsConfig
 
-| Prop                   | Type                            | Required | Default    | Description                       |
-| ---------------------- | ------------------------------- | -------- | ---------- | --------------------------------- |
-| `suggestions`          | `SuggestionsItem[]`             | -        | -          | Submit suggestions array          |
-| `showSuggestions`      | `boolean`                       | -        | `false`    | Show submit suggestions           |
-| `suggestTitle`         | `string`                        | -        | -          | Title for the suggestions section |
-| `suggestionsLayout`    | `'grid' \| 'list'`              | -        | -          | Layout orientation                |
-| `suggestionsTextAlign` | `'left' \| 'center' \| 'right'` | -        | `'center'` | Text alignment                    |
-| `onSuggestionClick`    | `SuggestionClickHandler`        | -        | -          | Callback when suggestion clicked  |
+| Prop                   | Type                            | Required | Default    | Description                                                          |
+| ---------------------- | ------------------------------- | -------- | ---------- | -------------------------------------------------------------------- |
+| `suggestions`          | `SuggestionsItem[]`             | -        | -          | Submit suggestions array                                             |
+| `showSuggestions`      | `boolean`                       | -        | `false`    | Show submit suggestions                                              |
+| `suggestTitle`         | `string`                        | -        | -          | Title for the suggestions section                                    |
+| `suggestionsLayout`    | `'grid' \| 'list'`              | -        | -          | Layout orientation                                                   |
+| `suggestionsTextAlign` | `'left' \| 'center' \| 'right'` | -        | `'center'` | Text alignment. A non-default value also disables the mobile chevron |
+| `onSuggestionClick`    | `SuggestionClickHandler`        | -        | -          | Callback when suggestion clicked                                     |
 
 Suggestions always render with text wrapping enabled: full suggestion text wraps to multiple lines instead of being truncated with an ellipsis. This is not configurable, since prompt suggestions are full-length phrases that must stay readable.
 

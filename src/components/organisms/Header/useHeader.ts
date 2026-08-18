@@ -1,5 +1,7 @@
 import React, {useMemo} from 'react';
 
+import {useMobile} from '@gravity-ui/uikit';
+
 import type {Action} from '../../../types/common';
 
 import {HeaderAction, type HeaderMenuItem, type HeaderProps} from './types';
@@ -47,7 +49,7 @@ export function useHeader(props: HeaderProps): {
         additionalActions = [],
         actionsPlacement = {},
         actionsOrder = {},
-        actionSize = 'm',
+        actionSize: actionSizeProp,
         menuItems = [],
         menuButtonTooltip,
         menuButtonIcon,
@@ -62,6 +64,9 @@ export function useHeader(props: HeaderProps): {
         actionQa,
         actionTooltipTexts,
     } = props;
+
+    const isMobile = useMobile();
+    const actionSize = actionSizeProp ?? (isMobile ? 'xl' : 'm');
 
     // Build base actions
     const baseActionsList = useMemo(() => {

@@ -17,10 +17,11 @@ import {ContextItem} from '@/components/atoms/ContextItem';
 
 ## Props
 
-| Prop        | Type              | Required | Default | Description                                       |
-| ----------- | ----------------- | -------- | ------- | ------------------------------------------------- |
-| `content`   | `React.ReactNode` | ✓        | -       | Content of label                                  |
-| `onClick`   | `() => void`      | ✓        | -       | Callback use exactly for close/remove contextItem |
-| `className` | `string`          | -        | -       | Additional CSS class                              |
-| `style`     | `CSSProperties`   | -        | -       | Inline styles                                     |
-| `qa`        | `string`          | -        | -       | QA/test identifier                                |
+| Prop        | Type                 | Required | Default                     | Description                                                                          |
+| ----------- | -------------------- | -------- | --------------------------- | ------------------------------------------------------------------------------------ |
+| `content`   | `React.ReactNode`    | ✓        | -                           | Content of label                                                                     |
+| `onClick`   | `() => void`         | ✓        | -                           | Callback use exactly for close/remove contextItem                                    |
+| `size`      | `LabelProps['size']` | -        | `'s'` desktop, `'m'` mobile | Size of the label; an explicit value also opts out of the mobile `body-2` typography |
+| `className` | `string`             | -        | -                           | Additional CSS class                                                                 |
+| `style`     | `CSSProperties`      | -        | -                           | Inline styles                                                                        |
+| `qa`        | `string`             | -        | -                           | QA/test identifier                                                                   |

@@ -3,6 +3,7 @@ import {useCallback} from 'react';
 import {ArrowUp, CircleStop} from '@gravity-ui/icons';
 import {ButtonButtonProps, Icon, Spin} from '@gravity-ui/uikit';
 
+import {getControlIconSize, useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../ActionButton';
 
@@ -28,7 +29,7 @@ export interface SubmitButtonProps {
      */
     className?: string;
     /**
-     * Button size
+     * Button size. Defaults to `m`, or `xl` in mobile mode
      */
     size?: ButtonButtonProps['size'];
     /**
@@ -64,12 +65,14 @@ export function SubmitButton({
     onClick,
     state,
     className,
-    size = 'm',
+    size: sizeProp,
     tooltipSend,
     tooltipCancel,
     cancelableText,
     qa,
 }: SubmitButtonProps) {
+    const size = useMobileControlSize(sizeProp, 'm', 'xl');
+    const iconSize = getControlIconSize(size);
     const isCancelable = state === 'cancelable';
     const isLoading = state === 'loading';
     const isDisabled = state === 'disabled';
@@ -107,13 +110,13 @@ export function SubmitButton({
 
         if (isCancelable) {
             return cancelableText ? (
-                [<Icon key="icon" size={16} data={CircleStop} />, cancelableText]
+                [<Icon key="icon" size={iconSize} data={CircleStop} />, cancelableText]
             ) : (
-                <Icon size={16} data={CircleStop} />
+                <Icon size={iconSize} data={CircleStop} />
             );
         }
 
-        return <Icon size={16} data={ArrowUp} />;
+        return <Icon size={iconSize} data={ArrowUp} />;
     };
 
     return (

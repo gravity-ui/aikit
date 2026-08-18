@@ -86,6 +86,11 @@ $block: '.#{variables.$ns}context-indicator';
         font-weight: var(--g-text-body-font-weight);
         line-height: var(--g-text-body-1-line-height);
 
+        &_mobile {
+            font-size: var(--g-text-body-2-font-size);
+            line-height: var(--g-text-body-2-line-height);
+        }
+
         &::after {
             content: '%';
         }

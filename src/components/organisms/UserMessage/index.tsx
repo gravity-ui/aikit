@@ -1,7 +1,7 @@
 import React, {type HTMLAttributes} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
-import {Avatar} from '@gravity-ui/uikit';
+import {Avatar, useMobile} from '@gravity-ui/uikit';
 
 import type {BaseMessageProps, FileAttachment} from '../../../types/messages';
 import {block, modsClassName} from '../../../utils/cn';
@@ -38,6 +38,7 @@ export type UserMessageProps = Pick<
 };
 
 export const UserMessage = (props: UserMessageProps) => {
+    const isMobile = useMobile();
     const {
         className,
         qa,
@@ -102,7 +103,9 @@ export const UserMessage = (props: UserMessageProps) => {
                                     fileName={attachment.name}
                                     size="s"
                                 />
-                                <span className={b('file-chip-name')}>{attachment.name}</span>
+                                <span className={b('file-chip-name', {mobile: isMobile})}>
+                                    {attachment.name}
+                                </span>
                             </div>
                         ))}
                     </div>

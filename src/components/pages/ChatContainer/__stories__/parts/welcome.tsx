@@ -55,6 +55,93 @@ export const EmptyStateWithTextWrap: Story = {
 };
 
 /**
+ * Mobile mode of the chat: XL controls, full-width wrapped suggestions with
+ * chevrons, mobile paddings and typography. Enabled via the `isMobile` prop
+ * (falls back to uikit `MobileProvider` context when omitted).
+ */
+export const MobileMode: Story = {
+    args: {
+        messages: [],
+        isMobile: true,
+        welcomeConfig: {
+            title: 'AI Assistant',
+            description: 'helps with everyday cloud tasks',
+            alignment: {title: 'center', description: 'center', image: 'center'},
+            suggestions: [
+                {id: '1', title: 'Create a low-cost virtual machine'},
+                {id: '2', title: 'Deploy a VPN in the cloud'},
+                {
+                    id: '3',
+                    title: 'Set up the infrastructure of a basic internet service with several virtual machines for high availability',
+                },
+                {id: '4', title: 'Suggest an infrastructure option based on Kubernetes'},
+            ],
+        },
+    },
+    render: (args) => {
+        const [messages, setMessages] = useState<TChatMessage[]>([]);
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const userMessage: TChatMessage = {
+                id: Date.now().toString(),
+                role: 'user',
+                content: data.content,
+            };
+            setMessages((prev) => [...prev, userMessage]);
+        };
+
+        return (
+            <div style={{width: 380, height: 748}}>
+                <ChatContainer {...args} messages={messages} onSendMessage={handleSendMessage} />
+            </div>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+/**
+ * Mobile mode with a conversation: checks message typography, markdown headings
+ * (h4/h5/h6 stay no smaller than the body text) and inline code inside the chat.
+ */
+export const MobileModeWithMessages: Story = {
+    args: {
+        isMobile: true,
+        messages: [
+            {
+                id: '1',
+                role: 'user',
+                content: 'Create a low-cost virtual machine and show me the config',
+            },
+            {
+                id: '2',
+                role: 'assistant',
+                content: [
+                    'Here is a plan for a low-cost setup.',
+                    '',
+                    '#### Compute',
+                    '',
+                    'Use a burstable instance and run `yc compute instance create` to apply it.',
+                    '',
+                    '##### Disk',
+                    '',
+                    'A 20 GB network HDD is enough for a test workload.',
+                    '',
+                    '###### Notes',
+                    '',
+                    'Preemptible instances cost less but can be stopped at any time.',
+                ].join('\n'),
+            },
+        ],
+    },
+    render: (args) => (
+        <div style={{width: 380, height: 748}}>
+            <ChatContainer {...args} onSendMessage={async () => {}} />
+        </div>
+    ),
+    decorators: defaultDecorators,
+};
+
+/**
  * Empty state with custom React elements
  * Demonstrates usage of React elements for title and description
  */

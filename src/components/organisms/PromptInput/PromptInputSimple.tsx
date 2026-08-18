@@ -1,3 +1,4 @@
+import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
 import {PromptInputBody} from '../../molecules/PromptInputBody';
 import {PromptInputFooter} from '../../molecules/PromptInputFooter';
@@ -34,6 +35,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
 
     const {
         placeholder = 'Plan, code, build and test anything',
+        size: bodySize,
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
@@ -60,6 +62,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
     } = footerProps;
 
     const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
+    const resolvedButtonSize = useMobileControlSize(buttonSize, 'l', 'xl');
 
     return (
         <div className={b({view: 'simple'}, className)} data-qa={qa}>
@@ -67,6 +70,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                 <PromptInputBody
                     value={value}
                     placeholder={placeholder}
+                    size={bodySize}
                     minRows={minRows}
                     maxRows={maxRows}
                     autoFocus={autoFocus}
@@ -95,7 +99,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                     attachmentContent={attachmentContent}
                     showMicrophone={showMicrophone}
                     onMicrophoneClick={onMicrophoneClick}
-                    buttonSize={buttonSize ?? 'l'}
+                    buttonSize={resolvedButtonSize}
                 >
                     {bottomContent}
                 </PromptInputFooter>

@@ -88,21 +88,34 @@ Defined under `.g-root`, applied regardless of theme.
 | `--g-aikit-empty-container-background`  | `var(--g-color-base-background)` | Empty-state background     |
 | `--g-aikit-empty-container-content-gap` | `48px`                           | Gap between content blocks |
 | `--g-aikit-empty-container-padding`     | `48px 32px`                      | Empty-state padding        |
+| `--g-aikit-empty-container-welcome-gap` | `var(--g-spacing-6)`             | Gap between hero and text  |
+
+Mobile mode uses a parallel set of tokens, applied by the component itself:
+
+| Variable                                       | Default                     | Description                               |
+| ---------------------------------------------- | --------------------------- | ----------------------------------------- |
+| `--g-aikit-empty-container-mobile-content-gap` | `32px`                      | Gap between content blocks in mobile mode |
+| `--g-aikit-empty-container-mobile-padding`     | `80px var(--g-spacing-4) 0` | Empty-state padding in mobile mode        |
+| `--g-aikit-empty-container-mobile-welcome-gap` | `18px`                      | Gap between hero and text in mobile mode  |
 
 ### Chat Content / Container
 
-| Variable                                            | Default                          | Description                    |
-| --------------------------------------------------- | -------------------------------- | ------------------------------ |
-| `--g-aikit-chat-content-background`                 | `var(--g-color-base-background)` | Content area background        |
-| `--g-aikit-chat-content-padding`                    | derived                          | Content area padding           |
-| `--g-aikit-chat-container-background`               | `var(--g-color-base-background)` | Container background           |
-| `--g-aikit-chat-container-header-background`        | `var(--g-color-base-background)` | Header band background         |
-| `--g-aikit-chat-container-content-background`       | `var(--g-color-base-background)` | Content band background        |
-| `--g-aikit-chat-container-footer-background`        | `var(--g-color-base-background)` | Footer band background         |
-| `--g-aikit-chat-container-content-empty-background` | `var(--g-color-base-background)` | Empty-state content background |
-| `--g-aikit-chat-container-content-chat-background`  | `var(--g-color-base-background)` | Active-chat content background |
-| `--g-aikit-chat-container-footer-empty-background`  | `var(--g-color-base-background)` | Empty-state footer background  |
-| `--g-aikit-chat-container-footer-chat-background`   | `var(--g-color-base-background)` | Active-chat footer background  |
+| Variable                                                  | Default                          | Description                              |
+| --------------------------------------------------------- | -------------------------------- | ---------------------------------------- |
+| `--g-aikit-chat-content-background`                       | `var(--g-color-base-background)` | Content area background                  |
+| `--g-aikit-chat-content-padding`                          | derived                          | Content area padding                     |
+| `--g-aikit-chat-container-background`                     | `var(--g-color-base-background)` | Container background                     |
+| `--g-aikit-chat-container-mobile-font-size`               | `16px`                           | Body text size in mobile mode            |
+| `--g-aikit-chat-container-mobile-line-height`             | `24px`                           | Body line height in mobile mode          |
+| `--g-aikit-chat-container-mobile-padding`                 | `var(--g-spacing-4)`             | Base layout padding in mobile mode       |
+| `--g-aikit-chat-container-mobile-empty-container-padding` | `80px 0 0`                       | Empty-state padding inside a mobile chat |
+| `--g-aikit-chat-container-header-background`              | `var(--g-color-base-background)` | Header band background                   |
+| `--g-aikit-chat-container-content-background`             | `var(--g-color-base-background)` | Content band background                  |
+| `--g-aikit-chat-container-footer-background`              | `var(--g-color-base-background)` | Footer band background                   |
+| `--g-aikit-chat-container-content-empty-background`       | `var(--g-color-base-background)` | Empty-state content background           |
+| `--g-aikit-chat-container-content-chat-background`        | `var(--g-color-base-background)` | Active-chat content background           |
+| `--g-aikit-chat-container-footer-empty-background`        | `var(--g-color-base-background)` | Empty-state footer background            |
+| `--g-aikit-chat-container-footer-chat-background`         | `var(--g-color-base-background)` | Active-chat footer background            |
 
 ## Light Theme Overrides (`light.css`)
 

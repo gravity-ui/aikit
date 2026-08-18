@@ -32,10 +32,10 @@ import {AttachmentPicker} from '@gravity-ui/aikit';
 
 ## Props
 
-| Prop                  | Type                                               | Default | Description                                 |
-| --------------------- | -------------------------------------------------- | ------- | ------------------------------------------- |
-| `uploadOnly`          | `boolean`                                          | `true`  | Open dialog directly vs. show dropdown      |
-| `disabled`            | `boolean`                                          | `false` | Disables the button                         |
-| `fileDialogProps`     | `Omit<FileUploadDialogProps, 'open' \| 'onClose'>` | —       | Props for the upload dialog                 |
-| `onSelectFromStorage` | `() => void`                                       | —       | Called when "Select from storage" is chosen |
-| `buttonSize`          | `ButtonSize`                                       | `'m'`   | Button size                                 |
+| Prop                  | Type                                               | Default                       | Description                                 |
+| --------------------- | -------------------------------------------------- | ----------------------------- | ------------------------------------------- |
+| `uploadOnly`          | `boolean`                                          | `true`                        | Open dialog directly vs. show dropdown      |
+| `disabled`            | `boolean`                                          | `false`                       | Disables the button                         |
+| `fileDialogProps`     | `Omit<FileUploadDialogProps, 'open' \| 'onClose'>` | —                             | Props for the upload dialog                 |
+| `onSelectFromStorage` | `() => void`                                       | —                             | Called when "Select from storage" is chosen |
+| `buttonSize`          | `ButtonSize`                                       | `'m'` (`'xl'` in mobile mode) | Button size                                 |

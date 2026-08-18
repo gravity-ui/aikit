@@ -1,6 +1,6 @@
 import {CSSProperties, ReactNode} from 'react';
 
-import {Tooltip} from '@gravity-ui/uikit';
+import {Tooltip, useMobile} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
@@ -35,6 +35,8 @@ export type ContextIndicatorProps = NumberProps | PercentProps;
 export const ContextIndicator = (props: ContextIndicatorProps) => {
     const {className, qa, orientation = 'horizontal', reversed = false, tooltipContent} = props;
 
+    const isMobile = useMobile();
+
     const percentage =
         props.type === 'number'
             ? Math.round((props.usedContext / props.maxContext) * 100)
@@ -55,7 +57,7 @@ export const ContextIndicator = (props: ContextIndicatorProps) => {
             >
                 <div className={b('inner')} />
             </div>
-            <div className={b('value')}>{clampedPercentage}</div>
+            <div className={b('value', {mobile: isMobile})}>{clampedPercentage}</div>
         </div>
     );
 

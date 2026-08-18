@@ -46,4 +46,9 @@ $block: '.#{variables.$ns}user-message';
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &_mobile {
+        font-size: var(--g-text-body-2-font-size);
+        line-height: var(--g-text-body-2-line-height);
+    }
 }
