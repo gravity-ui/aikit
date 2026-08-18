@@ -63,6 +63,7 @@
     --g-aikit-empty-container-suggestions-max-width: none;
     --g-aikit-empty-container-suggestions-flex: 1 1 auto;
     --g-aikit-empty-container-suggestions-align-self: stretch;
+    --g-aikit-empty-container-suggestions-list-min-height: 70px;
 
     /* === Chat Content === */
     --g-aikit-chat-content-background: var(--g-color-base-background);

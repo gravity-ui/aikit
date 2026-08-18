@@ -99,7 +99,7 @@
     // suggestions title and "show more" button fixed in place.
     &__suggestions-list {
         flex: 1 1 auto;
-        min-height: 70px;
+        min-height: var(--g-aikit-empty-container-suggestions-list-min-height);
         overflow-y: auto;
     }
 
