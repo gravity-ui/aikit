@@ -369,7 +369,7 @@ export const WithMenuItems: StoryFn<HeaderProps> = (args) => {
 export const MobileMenuItems: StoryFn<HeaderProps> = (args) => {
     return (
         <MobileProvider mobile={true}>
-            <ContentWrapper width="375px" height="600px">
+            <ContentWrapper width="100%" height="600px">
                 <Header
                     title="With Menu Items"
                     baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}

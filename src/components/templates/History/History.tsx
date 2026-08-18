@@ -1,8 +1,9 @@
-import {Popup, Sheet, useMobile} from '@gravity-ui/uikit';
+import {Popup, Sheet, useMobile, useUniqId} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
 import {HistoryList, type HistoryListProps} from './HistoryList';
+import {i18n} from './i18n';
 
 import './History.scss';
 
@@ -29,6 +30,7 @@ export interface HistoryProps extends Omit<HistoryListProps, 'onChatClick'> {
 export function History(props: HistoryProps) {
     const {open = false, onOpenChange, anchorElement, ...listProps} = props;
     const isMobile = useMobile();
+    const sheetId = useUniqId();
 
     const handleChatClick = () => {
         onOpenChange?.(false);
@@ -39,10 +41,12 @@ export function History(props: HistoryProps) {
     if (isMobile) {
         return (
             <Sheet
-                id="aikit-history"
+                id={sheetId}
+                title={i18n('sheet-title')}
                 visible={open}
                 onClose={() => onOpenChange?.(false)}
                 contentClassName={b('sheet-content')}
+                qa="history-sheet"
                 allowHideOnContentScroll
             >
                 {list}

@@ -3,7 +3,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {TrashBin} from '@gravity-ui/icons';
 import {Icon, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
 
-import {getControlIconSize, resolveMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType} from '../../../types';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
@@ -34,12 +33,7 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
     const labelRef = useRef<HTMLDivElement>(null);
     const chatLabel = chat.lastMessage || chat.name;
     const isMobile = useMobile();
-    const deleteButtonSize = resolveMobileControlSize({
-        size: undefined,
-        desktopDefault: 's',
-        mobileDefault: 'm',
-        isMobile,
-    });
+    const deleteButtonSize = isMobile ? 'm' : 's';
 
     useEffect(() => {
         const label = labelRef.current;
@@ -98,11 +92,7 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
                     onClick={handleDeleteChat}
                     tooltipTitle={i18n('tooltip-delete')}
                 >
-                    <Icon
-                        className={b('icon-button')}
-                        data={TrashBin}
-                        size={getControlIconSize(deleteButtonSize)}
-                    />
+                    <Icon className={b('icon-button')} data={TrashBin} size={16} />
                 </ActionButton>
             ) : null}
         </div>

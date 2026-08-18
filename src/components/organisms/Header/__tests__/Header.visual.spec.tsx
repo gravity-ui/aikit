@@ -107,7 +107,7 @@ test.describe('Header mobile', {tag: '@Header'}, () => {
         await mount(<HeaderStories.MobileMenuItems />);
 
         await page.locator('[data-qa="header-menu-button"]').click();
-        await expect(page.locator('.g-sheet__sheet')).toBeVisible();
+        await expect(page.locator('[data-qa="header-menu-sheet-container"]')).toBeVisible();
         await expect(page.locator('[data-qa="header-menu-item-settings"]')).toBeVisible();
         await page.waitForTimeout(500);
 

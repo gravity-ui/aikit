@@ -100,7 +100,7 @@ const defaultDecorators = [
 const mobileDecorators = [
     (Story) => (
         <MobileProvider mobile={true}>
-            <ContentWrapper width="375px" height="700px">
+            <ContentWrapper width="100%" height="700px">
                 <Story />
             </ContentWrapper>
         </MobileProvider>
