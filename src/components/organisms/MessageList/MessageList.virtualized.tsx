@@ -114,6 +114,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     status,
     errorMessage,
     loaderMessage,
+    withLoaderShimmer,
     onRetry,
     hasPreviousMessages = false,
     onLoadPreviousMessages,
@@ -258,6 +259,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
                 status={status}
                 errorMessage={errorMessage}
                 loaderMessage={loaderMessage}
+                withLoaderShimmer={withLoaderShimmer}
                 onRetry={onRetry}
                 ratingBlockProps={ratingBlockProps}
                 actionPopupProps={actionPopupProps}
