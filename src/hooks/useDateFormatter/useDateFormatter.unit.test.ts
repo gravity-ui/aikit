@@ -120,6 +120,11 @@ describe('getFormattedDate', () => {
             const result = getFormattedDate(testDate, 'DD MMMM YYYY');
             expect(result).toBe('15 March 2024');
         });
+
+        it('should format month using the provided locale', () => {
+            const result = getFormattedDate(testDate, 'DD MMM YYYY', 'ru-RU');
+            expect(result).toBe('15 мар. 2024');
+        });
     });
 });
 

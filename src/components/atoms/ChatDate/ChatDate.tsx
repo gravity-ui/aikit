@@ -19,6 +19,8 @@ export type ChatDateProps = QAProps &
         showTime?: boolean;
         /** Custom format string (dayjs format) */
         format?: string;
+        /** Locale for date formatting */
+        locale?: string;
         /** Display relative dates (today, yesterday, two days ago, etc.) */
         relative?: boolean;
     };
@@ -30,7 +32,7 @@ export type ChatDateProps = QAProps &
  * @returns React component
  */
 export function ChatDate(props: ChatDateProps) {
-    const {date, showTime = false, format, className, qa, relative = false, style} = props;
+    const {date, showTime = false, format, locale, className, qa, relative = false, style} = props;
 
     const isMobile = useMobile();
 
@@ -38,6 +40,7 @@ export function ChatDate(props: ChatDateProps) {
         useDateFormatter({
             date,
             format,
+            locale,
         });
 
     if (!isValid || !dateObject) {
