@@ -1084,7 +1084,8 @@ are declared in the themes and can be overridden from `.g-root`.
 
 Secondary text states scale to `body-2` in mobile mode on the component level:
 message timestamps (`ChatDate`), the loader message, the context indicator value,
-the context chip (`ContextItem`, `s` → `m` label) and the disclaimer.
+the context chip (`ContextItem`, `s` → `m` label), sent file-attachment names
+(`UserMessage`) and the disclaimer.
 
 ```css
 /* Example: Custom theme */

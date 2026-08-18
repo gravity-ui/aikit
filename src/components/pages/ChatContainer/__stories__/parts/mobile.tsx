@@ -184,6 +184,7 @@ export const MobileModeWithContext: Story = {
                 role: 'user',
                 content: 'Create a low-cost virtual machine',
                 timestamp: '2026-01-15T12:30:00Z',
+                fileAttachments: [{id: 'file-1', name: 'vm-config.yaml', mimeType: 'text/yaml'}],
             },
             {
                 id: '2',
