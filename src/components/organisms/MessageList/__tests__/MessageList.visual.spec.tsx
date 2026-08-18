@@ -1,3 +1,5 @@
+import type {CSSProperties} from 'react';
+
 import type {Page} from '@playwright/test';
 
 import {expect, test} from '~playwright/core';
@@ -497,9 +499,23 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
     });
 
     test('should render footer content in the plain list', async ({mount, page}) => {
-        await mount(<MessageListStories.WithFooterContent />);
+        await mount(
+            <div
+                style={
+                    {
+                        '--g-aikit-message-list-footer-content-padding': '8px 0',
+                    } as CSSProperties
+                }
+            >
+                <MessageListStories.WithFooterContent />
+            </div>,
+        );
 
         await expect(page.locator('[data-qa="test-mascot"]')).toBeVisible();
+        await expect(page.locator('.g-aikit-message-list__footer-content')).toHaveCSS(
+            'padding',
+            '8px 0px',
+        );
         const scroller = page.locator('[data-qa="message-list"]');
         expect(
             await scroller.evaluate((element) => element.scrollHeight <= element.clientHeight),
