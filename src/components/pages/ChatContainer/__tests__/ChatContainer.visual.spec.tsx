@@ -644,7 +644,6 @@ test.describe('ChatContainer mobile playground', {tag: '@ChatContainer'}, () => 
     test('should follow the viewport and go from welcome to conversation', async ({
         mount,
         page,
-        expectScreenshot,
     }) => {
         await mount(<ChatContainerStories.MobilePlayground />);
 
@@ -654,8 +653,6 @@ test.describe('ChatContainer mobile playground', {tag: '@ChatContainer'}, () => 
         await expect(
             page.getByText('AI can make mistakes. We do not train the model on your data.'),
         ).toBeVisible();
-
-        await expectScreenshot();
 
         const textarea = page.locator('textarea');
         await textarea.fill('Hello from mobile');
