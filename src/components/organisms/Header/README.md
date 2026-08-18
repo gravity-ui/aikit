@@ -274,7 +274,7 @@ Additional actions appear before base actions in the header's action bar.
 
 ### Menu items
 
-Pass `menuItems` to render a `...` dropdown menu. The button appears **only when `menuItems` is a non-empty array**. Labels and click handlers are provided by the consumer (no built-in menu entries).
+Pass `menuItems` to render a `...` dropdown menu. The button appears **only when `menuItems` is a non-empty array**. Labels and click handlers are provided by the consumer (no built-in menu entries). In mobile mode (uikit `MobileProvider`) the same items are shown in a bottom sheet instead of a dropdown.
 
 ```tsx
 <Header

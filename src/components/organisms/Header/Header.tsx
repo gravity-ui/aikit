@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 
 import {
     ChevronsCollapseUpRight,
@@ -9,7 +9,7 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {DropdownMenu, Icon, Text} from '@gravity-ui/uikit';
+import {DropdownMenu, Icon, Menu, Sheet, Text} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
@@ -62,6 +62,7 @@ export function Header(props: HeaderProps) {
         actionsPlacement,
         actionsOrder,
         actionSize,
+        isMobile,
         menuItems,
         menuButtonTooltip,
         menuButtonIcon,
@@ -76,6 +77,8 @@ export function Header(props: HeaderProps) {
         actionQa,
         actionTooltipTexts,
     } = useHeader(props);
+
+    const [isMenuSheetVisible, setIsMenuSheetVisible] = useState(false);
 
     const iconSize = getControlIconSize(actionSize);
 
@@ -174,19 +177,63 @@ export function Header(props: HeaderProps) {
             return null;
         }
 
+        const switcherContent = menuButtonIcon ?? <Icon data={Ellipsis} size={iconSize} />;
+        const switcherTooltip = menuButtonTooltip ?? i18n('action-tooltip-menu');
+        const switcherQa = menuButtonQa ?? 'header-menu-button';
+
+        if (isMobile) {
+            return (
+                <React.Fragment>
+                    <ActionButton
+                        tooltipTitle={switcherTooltip}
+                        size={actionSize}
+                        view="flat"
+                        className={b('action-button')}
+                        qa={switcherQa}
+                        onClick={() => setIsMenuSheetVisible(true)}
+                    >
+                        {switcherContent}
+                    </ActionButton>
+                    <Sheet
+                        id="aikit-header-menu"
+                        visible={isMenuSheetVisible}
+                        onClose={() => setIsMenuSheetVisible(false)}
+                        contentClassName={b('menu-sheet-content')}
+                    >
+                        <Menu size="xl" qa="header-menu-sheet">
+                            {menuItems.map((item) => (
+                                <Menu.Item
+                                    key={item.id}
+                                    disabled={item.disabled}
+                                    iconStart={item.icon}
+                                    qa={menuItemQa?.[item.id] ?? `header-menu-item-${item.id}`}
+                                    onClick={() => {
+                                        setIsMenuSheetVisible(false);
+                                        item.onClick();
+                                    }}
+                                >
+                                    {item.label}
+                                </Menu.Item>
+                            ))}
+                        </Menu>
+                    </Sheet>
+                </React.Fragment>
+            );
+        }
+
         return (
             <DropdownMenu
                 items={dropdownMenuItems}
                 renderSwitcher={(switcherProps) => (
                     <ActionButton
                         {...switcherProps}
-                        tooltipTitle={menuButtonTooltip ?? i18n('action-tooltip-menu')}
+                        tooltipTitle={switcherTooltip}
                         size={actionSize}
                         view="flat"
                         className={b('action-button')}
-                        qa={menuButtonQa ?? 'header-menu-button'}
+                        qa={switcherQa}
                     >
-                        {menuButtonIcon ?? <Icon data={Ellipsis} size={iconSize} />}
+                        {switcherContent}
                     </ActionButton>
                 )}
             />
@@ -194,11 +241,14 @@ export function Header(props: HeaderProps) {
     }, [
         actionSize,
         iconSize,
+        isMobile,
+        isMenuSheetVisible,
         dropdownMenuItems,
+        menuItems,
+        menuItemQa,
         menuButtonIcon,
         menuButtonQa,
         menuButtonTooltip,
-        menuItems.length,
     ]);
 
     const [leftBaseActions, rightBaseActions] = useMemo(() => {

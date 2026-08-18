@@ -5,6 +5,7 @@ A comprehensive chat history component that displays a list of chats in a popup 
 ## Features
 
 - **Popup Interface**: Controlled popup component for displaying chat list
+- **Mobile Sheet**: In mobile mode (uikit `MobileProvider`) the list is rendered in a bottom sheet instead of a popup, and delete buttons are always visible because there is no hover
 - **Integrated Search**: Built-in search using List component's filter API
 - **Date Grouping**: Automatically groups chats by date with relative date display (today, yesterday, N days ago)
 - **Pagination**: Supports "Load more" functionality for large chat lists

@@ -22,6 +22,7 @@ export function useHeader(props: HeaderProps): {
     actionsPlacement: NonNullable<HeaderProps['actionsPlacement']>;
     actionsOrder: NonNullable<HeaderProps['actionsOrder']>;
     actionSize: NonNullable<HeaderProps['actionSize']>;
+    isMobile: boolean;
     titlePosition: 'left' | 'center';
     withIcon: boolean;
     showTitle: boolean;
@@ -116,6 +117,7 @@ export function useHeader(props: HeaderProps): {
         actionsPlacement,
         actionsOrder,
         actionSize,
+        isMobile,
         titlePosition,
         withIcon,
         showTitle,

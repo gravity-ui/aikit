@@ -55,7 +55,8 @@ $block: '.#{variables.$ns}history';
         min-width: 0;
 
         &_active,
-        &_is-delete-processing {
+        &_is-delete-processing,
+        &_mobile {
             #{$block}__delete-button {
                 display: block;
             }
@@ -115,5 +116,16 @@ $block: '.#{variables.$ns}history';
         align-items: center;
         justify-content: center;
         padding: spacing(2) spacing(4);
+    }
+
+    &__sheet-content {
+        #{$block}__container {
+            width: 100%;
+        }
+
+        #{$block}__list-wrapper {
+            max-height: none;
+            overflow: visible;
+        }
     }
 }

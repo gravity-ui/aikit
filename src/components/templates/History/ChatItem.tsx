@@ -1,8 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 
 import {TrashBin} from '@gravity-ui/icons';
-import {Icon, Text, Tooltip} from '@gravity-ui/uikit';
+import {Icon, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
 
+import {getControlIconSize, resolveMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType} from '../../../types';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
@@ -22,7 +23,8 @@ export interface ChatItemProps {
 }
 
 /**
- * Chat item component with hover state for actions
+ * Chat item component with hover state for actions.
+ * In mobile mode there is no hover, so actions are always visible.
  *
  * @returns React element
  */
@@ -31,6 +33,13 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
     const [hasOverflow, setHasOverflow] = useState(false);
     const labelRef = useRef<HTMLDivElement>(null);
     const chatLabel = chat.lastMessage || chat.name;
+    const isMobile = useMobile();
+    const deleteButtonSize = resolveMobileControlSize({
+        size: undefined,
+        desktopDefault: 's',
+        mobileDefault: 'm',
+        isMobile,
+    });
 
     useEffect(() => {
         const label = labelRef.current;
@@ -66,6 +75,7 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
         <div
             className={b('chat-item', {
                 active: isActive,
+                mobile: isMobile,
                 ['is-delete-processing']: isDeleteProccesing,
             })}
             onClick={handleClick}
@@ -81,14 +91,18 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
             {showDeleteAction ? (
                 <ActionButton
                     view="flat"
-                    size="s"
+                    size={deleteButtonSize}
                     color="secondary"
                     loading={isDeleteProccesing}
                     className={b('delete-button')}
                     onClick={handleDeleteChat}
                     tooltipTitle={i18n('tooltip-delete')}
                 >
-                    <Icon className={b('icon-button')} data={TrashBin} size={16} />
+                    <Icon
+                        className={b('icon-button')}
+                        data={TrashBin}
+                        size={getControlIconSize(deleteButtonSize)}
+                    />
                 </ActionButton>
             ) : null}
         </div>
