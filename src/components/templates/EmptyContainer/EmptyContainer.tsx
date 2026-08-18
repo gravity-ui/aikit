@@ -67,6 +67,8 @@ export interface EmptyContainerProps {
     suggestionsSize?: ButtonButtonProps['size'];
     /** Callback for showing more suggestions */
     showMore?: () => void;
+    /** Size of the show more button. Defaults to `l`, or `xl` in mobile mode */
+    showMoreSize?: ButtonButtonProps['size'];
     /** Custom text for the show more button */
     showMoreText?: string;
     /** Additional CSS class */
@@ -96,6 +98,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
         wrapText,
         suggestionsSize,
         showMore,
+        showMoreSize: showMoreSizeProp,
         showMoreText,
         className,
         qa,
@@ -103,7 +106,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
 
     const isMobile = useMobile();
     const resolvedLayout = layout ?? (isMobile ? 'list' : 'grid');
-    const showMoreSize = useMobileControlSize(undefined, 'l', 'xl');
+    const showMoreSize = useMobileControlSize(showMoreSizeProp, 'l', 'xl');
 
     const hasContent = [
         heroContent !== undefined,

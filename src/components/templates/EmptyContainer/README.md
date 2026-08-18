@@ -142,6 +142,7 @@ import {EmptyContainer} from '@gravity-ui/aikit';
 | `wrapText`          | `boolean`                   | -        | `false` desktop, `true` mobile    | Enable text wrapping inside suggestion buttons instead of ellipsis                   |
 | `suggestionsSize`   | `ButtonButtonProps['size']` | -        | `'m'` desktop, `'xl'` mobile      | Size of suggestion buttons; an explicit value also opts out of the mobile appearance |
 | `showMore`          | `() => void`                | -        | -                                 | Callback for showing more suggestions (displays a button)                            |
+| `showMoreSize`      | `ButtonButtonProps['size']` | -        | `'l'` desktop, `'xl'` mobile      | Size of the show more button                                                         |
 | `showMoreText`      | `string`                    | -        | -                                 | Custom text for the show more button (overrides i18n localization)                   |
 | `className`         | `string`                    | -        | -                                 | Additional CSS class                                                                 |
 | `qa`                | `string`                    | -        | -                                 | QA/test identifier                                                                   |

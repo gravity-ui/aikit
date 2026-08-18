@@ -39,6 +39,8 @@ export {
     MobileModeWithMessages,
 } from './parts/welcome';
 
+export {MobilePlayground, MobileModeWithContext} from './parts/mobile';
+
 export {
     WithCustomTexts,
     WithComponentPropsOverride,

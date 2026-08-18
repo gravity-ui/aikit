@@ -1,6 +1,6 @@
 import {Fragment} from 'react';
 
-import {DOMProps, QAProps} from '@gravity-ui/uikit';
+import {DOMProps, QAProps, useMobile} from '@gravity-ui/uikit';
 
 import {useDateFormatter} from '../../../hooks';
 import {block} from '../../../utils/cn';
@@ -32,6 +32,8 @@ export type ChatDateProps = QAProps &
 export function ChatDate(props: ChatDateProps) {
     const {date, showTime = false, format, className, qa, relative = false, style} = props;
 
+    const isMobile = useMobile();
+
     const {formattedDate, formattedTime, fullDate, dateObject, isValid, diffDays} =
         useDateFormatter({
             date,
@@ -44,7 +46,7 @@ export function ChatDate(props: ChatDateProps) {
 
     return (
         <time
-            className={b({}, className)}
+            className={b({mobile: isMobile}, className)}
             dateTime={dateObject.toISOString()}
             title={fullDate}
             data-qa={qa}

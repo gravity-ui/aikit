@@ -1,0 +1,12 @@
+@use '../../../styles/variables';
+
+$block: '.#{variables.$ns}context-item';
+
+#{$block} {
+    &_mobile {
+        .g-label__text {
+            font-size: var(--g-text-body-2-font-size);
+            line-height: var(--g-text-body-2-line-height);
+        }
+    }
+}

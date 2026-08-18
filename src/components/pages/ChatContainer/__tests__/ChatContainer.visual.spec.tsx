@@ -44,6 +44,12 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render mobile mode with context', async ({mount, expectScreenshot}) => {
+        await mount(<ChatContainerStories.MobileModeWithContext />);
+
+        await expectScreenshot();
+    });
+
     test('should render with history', async ({mount, expectScreenshot}) => {
         await mount(<ChatContainerStories.WithHistory />);
 
@@ -629,5 +635,50 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         expect(messageBox).not.toBeNull();
         expect(mascotBox).not.toBeNull();
         expect(mascotBox?.x).toBe(messageBox?.x);
+    });
+});
+
+test.describe('ChatContainer mobile playground', {tag: '@ChatContainer'}, () => {
+    test.use({viewport: {width: 390, height: 844}});
+
+    test('should follow the viewport and go from welcome to conversation', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
+        await mount(<ChatContainerStories.MobilePlayground />);
+
+        await expect(page.getByText('helps with everyday cloud tasks')).toBeVisible();
+        await expect(page.getByLabel(/Mascot: idle/)).toBeVisible();
+        await expect(page.getByText('catalog-dashboard.json')).toBeVisible();
+        await expect(
+            page.getByText('AI can make mistakes. We do not train the model on your data.'),
+        ).toBeVisible();
+
+        await expectScreenshot();
+
+        const textarea = page.locator('textarea');
+        await textarea.fill('Hello from mobile');
+        await page.locator('[data-qa="submit-button-full"]').click();
+
+        await expect(page.locator('.g-aikit-user-message')).toContainText('Hello from mobile');
+        await expect(page.getByText('helps with everyday cloud tasks')).not.toBeVisible();
+        await expect(page.locator('.g-aikit-assistant-message')).toBeVisible();
+    });
+
+    test('should open, select and reset chats from history', async ({mount, page}) => {
+        await mount(<ChatContainerStories.MobilePlayground />);
+
+        await page.locator('[data-qa="header-action-history"]').click();
+        await expect(page.locator('.g-aikit-history__list')).toBeVisible();
+
+        await page.locator('.g-aikit-history__chat-item').nth(1).click();
+        await expect(page.locator('.g-aikit-history__list')).not.toBeVisible();
+        await expect(page.locator('.g-aikit-user-message').first()).toContainText(
+            'Write a poem about autumn leaves',
+        );
+
+        await page.locator('[data-qa="header-action-newChat"]').click();
+        await expect(page.getByText('helps with everyday cloud tasks')).toBeVisible();
     });
 });

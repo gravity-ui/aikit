@@ -1,4 +1,4 @@
-import {Flex, Spin, Text} from '@gravity-ui/uikit';
+import {Flex, Spin, Text, useMobile} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 import {Shimmer} from '../Shimmer';
@@ -26,6 +26,7 @@ export function Loader({
     withMessageShimmer,
     qa,
 }: LoaderProps) {
+    const isMobile = useMobile();
     const loader =
         view === 'streaming' ? (
             <div className={b({size}, message ? '' : className)} data-qa={qa}>
@@ -42,7 +43,7 @@ export function Loader({
     }
 
     const messageContent = (
-        <Text variant="body-1" color="secondary">
+        <Text variant={isMobile ? 'body-2' : 'body-1'} color="secondary">
             {message}
         </Text>
     );

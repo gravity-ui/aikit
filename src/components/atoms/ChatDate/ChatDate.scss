@@ -12,4 +12,9 @@ $block: '.#{variables.$ns}chat-date';
     line-height: var(--g-text-body-1-line-height);
 
     display: inline-block;
+
+    &_mobile {
+        font-size: var(--g-text-body-2-font-size);
+        line-height: var(--g-text-body-2-line-height);
+    }
 }
