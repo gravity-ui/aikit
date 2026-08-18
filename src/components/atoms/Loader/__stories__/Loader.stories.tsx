@@ -30,6 +30,10 @@ export default {
             control: 'text',
             description: 'Message',
         },
+        withMessageShimmer: {
+            control: 'boolean',
+            description: 'Apply shimmer animation to the message',
+        },
         className: {
             control: 'text',
             description: 'Additional CSS class',
@@ -78,6 +82,17 @@ export const WithMessage: StoryFn<LoaderProps> = (args) => (
             {...args}
             view="streaming"
             message="Вопрос со звёздочкой — позвали умную модель, ей нужно больше времени"
+        />
+    </ContentWrapper>
+);
+
+export const WithMessageShimmer: StoryFn<LoaderProps> = (args) => (
+    <ContentWrapper>
+        <Loader
+            {...args}
+            view="streaming"
+            message="Generating a response..."
+            withMessageShimmer={true}
         />
     </ContentWrapper>
 );

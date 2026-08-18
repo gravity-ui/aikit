@@ -23,7 +23,18 @@ export async function asyncExecuteCode<T>(code: string, nonce?: string): Promise
     }
 
     const promise = new Promise<T>((resolve, reject) => {
-        handlers[id] = {resolve: resolve as ExecutionHandler<unknown>['resolve'], reject};
+        let wasHandled = false;
+
+        handlers[id] = {
+            resolve: (value) => {
+                wasHandled = true;
+                resolve(value as T);
+            },
+            reject: (reason) => {
+                wasHandled = true;
+                reject(reason);
+            },
+        };
 
         script.textContent = `(function(handlers) {
     try {
@@ -37,6 +48,16 @@ export async function asyncExecuteCode<T>(code: string, nonce?: string): Promise
 })(window.${HANDLERS_KEY});`;
 
         document.head.appendChild(script);
+
+        // Inline classic scripts execute synchronously when inserted. If neither handler
+        // ran before appendChild returned, the browser most likely blocked the script via CSP.
+        if (!wasHandled) {
+            reject(
+                new Error(
+                    'Failed to execute MDX script. It may have been blocked by Content Security Policy.',
+                ),
+            );
+        }
     });
 
     return promise.finally(() => {

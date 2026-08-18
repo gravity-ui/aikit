@@ -26,4 +26,10 @@ test.describe('Loader', {tag: '@Loader'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render with message shimmer', async ({mount, expectScreenshot}) => {
+        await mount(<LoaderStories.WithMessageShimmer />);
+
+        await expectScreenshot();
+    });
 });

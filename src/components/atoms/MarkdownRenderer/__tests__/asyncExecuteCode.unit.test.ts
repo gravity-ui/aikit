@@ -38,4 +38,21 @@ describe('asyncExecuteCode', () => {
         expect(scriptSource).not.toMatch(/new Function|eval\s*\(/);
         expect((window as unknown as Record<string, unknown>)[HANDLERS_KEY]).toBeUndefined();
     });
+
+    test('should reject and clean up when the script is not executed', async () => {
+        const blockedScripts = document.createElement('div');
+
+        jest.spyOn(document.head, 'appendChild').mockImplementation((node: Node) => {
+            blockedScripts.appendChild(node);
+
+            return node;
+        });
+
+        await expect(asyncExecuteCode('return "result";', 'invalid-nonce')).rejects.toThrow(
+            'It may have been blocked by Content Security Policy',
+        );
+
+        expect(blockedScripts.querySelector('script')).toBeNull();
+        expect((window as unknown as Record<string, unknown>)[HANDLERS_KEY]).toBeUndefined();
+    });
 });
