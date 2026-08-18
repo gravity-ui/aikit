@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.17.0](https://github.com/gravity-ui/aikit/compare/v2.16.0...v2.17.0) (2026-08-18)
+
+
+### Features
+
+* **ChatContainer:** add mobile adaptivity for chat components ([#226](https://github.com/gravity-ui/aikit/issues/226)) ([b9c7201](https://github.com/gravity-ui/aikit/commit/b9c7201fa84f15785f7af42ac84795c95efb53c2))
+* **ChatContainer:** add mobile mode support ([#224](https://github.com/gravity-ui/aikit/issues/224)) ([6763051](https://github.com/gravity-ui/aikit/commit/67630510a7a6b82419fda25f218aea31d8274d40))
+* **mdx:** add nonce for csp  ([#227](https://github.com/gravity-ui/aikit/issues/227)) ([c840f6d](https://github.com/gravity-ui/aikit/commit/c840f6d4fdaee01216c9897439b3b757e0431ef0))
+
 ## [2.16.0](https://github.com/gravity-ui/aikit/compare/v2.15.0...v2.16.0) (2026-08-11)
 
 
