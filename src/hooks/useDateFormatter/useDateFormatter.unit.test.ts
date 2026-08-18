@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import kkLocale from 'dayjs/locale/kk.js';
+import ruLocale from 'dayjs/locale/ru.js';
 
 import {getFormattedDate, getFormattedTime} from '.';
 
@@ -121,9 +123,12 @@ describe('getFormattedDate', () => {
             expect(result).toBe('15 March 2024');
         });
 
-        it('should format month using the provided locale', () => {
-            const result = getFormattedDate(testDate, 'DD MMM YYYY', 'ru-RU');
-            expect(result).toBe('15 мар. 2024');
+        it.each([
+            ['ru-RU', ruLocale, '15 мар. 2024'],
+            ['kk-KZ', kkLocale, '15 нау 2024'],
+        ])('should format month using the %s locale config', (locale, localeConfig, expected) => {
+            const result = getFormattedDate(testDate, 'DD MMM YYYY', locale, localeConfig);
+            expect(result).toBe(expected);
         });
     });
 });

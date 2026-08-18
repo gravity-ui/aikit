@@ -15,6 +15,7 @@ A ChatDate component displays formatted dates with time and locale support.
 
 ```tsx
 import {ChatDate} from '@/components/atoms/ChatDate';
+import ruLocale from 'dayjs/locale/ru.js';
 
 // Basic usage with ISO string
 <ChatDate date="2024-01-15T10:30:00Z" />
@@ -29,7 +30,7 @@ import {ChatDate} from '@/components/atoms/ChatDate';
 <ChatDate date={1705312200000} />
 
 // With locale
-<ChatDate date="2024-01-15T10:30:00Z" locale="ru-RU" />
+<ChatDate date="2024-01-15T10:30:00Z" locale="ru-RU" localeConfig={ruLocale} />
 
 // With time
 <ChatDate date="2024-01-15T10:30:00Z" showTime />
@@ -41,16 +42,17 @@ import {ChatDate} from '@/components/atoms/ChatDate';
 
 ## Props
 
-| Prop        | Type                       | Required | Default      | Description                                         |
-| ----------- | -------------------------- | -------- | ------------ | --------------------------------------------------- |
-| `date`      | `string \| Date \| number` | Yes      | -            | Date value in string, Date, or number (timestamp)   |
-| `showTime`  | `boolean`                  | -        | `false`      | Show time along with date                           |
-| `format`    | `string`                   | -        | `YYYY.MM.DD` | Custom format string (dayjs format)                 |
-| `className` | `string`                   | -        | -            | Additional CSS class                                |
-| `style`     | `React.CSSProperties`      | -        | -            | Inline styles for the component                     |
-| `qa`        | `string`                   | -        | -            | QA/test identifier                                  |
-| `locale`    | `string`                   | -        | Browser      | Locale for date formatting (e.g., 'en-US', 'ru-RU') |
-| `relative`  | `boolean`                  | -        | `false`      | Display relative dates (today, yesterday, etc.)     |
+| Prop           | Type                       | Required | Default      | Description                                         |
+| -------------- | -------------------------- | -------- | ------------ | --------------------------------------------------- |
+| `date`         | `string \| Date \| number` | Yes      | -            | Date value in string, Date, or number (timestamp)   |
+| `showTime`     | `boolean`                  | -        | `false`      | Show time along with date                           |
+| `format`       | `string`                   | -        | `YYYY.MM.DD` | Custom format string (dayjs format)                 |
+| `className`    | `string`                   | -        | -            | Additional CSS class                                |
+| `style`        | `React.CSSProperties`      | -        | -            | Inline styles for the component                     |
+| `qa`           | `string`                   | -        | -            | QA/test identifier                                  |
+| `locale`       | `string`                   | -        | Browser      | Locale for date formatting (e.g., 'en-US', 'ru-RU') |
+| `localeConfig` | `DateLocaleConfig`         | -        | -            | Dayjs locale configuration for localized tokens     |
+| `relative`     | `boolean`                  | -        | `false`      | Display relative dates (today, yesterday, etc.)     |
 
 ## Format Defaults
 

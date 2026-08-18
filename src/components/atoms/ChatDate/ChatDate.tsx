@@ -2,7 +2,7 @@ import {Fragment} from 'react';
 
 import {DOMProps, QAProps, useMobile} from '@gravity-ui/uikit';
 
-import {useDateFormatter} from '../../../hooks';
+import {DateLocaleConfig, useDateFormatter} from '../../../hooks';
 import {block} from '../../../utils/cn';
 
 import {i18n} from './i18n';
@@ -21,6 +21,8 @@ export type ChatDateProps = QAProps &
         format?: string;
         /** Locale for date formatting */
         locale?: string;
+        /** Dayjs locale configuration for the provided locale */
+        localeConfig?: DateLocaleConfig;
         /** Display relative dates (today, yesterday, two days ago, etc.) */
         relative?: boolean;
     };
@@ -32,7 +34,17 @@ export type ChatDateProps = QAProps &
  * @returns React component
  */
 export function ChatDate(props: ChatDateProps) {
-    const {date, showTime = false, format, locale, className, qa, relative = false, style} = props;
+    const {
+        date,
+        showTime = false,
+        format,
+        locale,
+        localeConfig,
+        className,
+        qa,
+        relative = false,
+        style,
+    } = props;
 
     const isMobile = useMobile();
 
@@ -41,6 +53,7 @@ export function ChatDate(props: ChatDateProps) {
             date,
             format,
             locale,
+            localeConfig,
         });
 
     if (!isValid || !dateObject) {
