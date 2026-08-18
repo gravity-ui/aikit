@@ -1,7 +1,7 @@
 import {useMemo} from 'react';
 
 import dayjs, {Dayjs} from 'dayjs';
-import 'dayjs/locale/ru';
+import 'dayjs/locale/ru.js';
 
 import {RELATIVE_DATE_THRESHOLD} from '../../constants';
 
