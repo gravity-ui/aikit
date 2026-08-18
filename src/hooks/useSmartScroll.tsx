@@ -63,6 +63,23 @@ export function useSmartScroll<T extends HTMLElement>({
         };
     }, []);
 
+    // Keep the last message visible when the scroll viewport itself shrinks - the on-screen
+    // keyboard opening on mobile is the common case. The browser preserves `scrollTop`, so the
+    // bottom of the list would otherwise slide out of view.
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container || typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+
+        const observer = new ResizeObserver(() => scrollToBottom('instant'));
+        observer.observe(container);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [scrollToBottom]);
+
     // Handle DOM mutations during streaming
     useEffect(() => {
         const container = containerRef.current;

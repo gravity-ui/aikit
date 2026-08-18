@@ -18,6 +18,14 @@
         line-height: var(--g-aikit-chat-container-mobile-line-height);
     }
 
+    // The container is clamped to the visible viewport while the on-screen keyboard is open, so the
+    // welcome screen trades its large top padding for the remaining space.
+    &_mobile&_keyboard-open {
+        --g-aikit-empty-container-mobile-padding: var(
+            --g-aikit-chat-container-mobile-keyboard-empty-container-padding
+        );
+    }
+
     &_mobile .#{variables.$ns}markdown-renderer {
         --yfm-font-size: var(--g-aikit-chat-container-mobile-font-size);
         --yfm-font-line-height: var(--g-aikit-chat-container-mobile-line-height);

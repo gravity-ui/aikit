@@ -432,6 +432,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `showClose`                 | `boolean`                              | -                  | `false`   | Show close button                                                                                                           |
 | `hideTitleOnEmptyChat`      | `boolean`                              | -                  | `false`   | Hide header title and preview when chat is empty                                                                            |
 | `isMobile`                  | `boolean`                              | -                  | -         | Mobile mode for the chat and all inner components; falls back to `useMobile()` from `@gravity-ui/uikit` `MobileProvider`    |
+| `adjustToKeyboard`          | `boolean`                              | -                  | `true`    | In mobile mode, shrink the container to the visible viewport while the on-screen keyboard is open                           |
 | `className`                 | `string`                               | -                  | -         | Additional CSS class                                                                                                        |
 | `headerClassName`           | `string`                               | -                  | -         | Additional CSS class for header section                                                                                     |
 | `contentClassName`          | `string`                               | -                  | -         | Additional CSS class for content section                                                                                    |
@@ -1086,6 +1087,27 @@ Secondary text states scale to `body-2` in mobile mode on the component level:
 message timestamps (`ChatDate`), the loader message, the context indicator value,
 the context chip (`ContextItem`, `s` → `m` label), sent file-attachment names
 (`UserMessage`) and the disclaimer.
+
+### On-screen keyboard
+
+iOS Safari keeps the layout viewport at full height while the keyboard is open, so `100vh`,
+`100dvh` and `height: 100%` all leave the bottom of the chat - the prompt input and the
+disclaimer - hidden behind it. In mobile mode the container therefore tracks
+`window.visualViewport` and clamps its own height to the visible area, which pins the prompt
+input right above the keyboard and lets the message list and the welcome screen scroll inside
+the remaining space. The message list re-pins to the last message whenever its viewport
+resizes, so auto-scroll survives the keyboard opening and closing.
+
+Android Chrome resizes the layout viewport itself, so nothing is clamped there. Set
+`adjustToKeyboard={false}` when the host application already handles the keyboard (for example
+via `interactive-widget=resizes-content` in the viewport meta tag).
+
+While the keyboard is open, the root gets a `_keyboard-open` modifier and the welcome screen
+trades its large top padding for the remaining space:
+
+| Token bound on the container               | Keyboard source token                                              | Default                  |
+| ------------------------------------------ | ------------------------------------------------------------------ | ------------------------ |
+| `--g-aikit-empty-container-mobile-padding` | `--g-aikit-chat-container-mobile-keyboard-empty-container-padding` | `var(--g-spacing-4) 0 0` |
 
 ```css
 /* Example: Custom theme */

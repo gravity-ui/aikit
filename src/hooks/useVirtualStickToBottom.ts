@@ -197,6 +197,23 @@ export function useVirtualStickToBottom({
         return cancelPendingScroll;
     }, [listApi, pinToBottom, cancelPendingScroll]);
 
+    // Re-pin when the scroll viewport itself is resized - typically the on-screen keyboard opening
+    // on mobile and shrinking the chat. The browser keeps `scrollTop`, so the last row would
+    // otherwise end up below the fold.
+    useEffect(() => {
+        const element = listApi?.element;
+        if (!element || typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+
+        const observer = new ResizeObserver(() => pinToBottom());
+        observer.observe(element);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [listApi, pinToBottom]);
+
     // Preserve the viewport when older messages are prepended (load previous) so the list doesn't
     // jump. A prepend is detected by a change of the first message id together with a growing count
     // while the user is scrolled up (a bottom append - e.g. a new streamed message - leaves the
