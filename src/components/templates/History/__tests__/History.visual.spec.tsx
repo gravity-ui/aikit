@@ -96,6 +96,37 @@ test.describe('History', {tag: '@History'}, () => {
         await expectScreenshot();
     });
 
+    test('should dismiss trigger tooltip when history opens', async ({mount, page}) => {
+        await mount(<HistoryStories.NotForceOpen />);
+
+        const trigger = page.getByRole('button').first();
+        await trigger.hover();
+        await expect(page.getByText('Chat History')).toBeVisible();
+
+        await trigger.click();
+
+        await expect(page.locator('.g-aikit-history__container')).toBeVisible();
+        await expect(page.getByText('Chat History')).toHaveCount(0);
+    });
+
+    test('should use a custom date format for older groups', async ({mount, page}) => {
+        await mount(
+            <HistoryStories.Playground
+                chats={[
+                    {
+                        id: 'custom-date-chat',
+                        name: 'Custom date chat',
+                        createTime: '2020-01-15T12:00:00.000Z',
+                        metadata: {},
+                    },
+                ]}
+                dateFormat="DD/MM/YYYY"
+            />,
+        );
+
+        await expect(page.getByText('15/01/2020')).toBeVisible();
+    });
+
     test('should render loading state', async ({mount, expectScreenshot}) => {
         await mount(<HistoryStories.Loading />);
 
@@ -113,7 +144,12 @@ test.describe('History', {tag: '@History'}, () => {
         await page.locator('.g-aikit-history__container').waitFor({state: 'visible'});
 
         await page.locator('.g-aikit-history__chat-item').first().hover();
-        await page.locator('.g-aikit-history__delete-button').first().click();
+        const deleteButton = page.locator('.g-aikit-history__delete-button').first();
+        await deleteButton.hover();
+        await expect(page.getByText('Delete')).toBeVisible();
+
+        await deleteButton.click();
+        await expect(page.getByText('Delete')).toHaveCount(0);
 
         await page
             .locator('.g-aikit-history__chat-item_is-delete-processing')

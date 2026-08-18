@@ -54,6 +54,8 @@ export interface HistoryListProps extends QAProps, DOMProps {
     searchable?: boolean;
     /** Group chats by date or none */
     groupBy?: 'date' | 'none';
+    /** Custom dayjs format for non-relative date headers */
+    dateFormat?: string;
     /** Show action buttons (delete, etc.) */
     showActions?: boolean;
     /** Empty state placeholder */
@@ -91,6 +93,7 @@ export function HistoryList(props: HistoryListProps) {
         loadMode = 'full',
         searchable = true,
         groupBy = 'date',
+        dateFormat,
         showActions = true,
         emptyPlaceholder,
         emptyFilteredPlaceholder,
@@ -248,7 +251,9 @@ export function HistoryList(props: HistoryListProps) {
 
     const renderItem = (item: ListItemData<ListItemChatData>, isActive: boolean) => {
         if (item.type === 'date-header') {
-            return <DateHeaderItem key={`date-${item.date}`} date={item.date} />;
+            return (
+                <DateHeaderItem key={`date-${item.date}`} date={item.date} format={dateFormat} />
+            );
         }
 
         return (

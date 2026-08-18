@@ -8,6 +8,7 @@ const b = block('history');
  */
 export interface DateHeaderItemProps {
     date: string;
+    format?: string;
 }
 
 /**
@@ -15,10 +16,10 @@ export interface DateHeaderItemProps {
  *
  * @returns React element
  */
-export function DateHeaderItem({date}: DateHeaderItemProps) {
+export function DateHeaderItem({date, format}: DateHeaderItemProps) {
     return (
         <div className={b('date-header')}>
-            <ChatDate date={new Date(date)} relative />
+            <ChatDate date={new Date(date)} format={format} relative />
         </div>
     );
 }

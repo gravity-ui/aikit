@@ -92,9 +92,14 @@ test.describe('Header', {tag: '@Header'}, () => {
     test('should render with menu items open', async ({mount, page, expectScreenshot}) => {
         await mount(<HeaderStories.WithMenuItems />);
 
-        await page.locator('[data-qa="header-menu-button"]').click();
+        const menuButton = page.locator('[data-qa="header-menu-button"]');
+        await menuButton.hover();
+        await expect(page.getByText('More actions')).toBeVisible();
+
+        await menuButton.click();
         const menu = page.getByRole('menu');
         await expect(menu).toBeVisible();
+        await expect(page.getByText('More actions')).toHaveCount(0);
 
         await expectScreenshot({component: menu});
     });

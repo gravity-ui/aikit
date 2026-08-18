@@ -61,6 +61,7 @@ function MyComponent() {
   hasMore={hasMore}
   searchable={true}
   groupBy="date"
+  dateFormat="DD/MM/YYYY"
   showActions={true}
   open={open}
   onOpenChange={setOpen}
@@ -95,6 +96,7 @@ function MyComponent() {
 | `loadMode`                 | `'full' \| 'lazy'`               | -        | `'full'`            | Load mode: button (full) or scroll (lazy)        |
 | `searchable`               | `boolean`                        | -        | `true`              | Enable search functionality                      |
 | `groupBy`                  | `'date' \| 'none'`               | -        | `'date'`            | Group chats by date or show flat list            |
+| `dateFormat`               | `string`                         | -        | `YYYY.MM.DD`        | Dayjs format for non-relative date headers       |
 | `showActions`              | `boolean`                        | -        | `true`              | Show action buttons (delete)                     |
 | `emptyPlaceholder`         | `React.ReactNode`                | -        | -                   | Custom empty state placeholder                   |
 | `emptyFilteredPlaceholder` | `React.ReactNode`                | -        | -                   | Placeholder shown when search returns no results |
@@ -127,6 +129,8 @@ When `groupBy` is set to `"date"`, chats are automatically grouped by creation d
 - "Yesterday" for chats created yesterday
 - "N days ago" for chats created 2-7 days ago
 - Standard date format for older chats
+
+Use `dateFormat` to customize older date headers. Relative labels for recent dates are unchanged.
 
 Groups are sorted with newest dates first.
 
