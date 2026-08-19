@@ -63,34 +63,104 @@ function StreamingChat() {
 
 Server-side: AIKit ships an OpenAI streaming wrapper — see [§4](#4-server-side-openai-via-server-openai).
 
-## 2. File Upload with `FileUploadDialog` + `AttachmentPicker`
+## 2. File Upload with `AttachmentPicker` + `useFileUploadStore`
 
-`AttachmentPicker` is a button that opens `FileUploadDialog`. State is managed by `useFileUploadStore`:
+`AttachmentPicker` is a paperclip button that renders `FileUploadDialog` internally — you never
+mount the dialog yourself. Neither component owns upload state: `useFileUploadStore` holds the
+queue and you hand its data to the picker through `fileDialogProps`.
+
+The hook takes an `upload` callback (one file in, metadata out) and returns `entries`, `addFiles`,
+`removeFile`, `reset`, `uploadedMetas`, and `isLoading`:
 
 ```tsx
-import {AttachmentPicker, FileUploadDialog, useFileUploadStore} from '@gravity-ui/aikit';
+import {AttachmentPicker, useFileUploadStore} from '@gravity-ui/aikit';
 
-function PromptWithAttachments() {
-  const upload = useFileUploadStore({
-    async uploader(file, onProgress) {
-      // POST to your backend, return some metadata
+type UploadMeta = {id: string; name: string; mimeType?: string};
+
+function useAttachmentPicker() {
+  const {entries, addFiles, removeFile, reset, uploadedMetas} = useFileUploadStore<UploadMeta>({
+    // Called once per file; return whatever metadata your backend responds with.
+    upload: async (file) => {
       const form = new FormData();
       form.append('file', file);
       const res = await fetch('/api/upload', {method: 'POST', body: form});
-      return await res.json(); // {id, name}
+      return (await res.json()) as UploadMeta;
     },
   });
 
+  const attachmentPicker = (
+    <AttachmentPicker
+      uploadOnly
+      fileDialogProps={{
+        title: 'Attach files',
+        multiple: true,
+        onAdd: addFiles,
+        onCancel: reset,
+        files: entries.map((entry) => ({
+          id: entry.id,
+          name: entry.file.name,
+          size: entry.file.size,
+          mimeType: entry.file.type || undefined,
+          status: (() => {
+            if (entry.status === 'uploading') return 'loading';
+            if (entry.status === 'done') return 'success';
+            if (entry.status === 'error') return 'error';
+            return undefined;
+          })(),
+          onRemove: () => removeFile(entry.id),
+        })),
+      }}
+    />
+  );
+
+  return {attachmentPicker, entries, removeFile, reset, uploadedMetas};
+}
+```
+
+Mount the picker in the prompt input footer and mirror the queue as removable chips in the header:
+
+```tsx
+function ChatWithAttachments() {
+  const {attachmentPicker, entries, removeFile, reset, uploadedMetas} = useAttachmentPicker();
+
+  const handleSendMessage = async (data: TSubmitData) => {
+    // `uploadedMetas` holds the backend metadata of successfully uploaded files.
+    const fileAttachments = uploadedMetas.map((meta) => ({
+      id: meta.id,
+      name: meta.name,
+      mimeType: meta.mimeType,
+    }));
+    reset();
+    await sendToBackend({content: data.content, fileAttachments});
+  };
+
   return (
-    <>
-      <AttachmentPicker store={upload} />
-      <FileUploadDialog store={upload} />
-    </>
+    <ChatContainer
+      messages={messages}
+      status={status}
+      onSendMessage={handleSendMessage}
+      promptInputProps={{
+        view: 'full',
+        headerProps: {
+          contextItems: entries.map((entry) => ({
+            id: entry.id,
+            content: entry.file.name,
+            onRemove: () => removeFile(entry.id),
+          })),
+        },
+        footerProps: {attachmentContent: attachmentPicker},
+      }}
+    />
   );
 }
 ```
 
-`store.files` lists every queued / uploading / uploaded / errored entry; pass it down or read from it when constructing the user message's `fileAttachments`.
+`entries` (not `files`) lists every queued / uploading / done / errored entry, each carrying its
+`status`, `id`, and original `File`; `uploadedMetas` narrows that to the metadata of entries that
+finished uploading. A runnable version of this wiring is in
+[`WithAttachmentInput`](../src/components/pages/ChatContainer/__stories__/parts/attachments.tsx),
+and `InputContextProvider` packages the same logic behind a context — see
+[src/components/molecules/InputContext/InputContextProvider.tsx](../src/components/molecules/InputContext/InputContextProvider.tsx).
 
 ## 3. Custom Message Content Renderer
 
