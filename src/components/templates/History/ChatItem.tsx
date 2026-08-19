@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 
 import {TrashBin} from '@gravity-ui/icons';
-import {Icon, Text, Tooltip} from '@gravity-ui/uikit';
+import {Icon, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
 
 import {ChatType} from '../../../types';
 import {block} from '../../../utils/cn';
@@ -22,7 +22,8 @@ export interface ChatItemProps {
 }
 
 /**
- * Chat item component with hover state for actions
+ * Chat item component with hover state for actions.
+ * In mobile mode there is no hover, so actions are always visible.
  *
  * @returns React element
  */
@@ -31,6 +32,8 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
     const [hasOverflow, setHasOverflow] = useState(false);
     const labelRef = useRef<HTMLDivElement>(null);
     const chatLabel = chat.lastMessage || chat.name;
+    const isMobile = useMobile();
+    const deleteButtonSize = isMobile ? 'm' : 's';
 
     useEffect(() => {
         const label = labelRef.current;
@@ -66,6 +69,7 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
         <div
             className={b('chat-item', {
                 active: isActive,
+                mobile: isMobile,
                 ['is-delete-processing']: isDeleteProccesing,
             })}
             onClick={handleClick}
@@ -81,7 +85,7 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
             {showDeleteAction ? (
                 <ActionButton
                     view="flat"
-                    size="s"
+                    size={deleteButtonSize}
                     color="secondary"
                     loading={isDeleteProccesing}
                     className={b('delete-button')}

@@ -141,3 +141,47 @@ test.describe('History', {tag: '@History'}, () => {
         await expectScreenshot();
     });
 });
+
+test.describe('History mobile', {tag: '@History'}, () => {
+    test.use({viewport: {width: 375, height: 700}});
+
+    test('should render in a sheet in mobile mode', async ({mount, page, expectScreenshot}) => {
+        await mount(<HistoryStories.MobileSheet />);
+
+        await expect(page.locator('[data-qa="history-sheet"]')).toBeVisible();
+        await page.waitForTimeout(500);
+
+        await expectScreenshot({component: page});
+    });
+
+    test('should always show delete buttons in mobile mode', async ({mount, page}) => {
+        await mount(<HistoryStories.MobileSheet />);
+
+        await expect(page.locator('[data-qa="history-sheet"]')).toBeVisible();
+
+        await expect(page.locator('.g-aikit-history__delete-button').first()).toBeVisible();
+    });
+
+    test('should close the sheet after a chat click', async ({mount, page}) => {
+        await mount(<HistoryStories.MobileSheet />);
+
+        await expect(page.locator('[data-qa="history-sheet"]')).toBeVisible();
+
+        await page.locator('.g-aikit-history__chat-item').first().click();
+
+        await expect(page.locator('[data-qa="history-sheet"]')).toBeHidden();
+    });
+
+    test('should render empty state in a sheet in mobile mode', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
+        await mount(<HistoryStories.MobileSheetEmptyState />);
+
+        await expect(page.locator('[data-qa="history-sheet"]')).toBeVisible();
+        await page.waitForTimeout(500);
+
+        await expectScreenshot({component: page});
+    });
+});

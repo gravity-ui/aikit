@@ -99,3 +99,29 @@ test.describe('Header', {tag: '@Header'}, () => {
         await expectScreenshot({component: menu});
     });
 });
+
+test.describe('Header mobile', {tag: '@Header'}, () => {
+    test.use({viewport: {width: 375, height: 700}});
+
+    test('should open menu in a sheet in mobile mode', async ({mount, page, expectScreenshot}) => {
+        await mount(<HeaderStories.MobileMenuItems />);
+
+        await page.locator('[data-qa="header-menu-button"]').click();
+        await expect(page.locator('[data-qa="header-menu-sheet-container"]')).toBeVisible();
+        await expect(page.locator('[data-qa="header-menu-item-settings"]')).toBeVisible();
+        await page.waitForTimeout(500);
+
+        await expectScreenshot({component: page});
+    });
+
+    test('should close the menu sheet after an item click', async ({mount, page}) => {
+        await mount(<HeaderStories.MobileMenuItems />);
+
+        await page.locator('[data-qa="header-menu-button"]').click();
+        await expect(page.locator('[data-qa="header-menu-sheet"]')).toBeVisible();
+
+        await page.locator('[data-qa="header-menu-item-settings"]').click();
+
+        await expect(page.locator('[data-qa="header-menu-sheet"]')).toBeHidden();
+    });
+});

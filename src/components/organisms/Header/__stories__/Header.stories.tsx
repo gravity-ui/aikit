@@ -1,7 +1,7 @@
 import {useState} from 'react';
 
 import {Gear} from '@gravity-ui/icons';
-import {Icon} from '@gravity-ui/uikit';
+import {Icon, MobileProvider} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
@@ -360,6 +360,25 @@ export const WithMenuItems: StoryFn<HeaderProps> = (args) => {
                 {...args}
             />
         </ContentWrapper>
+    );
+};
+
+/**
+ * In mobile mode the menu opens in a bottom sheet instead of a dropdown.
+ */
+export const MobileMenuItems: StoryFn<HeaderProps> = (args) => {
+    return (
+        <MobileProvider mobile={true}>
+            <ContentWrapper width="100%" height="600px">
+                <Header
+                    title="With Menu Items"
+                    baseActions={[HeaderAction.NewChat, HeaderAction.History, HeaderAction.Close]}
+                    menuItems={[...menuItemsConfig]}
+                    {...mockHandlers}
+                    {...args}
+                />
+            </ContentWrapper>
+        </MobileProvider>
     );
 };
 

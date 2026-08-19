@@ -4,5 +4,6 @@
   "empty-state": "Чаты не найдены",
   "empty-filtered-state": "Ничего не найдено по вашему запросу",
   "tooltip-history": "История чатов",
+  "sheet-title": "История чатов",
   "tooltip-delete": "Удалить"
 }

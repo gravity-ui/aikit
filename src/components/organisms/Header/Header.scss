@@ -56,4 +56,8 @@ $block: '.#{variables.$ns}header';
     &__action-button {
         flex-shrink: 0;
     }
+
+    &__menu-sheet-content {
+        padding-bottom: var(--g-spacing-2);
+    }
 }

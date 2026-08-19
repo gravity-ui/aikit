@@ -4,5 +4,6 @@
   "action-tooltip-folding-collapsed": "Expand",
   "action-tooltip-folding-opened": "Collapse",
   "action-tooltip-close": "Close",
-  "action-tooltip-menu": "More actions"
+  "action-tooltip-menu": "More actions",
+  "menu-sheet-title": "More actions"
 }

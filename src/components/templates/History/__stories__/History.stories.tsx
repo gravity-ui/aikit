@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 
 import {ClockArrowRotateLeft} from '@gravity-ui/icons';
-import {Icon} from '@gravity-ui/uikit';
+import {Icon, MobileProvider, useMobile} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {History, HistoryProps} from '..';
@@ -59,6 +59,7 @@ function HistoryWithTrigger({initialOpen = true, ...props}: HistoryWithTriggerPr
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
     const setInitialOpen = useRef(false);
+    const isMobile = useMobile();
 
     useEffect(() => {
         if (initialOpen && !open && anchorRef.current && !setInitialOpen.current) {
@@ -68,7 +69,7 @@ function HistoryWithTrigger({initialOpen = true, ...props}: HistoryWithTriggerPr
     }, [initialOpen, open, anchorRef.current, setInitialOpen.current]);
 
     return (
-        <div style={{paddingLeft: '400px'}}>
+        <div style={{paddingLeft: isMobile ? '0' : '400px'}}>
             <ActionButton
                 ref={anchorRef}
                 view="flat"
@@ -93,6 +94,16 @@ const defaultDecorators = [
         <ContentWrapper width="600px" height="800px">
             <Story />
         </ContentWrapper>
+    ),
+] satisfies Story['decorators'];
+
+const mobileDecorators = [
+    (Story) => (
+        <MobileProvider mobile={true}>
+            <ContentWrapper width="100%" height="700px">
+                <Story />
+            </ContentWrapper>
+        </MobileProvider>
     ),
 ] satisfies Story['decorators'];
 
@@ -389,6 +400,41 @@ export const WithCustomFilter: Story = {
     },
     render: (args) => <HistoryWithTrigger {...args} />,
     decorators: defaultDecorators,
+};
+
+/**
+ * In mobile mode the history is shown in a bottom sheet instead of a popup,
+ * and delete actions are always visible because there is no hover.
+ */
+export const MobileSheet: Story = {
+    args: {
+        chats: mockChats,
+        searchable: true,
+        groupBy: 'date',
+        showActions: true,
+        onSelectChat: (chat) => {
+            // eslint-disable-next-line no-console
+            console.log('Selected chat:', chat);
+        },
+        onDeleteChat: (chat) => {
+            // eslint-disable-next-line no-console
+            console.log('Delete chat:', chat);
+            return Promise.resolve();
+        },
+    },
+    render: (args) => <HistoryWithTrigger {...args} />,
+    decorators: mobileDecorators,
+};
+
+export const MobileSheetEmptyState: Story = {
+    args: {
+        chats: [],
+        searchable: true,
+        groupBy: 'date',
+        showActions: true,
+    },
+    render: (args) => <HistoryWithTrigger {...args} />,
+    decorators: mobileDecorators,
 };
 
 export const NotForceOpen: Story = {

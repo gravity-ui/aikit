@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 
 import {
     ChevronsCollapseUpRight,
@@ -9,7 +9,7 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {DropdownMenu, Icon, Text} from '@gravity-ui/uikit';
+import {DropdownMenu, Icon, Menu, Sheet, Text, useUniqId} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
@@ -24,6 +24,7 @@ import {
     HeaderAction,
     HeaderActionGroup,
     type HeaderActionOrderItem,
+    type HeaderMenuItem,
     type HeaderProps,
 } from './types';
 import {ActionItem, useHeader} from './useHeader';
@@ -46,6 +47,15 @@ const FOLDING_ICONS = {
     opened: ChevronsCollapseUpRight,
 };
 
+type NormalizedMenuItem = HeaderMenuItem & {qa: string};
+
+function getNormalizedMenuItem(
+    item: HeaderMenuItem,
+    menuItemQa: HeaderProps['menuItemQa'],
+): NormalizedMenuItem {
+    return {...item, qa: menuItemQa?.[item.id] ?? `header-menu-item-${item.id}`};
+}
+
 /**
  * Header component for displaying chat header with navigation and actions
  *
@@ -62,6 +72,7 @@ export function Header(props: HeaderProps) {
         actionsPlacement,
         actionsOrder,
         actionSize,
+        isMobile,
         menuItems,
         menuButtonTooltip,
         menuButtonIcon,
@@ -76,6 +87,9 @@ export function Header(props: HeaderProps) {
         actionQa,
         actionTooltipTexts,
     } = useHeader(props);
+
+    const [isMenuSheetVisible, setIsMenuSheetVisible] = useState(false);
+    const menuSheetId = useUniqId();
 
     const iconSize = getControlIconSize(actionSize);
 
@@ -157,21 +171,72 @@ export function Header(props: HeaderProps) {
         [actionSize],
     );
 
-    const dropdownMenuItems = useMemo(
-        () =>
-            menuItems.map((item) => ({
-                text: item.label,
-                action: item.onClick,
-                disabled: item.disabled,
-                qa: menuItemQa?.[item.id] ?? `header-menu-item-${item.id}`,
-                ...(item.icon ? {iconStart: item.icon} : {}),
-            })),
+    const normalizedMenuItems = useMemo(
+        () => menuItems.map((item) => getNormalizedMenuItem(item, menuItemQa)),
         [menuItems, menuItemQa],
     );
 
+    const dropdownMenuItems = useMemo(
+        () =>
+            normalizedMenuItems.map((item) => ({
+                text: item.label,
+                action: item.onClick,
+                disabled: item.disabled,
+                qa: item.qa,
+                ...(item.icon ? {iconStart: item.icon} : {}),
+            })),
+        [normalizedMenuItems],
+    );
+
     const headerMenu = useMemo(() => {
-        if (menuItems.length === 0) {
+        if (normalizedMenuItems.length === 0) {
             return null;
+        }
+
+        const switcherContent = menuButtonIcon ?? <Icon data={Ellipsis} size={iconSize} />;
+        const switcherTooltip = menuButtonTooltip ?? i18n('action-tooltip-menu');
+        const switcherQa = menuButtonQa ?? 'header-menu-button';
+
+        if (isMobile) {
+            return (
+                <React.Fragment>
+                    <ActionButton
+                        tooltipTitle={switcherTooltip}
+                        size={actionSize}
+                        view="flat"
+                        className={b('action-button')}
+                        qa={switcherQa}
+                        onClick={() => setIsMenuSheetVisible(true)}
+                    >
+                        {switcherContent}
+                    </ActionButton>
+                    <Sheet
+                        id={menuSheetId}
+                        title={i18n('menu-sheet-title')}
+                        visible={isMenuSheetVisible}
+                        onClose={() => setIsMenuSheetVisible(false)}
+                        contentClassName={b('menu-sheet-content')}
+                        qa="header-menu-sheet-container"
+                    >
+                        <Menu size="xl" qa="header-menu-sheet">
+                            {normalizedMenuItems.map((item) => (
+                                <Menu.Item
+                                    key={item.id}
+                                    disabled={item.disabled}
+                                    iconStart={item.icon}
+                                    qa={item.qa}
+                                    onClick={() => {
+                                        setIsMenuSheetVisible(false);
+                                        item.onClick();
+                                    }}
+                                >
+                                    {item.label}
+                                </Menu.Item>
+                            ))}
+                        </Menu>
+                    </Sheet>
+                </React.Fragment>
+            );
         }
 
         return (
@@ -180,13 +245,13 @@ export function Header(props: HeaderProps) {
                 renderSwitcher={(switcherProps) => (
                     <ActionButton
                         {...switcherProps}
-                        tooltipTitle={menuButtonTooltip ?? i18n('action-tooltip-menu')}
+                        tooltipTitle={switcherTooltip}
                         size={actionSize}
                         view="flat"
                         className={b('action-button')}
-                        qa={menuButtonQa ?? 'header-menu-button'}
+                        qa={switcherQa}
                     >
-                        {menuButtonIcon ?? <Icon data={Ellipsis} size={iconSize} />}
+                        {switcherContent}
                     </ActionButton>
                 )}
             />
@@ -194,11 +259,14 @@ export function Header(props: HeaderProps) {
     }, [
         actionSize,
         iconSize,
+        isMobile,
+        isMenuSheetVisible,
+        menuSheetId,
         dropdownMenuItems,
+        normalizedMenuItems,
         menuButtonIcon,
         menuButtonQa,
         menuButtonTooltip,
-        menuItems.length,
     ]);
 
     const [leftBaseActions, rightBaseActions] = useMemo(() => {
