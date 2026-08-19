@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.18.0](https://github.com/gravity-ui/aikit/compare/v2.17.0...v2.18.0) (2026-08-19)
+
+
+### Features
+
+* **History,Header:** use bottom sheet in mobile mode ([#229](https://github.com/gravity-ui/aikit/issues/229)) ([348ee8f](https://github.com/gravity-ui/aikit/commit/348ee8f23e65e137e4b7a4299fbdc3ab76bea9d9))
+
+
+### Bug Fixes
+
+* dismiss action tooltips and support history date format ([#228](https://github.com/gravity-ui/aikit/issues/228)) ([26d1035](https://github.com/gravity-ui/aikit/commit/26d103565b7f7e563a634812a57bb511a6e63e1b))
+
 ## [2.17.0](https://github.com/gravity-ui/aikit/compare/v2.16.0...v2.17.0) (2026-08-18)
 
 
