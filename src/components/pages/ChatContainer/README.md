@@ -1090,17 +1090,21 @@ the context chip (`ContextItem`, `s` → `m` label), sent file-attachment names
 
 ### On-screen keyboard
 
-iOS Safari keeps the layout viewport at full height while the keyboard is open, so `100vh`,
-`100dvh` and `height: 100%` all leave the bottom of the chat - the prompt input and the
-disclaimer - hidden behind it. In mobile mode the container therefore tracks
-`window.visualViewport` and clamps its own height to the visible area, which pins the prompt
-input right above the keyboard and lets the message list and the welcome screen scroll inside
-the remaining space. The message list re-pins to the last message whenever its viewport
-resizes, so auto-scroll survives the keyboard opening and closing.
+Mobile browsers keep the layout viewport at full height while the keyboard is open - iOS Safari
+always, Chrome and Firefox since they made `interactive-widget=resizes-visual` the default
+(Chrome 108, Firefox 132). `100vh`, `100dvh` and `height: 100%` therefore all leave the bottom of
+the chat - the prompt input and the disclaimer - hidden behind the keyboard. In mobile mode the
+container tracks `window.visualViewport` and clamps its own height to the visible area, which
+pins the prompt input right above the keyboard and lets the message list and the welcome screen
+scroll inside the remaining space. The message list re-pins to the last message whenever its
+viewport resizes, so auto-scroll survives the keyboard opening and closing. Pinch zoom shrinks
+the visual viewport as well, so the measurement is scaled back by `visualViewport.scale` and a
+zoomed page is not mistaken for an open keyboard.
 
-Android Chrome resizes the layout viewport itself, so nothing is clamped there. Set
-`adjustToKeyboard={false}` when the host application already handles the keyboard (for example
-via `interactive-widget=resizes-content` in the viewport meta tag).
+Set `adjustToKeyboard={false}` when the host application already handles the keyboard - for
+example with `interactive-widget=resizes-content` in the viewport meta tag, which shrinks the
+layout viewport itself. Such pages are left alone anyway: nothing of the layout viewport stays
+under the keyboard, so there is nothing to clamp.
 
 While the keyboard is open, the root gets a `_keyboard-open` modifier and the welcome screen
 trades its large top padding for the remaining space:

@@ -12,6 +12,8 @@ export interface KeyboardViewportMetrics {
     viewportHeight: number;
     /** `visualViewport.offsetTop` - offset of the visual viewport inside the layout viewport. */
     viewportOffsetTop: number;
+    /** `visualViewport.scale` - pinch-zoom factor, `1` when the page is not zoomed. */
+    scale: number;
     /** `window.innerHeight` - layout viewport height, unaffected by the keyboard on iOS Safari. */
     layoutHeight: number;
     /** Top of the container in layout viewport coordinates (`getBoundingClientRect().top`). */
@@ -33,7 +35,8 @@ const CLOSED: KeyboardViewportFit = {isKeyboardOpen: false};
 /**
  * Height limit for a container whose bottom would otherwise end up under the on-screen keyboard.
  *
- * iOS Safari does not shrink the layout viewport when the keyboard opens, so `100vh` / `100dvh` /
+ * Browsers keep the layout viewport at full height while the keyboard is open (iOS Safari always,
+ * Chrome and Firefox since the `interactive-widget=resizes-visual` default), so `100vh` / `100dvh` /
  * `height: 100%` keep the original height and the bottom of the chat (prompt input, disclaimer)
  * stays hidden. The visible area is reported by `visualViewport` instead, and the limit is its
  * bottom edge measured from the top of the container.
@@ -42,11 +45,14 @@ export function resolveKeyboardViewportFit(
     metrics: KeyboardViewportMetrics,
     minInset: number = KEYBOARD_MIN_INSET,
 ): KeyboardViewportFit {
-    const {viewportHeight, viewportOffsetTop, layoutHeight, containerTop} = metrics;
+    const {viewportHeight, viewportOffsetTop, scale, layoutHeight, containerTop} = metrics;
 
-    // Android Chrome resizes the layout viewport together with the visual one, so the inset stays
-    // at zero there and the container is left alone - the browser has already done the work.
-    if (layoutHeight - viewportHeight < minInset) {
+    // Pinch zoom shrinks `visualViewport.height` just like the keyboard does, so the height is
+    // scaled back to layout pixels first: what remains is the part of the layout viewport that the
+    // user cannot reach by panning, which is the keyboard. A page that opted into
+    // `interactive-widget=resizes-content` shrinks the layout viewport itself and lands here with a
+    // zero inset - the browser has already done the work and the container is left alone.
+    if (layoutHeight - viewportHeight * scale < minInset) {
         return CLOSED;
     }
 
@@ -88,6 +94,7 @@ export function useKeyboardViewportFit(
             const next = resolveKeyboardViewportFit({
                 viewportHeight: viewport.height,
                 viewportOffsetTop: viewport.offsetTop,
+                scale: viewport.scale,
                 layoutHeight: window.innerHeight,
                 // The limit only depends on the top of the container, which the limit itself does
                 // not move - so applying it cannot feed back into the next measurement.

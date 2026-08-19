@@ -6,6 +6,7 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 800,
                 viewportOffsetTop: 0,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 0,
             }),
@@ -17,6 +18,7 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 800 - (KEYBOARD_MIN_INSET - 1),
                 viewportOffsetTop: 0,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 0,
             }),
@@ -28,6 +30,7 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
                 viewportOffsetTop: 0,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 0,
             }),
@@ -39,6 +42,7 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
                 viewportOffsetTop: 0,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 52,
             }),
@@ -50,6 +54,7 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
                 viewportOffsetTop: 120,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 0,
             }),
@@ -63,10 +68,38 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
                 viewportOffsetTop: 340,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 340,
             }),
         ).toEqual({isKeyboardOpen: true, maxHeight: 460});
+    });
+
+    it('should ignore a viewport shrunk by pinch zoom alone', () => {
+        // Zooming to 2x halves `visualViewport.height` without any keyboard on screen.
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 400,
+                viewportOffsetTop: 0,
+                scale: 2,
+                layoutHeight: 800,
+                containerTop: 0,
+            }),
+        ).toEqual({isKeyboardOpen: false});
+    });
+
+    it('should detect the keyboard while the page is zoomed', () => {
+        // iOS Safari zooms into an input with a font size below 16px, so the keyboard has to be
+        // detected at a scale above 1 as well: 400 * 1.25 = 500 visible layout pixels out of 800.
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 400,
+                viewportOffsetTop: 0,
+                scale: 1.25,
+                layoutHeight: 800,
+                containerTop: 0,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 400});
     });
 
     it('should never return a negative height', () => {
@@ -74,6 +107,7 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
                 viewportOffsetTop: 0,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 520,
             }),
@@ -85,6 +119,7 @@ describe('resolveKeyboardViewportFit', () => {
             resolveKeyboardViewportFit({
                 viewportHeight: 459.6,
                 viewportOffsetTop: 0,
+                scale: 1,
                 layoutHeight: 800,
                 containerTop: 0,
             }),
@@ -97,6 +132,7 @@ describe('resolveKeyboardViewportFit', () => {
                 {
                     viewportHeight: 780,
                     viewportOffsetTop: 0,
+                    scale: 1,
                     layoutHeight: 800,
                     containerTop: 0,
                 },
