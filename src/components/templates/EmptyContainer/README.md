@@ -302,5 +302,7 @@ The component is built as a composition of:
 - **Text** components from Gravity UI for typography
 
 The layout uses flexbox to ensure proper vertical centering and responsive behavior. The whole content area, including the welcome section and suggestions, scrolls if it exceeds the available height.
+Set `--g-aikit-empty-container-content-overflow-y: visible` when a parent layout owns the
+scroll container.
 Use `heroContent` to render custom welcome artwork. It replaces `image` when both are provided;
 `alignment.hero` controls its alignment and falls back to `alignment.image`.
