@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.19.1](https://github.com/gravity-ui/aikit/compare/v2.19.0...v2.19.1) (2026-08-19)
+
+
+### Bug Fixes
+
+* **PromptInputFooter:** align custom content with submit button ([#234](https://github.com/gravity-ui/aikit/issues/234)) ([3e6be15](https://github.com/gravity-ui/aikit/commit/3e6be156d2d591e61fd6e2f8f603d094e8a6bb38))
+
 ## [2.19.0](https://github.com/gravity-ui/aikit/compare/v2.18.0...v2.19.0) (2026-08-19)
 
 
