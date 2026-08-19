@@ -73,6 +73,7 @@ export function Header(props: HeaderProps) {
         actionsOrder,
         actionSize,
         isMobile,
+        actionIcons,
         menuItems,
         menuButtonTooltip,
         menuButtonIcon,
@@ -105,7 +106,8 @@ export function Header(props: HeaderProps) {
     // Render base action
     const renderBaseAction = useCallback(
         (action: ActionItem, ref?: React.RefObject<HTMLElement>) => {
-            let IconComponent = ACTION_ICONS[action.id as HeaderAction];
+            let IconComponent =
+                actionIcons?.[action.id as HeaderAction] ?? ACTION_ICONS[action.id as HeaderAction];
 
             // Handle folding icon based on state
             if (action.id === HeaderAction.Folding && action.foldingState) {
@@ -145,7 +147,7 @@ export function Header(props: HeaderProps) {
                 </ActionButton>
             );
         },
-        [actionQa, actionSize, actionTooltipTexts, iconSize],
+        [actionIcons, actionQa, actionSize, actionTooltipTexts, iconSize],
     );
 
     // Render additional action

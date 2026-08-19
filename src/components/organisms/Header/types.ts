@@ -1,4 +1,4 @@
-import type {ButtonButtonProps} from '@gravity-ui/uikit';
+import type {ButtonButtonProps, IconData} from '@gravity-ui/uikit';
 
 import type {Action} from '../../../types/common';
 
@@ -66,6 +66,8 @@ export type HeaderProps = {
     actionsOrder?: HeaderActionsOrder;
     /** Default size for built-in, menu, and configured additional action buttons. */
     actionSize?: ButtonButtonProps['size'];
+    /** Custom icons for built-in actions. Unspecified actions keep their default icons. */
+    actionIcons?: Partial<Record<HeaderAction, IconData>>;
 
     /**
      * Menu items for the "..." dropdown. Labels and handlers are provided by the consumer.

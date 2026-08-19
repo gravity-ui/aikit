@@ -268,7 +268,7 @@ The component uses CSS variables for theming:
 | `--g-aikit-empty-container-suggestions-max-width`       | Maximum width of the suggestions section (default: `none`)                            |
 | `--g-aikit-empty-container-suggestions-flex`            | Flex sizing of the suggestions section (default: `1 1 auto`)                          |
 | `--g-aikit-empty-container-suggestions-align-self`      | Cross-axis alignment of suggestions (default: `stretch`)                              |
-| `--g-aikit-empty-container-suggestions-list-min-height` | Minimum height of the scrollable suggestions list (default: `70px`)                   |
+| `--g-aikit-empty-container-suggestions-list-min-height` | Minimum height of the suggestions list (default: `70px`)                              |
 | `--g-spacing-2`                                         | Spacing for show more button padding (default: 8px)                                   |
 | `--g-spacing-3`                                         | Gap between suggestions elements (default: 12px)                                      |
 | `--g-spacing-6`                                         | Gap in welcome section (default: 24px)                                                |
@@ -299,6 +299,6 @@ The component is built as a composition of:
 - **Suggestions** molecule component for displaying suggestion buttons
 - **Text** components from Gravity UI for typography
 
-The layout uses flexbox to ensure proper vertical centering and responsive behavior. The content area is scrollable if the content exceeds the available height.
+The layout uses flexbox to ensure proper vertical centering and responsive behavior. The whole content area, including the welcome section and suggestions, scrolls if it exceeds the available height.
 Use `heroContent` to render custom welcome artwork. It replaces `image` when both are provided;
 `alignment.hero` controls its alignment and falls back to `alignment.image`.

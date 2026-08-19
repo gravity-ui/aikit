@@ -16,7 +16,7 @@ $block: '.#{variables.$ns}context-indicator';
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: var(--g-spacing-1);
 
         &_orientation {
             &_horizontal {
