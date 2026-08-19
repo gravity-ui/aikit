@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.19.0](https://github.com/gravity-ui/aikit/compare/v2.18.0...v2.19.0) (2026-08-19)
+
+
+### Features
+
+* **ChatContainer:** fit the chat to the on-screen keyboard on mobile ([#230](https://github.com/gravity-ui/aikit/issues/230)) ([048bc81](https://github.com/gravity-ui/aikit/commit/048bc8120ff4b9bd4808f59e6c92160ee1598d95))
+
 ## [2.18.0](https://github.com/gravity-ui/aikit/compare/v2.17.0...v2.18.0) (2026-08-19)
 
 
