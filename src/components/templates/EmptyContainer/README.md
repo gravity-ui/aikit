@@ -265,6 +265,7 @@ The component uses CSS variables for theming:
 | `--g-aikit-empty-container-mobile-welcome-gap`          | Gap between hero/image and the text block in mobile mode (default: 18px)              |
 | `--g-aikit-empty-container-mobile-padding`              | Padding around the content area in mobile mode (default: `80px var(--g-spacing-4) 0`) |
 | `--g-aikit-empty-container-content-justify-content`     | Vertical distribution of content (default: `flex-start`)                              |
+| `--g-aikit-empty-container-content-overflow-y`          | Vertical overflow of the content area (default: `auto`)                               |
 | `--g-aikit-empty-container-suggestions-max-width`       | Maximum width of the suggestions section (default: `none`)                            |
 | `--g-aikit-empty-container-suggestions-flex`            | Flex sizing of the suggestions section (default: `1 1 auto`)                          |
 | `--g-aikit-empty-container-suggestions-align-self`      | Cross-axis alignment of suggestions (default: `stretch`)                              |
@@ -280,6 +281,7 @@ The component uses CSS variables for theming:
   --g-aikit-empty-container-content-gap: 32px;
   --g-aikit-empty-container-padding: 24px;
   --g-aikit-empty-container-content-justify-content: center;
+  --g-aikit-empty-container-content-overflow-y: visible;
   --g-aikit-empty-container-suggestions-max-width: 640px;
   --g-aikit-empty-container-suggestions-flex: 0 1 auto;
   --g-aikit-empty-container-suggestions-align-self: center;

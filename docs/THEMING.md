@@ -83,12 +83,13 @@ Defined under `.g-root`, applied regardless of theme.
 
 ### Empty Container
 
-| Variable                                | Default                          | Description                |
-| --------------------------------------- | -------------------------------- | -------------------------- |
-| `--g-aikit-empty-container-background`  | `var(--g-color-base-background)` | Empty-state background     |
-| `--g-aikit-empty-container-content-gap` | `48px`                           | Gap between content blocks |
-| `--g-aikit-empty-container-padding`     | `48px 32px`                      | Empty-state padding        |
-| `--g-aikit-empty-container-welcome-gap` | `var(--g-spacing-6)`             | Gap between hero and text  |
+| Variable                                       | Default                          | Description                                  |
+| ---------------------------------------------- | -------------------------------- | -------------------------------------------- |
+| `--g-aikit-empty-container-background`         | `var(--g-color-base-background)` | Empty-state background                       |
+| `--g-aikit-empty-container-content-gap`        | `48px`                           | Gap between content blocks                   |
+| `--g-aikit-empty-container-padding`            | `48px 32px`                      | Empty-state padding                          |
+| `--g-aikit-empty-container-welcome-gap`        | `var(--g-spacing-6)`             | Gap between hero and text                    |
+| `--g-aikit-empty-container-content-overflow-y` | `auto`                           | Vertical overflow of the empty-state content |
 
 Mobile mode uses a parallel set of tokens, applied by the component itself:
 
