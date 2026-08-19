@@ -23,6 +23,7 @@ export function useHeader(props: HeaderProps): {
     actionsOrder: NonNullable<HeaderProps['actionsOrder']>;
     actionSize: NonNullable<HeaderProps['actionSize']>;
     isMobile: boolean;
+    actionIcons?: HeaderProps['actionIcons'];
     titlePosition: 'left' | 'center';
     withIcon: boolean;
     showTitle: boolean;
@@ -51,6 +52,7 @@ export function useHeader(props: HeaderProps): {
         actionsPlacement = {},
         actionsOrder = {},
         actionSize: actionSizeProp,
+        actionIcons,
         menuItems = [],
         menuButtonTooltip,
         menuButtonIcon,
@@ -118,6 +120,7 @@ export function useHeader(props: HeaderProps): {
         actionsOrder,
         actionSize,
         isMobile,
+        actionIcons,
         titlePosition,
         withIcon,
         showTitle,

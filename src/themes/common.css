@@ -60,9 +60,14 @@
     --g-aikit-empty-container-mobile-content-gap: 32px;
     --g-aikit-empty-container-mobile-padding: 80px var(--g-spacing-4) 0;
     --g-aikit-empty-container-content-justify-content: flex-start;
+    --g-aikit-empty-container-content-overflow-y: auto;
     --g-aikit-empty-container-suggestions-max-width: none;
     --g-aikit-empty-container-suggestions-flex: 1 1 auto;
     --g-aikit-empty-container-suggestions-align-self: stretch;
+    --g-aikit-empty-container-suggestions-list-min-height: 70px;
+
+    /* === Message List === */
+    --g-aikit-message-list-footer-content-padding: var(--g-spacing-4) 0 var(--g-spacing-2);
 
     /* === Chat Content === */
     --g-aikit-chat-content-background: var(--g-color-base-background);

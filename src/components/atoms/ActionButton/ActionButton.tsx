@@ -58,12 +58,39 @@ export const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProp
             wrapperClassName,
             className,
             children,
+            onClick,
+            onMouseLeave,
+            onBlur,
             ...buttonProps
         },
         ref,
     ) => {
+        const [tooltipDismissed, setTooltipDismissed] = React.useState(false);
+
+        const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+            setTooltipDismissed(true);
+            onClick?.(event);
+        };
+
+        const handleMouseLeave = (event: React.MouseEvent<HTMLButtonElement>) => {
+            setTooltipDismissed(false);
+            onMouseLeave?.(event);
+        };
+
+        const handleBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
+            setTooltipDismissed(false);
+            onBlur?.(event);
+        };
+
         const button = (
-            <Button {...buttonProps} ref={ref} className={className}>
+            <Button
+                {...buttonProps}
+                ref={ref}
+                className={className}
+                onClick={handleClick}
+                onMouseLeave={handleMouseLeave}
+                onBlur={handleBlur}
+            >
                 {children}
             </Button>
         );
@@ -77,7 +104,7 @@ export const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProp
             <ActionTooltip
                 title={tooltipTitle}
                 placement={tooltipPlacement}
-                disabled={tooltipDisabled}
+                disabled={tooltipDisabled || tooltipDismissed}
                 openDelay={tooltipOpenDelay}
                 closeDelay={tooltipCloseDelay}
                 className={wrapperClassName}

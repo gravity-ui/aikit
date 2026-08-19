@@ -1,3 +1,4 @@
+import {DateLocaleConfig} from '../../../hooks';
 import {block} from '../../../utils/cn';
 import {ChatDate} from '../../atoms/ChatDate';
 
@@ -8,6 +9,9 @@ const b = block('history');
  */
 export interface DateHeaderItemProps {
     date: string;
+    format?: string;
+    locale?: string;
+    localeConfig?: DateLocaleConfig;
 }
 
 /**
@@ -15,10 +19,16 @@ export interface DateHeaderItemProps {
  *
  * @returns React element
  */
-export function DateHeaderItem({date}: DateHeaderItemProps) {
+export function DateHeaderItem({date, format, locale, localeConfig}: DateHeaderItemProps) {
     return (
         <div className={b('date-header')}>
-            <ChatDate date={new Date(date)} relative />
+            <ChatDate
+                date={new Date(date)}
+                format={format}
+                locale={locale}
+                localeConfig={localeConfig}
+                relative
+            />
         </div>
     );
 }

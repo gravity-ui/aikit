@@ -14,6 +14,7 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
                         '--g-aikit-empty-container-suggestions-max-width': '320px',
                         '--g-aikit-empty-container-suggestions-flex': '0 1 auto',
                         '--g-aikit-empty-container-suggestions-align-self': 'center',
+                        '--g-aikit-empty-container-suggestions-list-min-height': '0px',
                     } as CSSProperties
                 }
             >
@@ -26,6 +27,10 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
         await expect(content).toHaveCSS('justify-content', 'center');
         await expect(suggestions).toHaveCSS('max-width', '320px');
         await expect(suggestions).toHaveCSS('align-self', 'center');
+        await expect(page.locator('.g-aikit-empty-container__suggestions-list')).toHaveCSS(
+            'min-height',
+            '0px',
+        );
     });
     test('should render playground state', async ({mount, expectScreenshot}) => {
         await mount(<EmptyContainerStories.Playground />);

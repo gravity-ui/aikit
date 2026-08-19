@@ -38,6 +38,18 @@ test.describe('ActionButton', {tag: '@ActionButton'}, () => {
         await expectScreenshot();
     });
 
+    test('should dismiss tooltip after click', async ({mount, page}) => {
+        await mount(<ActionButtonStories.Default />);
+
+        const button = page.getByRole('button');
+        await button.hover();
+        await expect(page.getByText('Edit')).toBeVisible();
+
+        await button.click();
+
+        await expect(page.getByText('Edit')).toHaveCount(0);
+    });
+
     test('should render button without tooltip', async ({mount, expectScreenshot}) => {
         await mount(<ActionButtonStories.WithoutTooltip />);
 

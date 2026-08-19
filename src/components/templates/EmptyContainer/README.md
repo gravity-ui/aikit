@@ -255,22 +255,24 @@ To override the localized text, use the `showMoreText` prop:
 
 The component uses CSS variables for theming:
 
-| Variable                                            | Description                                                                           |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `--g-aikit-empty-container-background`              | Background color of the container (default: --g-color-base-background)                |
-| `--g-aikit-empty-container-content-gap`             | Gap between content sections (default: 48px)                                          |
-| `--g-aikit-empty-container-welcome-gap`             | Gap between hero/image and the text block (default: `--g-spacing-6`)                  |
-| `--g-aikit-empty-container-padding`                 | Padding around the content area (default: 48px 32px)                                  |
-| `--g-aikit-empty-container-mobile-content-gap`      | Gap between content sections in mobile mode (default: 32px)                           |
-| `--g-aikit-empty-container-mobile-welcome-gap`      | Gap between hero/image and the text block in mobile mode (default: 18px)              |
-| `--g-aikit-empty-container-mobile-padding`          | Padding around the content area in mobile mode (default: `80px var(--g-spacing-4) 0`) |
-| `--g-aikit-empty-container-content-justify-content` | Vertical distribution of content (default: `flex-start`)                              |
-| `--g-aikit-empty-container-suggestions-max-width`   | Maximum width of the suggestions section (default: `none`)                            |
-| `--g-aikit-empty-container-suggestions-flex`        | Flex sizing of the suggestions section (default: `1 1 auto`)                          |
-| `--g-aikit-empty-container-suggestions-align-self`  | Cross-axis alignment of suggestions (default: `stretch`)                              |
-| `--g-spacing-2`                                     | Spacing for show more button padding (default: 8px)                                   |
-| `--g-spacing-3`                                     | Gap between suggestions elements (default: 12px)                                      |
-| `--g-spacing-6`                                     | Gap in welcome section (default: 24px)                                                |
+| Variable                                                | Description                                                                           |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `--g-aikit-empty-container-background`                  | Background color of the container (default: --g-color-base-background)                |
+| `--g-aikit-empty-container-content-gap`                 | Gap between content sections (default: 48px)                                          |
+| `--g-aikit-empty-container-welcome-gap`                 | Gap between hero/image and the text block (default: `--g-spacing-6`)                  |
+| `--g-aikit-empty-container-padding`                     | Padding around the content area (default: 48px 32px)                                  |
+| `--g-aikit-empty-container-mobile-content-gap`          | Gap between content sections in mobile mode (default: 32px)                           |
+| `--g-aikit-empty-container-mobile-welcome-gap`          | Gap between hero/image and the text block in mobile mode (default: 18px)              |
+| `--g-aikit-empty-container-mobile-padding`              | Padding around the content area in mobile mode (default: `80px var(--g-spacing-4) 0`) |
+| `--g-aikit-empty-container-content-justify-content`     | Vertical distribution of content (default: `flex-start`)                              |
+| `--g-aikit-empty-container-content-overflow-y`          | Vertical overflow of the content area (default: `auto`)                               |
+| `--g-aikit-empty-container-suggestions-max-width`       | Maximum width of the suggestions section (default: `none`)                            |
+| `--g-aikit-empty-container-suggestions-flex`            | Flex sizing of the suggestions section (default: `1 1 auto`)                          |
+| `--g-aikit-empty-container-suggestions-align-self`      | Cross-axis alignment of suggestions (default: `stretch`)                              |
+| `--g-aikit-empty-container-suggestions-list-min-height` | Minimum height of the suggestions list (default: `70px`)                              |
+| `--g-spacing-2`                                         | Spacing for show more button padding (default: 8px)                                   |
+| `--g-spacing-3`                                         | Gap between suggestions elements (default: 12px)                                      |
+| `--g-spacing-6`                                         | Gap in welcome section (default: 24px)                                                |
 
 ```css
 /* Example: Custom styling */
@@ -279,9 +281,11 @@ The component uses CSS variables for theming:
   --g-aikit-empty-container-content-gap: 32px;
   --g-aikit-empty-container-padding: 24px;
   --g-aikit-empty-container-content-justify-content: center;
+  --g-aikit-empty-container-content-overflow-y: visible;
   --g-aikit-empty-container-suggestions-max-width: 640px;
   --g-aikit-empty-container-suggestions-flex: 0 1 auto;
   --g-aikit-empty-container-suggestions-align-self: center;
+  --g-aikit-empty-container-suggestions-list-min-height: 0;
 }
 ```
 
@@ -297,6 +301,8 @@ The component is built as a composition of:
 - **Suggestions** molecule component for displaying suggestion buttons
 - **Text** components from Gravity UI for typography
 
-The layout uses flexbox to ensure proper vertical centering and responsive behavior. The content area is scrollable if the content exceeds the available height.
+The layout uses flexbox to ensure proper vertical centering and responsive behavior. The whole content area, including the welcome section and suggestions, scrolls if it exceeds the available height.
+Set `--g-aikit-empty-container-content-overflow-y: visible` when a parent layout owns the
+scroll container.
 Use `heroContent` to render custom welcome artwork. It replaces `image` when both are provided;
 `alignment.hero` controls its alignment and falls back to `alignment.image`.

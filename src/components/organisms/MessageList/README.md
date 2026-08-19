@@ -416,3 +416,9 @@ enum MessageListQa {
 implementations share this behavior. Keep its outer box size stable while changing animated mascot
 states so scroll anchoring remains predictable. The row is aligned to the left edge, matching the
 assistant-message column.
+
+## Styling
+
+| Variable                                        | Description                                                                            |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `--g-aikit-message-list-footer-content-padding` | Padding of the footer content row (default: `var(--g-spacing-4) 0 var(--g-spacing-2)`) |

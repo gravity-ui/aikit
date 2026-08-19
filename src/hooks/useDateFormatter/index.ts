@@ -4,9 +4,13 @@ import dayjs, {Dayjs} from 'dayjs';
 
 import {RELATIVE_DATE_THRESHOLD} from '../../constants';
 
+export type DateLocaleConfig = Exclude<Parameters<Dayjs['locale']>[0], string>;
+
 export interface UseDateFormatterOptions {
     date: string | Date | number;
     format?: string;
+    locale?: string;
+    localeConfig?: DateLocaleConfig;
 }
 
 export interface UseDateFormatterResult {
@@ -23,14 +27,31 @@ export interface UseDateFormatterResult {
  * @param dateObject - Dayjs date object
  * @returns Full formatted date string
  */
-function getFullDate(dateObject: Dayjs): string {
+function getFullDate(dateObject: Dayjs, locale?: string): string {
     if (!dateObject.isValid()) {
         return '';
     }
-    return new Intl.DateTimeFormat(undefined, {
-        dateStyle: 'full',
-        timeStyle: 'short',
-    }).format(dateObject.toDate());
+
+    try {
+        return new Intl.DateTimeFormat(locale, {
+            dateStyle: 'full',
+            timeStyle: 'short',
+        }).format(dateObject.toDate());
+    } catch {
+        return new Intl.DateTimeFormat(undefined, {
+            dateStyle: 'full',
+            timeStyle: 'short',
+        }).format(dateObject.toDate());
+    }
+}
+
+function applyLocale(dateObject: Dayjs, locale?: string, localeConfig?: DateLocaleConfig): Dayjs {
+    if (localeConfig) {
+        return dateObject.locale(localeConfig);
+    }
+
+    const language = locale?.toLowerCase().split(/[-_]/)[0];
+    return language ? dateObject.locale(language) : dateObject;
 }
 
 /**
@@ -40,9 +61,16 @@ function getFullDate(dateObject: Dayjs): string {
  * @param relative - Whether to use relative date formatting
  * @returns Formatted date string
  */
-export function getFormattedDate(dateObject: Dayjs, format?: string): string {
+export function getFormattedDate(
+    dateObject: Dayjs,
+    format?: string,
+    locale?: string,
+    localeConfig?: DateLocaleConfig,
+): string {
+    const localizedDateObject = applyLocale(dateObject, locale, localeConfig);
+
     if (!format) {
-        return dateObject.format('YYYY.MM.DD');
+        return localizedDateObject.format('YYYY.MM.DD');
     }
 
     // Extract date part from custom format
@@ -52,7 +80,7 @@ export function getFormattedDate(dateObject: Dayjs, format?: string): string {
         return '';
     }
 
-    return dateObject.format(dateFormat);
+    return localizedDateObject.format(dateFormat);
 }
 
 /**
@@ -61,9 +89,16 @@ export function getFormattedDate(dateObject: Dayjs, format?: string): string {
  * @param format - Optional format string
  * @returns Formatted time string
  */
-export function getFormattedTime(dateObject: Dayjs, format?: string): string {
+export function getFormattedTime(
+    dateObject: Dayjs,
+    format?: string,
+    locale?: string,
+    localeConfig?: DateLocaleConfig,
+): string {
+    const localizedDateObject = applyLocale(dateObject, locale, localeConfig);
+
     if (!format) {
-        return dateObject.format('HH:mm');
+        return localizedDateObject.format('HH:mm');
     }
 
     // Extract time part from custom format
@@ -73,10 +108,10 @@ export function getFormattedTime(dateObject: Dayjs, format?: string): string {
     const timeMatch = format.match(/(.*?)(\s*[HhmsAaZz](?:[HhmsAaZz]|[^HhmsAaZz])*)$/);
     if (timeMatch && timeMatch[2]) {
         const timeFormat = timeMatch[2].trim();
-        return dateObject.format(timeFormat);
+        return localizedDateObject.format(timeFormat);
     }
 
-    return dateObject.format('HH:mm');
+    return localizedDateObject.format('HH:mm');
 }
 
 /**
@@ -102,7 +137,7 @@ function getDiffDays(dateObject: Dayjs): number | null {
  * @returns Formatted date string, full date for title, and validation info
  */
 export function useDateFormatter(options: UseDateFormatterOptions): UseDateFormatterResult {
-    const {date, format} = options;
+    const {date, format, locale, localeConfig} = options;
 
     return useMemo(() => {
         const dateObject = dayjs(date);
@@ -119,12 +154,12 @@ export function useDateFormatter(options: UseDateFormatterOptions): UseDateForma
         }
 
         return {
-            fullDate: getFullDate(dateObject),
-            formattedDate: getFormattedDate(dateObject, format),
-            formattedTime: getFormattedTime(dateObject, format),
+            fullDate: getFullDate(dateObject, locale),
+            formattedDate: getFormattedDate(dateObject, format, locale, localeConfig),
+            formattedTime: getFormattedTime(dateObject, format, locale, localeConfig),
             diffDays: getDiffDays(dateObject),
             isValid: dateObject.isValid(),
             dateObject: dateObject.isValid() ? dateObject : null,
         };
-    }, [date, format]);
+    }, [date, format, locale, localeConfig]);
 }

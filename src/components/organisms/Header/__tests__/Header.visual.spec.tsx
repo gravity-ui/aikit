@@ -1,4 +1,8 @@
+import {Gear} from '@gravity-ui/icons';
+
 import {expect, test} from '~playwright/core';
+
+import {HeaderAction} from '../types';
 
 import {HeaderStories} from './helpersPlaywright';
 
@@ -51,6 +55,14 @@ test.describe('Header', {tag: '@Header'}, () => {
         await expectScreenshot();
     });
 
+    test('should render a custom folding icon', async ({mount, expectScreenshot}) => {
+        await mount(
+            <HeaderStories.FoldingInteractive actionIcons={{[HeaderAction.Folding]: Gear}} />,
+        );
+
+        await expectScreenshot();
+    });
+
     test('should render with additional actions', async ({mount, expectScreenshot}) => {
         await mount(<HeaderStories.AdditionalActions />);
 
@@ -92,9 +104,14 @@ test.describe('Header', {tag: '@Header'}, () => {
     test('should render with menu items open', async ({mount, page, expectScreenshot}) => {
         await mount(<HeaderStories.WithMenuItems />);
 
-        await page.locator('[data-qa="header-menu-button"]').click();
+        const menuButton = page.locator('[data-qa="header-menu-button"]');
+        await menuButton.hover();
+        await expect(page.getByText('More actions')).toBeVisible();
+
+        await menuButton.click();
         const menu = page.getByRole('menu');
         await expect(menu).toBeVisible();
+        await expect(page.getByText('More actions')).toHaveCount(0);
 
         await expectScreenshot({component: menu});
     });

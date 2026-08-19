@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {Button, DOMProps, InputControlSize, List, ListItemData, QAProps} from '@gravity-ui/uikit';
 
+import {DateLocaleConfig} from '../../../hooks';
 import {ChatType, ListItemChatData} from '../../../types';
 import {ChatFilterFunction, defaultChatFilter, groupChatsByDate} from '../../../utils/chatUtils';
 import {block} from '../../../utils/cn';
@@ -54,6 +55,12 @@ export interface HistoryListProps extends QAProps, DOMProps {
     searchable?: boolean;
     /** Group chats by date or none */
     groupBy?: 'date' | 'none';
+    /** Custom dayjs format for non-relative date headers */
+    dateFormat?: string;
+    /** Locale for non-relative date headers */
+    dateLocale?: string;
+    /** Dayjs locale configuration for non-relative date headers */
+    dateLocaleConfig?: DateLocaleConfig;
     /** Show action buttons (delete, etc.) */
     showActions?: boolean;
     /** Empty state placeholder */
@@ -91,6 +98,9 @@ export function HistoryList(props: HistoryListProps) {
         loadMode = 'full',
         searchable = true,
         groupBy = 'date',
+        dateFormat,
+        dateLocale,
+        dateLocaleConfig,
         showActions = true,
         emptyPlaceholder,
         emptyFilteredPlaceholder,
@@ -248,7 +258,15 @@ export function HistoryList(props: HistoryListProps) {
 
     const renderItem = (item: ListItemData<ListItemChatData>, isActive: boolean) => {
         if (item.type === 'date-header') {
-            return <DateHeaderItem key={`date-${item.date}`} date={item.date} />;
+            return (
+                <DateHeaderItem
+                    key={`date-${item.date}`}
+                    date={item.date}
+                    format={dateFormat}
+                    locale={dateLocale}
+                    localeConfig={dateLocaleConfig}
+                />
+            );
         }
 
         return (
