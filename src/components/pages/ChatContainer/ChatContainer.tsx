@@ -1,8 +1,8 @@
-import {Fragment, type ReactNode, useCallback, useMemo} from 'react';
+import {Fragment, type ReactNode, useCallback, useMemo, useRef} from 'react';
 
 import {MobileProvider, useMobile} from '@gravity-ui/uikit';
 
-import {getMascotAnimationType} from '../../../hooks';
+import {getMascotAnimationType, useKeyboardViewportFit} from '../../../hooks';
 import type {TSuggestionContext} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {getMascotNode, resolveMascotAssets, resolveMascotCollection} from '../../../utils/mascot';
@@ -210,6 +210,7 @@ export function ChatContainer(props: ChatContainerProps) {
         texts = {},
         hideTitleOnEmptyChat = false,
         isMobile: isMobileProp,
+        adjustToKeyboard = true,
         className,
         headerClassName,
         contentClassName,
@@ -219,6 +220,14 @@ export function ChatContainer(props: ChatContainerProps) {
 
     const isMobileContext = useMobile();
     const isMobile = isMobileProp ?? isMobileContext;
+
+    const rootRef = useRef<HTMLDivElement>(null);
+    // Keeps the footer (prompt input + disclaimer) above the on-screen keyboard on iOS Safari,
+    // where the layout viewport stays full-height while the keyboard is open.
+    const {isKeyboardOpen, maxHeight} = useKeyboardViewportFit(
+        rootRef,
+        isMobile && adjustToKeyboard,
+    );
 
     const hookState = useChatContainer(props);
 
@@ -634,7 +643,9 @@ export function ChatContainer(props: ChatContainerProps) {
     return (
         <MobileProvider mobile={isMobile}>
             <div
-                className={b({mobile: isMobile}, className)}
+                ref={rootRef}
+                className={b({mobile: isMobile, 'keyboard-open': isKeyboardOpen}, className)}
+                style={maxHeight === undefined ? undefined : {maxHeight}}
                 data-qa={resolveChatContainerRootQa(qaMap)}
             >
                 <div className={b('header', headerClassName)}>

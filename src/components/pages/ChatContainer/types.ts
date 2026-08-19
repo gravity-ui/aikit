@@ -217,6 +217,14 @@ export interface ChatContainerProps {
      * `@gravity-ui/uikit` `MobileProvider` context.
      */
     isMobile?: boolean;
+    /**
+     * In mobile mode, shrinks the container to the visible part of the viewport while the
+     * on-screen keyboard is open, so the prompt input and the disclaimer stay above it.
+     * Set to `false` when the host application handles the keyboard itself.
+     *
+     * @default true
+     */
+    adjustToKeyboard?: boolean;
 
     // States
     /** Chat status: submitted, streaming, ready, error */

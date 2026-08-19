@@ -82,6 +82,7 @@
     --g-aikit-chat-container-mobile-line-height: 24px;
     --g-aikit-chat-container-mobile-padding: var(--g-spacing-4);
     --g-aikit-chat-container-mobile-empty-container-padding: 80px 0 0;
+    --g-aikit-chat-container-mobile-keyboard-empty-container-padding: var(--g-spacing-4) 0 0;
     --g-aikit-chat-container-background: var(--g-color-base-background);
     --g-aikit-chat-container-content-empty-background: var(--g-color-base-background);
     --g-aikit-chat-container-content-chat-background: var(--g-color-base-background);
