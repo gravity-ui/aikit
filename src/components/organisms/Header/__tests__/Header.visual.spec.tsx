@@ -1,4 +1,8 @@
+import {Gear} from '@gravity-ui/icons';
+
 import {expect, test} from '~playwright/core';
+
+import {HeaderAction} from '../types';
 
 import {HeaderStories} from './helpersPlaywright';
 
@@ -47,6 +51,14 @@ test.describe('Header', {tag: '@Header'}, () => {
 
     test('should render all base actions', async ({mount, expectScreenshot}) => {
         await mount(<HeaderStories.BaseActions />);
+
+        await expectScreenshot();
+    });
+
+    test('should render a custom folding icon', async ({mount, expectScreenshot}) => {
+        await mount(
+            <HeaderStories.FoldingInteractive actionIcons={{[HeaderAction.Folding]: Gear}} />,
+        );
 
         await expectScreenshot();
     });

@@ -106,13 +106,12 @@ export function Header(props: HeaderProps) {
     // Render base action
     const renderBaseAction = useCallback(
         (action: ActionItem, ref?: React.RefObject<HTMLElement>) => {
-            let IconComponent =
-                actionIcons?.[action.id as HeaderAction] ?? ACTION_ICONS[action.id as HeaderAction];
-
-            // Handle folding icon based on state
-            if (action.id === HeaderAction.Folding && action.foldingState) {
-                IconComponent = FOLDING_ICONS[action.foldingState];
-            }
+            const actionId = action.id as HeaderAction;
+            const IconComponent =
+                actionIcons?.[actionId] ??
+                (actionId === HeaderAction.Folding && action.foldingState
+                    ? FOLDING_ICONS[action.foldingState]
+                    : ACTION_ICONS[actionId]);
 
             if (!IconComponent) {
                 return null;
