@@ -35,6 +35,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
     test('should route markdown code block actions to default text renderers', async ({
         mount,
         page,
+        expectScreenshot,
     }) => {
         await mount(<MessageListStories.WithMarkdownCodeBlockActions />);
 
@@ -58,13 +59,16 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
             .locator('[data-qa="markdown-actions-virtualized"]')
             .locator('[data-qa="markdown-code-action"]');
         await expect(virtualizedAction).toHaveCount(1);
-        await expect(virtualizedAction).toHaveText('Open SELECT 5;');
-        await virtualizedAction.click();
-        await expect(virtualizedAction).toHaveText('Opened SELECT 5;');
+        await expect(virtualizedAction).toHaveAccessibleName('Open SELECT 5;');
 
         const customRenderer = page.locator('[data-qa="markdown-actions-custom-renderer"]');
         await expect(customRenderer.locator('[data-qa="custom-text-renderer"]')).toBeVisible();
         await expect(customRenderer.getByRole('button', {name: 'Open SELECT 6;'})).toHaveCount(0);
+
+        await expectScreenshot();
+
+        await virtualizedAction.click();
+        await expect(virtualizedAction).toHaveAccessibleName('Opened SELECT 5;');
     });
 
     test('should render with submitted status', async ({mount, expectScreenshot}) => {

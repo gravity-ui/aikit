@@ -41,21 +41,19 @@ export const markdownCodeBlockPlugin: ExtendedPluginWithCollect = ((md: Markdown
 
     // eslint-disable-next-line no-param-reassign
     md.renderer.rules.fence = function (tokens, idx, options, env, self) {
-        const rendered = defaultRender?.(tokens, idx, options, env, self);
-        const codeBlockContainer = rendered ? findCodeBlockContainer(rendered) : undefined;
-        if (!rendered || !codeBlockContainer) {
-            return rendered ?? '';
+        const rendered = defaultRender?.(tokens, idx, options, env, self) ?? '';
+        const codeBlockContainer = findCodeBlockContainer(rendered);
+        if (!codeBlockContainer) {
+            return rendered;
         }
 
         const token = tokens[idx];
         const codeBlockEnvironment = env as MarkdownCodeBlockEnvironment;
-        const codeBlocks = codeBlockEnvironment[MARKDOWN_CODE_BLOCKS_ENV_KEY] ?? [];
         const language = getLanguage(token.info);
-        codeBlocks.push({
+        (codeBlockEnvironment[MARKDOWN_CODE_BLOCKS_ENV_KEY] ??= []).push({
             code: removeParserTrailingLineFeed(token.content),
             ...(language ? {language} : {}),
         });
-        codeBlockEnvironment[MARKDOWN_CODE_BLOCKS_ENV_KEY] = codeBlocks;
 
         return rendered.replace(
             codeBlockContainer,

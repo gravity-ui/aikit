@@ -74,7 +74,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
     onActionPopup,
 }: AssistantMessageProps<TContent>) {
     const registry = useMemo<MessageRendererRegistry>(() => {
-        const defaultRegistry = createDefaultMessageRegistry(
+        const defaultRegistry = createDefaultMessageRegistry({
             transformOptions,
             shouldParseIncompleteMarkdown,
             openMarkdownLinksInNewTab,
@@ -82,7 +82,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             mdxContext,
             markdownExtraProps,
             codeBlockActions,
-        );
+        });
         if (messageRendererRegistry) {
             return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
         }

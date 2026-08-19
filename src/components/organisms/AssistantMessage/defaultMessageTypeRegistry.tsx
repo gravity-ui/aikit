@@ -20,15 +20,25 @@ import {
 import {ThinkingMessage} from '../ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
 
-export function createDefaultMessageRegistry(
-    transformOptions?: OptionsType,
-    shouldParseIncompleteMarkdown?: boolean,
-    openMarkdownLinksInNewTab?: boolean,
-    mdxOptions?: MarkdownRendererMdxOptions,
-    mdxContext?: Record<string, unknown>,
-    markdownExtraProps?: HTMLAttributes<HTMLDivElement>,
-    codeBlockActions?: MarkdownCodeBlockActionsConfig,
-): MessageRendererRegistry {
+interface DefaultMessageRegistryOptions {
+    transformOptions?: OptionsType;
+    shouldParseIncompleteMarkdown?: boolean;
+    openMarkdownLinksInNewTab?: boolean;
+    mdxOptions?: MarkdownRendererMdxOptions;
+    mdxContext?: Record<string, unknown>;
+    markdownExtraProps?: HTMLAttributes<HTMLDivElement>;
+    codeBlockActions?: MarkdownCodeBlockActionsConfig;
+}
+
+export function createDefaultMessageRegistry({
+    transformOptions,
+    shouldParseIncompleteMarkdown,
+    openMarkdownLinksInNewTab,
+    mdxOptions,
+    mdxContext,
+    markdownExtraProps,
+    codeBlockActions,
+}: DefaultMessageRegistryOptions): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
     registerMessageRenderer<TextMessageContent>(

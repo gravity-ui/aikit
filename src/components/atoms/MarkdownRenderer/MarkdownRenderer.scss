@@ -25,6 +25,10 @@ $block: '.#{variables.$ns}markdown-renderer';
         opacity: 1;
     }
 
+    &__code-block_hasActions {
+        min-width: 200px;
+    }
+
     &__code-block-actions {
         display: inline-flex;
         flex-shrink: 0;
@@ -32,9 +36,10 @@ $block: '.#{variables.$ns}markdown-renderer';
 
         &_legacy {
             position: absolute;
-            top: 16px;
+            top: 26px;
             right: 44px;
             z-index: 1;
+            transform: translateY(-50%);
             opacity: 0;
         }
     }

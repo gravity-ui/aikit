@@ -1,6 +1,8 @@
 import {useState} from 'react';
 
-import {StoryObj} from '@storybook/react-webpack5';
+import {ArrowUpRightFromSquare} from '@gravity-ui/icons';
+import {Button, Icon} from '@gravity-ui/uikit';
+import type {StoryObj} from '@storybook/react-webpack5';
 
 import {MessageList, type MessageListProps} from '../../..';
 import {ContentWrapper} from '../../../../../demo/ContentWrapper';
@@ -61,9 +63,15 @@ function MarkdownCodeAction({code}: {code: string}) {
     const [opened, setOpened] = useState(false);
 
     return (
-        <button type="button" data-qa="markdown-code-action" onClick={() => setOpened(true)}>
-            {opened ? `Opened ${code}` : `Open ${code}`}
-        </button>
+        <Button
+            size="s"
+            view="flat-secondary"
+            qa="markdown-code-action"
+            aria-label={opened ? `Opened ${code}` : `Open ${code}`}
+            onClick={() => setOpened(true)}
+        >
+            <Icon data={ArrowUpRightFromSquare} size={16} />
+        </Button>
     );
 }
 

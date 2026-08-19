@@ -2,7 +2,11 @@ import {expect, test} from '~playwright/core';
 
 import {MarkdownRenderer} from '../MarkdownRenderer';
 
-import {MarkdownRendererStories} from './helpersPlaywright';
+import {
+    MarkdownRendererStories,
+    MdxCodeBlockActionsHarness,
+    StreamingCodeBlockActionsHarness,
+} from './helpersPlaywright';
 
 test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
     test('should render basic markdown', async ({mount, expectScreenshot}) => {
@@ -128,9 +132,76 @@ test.describe('MarkdownRenderer', {tag: '@MarkdownRenderer'}, () => {
         await expect(alwaysBlocks.nth(0)).toHaveClass(/actionsVisible/);
         await expect(alwaysBlocks.nth(1)).toHaveClass(/actionsVisible/);
         await expect(alwaysBlocks.nth(2)).not.toHaveClass(/actionsVisible/);
+        const firstAlwaysBlock = alwaysBlocks.nth(0);
+        const firstAlwaysLegacyActions = firstAlwaysBlock.locator(
+            '.g-aikit-markdown-renderer__code-block-actions_legacy',
+        );
+        await expect(firstAlwaysLegacyActions).toHaveCSS('right', '44px');
+        const [firstAlwaysBlockBox, firstAlwaysLegacyActionsBox] = await Promise.all([
+            firstAlwaysBlock.boundingBox(),
+            firstAlwaysLegacyActions.boundingBox(),
+        ]);
+        if (!firstAlwaysBlockBox || !firstAlwaysLegacyActionsBox) {
+            throw new Error('Expected the legacy code action and its code block to be visible');
+        }
+        expect(
+            Math.abs(
+                firstAlwaysLegacyActionsBox.y +
+                    firstAlwaysLegacyActionsBox.height / 2 -
+                    (firstAlwaysBlockBox.y + 26),
+            ),
+        ).toBeLessThan(1);
         await expect(page.locator('[data-qa="always-code-action-2"]')).toHaveCount(0);
 
         await expectScreenshot();
+    });
+
+    test('should keep streamed code block actions aligned with completed fences', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<StreamingCodeBlockActionsHarness />);
+
+        const codeBlocks = page.locator('[data-aikit-code-block]');
+        const firstCodeBlock = codeBlocks.nth(0);
+
+        await expect(codeBlocks).toHaveCount(1);
+        await expect(page.locator('[data-qa^="streaming-code-action-"]')).toHaveCount(1);
+        await expect(firstCodeBlock.locator('code')).toHaveText('SELECT 1;');
+        await expect(firstCodeBlock.locator('[data-qa="streaming-code-action-0"]')).toHaveText(
+            'sql: SELECT 1;',
+        );
+
+        await page.getByRole('button', {name: 'Append code block'}).click();
+
+        const secondCodeBlock = codeBlocks.nth(1);
+
+        await expect(codeBlocks).toHaveCount(2);
+        await expect(page.locator('[data-qa^="streaming-code-action-"]')).toHaveCount(2);
+        await expect(firstCodeBlock.locator('code')).toHaveText('SELECT 1;');
+        await expect(firstCodeBlock.locator('[data-qa="streaming-code-action-0"]')).toHaveText(
+            'sql: SELECT 1;',
+        );
+        await expect(secondCodeBlock.locator('code')).toHaveText('SELECT 2;');
+        await expect(secondCodeBlock.locator('[data-qa="streaming-code-action-1"]')).toHaveText(
+            'yql: SELECT 2;',
+        );
+    });
+
+    test('should keep MDX code block actions aligned with fenced metadata', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<MdxCodeBlockActionsHarness />);
+
+        const codeBlock = page.locator('[data-aikit-code-block]');
+
+        await expect(page.locator('[data-qa="mdx-badge"]')).toHaveText('Badge');
+        await expect(codeBlock).toHaveCount(1);
+        await expect(codeBlock.locator('code')).toHaveText('const answer = 42;');
+        await expect(codeBlock.locator('[data-qa="mdx-code-action"]')).toHaveText(
+            'typescript: const answer = 42;',
+        );
     });
 
     test('should render markdown table inside BaseMessage without broken layout', async ({

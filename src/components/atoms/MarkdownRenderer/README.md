@@ -74,7 +74,7 @@ The callback receives:
 
 - `code`: the original fenced content with one parser-added trailing LF removed;
 - `language`: the lowercase first token from the fence info string, or `undefined`;
-- `index`: the zero-based fenced block position within this `MarkdownRenderer`.
+- `index`: the zero-based position among fenced blocks with a supported Diplodoc toolbar in this `MarkdownRenderer`.
 
 Keep both the config object and `render` referentially stable across renders, and keep `render` free
 of side effects. Replacing `render` can remount the custom action and reset its local React state.
@@ -236,6 +236,7 @@ The component uses CSS variables for theming:
 | -------------------------------------------------- | ------- | ----------------------------------------------- |
 | `--g-color-text-primary`                           | —       | Text color (via YFM theme)                      |
 | `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps |
+| `--g-spacing-1`                                    | —       | Gap between custom code-block actions           |
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 

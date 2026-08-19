@@ -11,7 +11,8 @@ const modernHtml = [
     '<div class="yfm-code-floating-container" data-aikit-code-block>',
     '<pre><code>SELECT 1;</code></pre>',
     '<div class="yfm-code-floating">',
-    '<button aria-label="Copy"></button><button aria-label="Wrap"></button>',
+    '<button class="yfm-code-button" aria-label="Wrap"></button>',
+    '<button class="yfm-code-button yfm-clipboard-button" aria-label="Copy"></button>',
     '</div>',
     '</div>',
 ].join('');
@@ -23,7 +24,11 @@ const legacyHtml = [
     '</div>',
 ].join('');
 
-const twoModernBlocksHtml = modernHtml + modernHtml.replace('SELECT 1;', 'SELECT 2;');
+const unsupportedHtml = [
+    '<div data-aikit-code-block>',
+    '<pre><code>SELECT 2;</code></pre>',
+    '</div>',
+].join('');
 
 interface PortalHarnessProps {
     codeBlocks: MarkdownCodeBlockArtifact[];
@@ -39,10 +44,11 @@ function PortalHarness({codeBlocks, config, html}: PortalHarnessProps) {
             <div ref={refCtr} dangerouslySetInnerHTML={{__html: html}} />
             {config ? (
                 <CodeBlockActionsPortals
+                    alwaysVisible={config.visibility === 'always'}
                     codeBlocks={codeBlocks}
-                    config={config}
                     html={html}
                     refCtr={refCtr}
+                    renderAction={config.render}
                 />
             ) : null}
         </div>
@@ -72,44 +78,55 @@ describe('CodeBlockActionsPortals', () => {
             fireEvent.click(screen.getByRole('button', {name: 'Open'}));
             expect(handleAction).toHaveBeenCalledWith({...codeBlock, index: 0});
 
+            const codeBlockElement = container.querySelector('[data-aikit-code-block]');
             const actionMount = container.querySelector(
                 '.g-aikit-markdown-renderer__code-block-actions',
             );
-            expect(actionMount?.nextElementSibling).toHaveAttribute('aria-label', 'Copy');
+            expect(codeBlockElement?.className).toContain('hasActions');
+            expect(actionMount).not.toBeNull();
+
+            if (html === modernHtml) {
+                const wrapButton = codeBlockElement?.querySelector('[aria-label="Wrap"]');
+                const copyButton = codeBlockElement?.querySelector('[aria-label="Copy"]');
+
+                expect(wrapButton).toHaveClass('yfm-code-button');
+                expect(copyButton).toHaveClass('yfm-code-button');
+                expect(copyButton).toHaveClass('yfm-clipboard-button');
+                expect(actionMount?.nextElementSibling).toBe(wrapButton);
+                expect(wrapButton?.nextElementSibling).toBe(copyButton);
+            } else {
+                const copyButton = codeBlockElement?.querySelector('[aria-label="Copy"]');
+
+                expect(actionMount?.nextElementSibling).toBe(copyButton);
+            }
 
             unmount();
         }
     });
 
-    test('applies always visibility only to rendered actions and fails closed on mismatch', () => {
+    test('skips unsupported blocks without suppressing supported actions', () => {
         const codeBlocks = [
             {code: 'SELECT 1;', language: 'sql'},
             {code: 'SELECT 2;', language: 'yql'},
         ];
         const config: MarkdownCodeBlockActionsConfig = {
-            render: ({index}) => (index === 1 ? <button type="button">Open</button> : null),
+            render: ({index}) => <button type="button">Open {index}</button>,
             visibility: 'always',
         };
+        const html = modernHtml + unsupportedHtml;
         const {container, rerender} = render(
-            <PortalHarness codeBlocks={codeBlocks} config={config} html={twoModernBlocksHtml} />,
+            <PortalHarness codeBlocks={codeBlocks} config={config} html={html} />,
         );
 
         const renderedBlocks = container.querySelectorAll('[data-aikit-code-block]');
-        expect(renderedBlocks[0].className).not.toContain('actionsVisible');
-        expect(renderedBlocks[1].className).toContain('actionsVisible');
-        expect(screen.getByRole('button', {name: 'Open'})).toBeInTheDocument();
-        expect(screen.getAllByRole('button', {name: 'Copy'})).toHaveLength(2);
-        expect(screen.getAllByRole('button', {name: 'Wrap'})).toHaveLength(2);
+        expect(screen.getByRole('button', {name: 'Open 0'})).toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Open 1'})).not.toBeInTheDocument();
+        expect(renderedBlocks[0].className).toContain('actionsVisible');
+        expect(renderedBlocks[1].className).not.toContain('actionsVisible');
 
-        rerender(
-            <PortalHarness
-                codeBlocks={codeBlocks.slice(0, 1)}
-                config={config}
-                html={twoModernBlocksHtml}
-            />,
-        );
+        rerender(<PortalHarness codeBlocks={codeBlocks.slice(0, 1)} config={config} html={html} />);
 
-        expect(screen.queryByRole('button', {name: 'Open'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Open 0'})).not.toBeInTheDocument();
         expect(container.querySelector('[class*="actionsVisible"]')).toBeNull();
         expect(
             container.querySelector('.g-aikit-markdown-renderer__code-block-actions'),

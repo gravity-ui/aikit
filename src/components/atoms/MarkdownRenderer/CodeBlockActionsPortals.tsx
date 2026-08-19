@@ -6,21 +6,17 @@ import {createPortal} from 'react-dom';
 import {block} from '../../../utils/cn';
 import type {MarkdownCodeBlockArtifact} from '../../../utils/markdownCodeBlockPlugin';
 
-import type {MarkdownCodeBlockActionsConfig} from './MarkdownRenderer';
-
 const b = block('markdown-renderer');
 const CODE_BLOCK_SELECTOR = '[data-aikit-code-block]';
 const CODE_TOOLBAR_SELECTOR = '.yfm-code-floating';
 const LEGACY_CODE_BLOCK_SELECTOR = '.yfm-clipboard';
 const LEGACY_COPY_BUTTON_SELECTOR = '.yfm-clipboard-button';
-const CODE_BLOCK_ACTIONS_CLASSES = b('code-block').split(' ');
+const CODE_BLOCK_ACTIONS_CLASSES = b('code-block', {hasActions: true}).split(' ');
 const CODE_BLOCK_VISIBLE_ACTIONS_CLASSES = b('code-block', {actionsVisible: true}).split(' ');
-const CODE_BLOCK_SERVICE_CLASSES = Array.from(
-    new Set([...CODE_BLOCK_ACTIONS_CLASSES, ...CODE_BLOCK_VISIBLE_ACTIONS_CLASSES]),
-);
 
 interface CodeBlockActionsPortal {
     action: ReactNode;
+    key: string;
     target: HTMLSpanElement;
 }
 
@@ -31,10 +27,11 @@ interface CodeBlockActionTarget {
 }
 
 interface CodeBlockActionsPortalsProps {
+    alwaysVisible: boolean;
     codeBlocks: MarkdownCodeBlockArtifact[];
-    config: MarkdownCodeBlockActionsConfig;
     html: string;
     refCtr: RefObject<HTMLDivElement | null>;
+    renderAction: (block: MarkdownCodeBlockArtifact & {index: number}) => ReactNode;
 }
 
 const hasRenderedAction = (action: ReactNode) =>
@@ -57,20 +54,21 @@ const getActionTarget = (element: HTMLElement): CodeBlockActionTarget | null => 
 };
 
 export function CodeBlockActionsPortals({
+    alwaysVisible,
     codeBlocks,
-    config,
     html,
     refCtr,
+    renderAction,
 }: CodeBlockActionsPortalsProps) {
     const actions = useMemo(
         () =>
             codeBlocks.map((codeBlock, index) =>
-                config.render({
+                renderAction({
                     ...codeBlock,
                     index,
                 }),
             ),
-        [codeBlocks, config.render],
+        [codeBlocks, renderAction],
     );
     const [portals, setPortals] = useState<CodeBlockActionsPortal[]>([]);
 
@@ -84,13 +82,7 @@ export function CodeBlockActionsPortals({
         const codeBlockElements = Array.from(
             container.querySelectorAll<HTMLElement>(CODE_BLOCK_SELECTOR),
         );
-        if (codeBlockElements.length !== codeBlocks.length) {
-            setPortals([]);
-            return undefined;
-        }
-
-        const actionTargets = codeBlockElements.map(getActionTarget);
-        if (actionTargets.some((target) => !target)) {
+        if (codeBlockElements.length !== actions.length) {
             setPortals([]);
             return undefined;
         }
@@ -98,33 +90,36 @@ export function CodeBlockActionsPortals({
         const nextPortals: CodeBlockActionsPortal[] = [];
         codeBlockElements.forEach((element, index) => {
             const action = actions[index];
-            const actionTarget = actionTargets[index];
+            const actionTarget = getActionTarget(element);
             if (!actionTarget || !hasRenderedAction(action)) {
                 return;
             }
 
-            const target = document.createElement('span');
+            const target = element.ownerDocument.createElement('span');
             target.className = b('code-block-actions', {legacy: actionTarget.legacy});
             actionTarget.parent.insertBefore(target, actionTarget.before);
             element.classList.add(...CODE_BLOCK_ACTIONS_CLASSES);
 
-            if (config.visibility === 'always') {
+            if (alwaysVisible) {
                 element.classList.add(...CODE_BLOCK_VISIBLE_ACTIONS_CLASSES);
             }
 
-            nextPortals.push({action, target});
+            nextPortals.push({action, key: `action-${index}`, target});
         });
         setPortals(nextPortals);
 
         return () => {
             codeBlockElements.forEach((element) => {
-                element.classList.remove(...CODE_BLOCK_SERVICE_CLASSES);
+                element.classList.remove(
+                    ...CODE_BLOCK_ACTIONS_CLASSES,
+                    ...CODE_BLOCK_VISIBLE_ACTIONS_CLASSES,
+                );
             });
             nextPortals.forEach(({target}) => target.remove());
         };
-    }, [actions, codeBlocks.length, config.visibility, html, refCtr]);
+    }, [actions, alwaysVisible, html, refCtr]);
 
-    return portals.map(({action, target}) => createPortal(action, target));
+    return portals.map(({action, key, target}) => createPortal(action, target, key));
 }
 
 CodeBlockActionsPortals.displayName = 'CodeBlockActionsPortals';

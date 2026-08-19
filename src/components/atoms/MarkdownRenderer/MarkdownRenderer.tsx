@@ -39,7 +39,7 @@ export interface MarkdownCodeBlock {
     code: string;
     /** Lowercase language parsed from the first fence info token. */
     language?: string;
-    /** Zero-based code block index within this MarkdownRenderer. */
+    /** Zero-based index among fenced blocks with a supported Diplodoc toolbar in this MarkdownRenderer. */
     index: number;
 }
 
@@ -188,10 +188,11 @@ function MarkdownRendererComponent({
             ) : null}
             {codeBlockActions ? (
                 <CodeBlockActionsPortals
+                    alwaysVisible={codeBlockActions.visibility === 'always'}
                     refCtr={containerRef}
                     html={html}
                     codeBlocks={codeBlocks}
-                    config={codeBlockActions}
+                    renderAction={codeBlockActions.render}
                 />
             ) : null}
         </Fragment>
