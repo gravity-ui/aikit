@@ -933,21 +933,34 @@ Defined under `.g-root`, applied regardless of theme.
 | `--g-aikit-empty-container-background`  | `var(--g-color-base-background)` | Empty-state background     |
 | `--g-aikit-empty-container-content-gap` | `48px`                           | Gap between content blocks |
 | `--g-aikit-empty-container-padding`     | `48px 32px`                      | Empty-state padding        |
+| `--g-aikit-empty-container-welcome-gap` | `var(--g-spacing-6)`             | Gap between hero and text  |
+
+Mobile mode uses a parallel set of tokens, applied by the component itself:
+
+| Variable                                       | Default                     | Description                               |
+| ---------------------------------------------- | --------------------------- | ----------------------------------------- |
+| `--g-aikit-empty-container-mobile-content-gap` | `32px`                      | Gap between content blocks in mobile mode |
+| `--g-aikit-empty-container-mobile-padding`     | `80px var(--g-spacing-4) 0` | Empty-state padding in mobile mode        |
+| `--g-aikit-empty-container-mobile-welcome-gap` | `18px`                      | Gap between hero and text in mobile mode  |
 
 ### Chat Content / Container
 
-| Variable                                            | Default                          | Description                    |
-| --------------------------------------------------- | -------------------------------- | ------------------------------ |
-| `--g-aikit-chat-content-background`                 | `var(--g-color-base-background)` | Content area background        |
-| `--g-aikit-chat-content-padding`                    | derived                          | Content area padding           |
-| `--g-aikit-chat-container-background`               | `var(--g-color-base-background)` | Container background           |
-| `--g-aikit-chat-container-header-background`        | `var(--g-color-base-background)` | Header band background         |
-| `--g-aikit-chat-container-content-background`       | `var(--g-color-base-background)` | Content band background        |
-| `--g-aikit-chat-container-footer-background`        | `var(--g-color-base-background)` | Footer band background         |
-| `--g-aikit-chat-container-content-empty-background` | `var(--g-color-base-background)` | Empty-state content background |
-| `--g-aikit-chat-container-content-chat-background`  | `var(--g-color-base-background)` | Active-chat content background |
-| `--g-aikit-chat-container-footer-empty-background`  | `var(--g-color-base-background)` | Empty-state footer background  |
-| `--g-aikit-chat-container-footer-chat-background`   | `var(--g-color-base-background)` | Active-chat footer background  |
+| Variable                                                  | Default                          | Description                              |
+| --------------------------------------------------------- | -------------------------------- | ---------------------------------------- |
+| `--g-aikit-chat-content-background`                       | `var(--g-color-base-background)` | Content area background                  |
+| `--g-aikit-chat-content-padding`                          | derived                          | Content area padding                     |
+| `--g-aikit-chat-container-background`                     | `var(--g-color-base-background)` | Container background                     |
+| `--g-aikit-chat-container-mobile-font-size`               | `16px`                           | Body text size in mobile mode            |
+| `--g-aikit-chat-container-mobile-line-height`             | `24px`                           | Body line height in mobile mode          |
+| `--g-aikit-chat-container-mobile-padding`                 | `var(--g-spacing-4)`             | Base layout padding in mobile mode       |
+| `--g-aikit-chat-container-mobile-empty-container-padding` | `80px 0 0`                       | Empty-state padding inside a mobile chat |
+| `--g-aikit-chat-container-header-background`              | `var(--g-color-base-background)` | Header band background                   |
+| `--g-aikit-chat-container-content-background`             | `var(--g-color-base-background)` | Content band background                  |
+| `--g-aikit-chat-container-footer-background`              | `var(--g-color-base-background)` | Footer band background                   |
+| `--g-aikit-chat-container-content-empty-background`       | `var(--g-color-base-background)` | Empty-state content background           |
+| `--g-aikit-chat-container-content-chat-background`        | `var(--g-color-base-background)` | Active-chat content background           |
+| `--g-aikit-chat-container-footer-empty-background`        | `var(--g-color-base-background)` | Empty-state footer background            |
+| `--g-aikit-chat-container-footer-chat-background`         | `var(--g-color-base-background)` | Active-chat footer background            |
 
 ## Light Theme Overrides (`light.css`)
 
@@ -1278,7 +1291,7 @@ Namespace prefixes match the component name (e.g. `aikit.Header`, `aikit.Message
 ### Molecules
 
 - `ActionPopup`, `BaseMessage`, `FeedbackForm`, `FileDropZone`, `FileItem`, `InputContext`,
-- `PromptInputFooter`, `PromptInputPanel`, `StarRating`, `Tabs`, `ToolStatus`
+- `PromptInputFooter`, `StarRating`, `Tabs`, `ToolStatus`
 
 ### Organisms
 
@@ -1290,7 +1303,7 @@ Namespace prefixes match the component name (e.g. `aikit.Header`, `aikit.Message
 
 ### Pages
 
-- `ChatContainer`
+- `AIStudioChat`, `ChatContainer`
 
 Components not listed above either have no visible text or take all text through props.
 
@@ -1367,34 +1380,104 @@ function StreamingChat() {
 
 Server-side: AIKit ships an OpenAI streaming wrapper — see [§4](#4-server-side-openai-via-server-openai).
 
-## 2. File Upload with `FileUploadDialog` + `AttachmentPicker`
+## 2. File Upload with `AttachmentPicker` + `useFileUploadStore`
 
-`AttachmentPicker` is a button that opens `FileUploadDialog`. State is managed by `useFileUploadStore`:
+`AttachmentPicker` is a paperclip button that renders `FileUploadDialog` internally — you never
+mount the dialog yourself. Neither component owns upload state: `useFileUploadStore` holds the
+queue and you hand its data to the picker through `fileDialogProps`.
+
+The hook takes an `upload` callback (one file in, metadata out) and returns `entries`, `addFiles`,
+`removeFile`, `reset`, `uploadedMetas`, and `isLoading`:
 
 ```tsx
-import {AttachmentPicker, FileUploadDialog, useFileUploadStore} from '@gravity-ui/aikit';
+import {AttachmentPicker, useFileUploadStore} from '@gravity-ui/aikit';
 
-function PromptWithAttachments() {
-  const upload = useFileUploadStore({
-    async uploader(file, onProgress) {
-      // POST to your backend, return some metadata
+type UploadMeta = {id: string; name: string; mimeType?: string};
+
+function useAttachmentPicker() {
+  const {entries, addFiles, removeFile, reset, uploadedMetas} = useFileUploadStore<UploadMeta>({
+    // Called once per file; return whatever metadata your backend responds with.
+    upload: async (file) => {
       const form = new FormData();
       form.append('file', file);
       const res = await fetch('/api/upload', {method: 'POST', body: form});
-      return await res.json(); // {id, name}
+      return (await res.json()) as UploadMeta;
     },
   });
 
+  const attachmentPicker = (
+    <AttachmentPicker
+      uploadOnly
+      fileDialogProps={{
+        title: 'Attach files',
+        multiple: true,
+        onAdd: addFiles,
+        onCancel: reset,
+        files: entries.map((entry) => ({
+          id: entry.id,
+          name: entry.file.name,
+          size: entry.file.size,
+          mimeType: entry.file.type || undefined,
+          status: (() => {
+            if (entry.status === 'uploading') return 'loading';
+            if (entry.status === 'done') return 'success';
+            if (entry.status === 'error') return 'error';
+            return undefined;
+          })(),
+          onRemove: () => removeFile(entry.id),
+        })),
+      }}
+    />
+  );
+
+  return {attachmentPicker, entries, removeFile, reset, uploadedMetas};
+}
+```
+
+Mount the picker in the prompt input footer and mirror the queue as removable chips in the header:
+
+```tsx
+function ChatWithAttachments() {
+  const {attachmentPicker, entries, removeFile, reset, uploadedMetas} = useAttachmentPicker();
+
+  const handleSendMessage = async (data: TSubmitData) => {
+    // `uploadedMetas` holds the backend metadata of successfully uploaded files.
+    const fileAttachments = uploadedMetas.map((meta) => ({
+      id: meta.id,
+      name: meta.name,
+      mimeType: meta.mimeType,
+    }));
+    reset();
+    await sendToBackend({content: data.content, fileAttachments});
+  };
+
   return (
-    <>
-      <AttachmentPicker store={upload} />
-      <FileUploadDialog store={upload} />
-    </>
+    <ChatContainer
+      messages={messages}
+      status={status}
+      onSendMessage={handleSendMessage}
+      promptInputProps={{
+        view: 'full',
+        headerProps: {
+          contextItems: entries.map((entry) => ({
+            id: entry.id,
+            content: entry.file.name,
+            onRemove: () => removeFile(entry.id),
+          })),
+        },
+        footerProps: {attachmentContent: attachmentPicker},
+      }}
+    />
   );
 }
 ```
 
-`store.files` lists every queued / uploading / uploaded / errored entry; pass it down or read from it when constructing the user message's `fileAttachments`.
+`entries` (not `files`) lists every queued / uploading / done / errored entry, each carrying its
+`status`, `id`, and original `File`; `uploadedMetas` narrows that to the metadata of entries that
+finished uploading. A runnable version of this wiring is in
+[`WithAttachmentInput`](../src/components/pages/ChatContainer/__stories__/parts/attachments.tsx),
+and `InputContextProvider` packages the same logic behind a context — see
+[src/components/molecules/InputContext/InputContextProvider.tsx](../src/components/molecules/InputContext/InputContextProvider.tsx).
 
 ## 3. Custom Message Content Renderer
 
