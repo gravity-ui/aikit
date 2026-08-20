@@ -20,7 +20,7 @@ $block: '.#{variables.$ns}prompt-input-footer';
     &__content {
         display: flex;
         align-items: center;
-        align-self: center;
+        align-self: end;
         flex: 1;
         min-width: 0;
     }

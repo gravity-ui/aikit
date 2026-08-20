@@ -1,3 +1,4 @@
+import {Label} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {PromptInputFooter} from '..';
@@ -107,6 +108,19 @@ export const WithCustomContent: Story = {
             state: 'enabled',
         },
         children: <SwapArea />,
+    },
+    decorators: defaultDecorators,
+};
+
+export const WithShortCustomContent: Story = {
+    args: {
+        submitButton: {
+            // eslint-disable-next-line no-console
+            onClick: async () => console.log('Submit clicked'),
+            state: 'enabled',
+        },
+        buttonSize: 'xl',
+        children: <Label size="m">Context chip</Label>,
     },
     decorators: defaultDecorators,
 };

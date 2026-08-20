@@ -38,4 +38,13 @@ test.describe('PromptInputFooter', {tag: '@PromptInputFooter'}, () => {
 
         await expectScreenshot();
     });
+
+    test('should render custom content lower than the submit button', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<PromptInputFooterStories.WithShortCustomContent />);
+
+        await expectScreenshot();
+    });
 });
