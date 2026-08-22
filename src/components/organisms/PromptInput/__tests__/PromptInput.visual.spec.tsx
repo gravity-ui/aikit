@@ -99,6 +99,23 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await expect(textarea).toHaveJSProperty('selectionEnd', 4);
     });
 
+    test('should preserve explicit selection on the first focus', async ({mount, page}) => {
+        await mount(<PromptInputStories.Playground initialValue="some" />);
+
+        const textarea = page.locator('textarea');
+
+        await textarea.selectText();
+        await page.evaluate(
+            () =>
+                new Promise<void>((resolve) => {
+                    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+                }),
+        );
+
+        await expect(textarea).toHaveJSProperty('selectionStart', 0);
+        await expect(textarea).toHaveJSProperty('selectionEnd', 4);
+    });
+
     test('should render with top panel', async ({mount, expectScreenshot}) => {
         await mount(<PromptInputStories.WithTopPanel />);
 
