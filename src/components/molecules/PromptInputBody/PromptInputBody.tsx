@@ -1,4 +1,4 @@
-import {ReactNode, forwardRef} from 'react';
+import {ReactNode, forwardRef, useRef} from 'react';
 
 import type {TextAreaProps} from '@gravity-ui/uikit';
 import {TextArea} from '@gravity-ui/uikit';
@@ -71,6 +71,32 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
         } = props;
 
         const resolvedSize = useMobileControlSize(size, 'l', 'xl');
+        const hasHandledInitialFocusRef = useRef(false);
+
+        const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement>) => {
+            if (hasHandledInitialFocusRef.current) {
+                return;
+            }
+
+            hasHandledInitialFocusRef.current = true;
+
+            const textarea = event.currentTarget;
+            if (!textarea.value) {
+                return;
+            }
+
+            // Let the browser finish pointer-based caret placement before overriding it.
+            requestAnimationFrame(() => {
+                if (
+                    textarea.isConnected &&
+                    textarea.ownerDocument.activeElement === textarea &&
+                    textarea.selectionStart === textarea.selectionEnd
+                ) {
+                    const caretPosition = textarea.value.length;
+                    textarea.setSelectionRange(caretPosition, caretPosition);
+                }
+            });
+        };
 
         // If custom content is provided, render it
         if (children) {
@@ -94,6 +120,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
                     autoFocus={autoFocus}
                     disabled={disabledInput}
                     onUpdate={onChange}
+                    onFocus={handleFocus}
                     onKeyDown={onKeyDown}
                     view="clear"
                     className={b('textarea')}
