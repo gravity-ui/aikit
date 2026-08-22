@@ -87,7 +87,11 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
 
             // Let the browser finish pointer-based caret placement before overriding it.
             requestAnimationFrame(() => {
-                if (textarea.isConnected && textarea.ownerDocument.activeElement === textarea) {
+                if (
+                    textarea.isConnected &&
+                    textarea.ownerDocument.activeElement === textarea &&
+                    textarea.selectionStart === textarea.selectionEnd
+                ) {
                     const caretPosition = textarea.value.length;
                     textarea.setSelectionRange(caretPosition, caretPosition);
                 }
