@@ -3,7 +3,21 @@ import {useMemo, useRef} from 'react';
 import {isWithMdxArtifacts} from '@diplodoc/mdx-extension';
 import type {MdxArtifacts} from '@diplodoc/mdx-extension';
 import transform from '@diplodoc/transform';
-import '@diplodoc/transform/dist/js/yfm.js';
+// The SPLIT runtime, not the combined `dist/js/yfm.js`, matching what
+// @gravity-ui/markdown-editor imports. Both forms attach global document
+// listeners at import time with no guard against double registration, so an
+// app using aikit alongside markdown-editor (or importing the runtime itself,
+// which is documented in split form) bundled two distinct modules with
+// identical side effects. Every listener fired twice: a YFM term click opened
+// the popup and then immediately hit the isSameTerm branch and closed it, so
+// term popups never stayed open, and code-copy buttons double-fired. Importing
+// the same files lets the bundler dedupe to one runtime instance.
+//
+// Order between the two is irrelevant - each is a self-contained IIFE with
+// its own copy of the shared helpers and no import-time dependency on the
+// other - so they are listed in the order import/order wants.
+import '@diplodoc/transform/dist/js/_yfm-only.js';
+import '@diplodoc/transform/dist/js/base.js';
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {areOptionsEqual, mergeMarkdownTransformOptions} from '../utils/markdownUtils';
