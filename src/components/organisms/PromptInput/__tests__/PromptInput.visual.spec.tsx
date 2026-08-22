@@ -64,6 +64,41 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await expectScreenshot();
     });
 
+    test('should place caret at the end on the first focus only', async ({mount, page}) => {
+        await mount(<PromptInputStories.Playground initialValue="some" />);
+
+        const textarea = page.locator('textarea');
+        const bounds = await textarea.boundingBox();
+        if (!bounds) {
+            throw new Error('Expected the textarea to be visible');
+        }
+
+        await textarea.click({position: {x: bounds.width - 2, y: 1}});
+
+        await expect(textarea).toBeFocused();
+        await expect(textarea).toHaveJSProperty('selectionStart', 4);
+        await expect(textarea).toHaveJSProperty('selectionEnd', 4);
+
+        await textarea.press('Tab');
+        await expect(textarea).not.toBeFocused();
+        await textarea.click({position: {x: 2, y: bounds.height / 2}});
+
+        await expect(textarea).toHaveJSProperty('selectionStart', 0);
+        await expect(textarea).toHaveJSProperty('selectionEnd', 0);
+    });
+
+    test('should place caret at the end on autofocus', async ({mount, page}) => {
+        await mount(
+            <PromptInputStories.Playground initialValue="some" bodyProps={{autoFocus: true}} />,
+        );
+
+        const textarea = page.locator('textarea');
+
+        await expect(textarea).toBeFocused();
+        await expect(textarea).toHaveJSProperty('selectionStart', 4);
+        await expect(textarea).toHaveJSProperty('selectionEnd', 4);
+    });
+
     test('should render with top panel', async ({mount, expectScreenshot}) => {
         await mount(<PromptInputStories.WithTopPanel />);
 
