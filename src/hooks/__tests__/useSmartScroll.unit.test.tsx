@@ -36,7 +36,7 @@ describe('useSmartScroll', () => {
 
     it('should scroll to the bottom on mount by default', () => {
         render(<Harness messagesCount={1} />);
-        expect(scrollTo).toHaveBeenCalled();
+        expect(scrollTo).toHaveBeenCalledWith({top: expect.any(Number), behavior: 'instant'});
     });
 
     it('should not scroll on mount when auto-scroll is disabled', () => {
@@ -48,7 +48,7 @@ describe('useSmartScroll', () => {
         const {rerender} = render(<Harness messagesCount={1} />);
         scrollTo.mockClear();
         rerender(<Harness messagesCount={2} />);
-        expect(scrollTo).toHaveBeenCalled();
+        expect(scrollTo).toHaveBeenCalledWith({top: expect.any(Number), behavior: 'smooth'});
     });
 
     it('should not scroll on a new message when auto-scroll is disabled', () => {
@@ -62,7 +62,7 @@ describe('useSmartScroll', () => {
         const {rerender} = render(<Harness messagesCount={1} status="submitted" />);
         scrollTo.mockClear();
         rerender(<Harness messagesCount={1} status="ready" />);
-        expect(scrollTo).toHaveBeenCalled();
+        expect(scrollTo).toHaveBeenCalledWith({top: expect.any(Number), behavior: 'smooth'});
     });
 
     it('should not scroll on a status change when auto-scroll is disabled', () => {
@@ -78,7 +78,7 @@ describe('useSmartScroll', () => {
         render(<Harness messagesCount={1} status="streaming" isStreaming />);
         scrollTo.mockClear();
         await mutateContainer();
-        expect(scrollTo).toHaveBeenCalled();
+        expect(scrollTo).toHaveBeenCalledWith({top: expect.any(Number), behavior: 'instant'});
     });
 
     it('should not scroll on a streaming mutation when auto-scroll is disabled', async () => {
@@ -112,6 +112,17 @@ describe('useSmartScroll', () => {
         // must have recorded the scroll-up - which the imperative scrollToBottom then respects.
         hookResult.scrollToBottom();
 
+        expect(scrollTo).not.toHaveBeenCalled();
+    });
+
+    it('should not scroll when only auto-scroll flips from disabled to enabled', () => {
+        // No other prop changes here (status/messagesCount stay put), so if autoScroll were ever
+        // added to an effect's dependency array, that effect would spuriously re-fire on this
+        // transition and - since the ref is already updated by the time effects run - the call
+        // would go through uninhibited, unlike the disable direction where the ref masks it.
+        const {rerender} = render(<Harness messagesCount={1} status="ready" autoScroll={false} />);
+        scrollTo.mockClear();
+        rerender(<Harness messagesCount={1} status="ready" autoScroll />);
         expect(scrollTo).not.toHaveBeenCalled();
     });
 });

@@ -101,4 +101,20 @@ describe('useVirtualStickToBottom', () => {
         });
         expect(scrollToRow).not.toHaveBeenCalled();
     });
+
+    it('should not pin when only auto-scroll flips from disabled to enabled', () => {
+        // No other prop changes here (status/messagesCount stay put), so if autoScroll were ever
+        // added to an effect's dependency array, that effect would spuriously re-fire on this
+        // transition and - since the ref is already updated by the time effects run - the call
+        // would go through uninhibited, unlike the disable direction where the ref masks it.
+        const {rerender} = renderStickHook({
+            rowCount: 3,
+            messagesCount: 3,
+            status: 'ready',
+            autoScroll: false,
+        });
+        scrollToRow.mockClear();
+        rerender({rowCount: 3, messagesCount: 3, status: 'ready', autoScroll: true});
+        expect(scrollToRow).not.toHaveBeenCalled();
+    });
 });
