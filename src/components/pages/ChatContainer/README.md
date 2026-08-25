@@ -418,6 +418,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `transformOptions`          | `OptionsType`                          | -                  | -         | Transform options for markdown rendering                                                                                    |
 | `openMarkdownLinksInNewTab` | `boolean`                              | -                  | `false`   | Open markdown links rendered by default message renderers in a new tab, except hash-only and relative same-document anchors |
 | `messageListConfig`         | `MessageListConfig`                    | -                  | -         | Configuration for MessageList (actions, loader statuses)                                                                    |
+| `autoScroll`                | `boolean`                              | -                  | `true`    | Keep the message list pinned to the bottom as the conversation advances. See **Auto-scroll** below                          |
 | `headerProps`               | `Partial<HeaderProps>`                 | -                  | -         | Props override for Header component                                                                                         |
 | `contentProps`              | `Partial<ChatContentProps>`            | -                  | -         | Props override for ChatContent component                                                                                    |
 | `emptyContainerProps`       | `Partial<EmptyContainerProps>`         | -                  | -         | Props override for EmptyContainer                                                                                           |
@@ -438,6 +439,28 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `contentClassName`          | `string`                               | -                  | -         | Additional CSS class for content section                                                                                    |
 | `footerClassName`           | `string`                               | -                  | -         | Additional CSS class for footer section                                                                                     |
 | `qa`                        | `string \| ChatContainerQa`            | -                  | -         | QA/test identifiers: string = root only; object = map or `prefix` (see **QA**)                                              |
+
+### Auto-scroll
+
+Keeps the message list pinned to the bottom as the conversation advances: on mount, when a
+message is appended, when the chat `status` changes, while a response streams in, and when the
+scroll viewport resizes (the mobile on-screen keyboard).
+
+```tsx
+<ChatContainer autoScroll={false} messages={messages} onSendMessage={handleSendMessage} />
+```
+
+`autoScroll={false}` switches all of that off and leaves scroll position entirely to the user.
+Note the consequence: with auto-scroll off, a chat opened with existing history starts scrolled to
+the **top** rather than at the last message. The switch is all-or-nothing.
+
+Two behaviors are deliberately not affected by this prop, in either direction: the guard that
+suspends further auto-scrolling once the user has scrolled up keeps tracking scroll position
+regardless of `autoScroll`, and preserving the viewport when older messages are prepended (via
+`messageListConfig.onLoadPreviousMessages`) is anti-jump behavior that always applies.
+
+See the [MessageList README](../../organisms/MessageList/README.md#auto-scroll) for the
+underlying implementation this wires into.
 
 ## Types
 

@@ -115,6 +115,19 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     virtualized?: boolean;
     /** Last scrollable row rendered after all messages. */
     footerContent?: React.ReactNode;
+    /**
+     * Keeps the list pinned to the bottom as the conversation advances: on mount, when a message
+     * is appended, when the chat `status` changes, while a response streams in, and when the
+     * scroll viewport resizes. Set to `false` to leave the scroll position entirely under the
+     * user's control.
+     *
+     * Scrolling is always suspended while the user has scrolled up, regardless of this prop.
+     * Re-enabling takes effect at the next scroll trigger; it does not scroll to the bottom
+     * immediately.
+     *
+     * @default true
+     */
+    autoScroll?: boolean;
 };
 
 export function MessageList<TContent extends TMessageContent = never>(
@@ -155,6 +168,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     ratingBlockProps,
     actionPopupProps,
     footerContent,
+    autoScroll,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
@@ -170,6 +184,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
         isStreaming: isStreaming || isSubmitted,
         messagesCount: messages.length,
         status,
+        autoScroll,
     });
 
     // Preserve scroll position when older messages are loaded

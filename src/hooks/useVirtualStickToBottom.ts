@@ -36,6 +36,13 @@ export interface UseVirtualStickToBottomParams {
     streamingSignal?: unknown;
     /** Value that changes when a trailing non-message row appears or disappears. */
     trailingContentSignal?: unknown;
+    /**
+     * Keep the list pinned to the bottom automatically. Set to `false` to leave the scroll
+     * position entirely under the user's control. Does not affect the prepend/anti-jump restore.
+     *
+     * @default true
+     */
+    autoScroll?: boolean;
 }
 
 /**
@@ -61,12 +68,17 @@ export function useVirtualStickToBottom({
     headerOffset = 0,
     streamingSignal,
     trailingContentSignal,
+    autoScroll = true,
 }: UseVirtualStickToBottomParams) {
     const [listApi, listRef] = useListCallbackRef();
     // Drives a shimmer overlay while older messages are being prepended and the scroll is restored.
     const [isPrepending, setIsPrepending] = useState(false);
     const userScrolledUpRef = useRef(false);
     const prependingRef = useRef(false);
+    // Read at fire time rather than through effect dependencies, so that toggling the flag does
+    // not re-run - and so re-fire - the effects below.
+    const autoScrollRef = useRef(autoScroll);
+    autoScrollRef.current = autoScroll;
     const shimmerTimerRef = useRef<ReturnType<typeof setTimeout>>();
     const prevFirstIdRef = useRef(firstMessageId);
     const prevMessagesCountRef = useRef(messagesCount);
@@ -106,14 +118,24 @@ export function useVirtualStickToBottom({
     // position computed from (partly estimated) row heights, so a single call lands short; once the
     // bottom rows render and are measured, the next frame re-targets the now-lower bottom.
     const pinToBottom = useCallback(() => {
-        if (userScrolledUpRef.current || prependingRef.current || rowCountRef.current <= 0) {
+        if (
+            !autoScrollRef.current ||
+            userScrolledUpRef.current ||
+            prependingRef.current ||
+            rowCountRef.current <= 0
+        ) {
             return;
         }
         cancelPendingScroll();
         let frame = 0;
         const step = () => {
             const api = listApiRef.current;
-            if (userScrolledUpRef.current || prependingRef.current || !api) {
+            if (
+                !autoScrollRef.current ||
+                userScrolledUpRef.current ||
+                prependingRef.current ||
+                !api
+            ) {
                 return;
             }
             api.scrollToRow({index: rowCountRef.current - 1, align: 'end', behavior: 'instant'});

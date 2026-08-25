@@ -199,6 +199,7 @@ export function ChatContainer(props: ChatContainerProps) {
         openMarkdownLinksInNewTab,
         mdxProps,
         messageListConfig,
+        autoScroll,
         mascotConfig,
         headerProps = {},
         contentProps = {},
@@ -483,6 +484,7 @@ export function ChatContainer(props: ChatContainerProps) {
     const messageListProps = useMemo(
         () => ({
             ...messageListConfig,
+            autoScroll,
             messages,
             status,
             errorMessage: texts.errorText
@@ -524,6 +526,7 @@ export function ChatContainer(props: ChatContainerProps) {
             openMarkdownLinksInNewTab,
             mdxProps,
             messageListConfig,
+            autoScroll,
             qaMap,
             texts.errorText,
             mascotNode,

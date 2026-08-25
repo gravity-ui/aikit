@@ -25,6 +25,7 @@ export {
     WithSuggestionDataCallback,
     WithMessages,
     WithStreaming,
+    WithAutoScrollDisabled,
     WithVirtualizedStreaming,
     VirtualizationComparison,
     WithMarkdownLinksInNewTab,

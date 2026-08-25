@@ -712,3 +712,81 @@ export const WithHistory: Story = {
     },
     decorators: defaultDecorators,
 };
+
+/**
+ * Streaming with `autoScroll={false}`.
+ *
+ * The list never scrolls itself: it does not jump to the last message on open, does not follow
+ * new messages, and does not chase the answer while it streams in. Scroll position stays entirely
+ * under the user's control.
+ */
+export const WithAutoScrollDisabled: Story = {
+    args: {
+        showActionsOnHover: true,
+        autoScroll: false,
+    },
+    render: (args) => {
+        const [messages, setMessages] = useState<TChatMessage[]>(() => createLargeHistory(20));
+        const [status, setStatus] = useState<ChatStatus>('ready');
+
+        const handleSendMessage = async (data: TSubmitData) => {
+            const userMessageId = createMessageId('user');
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: userMessageId,
+                    role: 'user',
+                    content: data.content,
+                    actions: createMessageActions(userMessageId, 'user'),
+                },
+            ]);
+
+            setStatus('streaming');
+
+            const assistantMessageId = createMessageId('assistant');
+            const fullResponse =
+                'This response is long on purpose. With `autoScroll={false}` the viewport stays ' +
+                'exactly where you left it while these words arrive, instead of being dragged to ' +
+                'the bottom on every token. Note that the chat also opened at the top rather than ' +
+                'at the last message - that is the same switch at work.';
+
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: assistantMessageId,
+                    role: 'assistant',
+                    content: '',
+                    actions: createMessageActions(assistantMessageId, 'assistant'),
+                },
+            ]);
+
+            const words = fullResponse.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                const currentText = words.slice(0, i + 1).join(' ');
+                setMessages((prev) =>
+                    prev.map((msg) =>
+                        msg.id === assistantMessageId ? {...msg, content: currentText} : msg,
+                    ),
+                );
+            }
+
+            setStatus('ready');
+        };
+
+        const handleCancel = async () => {
+            setStatus('ready');
+        };
+
+        return (
+            <ChatContainer
+                {...args}
+                messages={messages}
+                onSendMessage={handleSendMessage}
+                onCancel={handleCancel}
+                status={status}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};

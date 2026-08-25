@@ -396,6 +396,7 @@ import {MessageList} from '@/components/organisms';
 | `ratingBlockProps`              | `RatingBlockProps`                                               | -        | -                                    | Rating block configuration (for CSAT or other feedback use cases) - renders after messages list                                                            |
 | `actionPopupProps`              | `MessageListActionPopupConfig`                                   | -        | -                                    | Global configuration for action popups (title, subtitle, placement, className, qa)                                                                         |
 | `virtualized`                   | `boolean`                                                        | -        | `false`                              | Enable windowed rendering via `react-window` for very large histories. Requires a height-constrained container.                                            |
+| `autoScroll`                    | `boolean`                                                        | -        | `true`                               | Keep the list pinned to the bottom as the conversation advances. `false` leaves scroll position entirely under the user's control                          |
 | `hasPreviousMessages`           | `boolean`                                                        | -        | `false`                              | Whether there are older messages to load (shows scroll trigger with loader)                                                                                |
 | `onLoadPreviousMessages`        | `() => void`                                                     | -        | -                                    | Callback to load previous messages when user scrolls to the top                                                                                            |
 | `className`                     | `string`                                                         | -        | -                                    | Additional CSS class                                                                                                                                       |
@@ -416,6 +417,30 @@ enum MessageListQa {
 implementations share this behavior. Keep its outer box size stable while changing animated mascot
 states so scroll anchoring remains predictable. The row is aligned to the left edge, matching the
 assistant-message column.
+
+### Auto-scroll
+
+Keeps the list pinned to the bottom as the conversation advances: on mount, when a message is
+appended, when the chat `status` changes, while a response streams in, and when the scroll
+viewport resizes (the mobile on-screen keyboard). It already yields as soon as the user scrolls
+up.
+
+`autoScroll={false}` switches all of that off and leaves scroll position entirely to the user:
+
+```tsx
+<MessageList messages={messages} autoScroll={false} />
+```
+
+Note the consequence: with auto-scroll off, a chat with history opens scrolled to the **top**, not
+at the last message. The switch is all-or-nothing.
+
+Preserving the viewport when older messages are prepended is anti-jump behavior, so it is
+deliberately not affected by this prop and always applies.
+
+`useSmartScroll` (the hook backing this component) still returns `scrollToBottom`, so a direct
+hook consumer can drive the scroll from code — note it remains subject to the user-scrolled-up
+guard, so it is a no-op exactly while the user has scrolled away from the bottom. `MessageList`
+does not currently expose it.
 
 ## Styling
 

@@ -82,6 +82,7 @@ export type MessageListConfig = Omit<
     | 'transformOptions'
     | 'openMarkdownLinksInNewTab'
     | 'mdxProps'
+    | 'autoScroll'
 >;
 
 /**
@@ -258,6 +259,19 @@ export interface ChatContainerProps {
     // Configuration
     /** MessageList configuration for actions and loader behavior */
     messageListConfig?: MessageListConfig;
+    /**
+     * Keeps the message list pinned to the bottom as the conversation advances: on mount, when a
+     * message is appended, when the chat `status` changes, while a response streams in, and when
+     * the scroll viewport resizes. Set to `false` to leave the scroll position entirely under the
+     * user's control.
+     *
+     * Scrolling is always suspended while the user has scrolled up, regardless of this prop.
+     * Re-enabling takes effect at the next scroll trigger; it does not scroll to the bottom
+     * immediately.
+     *
+     * @default true
+     */
+    autoScroll?: boolean;
     /** Mascot renderer, assets and lifecycle configuration. */
     mascotConfig?: MascotConfig;
 
