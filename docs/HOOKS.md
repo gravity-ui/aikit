@@ -52,15 +52,18 @@ function useToolMessage(options: ToolMessageProps): ToolMessageState;
 Keeps the scroll container pinned to the bottom while messages stream in, but yields to the user as soon as they scroll up. Used by `MessageList`.
 
 ```typescript
-function useSmartScroll<T extends HTMLElement>(options?: {
-  threshold?: number; // px from bottom to be "at bottom" — default 50
-  enabled?: boolean;
+function useSmartScroll<T extends HTMLElement>(options: {
+  isStreaming?: boolean; // pin to the growing last row while a response streams in
+  messagesCount: number; // drives auto-scroll when a message is appended
+  status?: ChatStatus;
+  autoScroll?: boolean; // false disables every automatic trigger — default true
 }): {
-  ref: React.RefObject<T>;
-  isAtBottom: boolean;
-  scrollToBottom: () => void;
+  containerRef: React.RefObject<T>;
+  scrollToBottom: (behavior?: ScrollBehavior) => void;
 };
 ```
+
+Attach `containerRef` to the scrollable element. `autoScroll` gates only the automatic triggers — the returned `scrollToBottom` always works, so a consumer can disable auto-scroll and still drive it from code.
 
 ## `useScrollPreservation`
 
