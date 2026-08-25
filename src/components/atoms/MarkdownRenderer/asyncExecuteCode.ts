@@ -12,7 +12,13 @@ export function resolveCspNonce(nonce?: string) {
         return nonce;
     }
 
-    return document.querySelector<HTMLScriptElement>('script[nonce]')?.nonce || undefined;
+    for (const script of document.querySelectorAll<HTMLScriptElement>('script[nonce]')) {
+        if (script.nonce) {
+            return script.nonce;
+        }
+    }
+
+    return undefined;
 }
 
 /** Executes code through a nonce-aware script without using `eval` or `new Function`. */

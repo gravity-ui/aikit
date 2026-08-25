@@ -65,9 +65,9 @@ This block is rendered by a **React component**.
 Compiled MDX artifacts are executed through an inline `<script>` instead of `eval` or
 `new Function`. Services with a nonce-based `script-src` Content Security Policy can pass the
 nonce through `mdxOptions.nonce`; the renderer applies it to every temporary MDX script. When the
-option is omitted, the renderer reuses the nonce from the first `<script nonce="...">` in the
-document. If no nonce is available, the renderer preserves the extension's legacy `new Function`
-execution path for backward compatibility.
+option is omitted, the renderer reuses the first non-empty nonce from a
+`<script nonce="...">` in the document. If no nonce is available, the renderer preserves the
+extension's legacy `new Function` execution path for backward compatibility.
 
 ### Per-message context (`mdxContext` + `useMdxContext`)
 

@@ -44,6 +44,10 @@ describe('asyncExecuteCode', () => {
     });
 
     test('should discover the nonce from an existing script', async () => {
+        const emptyNonceScript = document.createElement('script');
+        emptyNonceScript.setAttribute('nonce', '');
+        document.head.appendChild(emptyNonceScript);
+
         const pageScript = document.createElement('script');
         pageScript.nonce = 'page-nonce';
         document.head.appendChild(pageScript);
