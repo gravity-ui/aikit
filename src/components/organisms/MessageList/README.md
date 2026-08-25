@@ -420,9 +420,10 @@ assistant-message column.
 
 ### Auto-scroll
 
-By default the list keeps itself pinned to the bottom as the conversation advances — on mount, on
-new messages, while a response streams in, and when the scroll viewport resizes (the mobile
-on-screen keyboard). It already yields as soon as the user scrolls up.
+Keeps the list pinned to the bottom as the conversation advances: on mount, when a message is
+appended, when the chat `status` changes, while a response streams in, and when the scroll
+viewport resizes (the mobile on-screen keyboard). It already yields as soon as the user scrolls
+up.
 
 `autoScroll={false}` switches all of that off and leaves scroll position entirely to the user:
 

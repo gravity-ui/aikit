@@ -55,7 +55,7 @@ Keeps the scroll container pinned to the bottom while messages stream in, but yi
 function useSmartScroll<T extends HTMLElement>(options: {
   isStreaming?: boolean; // pin to the growing last row while a response streams in
   messagesCount: number; // drives auto-scroll when a message is appended
-  status?: ChatStatus;
+  status?: ChatStatus; // a status transition also scrolls to the bottom
   autoScroll?: boolean; // false disables every automatic trigger — default true
 }): {
   containerRef: React.RefObject<T>;
