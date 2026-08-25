@@ -7,7 +7,7 @@ import type {MDXComponents, MDXModule, MDXProps} from 'mdx/types';
 import * as runtime from 'react/jsx-runtime';
 
 import {MdxDataContext} from './MdxContext';
-import {asyncExecuteCode} from './asyncExecuteCode';
+import {asyncExecuteCode, resolveCspNonce} from './asyncExecuteCode';
 
 interface MdxLoaderState extends IdMdxComponentLoader {
     idMdx?: Record<string, string>;
@@ -16,10 +16,11 @@ interface MdxLoaderState extends IdMdxComponentLoader {
 
 function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: string) {
     const idMdx = mdxArtifacts?.idMdx;
+    const resolvedNonce = resolveCspNonce(nonce);
     const [state, setState] = useState<MdxLoaderState>({isSuccess: false});
 
     useEffect(() => {
-        if (!nonce) {
+        if (!resolvedNonce) {
             return () => undefined;
         }
 
@@ -32,7 +33,7 @@ function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: s
                 for (const [artifactId, code] of Object.entries(idMdx ?? {})) {
                     const fn = await asyncExecuteCode<(jsxRuntime: typeof runtime) => MDXModule>(
                         code,
-                        nonce,
+                        resolvedNonce,
                     );
 
                     if (!isActive) {
@@ -43,11 +44,11 @@ function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: s
                 }
 
                 if (isActive) {
-                    setState({idMdx, nonce, data, isSuccess: true});
+                    setState({idMdx, nonce: resolvedNonce, data, isSuccess: true});
                 }
             } catch {
                 if (isActive) {
-                    setState({idMdx, nonce, isSuccess: false});
+                    setState({idMdx, nonce: resolvedNonce, isSuccess: false});
                 }
             }
         })();
@@ -55,13 +56,13 @@ function useMdxComponentLoader(mdxArtifacts: MdxArtifacts | undefined, nonce?: s
         return () => {
             isActive = false;
         };
-    }, [idMdx, nonce]);
+    }, [idMdx, resolvedNonce]);
 
-    if (!nonce) {
+    if (!resolvedNonce) {
         return undefined;
     }
 
-    if (state.idMdx !== idMdx || state.nonce !== nonce) {
+    if (state.idMdx !== idMdx || state.nonce !== resolvedNonce) {
         return {isSuccess: false};
     }
 
@@ -77,7 +78,7 @@ export interface MdxPortalsProps {
     components?: MDXComponents;
     /** Artifacts collected by the MDX transform, required to hydrate the components. */
     mdxArtifacts?: MdxArtifacts;
-    /** CSP nonce applied to scripts that execute compiled MDX artifacts. */
+    /** CSP nonce applied to compiled MDX scripts. Defaults to a nonce found in the document. */
     nonce?: string;
     /** Arbitrary value exposed to the MDX components through {@link MdxDataContext}. */
     mdxContext?: Record<string, unknown>;

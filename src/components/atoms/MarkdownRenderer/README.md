@@ -52,7 +52,7 @@ This block is rendered by a **React component**.
     components: {Callout},
     // Optional: only treat these tags as MDX components
     tagNames: ['Callout'],
-    // Required when the service enforces a nonce-based script-src CSP
+    // Optional: pass the nonce explicitly instead of discovering it from the page
     nonce: cspNonce,
   }}
 />;
@@ -63,10 +63,11 @@ This block is rendered by a **React component**.
 > blocks and its artifacts must be collected from the whole document.
 
 Compiled MDX artifacts are executed through an inline `<script>` instead of `eval` or
-`new Function`. Services with a nonce-based `script-src` Content Security Policy must pass the
-nonce through `mdxOptions.nonce`; the renderer applies it to every temporary MDX script.
-When `nonce` is omitted, the renderer preserves the extension's legacy `new Function` execution
-path for backward compatibility.
+`new Function`. Services with a nonce-based `script-src` Content Security Policy can pass the
+nonce through `mdxOptions.nonce`; the renderer applies it to every temporary MDX script. When the
+option is omitted, the renderer reuses the nonce from the first `<script nonce="...">` in the
+document. If no nonce is available, the renderer preserves the extension's legacy `new Function`
+execution path for backward compatibility.
 
 ### Per-message context (`mdxContext` + `useMdxContext`)
 
@@ -128,7 +129,7 @@ instead of a static value. It is called with the concrete message and its return
 | ------------ | --------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
 | `components` | `MDXComponents` | Yes      | -       | Map of tag name → React component used to render embedded MDX/JSX in the content (e.g. `{Callout, StatusBadge}`). |
 | `tagNames`   | `string[]`      | -        | -       | Restricts which tags are processed as MDX components. When omitted, the extension's default detection is used.    |
-| `nonce`      | `string`        | -        | -       | CSP nonce applied to temporary inline scripts. When omitted, MDX uses the legacy `new Function` execution path.   |
+| `nonce`      | `string`        | -        | -       | CSP nonce applied to temporary inline scripts. When omitted, it is discovered from an existing script.            |
 
 ## Styling
 
