@@ -121,6 +121,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     ratingBlockProps,
     actionPopupProps,
     footerContent,
+    autoScroll,
 }: MessageListProps<TContent>) {
     const isStreaming = status === 'streaming' || status === 'streaming_loading';
     const isSubmitted = status === 'submitted';
@@ -209,6 +210,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
         // growing last row even while react-window keeps the same set of rows mounted.
         streamingSignal: isNotCompleted ? messages[messages.length - 1] : undefined,
         trailingContentSignal: footerOffset,
+        autoScroll,
     });
 
     // Close a popup whose anchor row scrolls out of view (react-window unmounts off-screen rows,
