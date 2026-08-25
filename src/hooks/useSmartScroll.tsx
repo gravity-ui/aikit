@@ -13,13 +13,25 @@ export function useSmartScroll<T extends HTMLElement>({
     isStreaming = false,
     messagesCount,
     status,
+    autoScroll = true,
 }: {
     isStreaming?: boolean;
     messagesCount: number;
     status?: ChatStatus;
+    /**
+     * Keep the container pinned to the bottom automatically. Set to `false` to leave the scroll
+     * position entirely under the user's control. Never gates the returned `scrollToBottom`.
+     *
+     * @default true
+     */
+    autoScroll?: boolean;
 }): UseSmartScrollReturn<T> {
     const containerRef = useRef<T>(null);
     const userScrolledUpRef = useRef(false);
+    // Read at fire time rather than through effect dependencies, so that toggling the flag does
+    // not re-run - and so re-fire - the effects below.
+    const autoScrollRef = useRef(autoScroll);
+    autoScrollRef.current = autoScroll;
 
     const scrollToBottom = useCallback((behavior: ScrollBehavior = 'instant') => {
         if (!userScrolledUpRef.current) {
@@ -33,12 +45,24 @@ export function useSmartScroll<T extends HTMLElement>({
         }
     }, []);
 
+    // Entry point for the automatic triggers. `scrollToBottom` itself stays ungated so consumers
+    // can keep driving the scroll imperatively while automatic scrolling is off.
+    const autoScrollToBottom = useCallback(
+        (behavior: ScrollBehavior = 'instant') => {
+            if (autoScrollRef.current) {
+                scrollToBottom(behavior);
+            }
+        },
+        [scrollToBottom],
+    );
+
     // Initial scroll to bottom
     useEffect(() => {
-        scrollToBottom();
+        autoScrollToBottom();
     }, []);
 
-    // Handle user scroll events
+    // Handle user scroll events. Never gated: this tracks user intent, and it has to stay accurate
+    // while auto-scroll is off so that re-enabling it later does not resume from a stale state.
     useEffect(() => {
         const container = containerRef.current;
         if (!container) {
@@ -72,13 +96,13 @@ export function useSmartScroll<T extends HTMLElement>({
             return undefined;
         }
 
-        const observer = new ResizeObserver(() => scrollToBottom('instant'));
+        const observer = new ResizeObserver(() => autoScrollToBottom('instant'));
         observer.observe(container);
 
         return () => {
             observer.disconnect();
         };
-    }, [scrollToBottom]);
+    }, [autoScrollToBottom]);
 
     // Handle DOM mutations during streaming
     useEffect(() => {
@@ -88,7 +112,7 @@ export function useSmartScroll<T extends HTMLElement>({
         }
 
         const observer = new MutationObserver(() => {
-            scrollToBottom('instant');
+            autoScrollToBottom('instant');
         });
 
         observer.observe(container, {
@@ -101,18 +125,18 @@ export function useSmartScroll<T extends HTMLElement>({
         return () => {
             observer.disconnect();
         };
-    }, [isStreaming]);
+    }, [isStreaming, autoScrollToBottom]);
 
     // Handle status changes
     useEffect(() => {
-        scrollToBottom('smooth');
-    }, [status]);
+        autoScrollToBottom('smooth');
+    }, [status, autoScrollToBottom]);
 
     useEffect(() => {
         if (messagesCount) {
-            scrollToBottom('smooth');
+            autoScrollToBottom('smooth');
         }
-    }, [messagesCount]);
+    }, [messagesCount, autoScrollToBottom]);
 
     return {
         containerRef,
