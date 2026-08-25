@@ -63,7 +63,7 @@ function useSmartScroll<T extends HTMLElement>(options: {
 };
 ```
 
-Attach `containerRef` to the scrollable element. `autoScroll` gates only the automatic triggers — the returned `scrollToBottom` always works, so a consumer can disable auto-scroll and still drive it from code.
+Attach `containerRef` to the scrollable element. `autoScroll` gates only the automatic triggers. `useSmartScroll` still returns `scrollToBottom`, so a direct hook consumer can drive the scroll from code — note it remains subject to the user-scrolled-up guard, so it is a no-op exactly while the user has scrolled away from the bottom. `MessageList` (which uses this hook internally) does not currently expose it.
 
 ## `useScrollPreservation`
 

@@ -122,6 +122,8 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
      * user's control.
      *
      * Scrolling is always suspended while the user has scrolled up, regardless of this prop.
+     * Re-enabling takes effect at the next scroll trigger; it does not scroll to the bottom
+     * immediately.
      *
      * @default true
      */

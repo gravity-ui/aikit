@@ -434,10 +434,13 @@ up.
 Note the consequence: with auto-scroll off, a chat with history opens scrolled to the **top**, not
 at the last message. The switch is all-or-nothing.
 
-Two behaviors are deliberately not affected by this prop. Preserving the viewport when older
-messages are prepended is anti-jump behavior, so it always applies. And the `scrollToBottom`
-function returned by `useSmartScroll` keeps working, so a consumer can disable auto-scroll and
-still drive the scroll from code.
+Preserving the viewport when older messages are prepended is anti-jump behavior, so it is
+deliberately not affected by this prop and always applies.
+
+`useSmartScroll` (the hook backing this component) still returns `scrollToBottom`, so a direct
+hook consumer can drive the scroll from code — note it remains subject to the user-scrolled-up
+guard, so it is a no-op exactly while the user has scrolled away from the bottom. `MessageList`
+does not currently expose it.
 
 ## Styling
 
