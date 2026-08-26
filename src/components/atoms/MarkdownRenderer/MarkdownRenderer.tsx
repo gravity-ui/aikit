@@ -28,7 +28,7 @@ export interface MarkdownRendererMdxOptions {
     components: MDXComponents;
     /** Optional list of tag names to limit which components are processed as MDX. */
     tagNames?: string[];
-    /** CSP nonce applied to scripts that execute compiled MDX artifacts. */
+    /** CSP nonce applied to compiled MDX scripts. Defaults to a nonce found in the document. */
     nonce?: string;
 }
 

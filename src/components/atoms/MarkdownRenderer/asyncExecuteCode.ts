@@ -7,10 +7,25 @@ interface ExecutionHandler<T> {
 
 type ExecutionHandlers = Record<string, ExecutionHandler<unknown>>;
 
+export function resolveCspNonce(nonce?: string) {
+    if (nonce || typeof document === 'undefined') {
+        return nonce;
+    }
+
+    for (const script of document.querySelectorAll<HTMLScriptElement>('script[nonce]')) {
+        if (script.nonce) {
+            return script.nonce;
+        }
+    }
+
+    return undefined;
+}
+
 /** Executes code through a nonce-aware script without using `eval` or `new Function`. */
 export async function asyncExecuteCode<T>(code: string, nonce?: string): Promise<T> {
     const globalScope = window as unknown as Record<string, unknown>;
     const handlers = (globalScope[HANDLERS_KEY] ??= {}) as ExecutionHandlers;
+    const resolvedNonce = resolveCspNonce(nonce);
 
     let id: string;
     do {
@@ -18,8 +33,8 @@ export async function asyncExecuteCode<T>(code: string, nonce?: string): Promise
     } while (handlers[id]);
 
     const script = document.createElement('script');
-    if (nonce) {
-        script.setAttribute('nonce', nonce);
+    if (resolvedNonce) {
+        script.setAttribute('nonce', resolvedNonce);
     }
 
     const promise = new Promise<T>((resolve, reject) => {
