@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Button, DOMProps, InputControlSize, List, ListItemData, QAProps} from '@gravity-ui/uikit';
 
 import {DateLocaleConfig} from '../../../hooks';
+import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType, ListItemChatData} from '../../../types';
 import {ChatFilterFunction, defaultChatFilter, groupChatsByDate} from '../../../utils/chatUtils';
 import {block} from '../../../utils/cn';
@@ -111,8 +112,10 @@ export function HistoryList(props: HistoryListProps) {
         filterFunction = defaultChatFilter,
         loading = false,
         onChatClick,
-        size = 'm',
+        size: sizeProp,
     } = props;
+
+    const size = useMobileControlSize(sizeProp, 'm', 'xl');
 
     const [filteredItemCount, setFilteredItemCount] = useState<number | null>(null);
     const [loadedChats, setLoadedChats] = useState<ChatType[]>([]);
@@ -276,6 +279,7 @@ export function HistoryList(props: HistoryListProps) {
                 showActions={showActions}
                 onDeleteClick={onDeleteChat ? handleDeleteClick : undefined}
                 isActive={isActive}
+                size={sizeProp}
             />
         );
     };

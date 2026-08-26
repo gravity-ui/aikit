@@ -1,3 +1,4 @@
+@use '../../../styles/mixins';
 @use '../../../styles/variables';
 
 $block: '.#{variables.$ns}header';
@@ -58,6 +59,40 @@ $block: '.#{variables.$ns}header';
     }
 
     &__menu-sheet-content {
-        padding-bottom: var(--g-spacing-2);
+        @include mixins.sheet-content-padding(
+            var(--g-aikit-header-menu-sheet-inline-padding),
+            var(--g-aikit-header-menu-sheet-bottom-padding)
+        );
+
+        // The sheet is portaled to the body, so the mobile typography of the chat container does
+        // not reach the menu and the font size is set here.
+        --g-text-body-2-font-size: var(--g-aikit-header-menu-item-font-size);
+
+        // `Sheet` takes the accessible name of the dialog from the same `title` prop that renders
+        // the visible heading (`aria-label={title}`), so the title has to be passed and hidden
+        // here. Replace this with a supported prop once uikit can separate the two.
+        &_without-title {
+            @include mixins.sheet-hidden-title;
+        }
+    }
+
+    &__menu-item {
+        display: flex;
+        align-items: center;
+        min-height: var(--g-aikit-header-menu-item-min-height);
+        padding-inline: var(--g-aikit-header-menu-item-inline-padding);
+    }
+
+    // uikit wraps the item children in its own block-level node, so the row lives inside ours
+    &__menu-item-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    &__menu-item-icon {
+        display: flex;
+        align-items: center;
+        margin-inline-end: var(--g-aikit-header-menu-item-icon-gap);
     }
 }

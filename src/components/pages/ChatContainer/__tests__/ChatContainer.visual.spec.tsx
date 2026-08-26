@@ -50,6 +50,40 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render mobile mode with floating header', async ({mount, expectScreenshot}) => {
+        const component = await mount(<ChatContainerStories.MobileFloatingHeader />);
+
+        await expect(component.locator('.g-aikit-chat-container__header')).toHaveCSS(
+            'position',
+            'absolute',
+        );
+
+        await expectScreenshot();
+    });
+
+    test('should keep the floating header height when its content is taller', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        const component = await mount(<ChatContainerStories.MobileFloatingHeaderTallContent />);
+
+        await expect(component.locator('.g-aikit-chat-container__header')).toHaveCSS(
+            'height',
+            '60px',
+        );
+
+        await expectScreenshot();
+    });
+
+    test('should render mobile mode with oversized suggestions', async ({
+        mount,
+        expectScreenshot,
+    }) => {
+        await mount(<ChatContainerStories.MobileSuggestionsOverflow />);
+
+        await expectScreenshot();
+    });
+
     test('should render with history', async ({mount, expectScreenshot}) => {
         await mount(<ChatContainerStories.WithHistory />);
 

@@ -79,6 +79,7 @@ export function Header(props: HeaderProps) {
         menuButtonIcon,
         menuButtonQa,
         menuItemQa,
+        showSheetTitle,
         titlePosition,
         withIcon,
         showTitle = true,
@@ -216,22 +217,29 @@ export function Header(props: HeaderProps) {
                         title={i18n('menu-sheet-title')}
                         visible={isMenuSheetVisible}
                         onClose={() => setIsMenuSheetVisible(false)}
-                        contentClassName={b('menu-sheet-content')}
+                        contentClassName={b('menu-sheet-content', {
+                            'without-title': !showSheetTitle,
+                        })}
                         qa="header-menu-sheet-container"
                     >
                         <Menu size="xl" qa="header-menu-sheet">
                             {normalizedMenuItems.map((item) => (
                                 <Menu.Item
                                     key={item.id}
+                                    className={b('menu-item')}
                                     disabled={item.disabled}
-                                    iconStart={item.icon}
                                     qa={item.qa}
                                     onClick={() => {
                                         setIsMenuSheetVisible(false);
                                         item.onClick();
                                     }}
                                 >
-                                    {item.label}
+                                    <span className={b('menu-item-content')}>
+                                        {item.icon ? (
+                                            <span className={b('menu-item-icon')}>{item.icon}</span>
+                                        ) : null}
+                                        {item.label}
+                                    </span>
                                 </Menu.Item>
                             ))}
                         </Menu>
@@ -268,6 +276,7 @@ export function Header(props: HeaderProps) {
         menuButtonIcon,
         menuButtonQa,
         menuButtonTooltip,
+        showSheetTitle,
     ]);
 
     const [leftBaseActions, rightBaseActions] = useMemo(() => {

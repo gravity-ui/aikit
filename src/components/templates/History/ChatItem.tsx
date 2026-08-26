@@ -1,8 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 
 import {TrashBin} from '@gravity-ui/icons';
-import {Icon, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
+import {Icon, InputControlSize, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
 
+import {getControlIconSize, resolveMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType} from '../../../types';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
@@ -19,6 +20,8 @@ export interface ChatItemProps {
     showActions: boolean;
     isActive?: boolean;
     onDeleteClick?: (e: React.MouseEvent, chat: ChatType) => Promise<void>;
+    /** Size of the row actions (default: `s`, `xl` in mobile mode) */
+    size?: InputControlSize;
 }
 
 /**
@@ -27,13 +30,19 @@ export interface ChatItemProps {
  *
  * @returns React element
  */
-export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemProps) {
+export function ChatItem({chat, showActions, isActive, onDeleteClick, size}: ChatItemProps) {
     const [isDeleteProccesing, setIsDeleteProcessing] = useState(false);
     const [hasOverflow, setHasOverflow] = useState(false);
     const labelRef = useRef<HTMLDivElement>(null);
     const chatLabel = chat.lastMessage || chat.name;
     const isMobile = useMobile();
-    const deleteButtonSize = isMobile ? 'm' : 's';
+    const deleteButtonSize = resolveMobileControlSize({
+        size,
+        desktopDefault: 's',
+        mobileDefault: 'xl',
+        isMobile,
+    });
+    const deleteIconSize = getControlIconSize(deleteButtonSize);
 
     useEffect(() => {
         const label = labelRef.current;
@@ -92,7 +101,7 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick}: ChatItemP
                     onClick={handleDeleteChat}
                     tooltipTitle={i18n('tooltip-delete')}
                 >
-                    <Icon className={b('icon-button')} data={TrashBin} size={16} />
+                    <Icon className={b('icon-button')} data={TrashBin} size={deleteIconSize} />
                 </ActionButton>
             ) : null}
         </div>

@@ -131,6 +131,24 @@ test.describe('Header mobile', {tag: '@Header'}, () => {
         await expectScreenshot({component: page});
     });
 
+    test('should hide the menu sheet title but keep the accessible name', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
+        await mount(<HeaderStories.MobileMenuItems showSheetTitle={false} />);
+
+        await page.locator('[data-qa="header-menu-button"]').click();
+
+        const sheet = page.getByRole('dialog', {name: 'More actions'});
+
+        await expect(sheet).toBeVisible();
+        await expect(page.getByText('More actions', {exact: true})).toBeHidden();
+        await page.waitForTimeout(500);
+
+        await expectScreenshot({component: page});
+    });
+
     test('should close the menu sheet after an item click', async ({mount, page}) => {
         await mount(<HeaderStories.MobileMenuItems />);
 

@@ -86,32 +86,37 @@ import ruLocale from 'dayjs/locale/ru.js';
 
 ## Props
 
-| Prop                       | Type                             | Required | Default             | Description                                      |
-| -------------------------- | -------------------------------- | -------- | ------------------- | ------------------------------------------------ |
-| `chats`                    | `ChatType[]`                     | ✓        | -                   | Array of chat items                              |
-| `anchorElement`            | `HTMLElement \| null`            | ✓        | -                   | Anchor element for the popup                     |
-| `open`                     | `boolean`                        | -        | `false`             | Control popup open state                         |
-| `onOpenChange`             | `(open: boolean) => void`        | -        | -                   | Callback when popup state changes                |
-| `selectedChat`             | `ChatType \| null`               | -        | -                   | Currently selected chat                          |
-| `onSelectChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is selected                 |
-| `onDeleteChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is deleted                  |
-| `onLoadMore`               | `() => void` or `OnLoadMoreLazy` | -        | -                   | Callback to load more chats (see Load modes)     |
-| `hasMore`                  | `boolean`                        | -        | `false`             | Whether there are more chats to load             |
-| `loadMode`                 | `'full' \| 'lazy'`               | -        | `'full'`            | Load mode: button (full) or scroll (lazy)        |
-| `searchable`               | `boolean`                        | -        | `true`              | Enable search functionality                      |
-| `groupBy`                  | `'date' \| 'none'`               | -        | `'date'`            | Group chats by date or show flat list            |
-| `dateFormat`               | `string`                         | -        | `YYYY.MM.DD`        | Dayjs format for non-relative date headers       |
-| `dateLocale`               | `string`                         | -        | Browser             | Locale for non-relative date headers             |
-| `dateLocaleConfig`         | `DateLocaleConfig`               | -        | -                   | Dayjs locale configuration for date headers      |
-| `showActions`              | `boolean`                        | -        | `true`              | Show action buttons (delete)                     |
-| `emptyPlaceholder`         | `React.ReactNode`                | -        | -                   | Custom empty state placeholder                   |
-| `emptyFilteredPlaceholder` | `React.ReactNode`                | -        | -                   | Placeholder shown when search returns no results |
-| `loading`                  | `boolean`                        | -        | `false`             | Show loading state                               |
-| `className`                | `string`                         | -        | -                   | Additional CSS class                             |
-| `qa`                       | `string`                         | -        | -                   | QA/test identifier                               |
-| `style`                    | `CSSProperties`                  | -        | -                   | Inline styles                                    |
-| `filterFunction`           | `ChatFilterFunction`             | -        | `defaultChatFilter` | Custom filter function for search                |
-| `size`                     | `'s' \| 'm' \| 'l' \| 'xl'`      | -        | `m`                 | Size of the list                                 |
+| Prop                       | Type                             | Required | Default             | Description                                         |
+| -------------------------- | -------------------------------- | -------- | ------------------- | --------------------------------------------------- |
+| `chats`                    | `ChatType[]`                     | ✓        | -                   | Array of chat items                                 |
+| `anchorElement`            | `HTMLElement \| null`            | ✓        | -                   | Anchor element for the popup                        |
+| `open`                     | `boolean`                        | -        | `false`             | Control popup open state                            |
+| `onOpenChange`             | `(open: boolean) => void`        | -        | -                   | Callback when popup state changes                   |
+| `selectedChat`             | `ChatType \| null`               | -        | -                   | Currently selected chat                             |
+| `onSelectChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is selected                    |
+| `onDeleteChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is deleted                     |
+| `onLoadMore`               | `() => void` or `OnLoadMoreLazy` | -        | -                   | Callback to load more chats (see Load modes)        |
+| `hasMore`                  | `boolean`                        | -        | `false`             | Whether there are more chats to load                |
+| `loadMode`                 | `'full' \| 'lazy'`               | -        | `'full'`            | Load mode: button (full) or scroll (lazy)           |
+| `searchable`               | `boolean`                        | -        | `true`              | Enable search functionality                         |
+| `groupBy`                  | `'date' \| 'none'`               | -        | `'date'`            | Group chats by date or show flat list               |
+| `dateFormat`               | `string`                         | -        | `YYYY.MM.DD`        | Dayjs format for non-relative date headers          |
+| `dateLocale`               | `string`                         | -        | Browser             | Locale for non-relative date headers                |
+| `dateLocaleConfig`         | `DateLocaleConfig`               | -        | -                   | Dayjs locale configuration for date headers         |
+| `showActions`              | `boolean`                        | -        | `true`              | Show action buttons (delete)                        |
+| `emptyPlaceholder`         | `React.ReactNode`                | -        | -                   | Custom empty state placeholder                      |
+| `emptyFilteredPlaceholder` | `React.ReactNode`                | -        | -                   | Placeholder shown when search returns no results    |
+| `loading`                  | `boolean`                        | -        | `false`             | Show loading state                                  |
+| `className`                | `string`                         | -        | -                   | Additional CSS class                                |
+| `qa`                       | `string`                         | -        | -                   | QA/test identifier                                  |
+| `style`                    | `CSSProperties`                  | -        | -                   | Inline styles                                       |
+| `filterFunction`           | `ChatFilterFunction`             | -        | `defaultChatFilter` | Custom filter function for search                   |
+| `size`                     | `'s' \| 'm' \| 'l' \| 'xl'`      | -        | `m`, `xl` on mobile | Size of the list and of the row delete button       |
+| `showSheetTitle`           | `boolean`                        | -        | `true`              | Show the mobile sheet title (stays in `aria-label`) |
+
+Without an explicit `size` the list is `m` on desktop and `xl` in mobile mode, and the row delete
+button follows it: `s` on desktop, `xl` with a `20px` icon on mobile, so a row keeps a comfortable
+touch target. Pass `size` to opt out.
 
 ## Chat Type
 
@@ -354,6 +359,34 @@ The component uses CSS variables for theming:
 | `--g-aikit-chat-history-width`       | Width of the chat history container (default: `360px`)          |
 | `--g-aikit-chat-history-max-height`  | Maximum height of the chat history container (default: `560px`) |
 | `--g-aikit-chat-history-item-height` | Height of chat content item (default: `24px`)                   |
+
+### Mobile Sheet Variables
+
+In mobile mode the history opens in a `Sheet`: the list is flush with the sheet edges, the search
+field has no border, and chat names are `16px/24px`. `env(safe-area-inset-*)` is added by the
+component. Every metric is a variable:
+
+| Variable                                          | Description                                                 |
+| ------------------------------------------------- | ----------------------------------------------------------- |
+| `--g-aikit-history-sheet-inline-padding`          | Side padding of the sheet (default: `var(--g-spacing-3)`)   |
+| `--g-aikit-history-sheet-bottom-padding`          | Bottom padding of the sheet (default: `var(--g-spacing-5)`) |
+| `--g-aikit-history-sheet-list-padding`            | Padding of the chat list (default: `0`)                     |
+| `--g-aikit-history-sheet-filter-inline-padding`   | Side padding of the search field (default: `0`)             |
+| `--g-aikit-history-sheet-filter-border-bottom`    | Border under the search field (default: `none`)             |
+| `--g-aikit-history-sheet-item-inline-end-padding` | Padding between a row and the right edge (default: `0`)     |
+| `--g-aikit-history-mobile-item-font-size`         | Chat name size (default: `16px`)                            |
+| `--g-aikit-history-mobile-item-line-height`       | Chat name line height (default: `24px`)                     |
+
+To bring the desktop metrics back into the sheet:
+
+```css
+.g-root {
+  --g-aikit-history-sheet-list-padding: 0 var(--g-spacing-2) var(--g-spacing-2);
+  --g-aikit-history-sheet-filter-inline-padding: var(--g-spacing-2);
+  --g-aikit-history-sheet-filter-border-bottom: 1px solid var(--g-color-line-generic);
+  --g-aikit-history-sheet-item-inline-end-padding: var(--g-spacing-4);
+}
+```
 
 ```css
 /* Example: Custom dimensions */

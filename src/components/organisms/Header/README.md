@@ -336,6 +336,20 @@ The component uses CSS variables for theming:
 --g-spacing-2                /* Header padding and gap between elements */
 ```
 
+### Menu sheet
+
+In mobile mode additional actions open in a `Sheet`. Its metrics are variables,
+`env(safe-area-inset-*)` is added by the component:
+
+```css
+--g-aikit-header-menu-sheet-inline-padding  /* Side padding of the sheet (default: --g-spacing-5) */
+--g-aikit-header-menu-sheet-bottom-padding  /* Bottom padding of the sheet (default: --g-spacing-5) */
+--g-aikit-header-menu-item-min-height       /* Menu item height, a touch target (default: 44px) */
+--g-aikit-header-menu-item-inline-padding   /* Side padding of a menu item (default: 6px) */
+--g-aikit-header-menu-item-icon-gap         /* Gap between the icon and the label (default: --g-spacing-4) */
+--g-aikit-header-menu-item-font-size        /* Menu font size; the sheet is portaled to the body, so the chat typography does not reach it (default: 16px) */
+```
+
 ## Properties
 
 ### HeaderProps
@@ -366,6 +380,7 @@ The component uses CSS variables for theming:
 | `titlePosition`       | `'left' \| 'center'`                       | -        | `'left'`                     | Title alignment position                                                                                                                   |
 | `withIcon`            | `boolean`                                  | -        | `true`                       | Whether to show icon area                                                                                                                  |
 | `showTitle`           | `boolean`                                  | -        | `true`                       | Whether to show title and preview                                                                                                          |
+| `showSheetTitle`      | `boolean`                                  | -        | `true`                       | Whether to show the mobile menu sheet title; it stays in the dialog `aria-label` either way                                                |
 | `qa`                  | `string`                                   | -        | -                            | QA/test identifier on header root                                                                                                          |
 | `actionQa`            | `Partial<Record<HeaderAction, string>>`    | -        | -                            | Overrides `data-qa` for base actions (default `header-action-${id}`)                                                                       |
 | `actionTooltipTexts`  | `HeaderActionTooltipTexts`                 | -        | -                            | Overrides tooltip texts for base actions                                                                                                   |

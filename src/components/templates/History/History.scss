@@ -1,3 +1,4 @@
+@use '../../../styles/mixins';
 @use '../../../styles/variables';
 @use '../../../styles/functions' as *;
 
@@ -119,6 +120,15 @@ $block: '.#{variables.$ns}history';
     }
 
     &__sheet-content {
+        @include mixins.sheet-content-padding(
+            var(--g-aikit-history-sheet-inline-padding),
+            var(--g-aikit-history-sheet-bottom-padding)
+        );
+
+        &_without-title {
+            @include mixins.sheet-hidden-title;
+        }
+
         #{$block}__container {
             width: 100%;
         }
@@ -126,6 +136,24 @@ $block: '.#{variables.$ns}history';
         #{$block}__list-wrapper {
             max-height: none;
             overflow: visible;
+        }
+
+        #{$block}__list {
+            padding: var(--g-aikit-history-sheet-list-padding);
+        }
+
+        #{$block}__filter {
+            padding-inline: var(--g-aikit-history-sheet-filter-inline-padding);
+            border-bottom: var(--g-aikit-history-sheet-filter-border-bottom);
+        }
+
+        #{$block}__chat-item {
+            padding-inline-end: var(--g-aikit-history-sheet-item-inline-end-padding);
+        }
+
+        #{$block}__chat-content {
+            --g-text-body-1-font-size: var(--g-aikit-history-mobile-item-font-size);
+            --g-text-body-1-line-height: var(--g-aikit-history-mobile-item-line-height);
         }
     }
 }

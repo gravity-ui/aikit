@@ -84,7 +84,7 @@ export function Suggestions(props: SuggestionsProps) {
                 size={buttonSize}
                 view={item.view || (isMobileAppearance ? 'normal' : 'outlined')}
                 onClick={() => handleClick(item)}
-                className={b('button', {layout, mobile: isMobileAppearance})}
+                className={b('button', {layout, mobile: isMobileAppearance, size: buttonSize})}
                 width="auto"
             >
                 <div

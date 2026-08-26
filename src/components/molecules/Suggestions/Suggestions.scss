@@ -95,4 +95,9 @@ $block: '.#{variables.$ns}suggestions';
         display: flex;
         align-items: center;
     }
+
+    &__button_size_xl &__button-icon {
+        width: 20px;
+        height: 20px;
+    }
 }

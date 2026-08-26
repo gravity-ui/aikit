@@ -190,6 +190,22 @@ test.describe('History mobile', {tag: '@History'}, () => {
         await expectScreenshot({component: page});
     });
 
+    test('should hide the sheet title but keep the accessible name', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
+        await mount(<HistoryStories.MobileSheet showSheetTitle={false} />);
+
+        const sheet = page.getByRole('dialog', {name: 'Chat history'});
+
+        await expect(sheet).toBeVisible();
+        await expect(page.getByText('Chat history', {exact: true})).toBeHidden();
+        await page.waitForTimeout(500);
+
+        await expectScreenshot({component: page});
+    });
+
     test('should always show delete buttons in mobile mode', async ({mount, page}) => {
         await mount(<HistoryStories.MobileSheet />);
 

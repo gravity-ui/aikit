@@ -5,7 +5,7 @@ $block: '.#{variables.$ns}button-group';
 #{$block} {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--g-spacing-1);
+    gap: var(--g-aikit-button-group-gap);
 
     &_or_vertical {
         flex-direction: column;
