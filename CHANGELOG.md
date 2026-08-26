@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.20.0](https://github.com/gravity-ui/aikit/compare/v2.19.2...v2.20.0) (2026-08-26)
+
+
+### Features
+
+* mobile adaptive metrics and floating header mode ([#240](https://github.com/gravity-ui/aikit/issues/240)) ([daa920b](https://github.com/gravity-ui/aikit/commit/daa920b9a7b6078016480a10316bc8aff1d7a353))
+
 ## [2.19.2](https://github.com/gravity-ui/aikit/compare/v2.19.1...v2.19.2) (2026-08-26)
 
 
