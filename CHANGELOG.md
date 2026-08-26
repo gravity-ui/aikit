@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.19.2](https://github.com/gravity-ui/aikit/compare/v2.19.1...v2.19.2) (2026-08-26)
+
+
+### Bug Fixes
+
+* **mdx:** discover CSP nonce from the document ([#241](https://github.com/gravity-ui/aikit/issues/241)) ([6df33d3](https://github.com/gravity-ui/aikit/commit/6df33d3e83fa9590d8dd5ebde71397722567a206))
+
 ## [2.19.1](https://github.com/gravity-ui/aikit/compare/v2.19.0...v2.19.1) (2026-08-19)
 
 
