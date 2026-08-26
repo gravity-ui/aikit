@@ -1,5 +1,17 @@
 @forward '@gravity-ui/uikit/styles/mixins';
 
+@mixin sheet-content-padding($inline, $bottom) {
+    --g-sheet-content-padding: 0 max(#{$inline}, env(safe-area-inset-right, 0px))
+        calc(#{$bottom} + env(safe-area-inset-bottom, 0px))
+        max(#{$inline}, env(safe-area-inset-left, 0px));
+}
+
+@mixin sheet-hidden-title {
+    > .g-sheet__sheet-content-title {
+        display: none;
+    }
+}
+
 @mixin link {
     color: var(--g-color-text-link);
     text-decoration: none;

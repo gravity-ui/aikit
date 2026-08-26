@@ -397,47 +397,48 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 
 ## Props
 
-| Prop                        | Type                                   | Required           | Default   | Description                                                                                                                 |
-| --------------------------- | -------------------------------------- | ------------------ | --------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `messages`                  | `TMessage[]`                           | -                  | `[]`      | Array of messages in current chat                                                                                           |
-| `onSendMessage`             | `(data: TSubmitData) => Promise<void>` | ✓                  | -         | Callback when user sends a message                                                                                          |
-| `chats`                     | `ChatType[]`                           | -                  | `[]`      | Array of chats for history                                                                                                  |
-| `activeChat`                | `ChatType \| null`                     | -                  | `null`    | Currently active chat                                                                                                       |
-| `onSelectChat`              | `(chat: ChatType) => void`             | -                  | -         | Callback when user selects a chat from history                                                                              |
-| `onCreateChat`              | `() => void`                           | -                  | -         | Callback when user creates a new chat                                                                                       |
-| `onDeleteChat`              | `(chat: ChatType) => void`             | -                  | -         | Callback when user deletes a chat                                                                                           |
-| `onDeleteAllChats`          | `() => Promise<void>`                  | -                  | -         | Callback when user deletes all chats                                                                                        |
-| `onFold`                    | `(value: 'collapsed'                   | 'opened') => void` | -         | -                                                                                                                           | Callback when user folds/unfolds the chat |
-| `onClose`                   | `() => void`                           | -                  | -         | Callback when user closes the chat                                                                                          |
-| `onCancel`                  | `() => Promise<void>`                  | -                  | -         | Callback when user cancels streaming                                                                                        |
-| `status`                    | `ChatStatus`                           | -                  | `'ready'` | Chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'`                                                       |
-| `error`                     | `Error \| null`                        | -                  | `null`    | Error state                                                                                                                 |
-| `onRetry`                   | `() => void`                           | -                  | -         | Callback to retry after error                                                                                               |
-| `showActionsOnHover`        | `boolean`                              | -                  | `false`   | Show message actions (copy, like, edit) on hover                                                                            |
-| `contextItems`              | `ContextItemConfig[]`                  | -                  | `[]`      | Array of context items to display in prompt input header                                                                    |
-| `transformOptions`          | `OptionsType`                          | -                  | -         | Transform options for markdown rendering                                                                                    |
-| `openMarkdownLinksInNewTab` | `boolean`                              | -                  | `false`   | Open markdown links rendered by default message renderers in a new tab, except hash-only and relative same-document anchors |
-| `messageListConfig`         | `MessageListConfig`                    | -                  | -         | Configuration for MessageList (actions, loader statuses)                                                                    |
-| `headerProps`               | `Partial<HeaderProps>`                 | -                  | -         | Props override for Header component                                                                                         |
-| `contentProps`              | `Partial<ChatContentProps>`            | -                  | -         | Props override for ChatContent component                                                                                    |
-| `emptyContainerProps`       | `Partial<EmptyContainerProps>`         | -                  | -         | Props override for EmptyContainer                                                                                           |
-| `promptInputProps`          | `Partial<PromptInputProps>`            | -                  | -         | Props override for PromptInput component                                                                                    |
-| `disclaimerProps`           | `Partial<DisclaimerProps>`             | -                  | -         | Props override for Disclaimer component                                                                                     |
-| `historyProps`              | `Partial<HistoryProps>`                | -                  | -         | Props override for History component                                                                                        |
-| `welcomeConfig`             | `WelcomeConfig`                        | -                  | -         | Welcome screen configuration for empty state                                                                                |
-| `texts`                     | `ChatContainerTexts`                   | -                  | -         | Flat unified copy overrides (see **Texts**)                                                                                 |
-| `showHistory`               | `boolean`                              | -                  | `true`    | Show chat history feature                                                                                                   |
-| `showNewChat`               | `boolean`                              | -                  | `true`    | Show new chat button                                                                                                        |
-| `showFolding`               | `boolean`                              | -                  | `false`   | Show folding button                                                                                                         |
-| `showClose`                 | `boolean`                              | -                  | `false`   | Show close button                                                                                                           |
-| `hideTitleOnEmptyChat`      | `boolean`                              | -                  | `false`   | Hide header title and preview when chat is empty                                                                            |
-| `isMobile`                  | `boolean`                              | -                  | -         | Mobile mode for the chat and all inner components; falls back to `useMobile()` from `@gravity-ui/uikit` `MobileProvider`    |
-| `adjustToKeyboard`          | `boolean`                              | -                  | `true`    | In mobile mode, shrink the container to the visible viewport while the on-screen keyboard is open                           |
-| `className`                 | `string`                               | -                  | -         | Additional CSS class                                                                                                        |
-| `headerClassName`           | `string`                               | -                  | -         | Additional CSS class for header section                                                                                     |
-| `contentClassName`          | `string`                               | -                  | -         | Additional CSS class for content section                                                                                    |
-| `footerClassName`           | `string`                               | -                  | -         | Additional CSS class for footer section                                                                                     |
-| `qa`                        | `string \| ChatContainerQa`            | -                  | -         | QA/test identifiers: string = root only; object = map or `prefix` (see **QA**)                                              |
+| Prop                        | Type                                   | Required           | Default   | Description                                                                                                                                                                   |
+| --------------------------- | -------------------------------------- | ------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `messages`                  | `TMessage[]`                           | -                  | `[]`      | Array of messages in current chat                                                                                                                                             |
+| `onSendMessage`             | `(data: TSubmitData) => Promise<void>` | ✓                  | -         | Callback when user sends a message                                                                                                                                            |
+| `chats`                     | `ChatType[]`                           | -                  | `[]`      | Array of chats for history                                                                                                                                                    |
+| `activeChat`                | `ChatType \| null`                     | -                  | `null`    | Currently active chat                                                                                                                                                         |
+| `onSelectChat`              | `(chat: ChatType) => void`             | -                  | -         | Callback when user selects a chat from history                                                                                                                                |
+| `onCreateChat`              | `() => void`                           | -                  | -         | Callback when user creates a new chat                                                                                                                                         |
+| `onDeleteChat`              | `(chat: ChatType) => void`             | -                  | -         | Callback when user deletes a chat                                                                                                                                             |
+| `onDeleteAllChats`          | `() => Promise<void>`                  | -                  | -         | Callback when user deletes all chats                                                                                                                                          |
+| `onFold`                    | `(value: 'collapsed'                   | 'opened') => void` | -         | -                                                                                                                                                                             | Callback when user folds/unfolds the chat |
+| `onClose`                   | `() => void`                           | -                  | -         | Callback when user closes the chat                                                                                                                                            |
+| `onCancel`                  | `() => Promise<void>`                  | -                  | -         | Callback when user cancels streaming                                                                                                                                          |
+| `status`                    | `ChatStatus`                           | -                  | `'ready'` | Chat status: `'submitted'` \| `'streaming'` \| `'ready'` \| `'error'`                                                                                                         |
+| `error`                     | `Error \| null`                        | -                  | `null`    | Error state                                                                                                                                                                   |
+| `onRetry`                   | `() => void`                           | -                  | -         | Callback to retry after error                                                                                                                                                 |
+| `showActionsOnHover`        | `boolean`                              | -                  | `false`   | Show message actions (copy, like, edit) on hover                                                                                                                              |
+| `contextItems`              | `ContextItemConfig[]`                  | -                  | `[]`      | Array of context items to display in prompt input header                                                                                                                      |
+| `transformOptions`          | `OptionsType`                          | -                  | -         | Transform options for markdown rendering                                                                                                                                      |
+| `openMarkdownLinksInNewTab` | `boolean`                              | -                  | `false`   | Open markdown links rendered by default message renderers in a new tab, except hash-only and relative same-document anchors                                                   |
+| `messageListConfig`         | `MessageListConfig`                    | -                  | -         | Configuration for MessageList (actions, loader statuses)                                                                                                                      |
+| `headerProps`               | `Partial<HeaderProps>`                 | -                  | -         | Props override for Header component                                                                                                                                           |
+| `contentProps`              | `Partial<ChatContentProps>`            | -                  | -         | Props override for ChatContent component                                                                                                                                      |
+| `emptyContainerProps`       | `Partial<EmptyContainerProps>`         | -                  | -         | Props override for EmptyContainer                                                                                                                                             |
+| `promptInputProps`          | `Partial<PromptInputProps>`            | -                  | -         | Props override for PromptInput component                                                                                                                                      |
+| `disclaimerProps`           | `Partial<DisclaimerProps>`             | -                  | -         | Props override for Disclaimer component                                                                                                                                       |
+| `historyProps`              | `Partial<HistoryProps>`                | -                  | -         | Props override for History component                                                                                                                                          |
+| `welcomeConfig`             | `WelcomeConfig`                        | -                  | -         | Welcome screen configuration for empty state                                                                                                                                  |
+| `texts`                     | `ChatContainerTexts`                   | -                  | -         | Flat unified copy overrides (see **Texts**)                                                                                                                                   |
+| `showHistory`               | `boolean`                              | -                  | `true`    | Show chat history feature                                                                                                                                                     |
+| `showNewChat`               | `boolean`                              | -                  | `true`    | Show new chat button                                                                                                                                                          |
+| `showFolding`               | `boolean`                              | -                  | `false`   | Show folding button                                                                                                                                                           |
+| `showClose`                 | `boolean`                              | -                  | `false`   | Show close button                                                                                                                                                             |
+| `hideTitleOnEmptyChat`      | `boolean`                              | -                  | `false`   | Hide header title and preview when chat is empty                                                                                                                              |
+| `isMobile`                  | `boolean`                              | -                  | -         | Mobile mode for the chat and all inner components; falls back to `useMobile()` from `@gravity-ui/uikit` `MobileProvider`                                                      |
+| `adjustToKeyboard`          | `boolean`                              | -                  | `true`    | In mobile mode, shrink the container to the visible viewport while the on-screen keyboard is open                                                                             |
+| `floatingHeader`            | `boolean`                              | -                  | `false`   | Render the header above the content instead of stacking it, so the content scrolls underneath; the content offset is on the consumer, see [Floating header](#floating-header) |
+| `className`                 | `string`                               | -                  | -         | Additional CSS class                                                                                                                                                          |
+| `headerClassName`           | `string`                               | -                  | -         | Additional CSS class for header section                                                                                                                                       |
+| `contentClassName`          | `string`                               | -                  | -         | Additional CSS class for content section                                                                                                                                      |
+| `footerClassName`           | `string`                               | -                  | -         | Additional CSS class for footer section                                                                                                                                       |
+| `qa`                        | `string \| ChatContainerQa`            | -                  | -         | QA/test identifiers: string = root only; object = map or `prefix` (see **QA**)                                                                                                |
 
 ## Types
 
@@ -1047,37 +1048,85 @@ function App() {
 
 The component uses CSS variables for theming:
 
-| Variable                                            | Description                                                                           |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `--g-aikit-chat-container-background`               | Background color of the entire chat container                                         |
-| `--g-aikit-chat-container-header-background`        | Background color of the header section                                                |
-| `--g-aikit-chat-container-content-background`       | Background color of the content section (general)                                     |
-| `--g-aikit-chat-container-content-empty-background` | Background color of the content section in empty view                                 |
-| `--g-aikit-chat-container-content-chat-background`  | Background color of the content section in chat view                                  |
-| `--g-aikit-chat-container-footer-background`        | Background color of the footer section (general)                                      |
-| `--g-aikit-chat-container-footer-empty-background`  | Background color of the footer section in empty view                                  |
-| `--g-aikit-chat-container-footer-chat-background`   | Background color of the footer section in chat view                                   |
-| `--g-aikit-layout-base-padding-m`                   | Padding for header, content, and footer sections (default: 12px; 16px in mobile mode) |
-| `--g-aikit-chat-container-mobile-font-size`         | Body text size inside the chat in mobile mode (default: 16px)                         |
-| `--g-aikit-chat-container-mobile-line-height`       | Body line height inside the chat in mobile mode (default: 24px)                       |
-| `--g-spacing-1`                                     | Gap between footer elements (default: 4px)                                            |
-| `--g-spacing-2`                                     | Gap between header elements (default: 8px)                                            |
-| `--g-spacing-4`                                     | Bottom padding for content section (default: 16px)                                    |
+| Variable                                             | Description                                                                                    |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `--g-aikit-chat-container-background`                | Background color of the entire chat container                                                  |
+| `--g-aikit-chat-container-header-background`         | Background color of the header section                                                         |
+| `--g-aikit-chat-container-content-background`        | Background color of the content section (general)                                              |
+| `--g-aikit-chat-container-content-empty-background`  | Background color of the content section in empty view                                          |
+| `--g-aikit-chat-container-content-chat-background`   | Background color of the content section in chat view                                           |
+| `--g-aikit-chat-container-footer-background`         | Background color of the footer section (general)                                               |
+| `--g-aikit-chat-container-footer-empty-background`   | Background color of the footer section in empty view                                           |
+| `--g-aikit-chat-container-footer-chat-background`    | Background color of the footer section in chat view                                            |
+| `--g-aikit-layout-base-padding-m`                    | Padding for header, content, and footer sections (default: 12px; 16px in mobile mode)          |
+| `--g-aikit-chat-container-mobile-font-size`          | Body text size inside the chat in mobile mode (default: 16px)                                  |
+| `--g-aikit-chat-container-mobile-line-height`        | Body line height inside the chat in mobile mode (default: 24px)                                |
+| `--g-aikit-chat-container-mobile-body-2-font-size`   | `body-2` text size in mobile mode, mapped onto `--g-text-body-2-font-size` (default: 16px)     |
+| `--g-aikit-chat-container-mobile-body-2-line-height` | `body-2` line height in mobile mode, mapped onto `--g-text-body-2-line-height` (default: 20px) |
+| `--g-spacing-1`                                      | Gap between footer elements (default: 4px)                                                     |
+| `--g-spacing-2`                                      | Gap between header elements (default: 8px)                                                     |
+| `--g-spacing-4`                                      | Bottom padding for content section (default: 16px)                                             |
+
+Header and footer metrics, each with a `mobile-` counterpart applied in mobile mode:
+
+| Variable                                                       | Description                                                                                                                                                |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-aikit-chat-container-header-height`                       | Header height (default: `auto`)                                                                                                                            |
+| `--g-aikit-chat-container-header-padding`                      | Header padding (default: `var(--g-aikit-layout-base-padding-m)`)                                                                                           |
+| `--g-aikit-chat-container-mobile-header-height`                | Minimum header height in mobile mode (default: `60px`)                                                                                                     |
+| `--g-aikit-chat-container-mobile-header-padding`               | Header padding in mobile mode                                                                                                                              |
+| `--g-aikit-chat-container-footer-padding`                      | Footer padding (default: `var(--g-aikit-layout-base-padding-m)`)                                                                                           |
+| `--g-aikit-chat-container-footer-empty-padding`                | Footer padding on the welcome screen                                                                                                                       |
+| `--g-aikit-chat-container-mobile-footer-padding`               | Footer padding in mobile mode                                                                                                                              |
+| `--g-aikit-chat-container-mobile-footer-empty-padding`         | Welcome-screen footer padding in mobile mode                                                                                                               |
+| `--g-aikit-chat-container-mobile-suggestions-max-height`       | Max height of the suggestions block above the input in mobile mode; it scrolls beyond that (default: `40vh`)                                               |
+| `--g-aikit-chat-container-mobile-suggestions-title-min-height` | Floor of the suggestions title in mobile mode: it shrinks down to this height and scrolls inside itself, so the buttons keep their place (default: `48px`) |
+
+### Floating header
+
+With `floatingHeader` the header is taken out of the flow and the content scrolls underneath it.
+The header keeps its own height, and the offset of the content is left to the consumer, because
+it depends on the layout - a `padding-top` keeps the content background under the header, a
+`margin-top` leaves the container background visible above it. Set an explicit header height
+first: `--g-aikit-chat-container-header-height` is `auto` by default (and `auto` in a
+`padding-top` resolves to `0`), in mobile mode the height comes from
+`--g-aikit-chat-container-mobile-header-height` (`60px`). In mobile mode this token becomes the
+fixed height of the floating header, so the header cannot grow past the offset the content uses
+and cover the beginning of the conversation.
+
+```css
+.my-chat {
+  --g-aikit-chat-container-header-height: 60px;
+  --g-aikit-chat-container-header-background: transparent;
+}
+
+.my-chat .g-aikit-chat-container__content {
+  padding-top: var(--g-aikit-chat-container-header-height);
+}
+```
 
 ### Mobile mode
 
 In mobile mode (`isMobile` prop, or the uikit `MobileProvider` context) the container
 rebinds its layout tokens to the mobile ones:
 
-| Token bound on the container               | Mobile source token                                       | Default              |
-| ------------------------------------------ | --------------------------------------------------------- | -------------------- |
-| `--g-aikit-layout-base-padding-m`          | `--g-aikit-chat-container-mobile-padding`                 | `var(--g-spacing-4)` |
-| `--g-aikit-empty-container-mobile-padding` | `--g-aikit-chat-container-mobile-empty-container-padding` | `80px 0 0`           |
+| Token bound on the container                         | Mobile source token                                           | Default                                                                      |
+| ---------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `--g-aikit-layout-base-padding-m`                    | `--g-aikit-chat-container-mobile-padding`                     | `var(--g-spacing-4)`                                                         |
+| `--g-aikit-empty-container-mobile-padding`           | `--g-aikit-chat-container-mobile-empty-container-padding`     | `80px var(--g-spacing-4) 0`                                                  |
+| `--g-aikit-chat-content-message-list-inline-padding` | `--g-aikit-chat-container-mobile-message-list-inline-padding` | `calc(var(--g-aikit-layout-base-padding-m) + var(--g-spacing-2))` (= `20px`) |
 
-Horizontal padding of the empty state is zero inside the chat because the content
-section already provides it. The remaining mobile values of the empty state
+The empty state adds its own inline padding on top of the padding the content section
+already provides, so the mobile welcome screen is inset by
+`var(--g-aikit-chat-container-mobile-padding) + var(--g-spacing-4)` per side in total.
+The remaining mobile values of the empty state
 (`--g-aikit-empty-container-mobile-content-gap`, `--g-aikit-empty-container-mobile-welcome-gap`)
 are applied by `EmptyContainer` itself and work the same way standalone.
+
+The mobile header padding is intentionally decoupled from
+`--g-aikit-chat-container-mobile-padding`: overriding the base mobile padding moves the
+content and the footer, while the header keeps its own
+`--g-aikit-chat-container-mobile-header-padding`.
 
 All mobile values, including typography
 (`--g-aikit-chat-container-mobile-font-size` / `--g-aikit-chat-container-mobile-line-height`),
@@ -1109,9 +1158,14 @@ under the keyboard, so there is nothing to clamp.
 While the keyboard is open, the root gets a `_keyboard-open` modifier and the welcome screen
 trades its large top padding for the remaining space:
 
-| Token bound on the container               | Keyboard source token                                              | Default                  |
-| ------------------------------------------ | ------------------------------------------------------------------ | ------------------------ |
-| `--g-aikit-empty-container-mobile-padding` | `--g-aikit-chat-container-mobile-keyboard-empty-container-padding` | `var(--g-spacing-4) 0 0` |
+| Token bound on the container               | Keyboard source token                                              | Default                                   |
+| ------------------------------------------ | ------------------------------------------------------------------ | ----------------------------------------- |
+| `--g-aikit-empty-container-mobile-padding` | `--g-aikit-chat-container-mobile-keyboard-empty-container-padding` | `var(--g-spacing-4) var(--g-spacing-4) 0` |
+
+`--g-aikit-chat-container-mobile-suggestions-max-height` is relative to the layout viewport,
+which does not shrink with the keyboard, so the suggestions block above the input is also
+shrinkable: when the clamped height leaves it less than its cap, it gives the space back to the
+prompt input and scrolls inside itself instead of pushing the input out of the container.
 
 ```css
 /* Example: Custom theme */

@@ -33,6 +33,6 @@ import {ButtonGroup} from '@/components/molecules/ButtonGroup';
 
 The component uses CSS variables for theming:
 
-| Variable        | Description         |
-| --------------- | ------------------- |
-| `--g-spacing-1` | Gap between buttons |
+| Variable                     | Description                                                                               |
+| ---------------------------- | ----------------------------------------------------------------------------------------- |
+| `--g-aikit-button-group-gap` | Gap between buttons (default: `--g-spacing-1`, `--g-spacing-2` in the mobile chat header) |

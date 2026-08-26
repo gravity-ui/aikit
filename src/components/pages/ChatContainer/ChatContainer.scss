@@ -13,9 +13,69 @@
         --g-aikit-empty-container-mobile-padding: var(
             --g-aikit-chat-container-mobile-empty-container-padding
         );
+        --g-aikit-chat-content-message-list-inline-padding: var(
+            --g-aikit-chat-container-mobile-message-list-inline-padding
+        );
+        --g-text-body-2-font-size: var(--g-aikit-chat-container-mobile-body-2-font-size);
+        --g-text-body-2-line-height: var(--g-aikit-chat-container-mobile-body-2-line-height);
 
         font-size: var(--g-aikit-chat-container-mobile-font-size);
         line-height: var(--g-aikit-chat-container-mobile-line-height);
+    }
+
+    // While the on-screen keyboard is open the root is clamped by an inline max-height, so the
+    // whole chain down to the suggestions has to be shrinkable - otherwise the suggestions block
+    // keeps its cap and pushes the prompt input out of the clipped area. The suggestions wrapper
+    // is a block box by default, and a block subtree shrinks nothing, hence the flex here.
+    &_mobile &__footer {
+        min-height: 0;
+    }
+
+    &_mobile .#{variables.$ns}prompt-input__suggestions-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    // Panels and the input itself keep their size, the suggestions give the space back
+    &_mobile .#{variables.$ns}prompt-input__panel-wrapper {
+        flex-shrink: 0;
+    }
+
+    &_mobile .#{variables.$ns}prompt-input__suggestions {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        max-height: var(--g-aikit-chat-container-mobile-suggestions-max-height);
+        overflow: hidden;
+
+        .#{variables.$ns}suggestions__container {
+            min-height: 0;
+            overflow: hidden auto;
+        }
+
+        // The title slot holds consumer content, so it shrinks first and can scroll inside
+        // itself - that keeps the suggestion buttons in place instead of scrolling them away.
+        // It stops at its own floor, otherwise a long list of suggestions collapses the title
+        // to zero and its content paints over the buttons instead of scrolling the whole block.
+        .#{variables.$ns}suggestions__title {
+            display: flex;
+            flex-direction: column;
+            min-height: var(--g-aikit-chat-container-mobile-suggestions-title-min-height);
+            overflow: hidden auto;
+        }
+
+        // The cap gives the block a definite height, and in the default column layout that turns
+        // `flex-wrap: wrap` into columns and stretches `height: 100%` buttons over each other.
+        // Keeping the list unwrapped and the buttons at their own height lets it scroll instead.
+        .#{variables.$ns}suggestions {
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+        }
+
+        .#{variables.$ns}suggestions__button {
+            height: auto;
+        }
     }
 
     // The container is clamped to the visible viewport while the on-screen keyboard is open, so the
@@ -37,19 +97,41 @@
         --yfm-font-line-height-h6: var(--g-aikit-chat-container-mobile-line-height);
     }
 
-    &_mobile &__header,
-    &_mobile &__footer {
-        padding: var(--g-spacing-2) var(--g-aikit-layout-base-padding-m);
-    }
-
     &__header {
         display: flex;
-        padding: var(--g-aikit-layout-base-padding-m);
+        box-sizing: border-box;
+        height: var(--g-aikit-chat-container-header-height);
+        padding: var(--g-aikit-chat-container-header-padding, var(--g-aikit-layout-base-padding-m));
         flex-direction: column;
         align-items: flex-start;
         gap: var(--g-spacing-2);
         align-self: stretch;
         background: var(--g-aikit-chat-container-header-background);
+    }
+
+    &_mobile &__header {
+        --g-aikit-button-group-gap: var(--g-spacing-2);
+
+        min-height: var(--g-aikit-chat-container-mobile-header-height);
+        padding: var(--g-aikit-chat-container-mobile-header-padding);
+    }
+
+    &_floating-header {
+        position: relative;
+    }
+
+    // The content keeps the full height and scrolls under the header; how far it is offset
+    // depends on the layout, so it is left to the consumer.
+    &_floating-header &__header {
+        position: absolute;
+        z-index: 2;
+        inset: 0 0 auto;
+    }
+
+    // The offset is manual, so in this mode the header keeps the height of its token instead of
+    // growing with the content - otherwise a taller header would cover the top of the content.
+    &_floating-header#{&}_mobile &__header {
+        height: var(--g-aikit-chat-container-mobile-header-height);
     }
 
     &__content {
@@ -76,7 +158,7 @@
 
     &__footer {
         display: flex;
-        padding: var(--g-aikit-layout-base-padding-m);
+        padding: var(--g-aikit-chat-container-footer-padding, var(--g-aikit-layout-base-padding-m));
         flex-direction: column;
         align-items: flex-start;
         gap: var(--g-spacing-1);
@@ -85,11 +167,23 @@
     }
 
     &__footer_view_empty {
+        padding: var(
+            --g-aikit-chat-container-footer-empty-padding,
+            var(--g-aikit-chat-container-footer-padding, var(--g-aikit-layout-base-padding-m))
+        );
         background: var(--g-aikit-chat-container-footer-empty-background);
     }
 
     &__footer_view_chat {
         background: var(--g-aikit-chat-container-footer-chat-background);
+    }
+
+    &_mobile &__footer {
+        padding: var(--g-aikit-chat-container-mobile-footer-padding);
+    }
+
+    &_mobile &__footer_view_empty {
+        padding: var(--g-aikit-chat-container-mobile-footer-empty-padding);
     }
 
     &__mascot {

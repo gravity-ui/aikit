@@ -216,3 +216,111 @@ export const MobileModeWithContext: Story = {
         </div>
     ),
 };
+
+const FLOATING_HEADER_CLASS = 'chat-container-floating-header-story';
+
+/**
+ * Mobile mode with `floatingHeader`: the header is taken out of the flow and the message list
+ * scrolls underneath it. The header keeps its own height, so the content is offset by the same
+ * value on the consumer side — that is what the story styles below do.
+ */
+export const MobileFloatingHeader: Story = {
+    args: {
+        isMobile: true,
+        floatingHeader: true,
+        texts: {
+            disclaimerText: 'AI can make mistakes. We do not train the model on your data.',
+        },
+        messages: addActionsToMessages(mockChatMessages['1'].slice(0, 4)),
+    },
+    render: (args) => (
+        <div style={{width: 380, height: 748}}>
+            <style>{`
+                .${FLOATING_HEADER_CLASS} {
+                    --g-aikit-chat-container-mobile-header-height: 60px;
+                    --g-aikit-chat-container-header-background: transparent;
+                }
+
+                .${FLOATING_HEADER_CLASS} .g-aikit-chat-container__content {
+                    padding-top: var(--g-aikit-chat-container-mobile-header-height);
+                }
+            `}</style>
+            <ChatContainer
+                {...args}
+                className={FLOATING_HEADER_CLASS}
+                onSendMessage={async () => {}}
+            />
+        </div>
+    ),
+};
+
+/**
+ * Mobile mode with an oversized suggestions block above the input: a long title and a list of
+ * suggestions that together exceed the `--g-aikit-chat-container-mobile-suggestions-max-height`
+ * cap. The title gives the space back to the buttons and clips its own content instead of
+ * painting it over the list.
+ */
+export const MobileSuggestionsOverflow: Story = {
+    args: {
+        isMobile: true,
+        messages: addActionsToMessages(mockChatMessages['1'].slice(0, 2)),
+        promptInputProps: {
+            suggestionsProps: {
+                showSuggestions: true,
+                suggestTitle:
+                    'Confirm the virtual machine before it is created: the configuration below defines the platform, the number of cores, the amount of memory and the disk type, and every one of them changes the final price.',
+                suggestions: [
+                    {id: '1', title: 'Confirm and create the virtual machine'},
+                    {id: '2', title: 'Change the platform'},
+                    {id: '3', title: 'Change the number of cores'},
+                    {id: '4', title: 'Change the amount of memory'},
+                    {id: '5', title: 'Change the disk type'},
+                    {id: '6', title: 'Cancel'},
+                ],
+            },
+        },
+    },
+    render: (args) => (
+        <div style={{width: 380, height: 560}}>
+            <ChatContainer {...args} onSendMessage={async () => {}} />
+        </div>
+    ),
+};
+
+/**
+ * Mobile `floatingHeader` with a header that would grow taller than its token: the header keeps
+ * the height of `--g-aikit-chat-container-mobile-header-height`, so the manual content offset
+ * stays correct and the header does not cover the top of the conversation.
+ */
+export const MobileFloatingHeaderTallContent: Story = {
+    args: {
+        isMobile: true,
+        floatingHeader: true,
+        messages: addActionsToMessages(mockChatMessages['1'].slice(0, 4)),
+        headerProps: {
+            title: 'A chat title long enough to wrap onto a second line in mobile mode',
+            preview: (
+                <div style={{height: 72, width: 72, background: 'var(--g-color-base-generic)'}} />
+            ),
+        },
+    },
+    render: (args) => (
+        <div style={{width: 380, height: 560}}>
+            <style>{`
+                .${FLOATING_HEADER_CLASS} {
+                    --g-aikit-chat-container-mobile-header-height: 60px;
+                    --g-aikit-chat-container-header-background: transparent;
+                }
+
+                .${FLOATING_HEADER_CLASS} .g-aikit-chat-container__content {
+                    padding-top: var(--g-aikit-chat-container-mobile-header-height);
+                }
+            `}</style>
+            <ChatContainer
+                {...args}
+                className={FLOATING_HEADER_CLASS}
+                onSendMessage={async () => {}}
+            />
+        </div>
+    ),
+};

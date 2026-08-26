@@ -82,6 +82,8 @@ export type HeaderProps = {
     menuButtonQa?: string;
     /** data-qa overrides per menu item id (default: `header-menu-item-${id}`) */
     menuItemQa?: Partial<Record<string, string>>;
+    /** Show the mobile menu sheet title (default: `true`); it stays in `aria-label` either way */
+    showSheetTitle?: boolean;
 
     /**
      * Notification callback fired by ChatContainer when the history popup is toggled

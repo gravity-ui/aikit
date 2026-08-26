@@ -225,6 +225,24 @@ export interface ChatContainerProps {
      * @default true
      */
     adjustToKeyboard?: boolean;
+    /**
+     * Renders the header above the content instead of stacking it on top: the message list and
+     * the welcome screen scroll underneath. The header is taken out of the flow, so the content
+     * has to be offset by its height manually — the offset depends on the layout. Set an explicit
+     * height first: `--g-aikit-chat-container-header-height` is `auto` by default and
+     * `--g-aikit-chat-container-mobile-header-height` is `60px` in mobile mode. Pair it with a
+     * transparent `--g-aikit-chat-container-header-background` to let the content show through.
+     *
+     * @example
+     * .my-chat {
+     *     --g-aikit-chat-container-header-height: 60px;
+     *     --g-aikit-chat-container-header-background: transparent;
+     * }
+     * .my-chat .g-aikit-chat-container__content {
+     *     padding-top: var(--g-aikit-chat-container-header-height);
+     * }
+     */
+    floatingHeader?: boolean;
 
     // States
     /** Chat status: submitted, streaming, ready, error */

@@ -37,6 +37,7 @@ export function useHeader(props: HeaderProps): {
     menuButtonIcon?: React.ReactNode;
     menuButtonQa?: string;
     menuItemQa?: HeaderProps['menuItemQa'];
+    showSheetTitle: boolean;
 } {
     const {
         icon,
@@ -58,6 +59,7 @@ export function useHeader(props: HeaderProps): {
         menuButtonIcon,
         menuButtonQa,
         menuItemQa,
+        showSheetTitle = true,
         titlePosition = 'left',
         withIcon = true,
         showTitle = true,
@@ -134,5 +136,6 @@ export function useHeader(props: HeaderProps): {
         menuButtonIcon,
         menuButtonQa,
         menuItemQa,
+        showSheetTitle,
     };
 }

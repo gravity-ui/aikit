@@ -152,10 +152,11 @@ See [MessageList documentation](../../organisms/MessageList/README.md) for full 
 
 The component uses CSS variables for theming:
 
-| Variable                            | Description                            |
-| ----------------------------------- | -------------------------------------- |
-| `--g-spacing-2`                     | Gap between elements (default: 8px)    |
-| `--g-aikit-chat-content-background` | Background color for chat content area |
+| Variable                                             | Description                                                                                                                                                             |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-spacing-2`                                      | Gap between elements (default: 8px)                                                                                                                                     |
+| `--g-aikit-chat-content-background`                  | Background color for chat content area                                                                                                                                  |
+| `--g-aikit-chat-content-message-list-inline-padding` | Side padding of the message list (default: `--g-spacing-2`; in mobile mode `ChatContainer` rebinds it to `--g-aikit-chat-container-mobile-message-list-inline-padding`) |
 
 ```css
 /* Example: Custom styling */

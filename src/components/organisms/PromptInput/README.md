@@ -245,16 +245,18 @@ All state management is handled internally by the `usePromptInput` hook.
 
 The component uses CSS variables for theming:
 
-| Variable                                  | Description                               | Default Value |
-| ----------------------------------------- | ----------------------------------------- | ------------- |
-| `--g-color-line-generic`                  | Border color around the component         | -             |
-| `--g-color-base-float`                    | Background color of the component         | -             |
-| `--g-color-base-simple-hover-solid`       | Background color for panels               | -             |
-| `--g-border-radius-xl`                    | Border radius for component & panels      | -             |
-| `--g-spacing-1`                           | Small spacing (8px)                       | -             |
-| `--g-spacing-2`                           | Medium spacing (12px)                     | -             |
-| `--g-spacing-3`                           | Large spacing (16px)                      | -             |
-| `--g-aikit-prompt-input-panel-max-height` | Max height for open panel (for animation) | `500px`       |
+| Variable                                  | Description                               | Default Value      |
+| ----------------------------------------- | ----------------------------------------- | ------------------ |
+| `--g-color-line-generic`                  | Border color around the component         | -                  |
+| `--g-color-base-float`                    | Background color of the component         | -                  |
+| `--g-color-base-simple-hover-solid`       | Background color for panels               | -                  |
+| `--g-border-radius-xl`                    | Border radius for component & panels      | -                  |
+| `--g-spacing-1`                           | Small spacing (8px)                       | -                  |
+| `--g-spacing-2`                           | Medium spacing (12px)                     | -                  |
+| `--g-spacing-3`                           | Large spacing (16px)                      | -                  |
+| `--g-aikit-prompt-input-panel-max-height` | Max height for open panel (for animation) | `500px`            |
+| `--g-aikit-prompt-input-simple-padding`   | Padding of the `simple` view              | `4px 4px 4px 12px` |
+| `--g-aikit-prompt-input-full-padding`     | Padding of the `full` view                | `8px`              |
 
 ```css
 /* Example: Custom theme */

@@ -39,7 +39,13 @@ export {
     MobileModeWithMessages,
 } from './parts/welcome';
 
-export {MobilePlayground, MobileModeWithContext} from './parts/mobile';
+export {
+    MobilePlayground,
+    MobileModeWithContext,
+    MobileFloatingHeader,
+    MobileSuggestionsOverflow,
+    MobileFloatingHeaderTallContent,
+} from './parts/mobile';
 
 export {
     WithCustomTexts,

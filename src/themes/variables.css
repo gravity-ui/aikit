@@ -22,8 +22,17 @@
     /* === Suggestions === */
     --g-aikit-suggestions-box-shadow: 0 3px 10px rgba(198, 172, 255, 0.52);
 
+    /* === Button Group === */
+    --g-aikit-button-group-gap: var(--g-spacing-1);
+
     /* === Header === */
     --g-aikit-header-background: none;
+    --g-aikit-header-menu-sheet-inline-padding: var(--g-spacing-5);
+    --g-aikit-header-menu-sheet-bottom-padding: var(--g-spacing-5);
+    --g-aikit-header-menu-item-min-height: 44px;
+    --g-aikit-header-menu-item-inline-padding: 6px;
+    --g-aikit-header-menu-item-icon-gap: var(--g-spacing-4);
+    --g-aikit-header-menu-item-font-size: 16px;
 
     /* === Context Indicator === */
     --g-aikit-ci-color-progress-1: var(
@@ -49,9 +58,20 @@
     --g-aikit-history-width: 360px;
     --g-aikit-history-max-height: 560px;
     --g-aikit-history-item-height: 24px;
+    --g-aikit-history-sheet-inline-padding: var(--g-spacing-3);
+    --g-aikit-history-sheet-bottom-padding: var(--g-spacing-5);
+    --g-aikit-history-sheet-list-padding: 0;
+    --g-aikit-history-sheet-filter-inline-padding: 0;
+    --g-aikit-history-sheet-filter-border-bottom: none;
+    --g-aikit-history-sheet-item-inline-end-padding: 0;
+    --g-aikit-history-mobile-item-font-size: 16px;
+    --g-aikit-history-mobile-item-line-height: 24px;
 
     /* === Prompt Input === */
     --g-aikit-prompt-input-panel-max-height: 500px;
+    --g-aikit-prompt-input-simple-padding: var(--g-spacing-1) var(--g-spacing-1) var(--g-spacing-1)
+        var(--g-spacing-3);
+    --g-aikit-prompt-input-full-padding: var(--g-spacing-2);
 
     /* === Empty Container === */
     --g-aikit-empty-container-background: var(--g-color-base-background);
@@ -75,6 +95,7 @@
     --g-aikit-chat-content-background: var(--g-color-base-background);
     --g-aikit-chat-content-padding: 0 var(--g-aikit-layout-base-padding-m) var(--g-spacing-4)
         var(--g-aikit-layout-base-padding-m);
+    --g-aikit-chat-content-message-list-inline-padding: var(--g-spacing-2);
 
     /* === Chat Container === */
     --g-aikit-chat-container-header-background: var(--g-color-base-background);
@@ -82,14 +103,29 @@
     --g-aikit-chat-container-footer-background: var(--g-color-base-background);
     --g-aikit-chat-container-mobile-font-size: 16px;
     --g-aikit-chat-container-mobile-line-height: 24px;
+    --g-aikit-chat-container-mobile-body-2-font-size: 16px;
+    --g-aikit-chat-container-mobile-body-2-line-height: 20px;
     --g-aikit-chat-container-mobile-padding: var(--g-spacing-4);
-    --g-aikit-chat-container-mobile-empty-container-padding: 80px 0 0;
-    --g-aikit-chat-container-mobile-keyboard-empty-container-padding: var(--g-spacing-4) 0 0;
+    --g-aikit-chat-container-mobile-empty-container-padding: 80px var(--g-spacing-4) 0;
+    --g-aikit-chat-container-mobile-keyboard-empty-container-padding: var(--g-spacing-4)
+        var(--g-spacing-4) 0;
+    --g-aikit-chat-container-mobile-message-list-inline-padding: calc(
+        var(--g-aikit-layout-base-padding-m) + var(--g-spacing-2)
+    );
     --g-aikit-chat-container-background: var(--g-color-base-background);
     --g-aikit-chat-container-content-empty-background: var(--g-color-base-background);
     --g-aikit-chat-container-content-chat-background: var(--g-color-base-background);
     --g-aikit-chat-container-footer-empty-background: var(--g-color-base-background);
     --g-aikit-chat-container-footer-chat-background: var(--g-color-base-background);
+    --g-aikit-chat-container-header-height: auto;
+    --g-aikit-chat-container-mobile-header-height: 60px;
+    --g-aikit-chat-container-mobile-header-padding: var(--g-spacing-2) var(--g-spacing-3);
+    --g-aikit-chat-container-mobile-footer-padding: var(--g-spacing-4)
+        var(--g-aikit-chat-container-mobile-padding) var(--g-spacing-2);
+    --g-aikit-chat-container-mobile-footer-empty-padding: var(--g-spacing-2)
+        var(--g-aikit-chat-container-mobile-padding);
+    --g-aikit-chat-container-mobile-suggestions-max-height: 40vh;
+    --g-aikit-chat-container-mobile-suggestions-title-min-height: 48px;
 
     /* === Action Popup === */
     --g-aikit-action-popup-min-width: 280px;

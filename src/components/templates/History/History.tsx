@@ -19,6 +19,8 @@ export interface HistoryProps extends Omit<HistoryListProps, 'onChatClick'> {
     onOpenChange?: (open: boolean) => void;
     /** Anchor element for the popup */
     anchorElement: HTMLElement | null;
+    /** Show the mobile sheet title (default: `true`); it stays in `aria-label` either way */
+    showSheetTitle?: boolean;
 }
 
 /**
@@ -28,7 +30,7 @@ export interface HistoryProps extends Omit<HistoryListProps, 'onChatClick'> {
  * @returns React component
  */
 export function History(props: HistoryProps) {
-    const {open = false, onOpenChange, anchorElement, ...listProps} = props;
+    const {open = false, onOpenChange, anchorElement, showSheetTitle = true, ...listProps} = props;
     const isMobile = useMobile();
     const sheetId = useUniqId();
 
@@ -45,7 +47,7 @@ export function History(props: HistoryProps) {
                 title={i18n('sheet-title')}
                 visible={open}
                 onClose={() => onOpenChange?.(false)}
-                contentClassName={b('sheet-content')}
+                contentClassName={b('sheet-content', {'without-title': !showSheetTitle})}
                 qa="history-sheet"
                 allowHideOnContentScroll
             >

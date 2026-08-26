@@ -26,6 +26,6 @@ $block: '.#{variables.$ns}chat-content';
     }
 
     &__message-list {
-        padding: var(--g-spacing-2) var(--g-spacing-2) 0 var(--g-spacing-2);
+        padding: var(--g-spacing-2) var(--g-aikit-chat-content-message-list-inline-padding) 0;
     }
 }

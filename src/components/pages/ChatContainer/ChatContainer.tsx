@@ -211,6 +211,7 @@ export function ChatContainer(props: ChatContainerProps) {
         hideTitleOnEmptyChat = false,
         isMobile: isMobileProp,
         adjustToKeyboard = true,
+        floatingHeader = false,
         className,
         headerClassName,
         contentClassName,
@@ -644,7 +645,14 @@ export function ChatContainer(props: ChatContainerProps) {
         <MobileProvider mobile={isMobile}>
             <div
                 ref={rootRef}
-                className={b({mobile: isMobile, 'keyboard-open': isKeyboardOpen}, className)}
+                className={b(
+                    {
+                        mobile: isMobile,
+                        'keyboard-open': isKeyboardOpen,
+                        'floating-header': floatingHeader,
+                    },
+                    className,
+                )}
                 style={maxHeight === undefined ? undefined : {maxHeight}}
                 data-qa={resolveChatContainerRootQa(qaMap)}
             >
