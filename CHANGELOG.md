@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.20.1](https://github.com/gravity-ui/aikit/compare/v2.20.0...v2.20.1) (2026-08-31)
+
+
+### Bug Fixes
+
+* **styles:** hide sheet title with uikit 7.48 markup ([#244](https://github.com/gravity-ui/aikit/issues/244)) ([2cfa2ed](https://github.com/gravity-ui/aikit/commit/2cfa2ed8e5e1219cea6880287e0bbccf473b9d52))
+
 ## [2.20.0](https://github.com/gravity-ui/aikit/compare/v2.19.2...v2.20.0) (2026-08-26)
 
 
