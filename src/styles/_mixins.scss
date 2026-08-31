@@ -6,8 +6,13 @@
         max(#{$inline}, env(safe-area-inset-left, 0px));
 }
 
+// uikit 7.48 extracted the sheet content area into its own `sheet-content-area` block and
+// renamed the heading element, so both names have to be matched while the peer range spans
+// versions before and after that refactoring.
+
 @mixin sheet-hidden-title {
-    > .g-sheet__sheet-content-title {
+    > .g-sheet__sheet-content-title,
+    > .g-sheet-content-area__content-title {
         display: none;
     }
 }
