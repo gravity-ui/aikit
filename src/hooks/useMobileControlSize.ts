@@ -1,6 +1,8 @@
 import {useMobile} from '@gravity-ui/uikit';
 
-export type ControlSize = 'xs' | 's' | 'm' | 'l' | 'xl';
+// `xxs` only exists on `Label`, which uikit 7.48 gained. It is listed here so that the helpers
+// stay usable with the whole `LabelProps['size']` union across the supported uikit range.
+export type ControlSize = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl';
 
 /**
  * Resolves a control size: an explicit size always wins, otherwise the mobile

@@ -41,6 +41,12 @@ export const expectScreenshotFixture: PlaywrightFixture<ExpectScreenshotFixture>
         // Wait for loading fonts
         await page.evaluate(() => document.fonts.ready);
 
+        // Wait for the entrance transition of the mounted uikit overlays. They fade in from
+        // `opacity: 0`, and Playwright already reports a fully transparent node as visible, so an
+        // assertion like `expect(dialog).toBeVisible()` does not hold the capture back on its own.
+        const overlays = await page.locator('.g-modal:visible, .g-popup:visible').all();
+        await Promise.all(overlays.map((overlay) => expect(overlay).toHaveCSS('opacity', '1')));
+
         expect(await captureScreenshot()).toMatchSnapshot({
             name: `${nameScreenshot}.png`,
         });

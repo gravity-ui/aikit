@@ -142,6 +142,10 @@ test.describe('History', {tag: '@History'}, () => {
 
         await page.getByRole('button').click();
         await page.locator('.g-aikit-history__container').waitFor({state: 'visible'});
+        // Hovering while the popup is still fading in makes Chromium decide the item is not fully
+        // visible and scroll it into view, which leaves the list offset by the height of the first
+        // date group for the rest of the test and cuts that group off the screenshot.
+        await expect(page.locator('.g-popup').first()).toHaveCSS('opacity', '1');
 
         await page.locator('.g-aikit-history__chat-item').first().hover();
         const deleteButton = page.locator('.g-aikit-history__delete-button').first();
@@ -167,6 +171,10 @@ test.describe('History', {tag: '@History'}, () => {
 
         await page.getByRole('button').click();
         await page.locator('.g-aikit-history__container').waitFor({state: 'visible'});
+        // Hovering while the popup is still fading in makes Chromium decide the item is not fully
+        // visible and scroll it into view, which leaves the list offset by the height of the first
+        // date group for the rest of the test and cuts that group off the screenshot.
+        await expect(page.locator('.g-popup').first()).toHaveCSS('opacity', '1');
 
         await page.locator('.g-aikit-history__chat-item').first().hover();
         await page.locator('.g-aikit-history__delete-button').first().click();
