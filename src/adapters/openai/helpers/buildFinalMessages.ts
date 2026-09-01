@@ -9,26 +9,14 @@ function isMessageContentEmpty(content: TAssistantMessage['content']): boolean {
 
 export type BuildFinalMessagesParams = {
     baseMessages: TChatMessage[];
-    completedAssistantMessages: {id: string; content: TAssistantMessage['content']}[];
     currentAssistantMessageId: string;
     contentParts: TMessageContentUnion[];
 };
 
 export function buildFinalMessages(params: BuildFinalMessagesParams): TChatMessage[] {
-    const {baseMessages, completedAssistantMessages, currentAssistantMessageId, contentParts} =
-        params;
+    const {baseMessages, currentAssistantMessageId, contentParts} = params;
     const currentContent = contentPartsToMessageContent(contentParts);
-    const completedWithContent = completedAssistantMessages.filter(
-        (m) => !isMessageContentEmpty(m.content),
-    );
     const result: TChatMessage[] = [...baseMessages];
-    for (const m of completedWithContent) {
-        result.push({
-            id: m.id,
-            role: 'assistant' as const,
-            content: m.content,
-        } as TAssistantMessage);
-    }
     if (!isMessageContentEmpty(currentContent)) {
         result.push({
             id: currentAssistantMessageId,
