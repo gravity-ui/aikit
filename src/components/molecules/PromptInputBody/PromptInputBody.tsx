@@ -10,6 +10,19 @@ import './PromptInputBody.scss';
 
 const b = block('prompt-input-body');
 
+const scheduleCaretAtEndIfCollapsed = (textarea: HTMLTextAreaElement) => {
+    requestAnimationFrame(() => {
+        if (
+            textarea.isConnected &&
+            textarea.ownerDocument.activeElement === textarea &&
+            textarea.selectionStart === textarea.selectionEnd
+        ) {
+            const caretPosition = textarea.value.length;
+            textarea.setSelectionRange(caretPosition, caretPosition);
+        }
+    });
+};
+
 /**
  * Props for the PromptInputBody component
  */
@@ -72,6 +85,29 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
 
         const resolvedSize = useMobileControlSize(size, 'l', 'xl');
         const hasHandledInitialFocusRef = useRef(false);
+        const pendingInitialPointerIdRef = useRef<number | null>(null);
+
+        const handlePointerDown = (event: React.PointerEvent<HTMLTextAreaElement>) => {
+            pendingInitialPointerIdRef.current =
+                !hasHandledInitialFocusRef.current && event.isPrimary && event.button === 0
+                    ? event.pointerId
+                    : null;
+        };
+
+        const handlePointerUp = (event: React.PointerEvent<HTMLTextAreaElement>) => {
+            if (pendingInitialPointerIdRef.current !== event.pointerId) {
+                return;
+            }
+
+            pendingInitialPointerIdRef.current = null;
+            scheduleCaretAtEndIfCollapsed(event.currentTarget);
+        };
+
+        const handlePointerCancel = (event: React.PointerEvent<HTMLTextAreaElement>) => {
+            if (pendingInitialPointerIdRef.current === event.pointerId) {
+                pendingInitialPointerIdRef.current = null;
+            }
+        };
 
         const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement>) => {
             if (hasHandledInitialFocusRef.current) {
@@ -82,20 +118,13 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
 
             const textarea = event.currentTarget;
             if (!textarea.value) {
+                pendingInitialPointerIdRef.current = null;
                 return;
             }
 
-            // Let the browser finish pointer-based caret placement before overriding it.
-            requestAnimationFrame(() => {
-                if (
-                    textarea.isConnected &&
-                    textarea.ownerDocument.activeElement === textarea &&
-                    textarea.selectionStart === textarea.selectionEnd
-                ) {
-                    const caretPosition = textarea.value.length;
-                    textarea.setSelectionRange(caretPosition, caretPosition);
-                }
-            });
+            if (pendingInitialPointerIdRef.current === null) {
+                scheduleCaretAtEndIfCollapsed(textarea);
+            }
         };
 
         // If custom content is provided, render it
@@ -127,6 +156,9 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
                     controlProps={{
                         className: b('textarea-control', inputClassName),
                         maxLength,
+                        onPointerDown: handlePointerDown,
+                        onPointerUp: handlePointerUp,
+                        onPointerCancel: handlePointerCancel,
                     }}
                 />
             </div>

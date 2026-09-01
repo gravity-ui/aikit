@@ -116,6 +116,31 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await expect(textarea).toHaveJSProperty('selectionEnd', 4);
     });
 
+    test('should preserve a slow pointer selection on the first focus', async ({mount, page}) => {
+        await mount(<PromptInputStories.Playground initialValue="some" />);
+
+        const textarea = page.locator('textarea');
+        const bounds = await textarea.boundingBox();
+        if (!bounds) {
+            throw new Error('Expected the textarea to be visible');
+        }
+
+        const pointerY = bounds.y + bounds.height / 2;
+        await page.mouse.move(bounds.x + 2, pointerY);
+        await page.mouse.down();
+        await page.evaluate(
+            () =>
+                new Promise<void>((resolve) => {
+                    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+                }),
+        );
+        await page.mouse.move(bounds.x + bounds.width - 2, pointerY, {steps: 10});
+        await page.mouse.up();
+
+        await expect(textarea).toHaveJSProperty('selectionStart', 0);
+        await expect(textarea).toHaveJSProperty('selectionEnd', 4);
+    });
+
     test('should render with top panel', async ({mount, expectScreenshot}) => {
         await mount(<PromptInputStories.WithTopPanel />);
 
