@@ -16,7 +16,12 @@ $block: '.#{variables.$ns}submit-button';
         display: flex;
     }
 
+    // uikit 7.48 moved the spinner colour from `--g-color-line-brand` to its own
+    // `--g-spin-color`, so both have to be set while the peer range spans versions before and
+    // after that change. Without it the spinner keeps the brand colour of the button it sits on
+    // and becomes invisible.
     &__spinner {
         --g-color-line-brand: var(--g-color-text-brand-contrast);
+        --g-spin-color: var(--g-color-text-brand-contrast);
     }
 }
