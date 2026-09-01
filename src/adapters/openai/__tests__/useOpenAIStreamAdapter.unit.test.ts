@@ -152,7 +152,7 @@ describe('useOpenAIStreamAdapter', () => {
         }
     });
 
-    it('should merge lone tool update into prior assistant when message output_item.done arrives before tool completes', async () => {
+    it('should keep text and a tool call in one assistant message across message output items', async () => {
         const stream = createMockStream([
             {type: 'response.output_text.delta', delta: 'Checking...\n'},
             {
@@ -192,18 +192,99 @@ describe('useOpenAIStreamAdapter', () => {
             expect(result.current.status).toBe('ready');
         });
 
-        expect(result.current.messages).toHaveLength(2);
+        expect(result.current.messages).toHaveLength(1);
 
-        const firstContent = result.current.messages[0].content as Array<{
+        const content = result.current.messages[0].content as Array<{
             type: string;
-            data?: Record<string, unknown>;
+            data?: {text?: string; status?: string; bodyContent?: string};
         }>;
-        const toolInFirst = firstContent.find((c) => c.type === 'tool');
-        expect(toolInFirst?.data?.status).toBe('success');
-        expect(toolInFirst?.data?.bodyContent).toBe('{"ok":true}');
+        const tool = content.find((c) => c.type === 'tool');
+        const text = content
+            .filter((c) => c.type === 'text')
+            .map((c) => c.data?.text)
+            .join('');
+        expect(tool?.data?.status).toBe('success');
+        expect(tool?.data?.bodyContent).toBe('{"ok":true}');
+        expect(text).toBe('Checking...\nDone.');
+    });
 
-        const secondContent = result.current.messages[1].content;
-        expect(secondContent).toBe('Done.');
+    it('should keep reasoning, tool calls, and text output items in one assistant message', async () => {
+        const firstMessageId = 'msg-first';
+        const secondMessageId = 'msg-second';
+        const stream = createMockStream([
+            {
+                type: 'response.output_item.added',
+                item: {type: 'message', id: firstMessageId, role: 'assistant', content: []},
+            },
+            {type: 'response.output_text.delta', item_id: firstMessageId, delta: 'Checking. '},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: firstMessageId,
+                    role: 'assistant',
+                    content: [{type: 'output_text', text: 'Checking. '}],
+                },
+            },
+            {
+                type: 'response.output_item.added',
+                item: {type: 'reasoning', id: 'reason-1'},
+            },
+            {type: 'response.reasoning_text.delta', item_id: 'reason-1', delta: 'Need data.'},
+            {type: 'response.reasoning_text.done', item_id: 'reason-1', text: 'Need data.'},
+            {
+                type: 'response.output_item.added',
+                item: {
+                    type: 'mcp_call',
+                    id: 'tool-1',
+                    name: 'search',
+                    server_label: 'server',
+                },
+            },
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'mcp_call',
+                    id: 'tool-1',
+                    name: 'search',
+                    status: 'completed',
+                    output: '{"result":"found"}',
+                },
+            },
+            {
+                type: 'response.output_item.added',
+                item: {type: 'message', id: secondMessageId, role: 'assistant', content: []},
+            },
+            {type: 'response.output_text.delta', item_id: secondMessageId, delta: 'Found it.'},
+            {
+                type: 'response.output_item.done',
+                item: {
+                    type: 'message',
+                    id: secondMessageId,
+                    role: 'assistant',
+                    content: [{type: 'output_text', text: 'Found it.'}],
+                },
+            },
+            {type: 'response.completed'},
+        ]);
+
+        const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {initialMessages: []}));
+
+        await waitFor(() => {
+            expect(result.current.status).toBe('ready');
+        });
+
+        expect(result.current.messages).toHaveLength(1);
+        expect(result.current.messages[0].id).toBe(firstMessageId);
+        const content = result.current.messages[0].content as Array<{
+            type: string;
+            data?: {text?: string; content?: string; status?: string};
+        }>;
+        expect(content.map((part) => part.type)).toEqual(['text', 'thinking', 'tool', 'text']);
+        expect(content[0].data?.text).toBe('Checking. ');
+        expect(content[1].data).toMatchObject({content: 'Need data.', status: 'thought'});
+        expect(content[2].data?.status).toBe('success');
+        expect(content[3].data?.text).toBe('Found it.');
     });
 
     it('should add tool with waitingConfirmation for mcp_approval_request', async () => {
@@ -806,7 +887,7 @@ describe('useOpenAIStreamAdapter', () => {
         expect((result.current.messages[0] as {metadata?: unknown}).metadata).toBeUndefined();
     });
 
-    it('should match tokens to the correct message by id when multiple messages exist', async () => {
+    it('should attach token usage to the unified message when response has multiple message items', async () => {
         const firstId = 'msg-tok-first';
         const secondId = 'msg-tok-second';
         const stream = createMockStream([
@@ -874,16 +955,14 @@ describe('useOpenAIStreamAdapter', () => {
         });
 
         const assistants = result.current.messages.filter((m) => m.role === 'assistant');
-        expect(assistants).toHaveLength(2);
+        expect(assistants).toHaveLength(1);
         expect((assistants[0] as {metadata?: {outputTokens?: number}}).metadata?.outputTokens).toBe(
             55,
         );
-        expect((assistants[1] as {metadata?: {outputTokens?: number}}).metadata?.outputTokens).toBe(
-            55,
-        );
+        expect(assistants[0].content).toBe('FirstSecond');
     });
 
-    it('should assign distinct OpenAI message ids to successive assistant message segments', async () => {
+    it('should merge successive OpenAI message items and keep the first item id', async () => {
         const firstId = 'msg-cc-11111111111111111111111111111111';
         const secondId = 'msg-cc-22222222222222222222222222222222';
         const stream = createMockStream([
@@ -951,10 +1030,8 @@ describe('useOpenAIStreamAdapter', () => {
         });
 
         const assistantMessages = result.current.messages.filter((m) => m.role === 'assistant');
-        expect(assistantMessages).toHaveLength(2);
+        expect(assistantMessages).toHaveLength(1);
         expect(assistantMessages[0].id).toBe(firstId);
-        expect(assistantMessages[0].content).toBe('Part one.');
-        expect(assistantMessages[1].id).toBe(secondId);
-        expect(assistantMessages[1].content).toBe(' Part two.');
+        expect(assistantMessages[0].content).toBe('Part one. Part two.');
     });
 });
