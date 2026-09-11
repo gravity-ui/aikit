@@ -17,6 +17,30 @@
     }
 }
 
+// A uikit `Sheet` fills the layout viewport and pins its window to the bottom of that box, and the
+// on-screen keyboard shrinks only the visual viewport - so the window keeps hanging below the
+// keyboard. `useSheetKeyboardFit` publishes the visible band, and these two mixins move the sheet
+// into it: the root ends where the keyboard starts, and the content is capped so that the window
+// grows downwards from the top of the band instead of past its bottom.
+
+@mixin sheet-keyboard-fit-root {
+    height: var(--g-aikit-sheet-visible-bottom, 100%);
+}
+
+@mixin sheet-keyboard-fit-content {
+    display: flex;
+    flex-direction: column;
+    // `--_--top-height` is uikit's own height of the sheet top bar with the drag handle; it is
+    // declared on the sheet root, so the content inherits it.
+    max-height: calc(var(--g-aikit-sheet-visible-height, 100%) - var(--_--top-height, 20px));
+
+    // Only the part that scrolls gives up height; the sheet title and anything else above it keep
+    // theirs instead of being squeezed by the limit.
+    > * {
+        flex-shrink: 0;
+    }
+}
+
 @mixin link {
     color: var(--g-color-text-link);
     text-decoration: none;

@@ -1,5 +1,6 @@
 import {Popup, Sheet, useMobile, useUniqId} from '@gravity-ui/uikit';
 
+import {useSheetKeyboardFit} from '../../../hooks/useSheetKeyboardFit';
 import {block} from '../../../utils/cn';
 
 import {HistoryList, type HistoryListProps} from './HistoryList';
@@ -33,6 +34,9 @@ export function History(props: HistoryProps) {
     const {open = false, onOpenChange, anchorElement, showSheetTitle = true, ...listProps} = props;
     const isMobile = useMobile();
     const sheetId = useUniqId();
+    // Searching through the chats raises the on-screen keyboard, which leaves the sheet hanging
+    // below it - the sheet is measured against the layout viewport, and that one does not shrink.
+    const {isKeyboardOpen} = useSheetKeyboardFit(isMobile);
 
     const handleChatClick = () => {
         onOpenChange?.(false);
@@ -47,7 +51,11 @@ export function History(props: HistoryProps) {
                 title={i18n('sheet-title')}
                 visible={open}
                 onClose={() => onOpenChange?.(false)}
-                contentClassName={b('sheet-content', {'without-title': !showSheetTitle})}
+                className={b('sheet', {'keyboard-open': isKeyboardOpen})}
+                contentClassName={b('sheet-content', {
+                    'without-title': !showSheetTitle,
+                    'keyboard-open': isKeyboardOpen,
+                })}
                 qa="history-sheet"
                 allowHideOnContentScroll
             >

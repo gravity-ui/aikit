@@ -10,3 +10,4 @@ export * from './useToolset';
 export * from './useToolResultContinuation';
 export * from './useMascotState';
 export * from './useKeyboardViewportFit';
+export * from './useSheetKeyboardFit';
