@@ -1,6 +1,16 @@
 @use '../../../styles/mixins';
 @use '../../../styles/variables';
 
+@keyframes g-aikit-prevent-scroll-on-focus {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
 .#{variables.$ns}chat-container {
     display: flex;
     flex-direction: column;
@@ -109,6 +119,14 @@
         height: 100dvh;
         visibility: hidden;
         pointer-events: none;
+    }
+
+    // iOS scrolls the page to the focused input and drags fixed layout along with it, which
+    // makes a chat pinned to the visible viewport dive and come back. An animation running on
+    // focus suppresses that scroll; there is no JavaScript equivalent. Taken from the Alice chat:
+    // https://gist.github.com/kiding/72721a0553fa93198ae2bb6eefaa3299
+    &_mobile .#{variables.$ns}prompt-input-body__textarea-control:focus {
+        animation: g-aikit-prevent-scroll-on-focus var(--g-aikit-chat-container-focus-guard-time);
     }
 
     &_mobile .#{variables.$ns}markdown-renderer {

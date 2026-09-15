@@ -1185,6 +1185,8 @@ to a keyboard taking more than half the screen.
 Set `--g-aikit-chat-container-mobile-keyboard-suggestions-display: flex` to keep the welcome
 suggestions next to the open keyboard.
 
+On iOS the browser scrolls the page to the focused input, which drags fixed layout along with it and makes a chat pinned to the visible viewport dive and come back. In mobile mode the chat runs a plain opacity animation on the focused textarea, which suppresses that scroll; there is no JavaScript equivalent. Its duration is `--g-aikit-chat-container-focus-guard-time` (`0.5s`), and setting it to `0s` turns the guard off.
+
 The welcome hero follows the same idea: while the prompt input grows it eats the welcome screen from the bottom up, and as soon as the hero stops fitting the chat sets `--g-aikit-empty-container-hero-visibility: hidden` on its root. The hero keeps its box, so the measurement cannot flip between fitting and not fitting.
 
 The prompt input stops growing at the header: the container measures what its own height leaves
