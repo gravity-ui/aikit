@@ -96,10 +96,11 @@
         );
     }
 
-    // Measures the visible area the way the browser sees it: iOS Safari reports a
-    // `visualViewport.height` short by the height of its own bottom bar, and comparing the two
-    // tells the difference between that bar and an open keyboard. Painting nothing and taking no
-    // space, it also collapses to zero where `dvh` is unsupported, which turns the check off.
+    // Answers two questions the `visualViewport` numbers alone cannot: how tall the browser itself
+    // considers the visible area to be - Safari reports a height short by its own bottom bar - and
+    // which viewport client rectangles are measured against, which this element shows by staying
+    // at the layout viewport origin. Painting nothing and taking no space, it also collapses to
+    // zero where `dvh` is unsupported, which turns the correction off.
     &__viewport-probe {
         position: fixed;
         inset-block-start: 0;

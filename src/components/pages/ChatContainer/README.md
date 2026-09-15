@@ -1160,12 +1160,13 @@ keyboard tracking is on, the container renders a hidden zero-width probe sized w
 left alone. The correction can only raise the visible height, and in a browser without `dvh`
 support the probe collapses to zero, which turns the correction off.
 
-How the container is measured also depends on its containing block. A container that is
-`position: fixed` itself, or sits inside a fixed ancestor, has the layout viewport as its
-containing block, so the browser already reports its rect in visual viewport coordinates - the
-chat walks up the tree, detects this on its own and does not add the viewport offset a second
-time. The container does have to be anchored to the top of the viewport: a bottom-anchored one
-moves its own top as soon as the returned limit shrinks it.
+Which viewport the container is measured against differs between browsers: client rectangles come
+back relative to the layout viewport almost everywhere and relative to the visual viewport in
+Safari. The same probe tells the two apart - pinned to the top of the layout viewport, it stays at
+zero in the first case and drops to minus the viewport offset in the second - so the chat reads the
+answer instead of guessing it, and never adds the viewport offset twice. The container does have to
+be anchored to the top of the viewport: a bottom-anchored one moves its own top as soon as the
+returned limit shrinks it.
 
 Set `adjustToKeyboard={false}` when the host application already handles the keyboard - for
 example with `interactive-widget=resizes-content` in the viewport meta tag, which shrinks the

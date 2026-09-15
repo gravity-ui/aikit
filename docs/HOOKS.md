@@ -212,7 +212,7 @@ interface KeyboardViewportFit {
 
 Apply `maxHeight` as the container's `max-height`; while the keyboard is closed it is `undefined` and the container keeps its natural height. Both fields follow the `resize` and `scroll` events of `visualViewport`, collapsed into a single animation frame because iOS reports intermediate sizes during the keyboard animation.
 
-iOS Safari can report a `visualViewport.height` that is short by the height of its own bottom bar, which would shrink the container with no keyboard open at all. `viewportProbeRef` points at a hidden element sized with `height: 100dvh`, which measures the same area without that shortfall: the larger of the two readings wins as long as the difference stays below `VIEWPORT_HEIGHT_TOLERANCE`, and above it the difference is the keyboard itself and is left uncorrected. `ChatContainer` renders such a probe (`.g-aikit-chat-container__viewport-probe`) while keyboard tracking is on. A `position: fixed` container is detected by the hook itself, by walking up the ancestors and only while the visual viewport is actually scrolled.
+iOS Safari can report a `visualViewport.height` that is short by the height of its own bottom bar, which would shrink the container with no keyboard open at all. `viewportProbeRef` points at a hidden element sized with `height: 100dvh`, which measures the same area without that shortfall: the larger of the two readings wins as long as the difference stays below `VIEWPORT_HEIGHT_TOLERANCE`, and above it the difference is the keyboard itself and is left uncorrected. `ChatContainer` renders such a probe (`.g-aikit-chat-container__viewport-probe`) while keyboard tracking is on. The same probe also says which viewport client rectangles are measured against: pinned to the top of the layout viewport, it stays at zero where rectangles are layout-relative and drops to minus the viewport offset in Safari, where they are visual-relative.
 
 Two constants are exported alongside the hook:
 
@@ -237,9 +237,9 @@ interface KeyboardViewportMetrics {
   scale: number; // `visualViewport.scale`; `1` when the page is not zoomed
   layoutHeight: number; // `window.innerHeight` — keeps its height on iOS Safari
   containerTop: number; // container `getBoundingClientRect().top`
-  containerFixed?: boolean; // container or an ancestor is `position: fixed` — default false
+  viewportOriginTop?: number; // top of a `position: fixed; top: 0` probe — default 0
   measuredViewportHeight?: number; // height of the `height: 100dvh` probe element
 }
 ```
 
-`containerFixed` marks a container whose rect already comes back in visual viewport coordinates, so `viewportOffsetTop` must not be added to it a second time. `measuredViewportHeight` is the probe reading described above. Both are optional; the hook fills them in on its own.
+`viewportOriginTop` places the origin of the layout viewport in the same coordinates the container was measured in, so the viewport offset is never added twice. `measuredViewportHeight` is the probe reading described above. Both are optional; the hook fills them in on its own.

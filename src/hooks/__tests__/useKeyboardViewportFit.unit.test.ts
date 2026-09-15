@@ -146,11 +146,11 @@ describe('resolveKeyboardViewportFit', () => {
     });
 });
 
-describe('resolveKeyboardViewportFit with a fixed container', () => {
-    it('should measure a fixed container against the visual viewport', () => {
-        // A fixed container that follows the visual viewport reports a top of zero, and the whole
-        // visible area is its height budget. The layout viewport reading would add the offset on
-        // top of that and let the container grow past the keyboard.
+describe('resolveKeyboardViewportFit with client rectangles in visual viewport coordinates', () => {
+    it('should not add the viewport offset a second time', () => {
+        // Safari measures client rectangles against the visual viewport, so a container that
+        // follows it reports a top of zero while a probe pinned to the layout viewport reports
+        // minus the offset. The whole visible area is the container's height budget.
         expect(
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
@@ -158,14 +158,14 @@ describe('resolveKeyboardViewportFit with a fixed container', () => {
                 scale: 1,
                 layoutHeight: 800,
                 containerTop: 0,
-                containerFixed: true,
+                viewportOriginTop: -120,
             }),
         ).toEqual({isKeyboardOpen: true, maxHeight: 460});
     });
 
-    it('should count the part of a fixed container scrolled above the visible area', () => {
-        // A fixed container left pinned to the top of the layout viewport starts above the visible
-        // area, so it needs the offset back to reach the bottom of that area.
+    it('should count the part of the container scrolled above the visible area', () => {
+        // A container left pinned to the top of the layout viewport starts above the visible area,
+        // so it needs that part back to reach the bottom of it.
         expect(
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
@@ -173,12 +173,26 @@ describe('resolveKeyboardViewportFit with a fixed container', () => {
                 scale: 1,
                 layoutHeight: 800,
                 containerTop: -120,
-                containerFixed: true,
+                viewportOriginTop: -120,
             }),
         ).toEqual({isKeyboardOpen: true, maxHeight: 580});
     });
 
-    it('should keep the layout viewport reading for a container that is not fixed', () => {
+    it('should keep the layout viewport reading when the probe stays at the origin', () => {
+        // Every other browser measures against the layout viewport, where the probe does not move.
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 460,
+                viewportOffsetTop: 120,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+                viewportOriginTop: 0,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 580});
+    });
+
+    it('should read the layout viewport by default, without a probe', () => {
         expect(
             resolveKeyboardViewportFit({
                 viewportHeight: 460,
@@ -188,19 +202,6 @@ describe('resolveKeyboardViewportFit with a fixed container', () => {
                 containerTop: 0,
             }),
         ).toEqual({isKeyboardOpen: true, maxHeight: 580});
-    });
-
-    it('should ignore the fixed flag while the visual viewport is not scrolled', () => {
-        expect(
-            resolveKeyboardViewportFit({
-                viewportHeight: 460,
-                viewportOffsetTop: 0,
-                scale: 1,
-                layoutHeight: 800,
-                containerTop: 0,
-                containerFixed: true,
-            }),
-        ).toEqual({isKeyboardOpen: true, maxHeight: 460});
     });
 });
 

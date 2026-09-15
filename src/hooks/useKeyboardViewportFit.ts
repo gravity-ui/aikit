@@ -26,11 +26,13 @@ export interface KeyboardViewportMetrics {
     /** Top of the container in layout viewport coordinates (`getBoundingClientRect().top`). */
     containerTop: number;
     /**
-     * `true` when the container or one of its ancestors is `position: fixed`, so its containing
-     * block is the layout viewport and `getBoundingClientRect().top` comes back in visual viewport
-     * coordinates. `false` (default) keeps the layout viewport reading.
+     * Top of an element pinned to the top of the layout viewport (`position: fixed; top: 0`), read
+     * with `getBoundingClientRect()`. Client rectangles are relative to the layout viewport in most
+     * browsers and to the visual viewport in Safari, and this reading tells the two apart: it stays
+     * at zero in the first case and drops to minus the viewport offset in the second. `0` by
+     * default, which keeps the layout viewport reading.
      */
-    containerFixed?: boolean;
+    viewportOriginTop?: number;
     /**
      * Height of a reference element sized to the dynamic viewport (`height: 100dvh`), read from
      * the DOM. iOS Safari reports a visible area short by the height of its bottom toolbar.
@@ -93,7 +95,7 @@ export function resolveKeyboardViewportFit(
         scale,
         layoutHeight,
         containerTop,
-        containerFixed = false,
+        viewportOriginTop = 0,
         measuredViewportHeight,
     } = metrics;
 
@@ -113,9 +115,10 @@ export function resolveKeyboardViewportFit(
         return CLOSED;
     }
 
-    // A fixed container is already measured against the visual viewport: its reported top drops by
-    // the same offset the viewport was scrolled by, so adding the offset back would count it twice.
-    const visibleBottom = containerFixed ? visibleHeight : viewportOffsetTop + visibleHeight;
+    // Where the visible area ends, in the same coordinates the container was measured in. Reading
+    // the origin from the DOM keeps this right in a browser that reports rectangles against the
+    // visual viewport, where adding the offset back would count it twice.
+    const visibleBottom = viewportOffsetTop + viewportOriginTop + visibleHeight;
 
     return {
         isKeyboardOpen: true,
@@ -125,28 +128,13 @@ export function resolveKeyboardViewportFit(
 
 export interface KeyboardViewportFitOptions {
     /**
-     * Element sized to the dynamic viewport (`height: 100dvh`) used to cross-check
-     * `visualViewport.height`, see {@link VIEWPORT_HEIGHT_TOLERANCE}.
+     * Element pinned to the top of the layout viewport and sized to the dynamic viewport
+     * (`position: fixed; top: 0; height: 100dvh`). Its rectangle answers two questions the
+     * `visualViewport` numbers alone cannot: which viewport client rectangles are measured
+     * against, and how tall the browser itself considers the visible area to be. See
+     * {@link VIEWPORT_HEIGHT_TOLERANCE}.
      */
     viewportProbeRef?: RefObject<HTMLElement | null>;
-}
-
-/**
- * Walks up from the element looking for a fixed ancestor: the container itself can be laid out
- * normally inside a host wrapper that is the fixed one.
- */
-function isFixedToViewport(element: HTMLElement): boolean {
-    let node: HTMLElement | null = element;
-
-    while (node) {
-        if (window.getComputedStyle(node).position === 'fixed') {
-            return true;
-        }
-
-        node = node.parentElement;
-    }
-
-    return false;
 }
 
 /**
@@ -182,6 +170,8 @@ export function useKeyboardViewportFit(
                 return;
             }
 
+            const probeBox = viewportProbeRef?.current?.getBoundingClientRect();
+
             const next = resolveKeyboardViewportFit({
                 viewportHeight: viewport.height,
                 viewportOffsetTop: viewport.offsetTop,
@@ -190,10 +180,8 @@ export function useKeyboardViewportFit(
                 // The limit only depends on the top of the container, which the limit itself does
                 // not move - so applying it cannot feed back into the next measurement.
                 containerTop: container.getBoundingClientRect().top,
-                // Both readings coincide while the visual viewport is not scrolled, so the walk
-                // up the tree is skipped in the common case.
-                containerFixed: viewport.offsetTop === 0 ? false : isFixedToViewport(container),
-                measuredViewportHeight: viewportProbeRef?.current?.getBoundingClientRect().height,
+                viewportOriginTop: probeBox?.top,
+                measuredViewportHeight: probeBox?.height,
             });
 
             setFit((prev) =>
