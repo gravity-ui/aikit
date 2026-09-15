@@ -18,6 +18,8 @@ export interface PromptInputFitMetrics {
     footerHeight: number;
     /** Height of the autosized textarea inside that footer. */
     textareaHeight: number;
+    /** Height of one line of text in that textarea, the floor the limit never goes below. */
+    lineHeight: number;
 }
 
 /**
@@ -30,8 +32,13 @@ export function resolvePromptInputMaxHeight({
     headerHeight,
     footerHeight,
     textareaHeight,
+    lineHeight,
 }: PromptInputFitMetrics): number {
-    return Math.max(0, Math.floor(rootHeight - headerHeight - (footerHeight - textareaHeight)));
+    const available = Math.floor(rootHeight - headerHeight - (footerHeight - textareaHeight));
+
+    // A visible area short enough to leave nothing - a phone held sideways with the keyboard up -
+    // would cap the field at zero and hide the text being typed. One line stays whatever happens.
+    return Math.max(Math.ceil(lineHeight), available);
 }
 
 export interface HeroFitMetrics {
@@ -96,11 +103,16 @@ export function useKeyboardLayoutFit(
                 return undefined;
             }
 
+            const {lineHeight, fontSize} = window.getComputedStyle(textarea);
+
             return resolvePromptInputMaxHeight({
                 rootHeight: root.getBoundingClientRect().height,
                 headerHeight: headerRef.current?.getBoundingClientRect().height ?? 0,
                 footerHeight: footer.getBoundingClientRect().height,
                 textareaHeight: textarea.getBoundingClientRect().height,
+                // `line-height: normal` resolves to no number of its own, the font size is the
+                // closest stand-in for it.
+                lineHeight: parseFloat(lineHeight) || parseFloat(fontSize) || 0,
             });
         };
 

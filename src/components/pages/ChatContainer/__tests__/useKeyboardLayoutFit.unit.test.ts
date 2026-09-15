@@ -10,6 +10,7 @@ describe('resolvePromptInputMaxHeight', () => {
                 headerHeight: 60,
                 footerHeight: 150,
                 textareaHeight: 60,
+                lineHeight: 20,
             }),
         ).toBe(227);
     });
@@ -21,6 +22,7 @@ describe('resolvePromptInputMaxHeight', () => {
                 headerHeight: 60,
                 footerHeight: 290,
                 textareaHeight: 200,
+                lineHeight: 20,
             }),
         ).toBe(227);
     });
@@ -32,17 +34,43 @@ describe('resolvePromptInputMaxHeight', () => {
                 headerHeight: 60,
                 footerHeight: 150.4,
                 textareaHeight: 60,
+                lineHeight: 20,
             }),
         ).toBe(226);
     });
 
-    it('should not go negative when the footer alone fills the chat', () => {
+    it('should keep one line when the footer alone fills the chat', () => {
         expect(
             resolvePromptInputMaxHeight({
                 rootHeight: 200,
                 headerHeight: 60,
                 footerHeight: 260,
                 textareaHeight: 60,
+                lineHeight: 20,
+            }),
+        ).toBe(20);
+    });
+
+    it('should round a fractional line up rather than clip it', () => {
+        expect(
+            resolvePromptInputMaxHeight({
+                rootHeight: 200,
+                headerHeight: 60,
+                footerHeight: 260,
+                textareaHeight: 60,
+                lineHeight: 19.2,
+            }),
+        ).toBe(20);
+    });
+
+    it('should fall back to no floor when the line height is unknown', () => {
+        expect(
+            resolvePromptInputMaxHeight({
+                rootHeight: 200,
+                headerHeight: 60,
+                footerHeight: 260,
+                textareaHeight: 60,
+                lineHeight: 0,
             }),
         ).toBe(0);
     });
