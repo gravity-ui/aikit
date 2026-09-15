@@ -1,12 +1,14 @@
 @use '../../../styles/mixins';
 @use '../../../styles/variables';
 
-// What matters is that an animation is running at the moment of focus, so its amplitude is
-// kept imperceptible: a full run from zero would make the field visibly fade in on every tap.
+// The amplitude is not cosmetic. Shrinking the run to something imperceptible stops WebKit
+// treating it as a real animation, and with it goes the scroll suppression the rule exists for:
+// the chat dives every time the field is focused from code. It runs the full way from zero,
+// exactly as the Alice chat does.
 
 @keyframes g-aikit-prevent-scroll-on-focus {
     0% {
-        opacity: 0.99;
+        opacity: 0;
     }
 
     100% {
