@@ -1,8 +1,8 @@
 @use '../../../styles/mixins';
 @use '../../../styles/variables';
 
-// Анимация нужна самим фактом того, что она идёт в момент фокуса, поэтому амплитуда взята
-// неразличимая: полный прогон от нуля давал бы заметное проявление поля на каждом тапе
+// What matters is that an animation is running at the moment of focus, so its amplitude is
+// kept imperceptible: a full run from zero would make the field visibly fade in on every tap.
 
 @keyframes g-aikit-prevent-scroll-on-focus {
     0% {

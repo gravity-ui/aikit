@@ -233,9 +233,9 @@ export function ChatContainer(props: ChatContainerProps) {
     const {isKeyboardOpen, maxHeight} = useKeyboardViewportFit(rootRef, isKeyboardTracked, {
         viewportProbeRef,
     });
-    // Меряем всегда, а не только при открытой клавиатуре: иначе на закрытой поле успевает
-    // вырасти по своему счётчику строк, и на следующем открытии оно уже выше, чем доступное
-    // место, а потолок к этому моменту снят
+    // Measured whatever the keyboard does: while it is closed the textarea keeps growing by its
+    // own row counter, so by the next time the keyboard opens the field is already taller than
+    // the room left for it, and the cap that would have stopped it is gone.
     const {promptInputMaxHeight, isHeroFitting} = useKeyboardLayoutFit(
         rootRef,
         headerRef,
