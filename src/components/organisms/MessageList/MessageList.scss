@@ -1,9 +1,11 @@
 @use '../../../styles/variables';
+@use '../../../styles/mixins';
 
 $block: '.#{variables.$ns}message-list';
 
 #{$block} {
     overflow-y: auto;
+    @include mixins.scroll-contain;
     // Scroll position on prepend is managed manually (useScrollPreservation); disable the browser's
     // native scroll anchoring so it doesn't also compensate and double-shift the viewport.
     overflow-anchor: none;
@@ -63,9 +65,11 @@ $block: '.#{variables.$ns}message-list';
         }
     }
 
+    // react-window turns this element into the real scroller through an inline style
     &__list {
         flex: 1;
         min-height: 0;
+        @include mixins.scroll-contain;
     }
 
     &__row {

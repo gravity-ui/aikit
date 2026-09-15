@@ -42,6 +42,14 @@ Defined under `.g-root`, applied regardless of theme.
 | --------------------------------- | ------- | ------------------- |
 | `--g-aikit-layout-base-padding-m` | `12px`  | Base medium padding |
 
+### Scrolling
+
+| Variable                               | Default | Description                                                                                                                                                                                                                                                 |
+| -------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-aikit-scroll-overscroll-behavior` | `auto`  | `overscroll-behavior` of every AIKit scroller: message list, history list, empty-state content, prompt input textarea, file upload dialog list and the mobile suggestions block; the Markdown table wrapper and `Tabs` apply it to the horizontal axis only |
+
+The default is `auto` so desktop keeps the browser's native scroll chaining, and `ChatContainer` switches it to `contain` for its whole subtree in mobile mode, where a gesture chaining out of an inner scroller drags the chat away from the visible viewport.
+
 ### Disclaimer / Suggestions / Header
 
 | Variable                           | Default                            | Description                   |
@@ -107,21 +115,26 @@ In mobile mode the history is a `Sheet`; these tokens shape it, `env(safe-area-i
 
 ### Prompt Input
 
-| Variable                                  | Default                                                                       | Description                    |
-| ----------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------ |
-| `--g-aikit-prompt-input-panel-max-height` | `500px`                                                                       | Max height of expandable panel |
-| `--g-aikit-prompt-input-simple-padding`   | `var(--g-spacing-1) var(--g-spacing-1) var(--g-spacing-1) var(--g-spacing-3)` | Padding of the `simple` view   |
-| `--g-aikit-prompt-input-full-padding`     | `var(--g-spacing-2)`                                                          | Padding of the `full` view     |
+| Variable                                          | Default                                                                       | Description                                                                                 |
+| ------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `--g-aikit-prompt-input-panel-max-height`         | `500px`                                                                       | Max height of expandable panel                                                              |
+| `--g-aikit-prompt-input-simple-padding`           | `var(--g-spacing-1) var(--g-spacing-1) var(--g-spacing-1) var(--g-spacing-3)` | Padding of the `simple` view                                                                |
+| `--g-aikit-prompt-input-full-padding`             | `var(--g-spacing-2)`                                                          | Padding of the `full` view                                                                  |
+| `--g-aikit-prompt-input-body-textarea-max-height` | `none`                                                                        | Max height of the textarea; past it the text scrolls inside the field instead of growing it |
+
+In mobile mode `ChatContainer` writes `--g-aikit-prompt-input-body-textarea-max-height` onto its root while the on-screen keyboard is open, measured as the root height minus the header and minus the part of the footer that is not the textarea.
 
 ### Empty Container
 
-| Variable                                       | Default                          | Description                                  |
-| ---------------------------------------------- | -------------------------------- | -------------------------------------------- |
-| `--g-aikit-empty-container-background`         | `var(--g-color-base-background)` | Empty-state background                       |
-| `--g-aikit-empty-container-content-gap`        | `48px`                           | Gap between content blocks                   |
-| `--g-aikit-empty-container-padding`            | `48px 32px`                      | Empty-state padding                          |
-| `--g-aikit-empty-container-welcome-gap`        | `var(--g-spacing-6)`             | Gap between hero and text                    |
-| `--g-aikit-empty-container-content-overflow-y` | `auto`                           | Vertical overflow of the empty-state content |
+| Variable                                        | Default                          | Description                                                                                              |
+| ----------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `--g-aikit-empty-container-background`          | `var(--g-color-base-background)` | Empty-state background                                                                                   |
+| `--g-aikit-empty-container-content-gap`         | `48px`                           | Gap between content blocks                                                                               |
+| `--g-aikit-empty-container-padding`             | `48px 32px`                      | Empty-state padding                                                                                      |
+| `--g-aikit-empty-container-welcome-gap`         | `var(--g-spacing-6)`             | Gap between hero and text                                                                                |
+| `--g-aikit-empty-container-content-overflow-y`  | `auto`                           | Vertical overflow of the empty-state content                                                             |
+| `--g-aikit-empty-container-suggestions-display` | `flex`                           | `display` of the suggestions block; `none` takes it out of the flow                                      |
+| `--g-aikit-empty-container-hero-visibility`     | `visible`                        | `visibility` of the hero block; ChatContainer sets `hidden` while a grown prompt input leaves it no room |
 
 Mobile mode uses a parallel set of tokens, applied by the component itself:
 
@@ -156,18 +169,19 @@ Mobile mode uses a parallel set of tokens, applied by the component itself:
 
 Header and footer metrics, each with a `mobile-` counterpart applied in mobile mode:
 
-| Variable                                                       | Default                                                                              | Description                                                                                     |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| `--g-aikit-chat-container-header-height`                       | `auto`                                                                               | Header height                                                                                   |
-| `--g-aikit-chat-container-header-padding`                      | `var(--g-aikit-layout-base-padding-m)`                                               | Header padding                                                                                  |
-| `--g-aikit-chat-container-mobile-header-height`                | `60px`                                                                               | Minimum header height in mobile mode                                                            |
-| `--g-aikit-chat-container-mobile-header-padding`               | `var(--g-spacing-2) var(--g-spacing-3)`                                              | Header padding in mobile mode                                                                   |
-| `--g-aikit-chat-container-footer-padding`                      | `var(--g-aikit-layout-base-padding-m)`                                               | Footer padding                                                                                  |
-| `--g-aikit-chat-container-footer-empty-padding`                | `var(--g-aikit-chat-container-footer-padding)`                                       | Footer padding on the welcome screen                                                            |
-| `--g-aikit-chat-container-mobile-footer-padding`               | `var(--g-spacing-4) var(--g-aikit-chat-container-mobile-padding) var(--g-spacing-2)` | Footer padding in mobile mode                                                                   |
-| `--g-aikit-chat-container-mobile-footer-empty-padding`         | `var(--g-spacing-2) var(--g-aikit-chat-container-mobile-padding)`                    | Welcome-screen footer in mobile mode                                                            |
-| `--g-aikit-chat-container-mobile-suggestions-max-height`       | `40vh`                                                                               | Max height of the suggestions block above the input in mobile mode; the block scrolls beyond it |
-| `--g-aikit-chat-container-mobile-suggestions-title-min-height` | `48px`                                                                               | Floor for the suggestions title above the input in mobile mode                                  |
+| Variable                                                       | Default                                                                              | Description                                                                                                                                                          |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-aikit-chat-container-header-height`                       | `auto`                                                                               | Header height                                                                                                                                                        |
+| `--g-aikit-chat-container-header-padding`                      | `var(--g-aikit-layout-base-padding-m)`                                               | Header padding                                                                                                                                                       |
+| `--g-aikit-chat-container-mobile-header-height`                | `60px`                                                                               | Minimum header height in mobile mode                                                                                                                                 |
+| `--g-aikit-chat-container-mobile-header-padding`               | `var(--g-spacing-2) var(--g-spacing-3)`                                              | Header padding in mobile mode                                                                                                                                        |
+| `--g-aikit-chat-container-footer-padding`                      | `var(--g-aikit-layout-base-padding-m)`                                               | Footer padding                                                                                                                                                       |
+| `--g-aikit-chat-container-footer-empty-padding`                | `var(--g-aikit-chat-container-footer-padding)`                                       | Footer padding on the welcome screen                                                                                                                                 |
+| `--g-aikit-chat-container-mobile-footer-padding`               | `var(--g-spacing-4) var(--g-aikit-chat-container-mobile-padding) var(--g-spacing-2)` | Footer padding in mobile mode                                                                                                                                        |
+| `--g-aikit-chat-container-mobile-footer-empty-padding`         | `var(--g-spacing-2) var(--g-aikit-chat-container-mobile-padding)`                    | Welcome-screen footer in mobile mode                                                                                                                                 |
+| `--g-aikit-chat-container-mobile-suggestions-max-height`       | `40vh`                                                                               | Max height of the suggestions block above the input in mobile mode; the block scrolls beyond it                                                                      |
+| `--g-aikit-chat-container-mobile-suggestions-title-min-height` | `48px`                                                                               | Floor for the suggestions title above the input in mobile mode                                                                                                       |
+| `--g-aikit-chat-container-mobile-keyboard-suggestions-display` | `none`                                                                               | `display` the suggestions block takes while the on-screen keyboard is open in mobile mode; the component binds `--g-aikit-empty-container-suggestions-display` to it |
 
 ## Light Theme Overrides (`light.css`)
 

@@ -1,4 +1,5 @@
 @use '../../../styles/variables';
+@use '../../../styles/mixins';
 
 .#{variables.$ns}empty-container {
     display: flex;
@@ -22,6 +23,7 @@
         align-self: stretch;
         min-height: 0;
         overflow-y: var(--g-aikit-empty-container-content-overflow-y);
+        @include mixins.scroll-contain;
         justify-content: var(--g-aikit-empty-container-content-justify-content);
         gap: var(--g-aikit-empty-container-content-gap);
         padding: var(--g-aikit-empty-container-padding);
@@ -60,6 +62,12 @@
         }
     }
 
+    // A hero cut in half by a grown prompt input reads as broken, so it is hidden whole; the box
+    // stays behind, otherwise the measurement would flip between fitting and not fitting.
+    &__hero-container {
+        visibility: var(--g-aikit-empty-container-hero-visibility, visible);
+    }
+
     &__title,
     &__description {
         &_align {
@@ -78,7 +86,9 @@
     }
 
     &__suggestions-section {
-        display: flex;
+        // `flex` and nothing else by default: the column layout, `align-self` and the shrink
+        // chain below all depend on it. The token is there to take the block out of the flow.
+        display: var(--g-aikit-empty-container-suggestions-display, flex);
         flex: var(--g-aikit-empty-container-suggestions-flex);
         flex-direction: column;
         align-self: var(--g-aikit-empty-container-suggestions-align-self);

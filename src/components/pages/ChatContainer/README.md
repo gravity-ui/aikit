@@ -1048,24 +1048,26 @@ function App() {
 
 The component uses CSS variables for theming:
 
-| Variable                                             | Description                                                                                    |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `--g-aikit-chat-container-background`                | Background color of the entire chat container                                                  |
-| `--g-aikit-chat-container-header-background`         | Background color of the header section                                                         |
-| `--g-aikit-chat-container-content-background`        | Background color of the content section (general)                                              |
-| `--g-aikit-chat-container-content-empty-background`  | Background color of the content section in empty view                                          |
-| `--g-aikit-chat-container-content-chat-background`   | Background color of the content section in chat view                                           |
-| `--g-aikit-chat-container-footer-background`         | Background color of the footer section (general)                                               |
-| `--g-aikit-chat-container-footer-empty-background`   | Background color of the footer section in empty view                                           |
-| `--g-aikit-chat-container-footer-chat-background`    | Background color of the footer section in chat view                                            |
-| `--g-aikit-layout-base-padding-m`                    | Padding for header, content, and footer sections (default: 12px; 16px in mobile mode)          |
-| `--g-aikit-chat-container-mobile-font-size`          | Body text size inside the chat in mobile mode (default: 16px)                                  |
-| `--g-aikit-chat-container-mobile-line-height`        | Body line height inside the chat in mobile mode (default: 24px)                                |
-| `--g-aikit-chat-container-mobile-body-2-font-size`   | `body-2` text size in mobile mode, mapped onto `--g-text-body-2-font-size` (default: 16px)     |
-| `--g-aikit-chat-container-mobile-body-2-line-height` | `body-2` line height in mobile mode, mapped onto `--g-text-body-2-line-height` (default: 20px) |
-| `--g-spacing-1`                                      | Gap between footer elements (default: 4px)                                                     |
-| `--g-spacing-2`                                      | Gap between header elements (default: 8px)                                                     |
-| `--g-spacing-4`                                      | Bottom padding for content section (default: 16px)                                             |
+| Variable                                             | Description                                                                                                                             |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-aikit-chat-container-background`                | Background color of the entire chat container                                                                                           |
+| `--g-aikit-chat-container-header-background`         | Background color of the header section                                                                                                  |
+| `--g-aikit-chat-container-content-background`        | Background color of the content section (general)                                                                                       |
+| `--g-aikit-chat-container-content-empty-background`  | Background color of the content section in empty view                                                                                   |
+| `--g-aikit-chat-container-content-chat-background`   | Background color of the content section in chat view                                                                                    |
+| `--g-aikit-chat-container-footer-background`         | Background color of the footer section (general)                                                                                        |
+| `--g-aikit-chat-container-footer-empty-background`   | Background color of the footer section in empty view                                                                                    |
+| `--g-aikit-chat-container-footer-chat-background`    | Background color of the footer section in chat view                                                                                     |
+| `--g-aikit-layout-base-padding-m`                    | Padding for header, content, and footer sections (default: 12px; 16px in mobile mode)                                                   |
+| `--g-aikit-chat-container-mobile-font-size`          | Body text size inside the chat in mobile mode (default: 16px)                                                                           |
+| `--g-aikit-chat-container-mobile-line-height`        | Body line height inside the chat in mobile mode (default: 24px)                                                                         |
+| `--g-aikit-chat-container-mobile-body-2-font-size`   | `body-2` text size in mobile mode, mapped onto `--g-text-body-2-font-size` (default: 16px)                                              |
+| `--g-aikit-chat-container-mobile-body-2-line-height` | `body-2` line height in mobile mode, mapped onto `--g-text-body-2-line-height` (default: 20px)                                          |
+| `--g-aikit-scroll-overscroll-behavior`               | `overscroll-behavior` of every scroller inside the chat (default: `auto`; the mobile modifier sets `contain` for its whole subtree)     |
+| `--g-aikit-prompt-input-body-textarea-max-height`    | Height cap of the prompt textarea (default: `none`); written by the component at runtime, see [On-screen keyboard](#on-screen-keyboard) |
+| `--g-spacing-1`                                      | Gap between footer elements (default: 4px)                                                                                              |
+| `--g-spacing-2`                                      | Gap between header elements (default: 8px)                                                                                              |
+| `--g-spacing-4`                                      | Bottom padding for content section (default: 16px)                                                                                      |
 
 Header and footer metrics, each with a `mobile-` counterpart applied in mobile mode:
 
@@ -1150,17 +1152,45 @@ viewport resizes, so auto-scroll survives the keyboard opening and closing. Pinc
 the visual viewport as well, so the measurement is scaled back by `visualViewport.scale` and a
 zoomed page is not mistaken for an open keyboard.
 
+`visualViewport.height` is not always the whole visible area - iOS Safari reports it short by the
+height of its own bottom bar, which would shrink the chat with no keyboard open at all. While
+keyboard tracking is on, the container renders a hidden zero-width probe sized with
+`height: 100dvh` and compares the two readings: a shortfall below `VIEWPORT_HEIGHT_TOLERANCE`
+(`100px`) is that bar and the measured height wins, anything larger is the keyboard itself and is
+left alone. The correction can only raise the visible height, and in a browser without `dvh`
+support the probe collapses to zero, which turns the correction off.
+
+How the container is measured also depends on its containing block. A container that is
+`position: fixed` itself, or sits inside a fixed ancestor, has the layout viewport as its
+containing block, so the browser already reports its rect in visual viewport coordinates - the
+chat walks up the tree, detects this on its own and does not add the viewport offset a second
+time. The container does have to be anchored to the top of the viewport: a bottom-anchored one
+moves its own top as soon as the returned limit shrinks it.
+
 Set `adjustToKeyboard={false}` when the host application already handles the keyboard - for
 example with `interactive-widget=resizes-content` in the viewport meta tag, which shrinks the
 layout viewport itself. Such pages are left alone anyway: nothing of the layout viewport stays
 under the keyboard, so there is nothing to clamp.
 
-While the keyboard is open, the root gets a `_keyboard-open` modifier and the welcome screen
-trades its large top padding for the remaining space:
+While the keyboard is open, the root gets a `_keyboard-open` modifier: the welcome screen trades
+its large top padding for the remaining space and gives up its suggestions, which do not fit next
+to a keyboard taking more than half the screen.
 
-| Token bound on the container               | Keyboard source token                                              | Default                                   |
-| ------------------------------------------ | ------------------------------------------------------------------ | ----------------------------------------- |
-| `--g-aikit-empty-container-mobile-padding` | `--g-aikit-chat-container-mobile-keyboard-empty-container-padding` | `var(--g-spacing-4) var(--g-spacing-4) 0` |
+| Token bound on the container                    | Keyboard source token                                              | Default                                   |
+| ----------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------- |
+| `--g-aikit-empty-container-mobile-padding`      | `--g-aikit-chat-container-mobile-keyboard-empty-container-padding` | `var(--g-spacing-4) var(--g-spacing-4) 0` |
+| `--g-aikit-empty-container-suggestions-display` | `--g-aikit-chat-container-mobile-keyboard-suggestions-display`     | `none`                                    |
+
+Set `--g-aikit-chat-container-mobile-keyboard-suggestions-display: flex` to keep the welcome
+suggestions next to the open keyboard.
+
+The welcome hero follows the same idea: while the prompt input grows it eats the welcome screen from the bottom up, and as soon as the hero stops fitting the chat sets `--g-aikit-empty-container-hero-visibility: hidden` on its root. The hero keeps its box, so the measurement cannot flip between fitting and not fitting.
+
+The prompt input stops growing at the header: the container measures what its own height leaves
+between the header and the part of the footer that is not the textarea, and writes the result to
+the root as `--g-aikit-prompt-input-body-textarea-max-height`. A long draft then scrolls inside
+the field instead of pushing the footer out of the visible area. This value is written by the
+component at runtime rather than set by the consumer, and the token stays `none` everywhere else.
 
 `--g-aikit-chat-container-mobile-suggestions-max-height` is relative to the layout viewport,
 which does not shrink with the keyboard, so the suggestions block above the input is also

@@ -255,24 +255,27 @@ To override the localized text, use the `showMoreText` prop:
 
 The component uses CSS variables for theming:
 
-| Variable                                                | Description                                                                           |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `--g-aikit-empty-container-background`                  | Background color of the container (default: --g-color-base-background)                |
-| `--g-aikit-empty-container-content-gap`                 | Gap between content sections (default: 48px)                                          |
-| `--g-aikit-empty-container-welcome-gap`                 | Gap between hero/image and the text block (default: `--g-spacing-6`)                  |
-| `--g-aikit-empty-container-padding`                     | Padding around the content area (default: 48px 32px)                                  |
-| `--g-aikit-empty-container-mobile-content-gap`          | Gap between content sections in mobile mode (default: 32px)                           |
-| `--g-aikit-empty-container-mobile-welcome-gap`          | Gap between hero/image and the text block in mobile mode (default: 18px)              |
-| `--g-aikit-empty-container-mobile-padding`              | Padding around the content area in mobile mode (default: `80px var(--g-spacing-4) 0`) |
-| `--g-aikit-empty-container-content-justify-content`     | Vertical distribution of content (default: `flex-start`)                              |
-| `--g-aikit-empty-container-content-overflow-y`          | Vertical overflow of the content area (default: `auto`)                               |
-| `--g-aikit-empty-container-suggestions-max-width`       | Maximum width of the suggestions section (default: `none`)                            |
-| `--g-aikit-empty-container-suggestions-flex`            | Flex sizing of the suggestions section (default: `1 1 auto`)                          |
-| `--g-aikit-empty-container-suggestions-align-self`      | Cross-axis alignment of suggestions (default: `stretch`)                              |
-| `--g-aikit-empty-container-suggestions-list-min-height` | Minimum height of the suggestions list (default: `70px`)                              |
-| `--g-spacing-2`                                         | Spacing for show more button padding (default: 8px)                                   |
-| `--g-spacing-3`                                         | Gap between suggestions elements (default: 12px)                                      |
-| `--g-spacing-6`                                         | Gap in welcome section (default: 24px)                                                |
+| Variable                                                | Description                                                                                                                                         |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-aikit-empty-container-background`                  | Background color of the container (default: --g-color-base-background)                                                                              |
+| `--g-aikit-empty-container-content-gap`                 | Gap between content sections (default: 48px)                                                                                                        |
+| `--g-aikit-empty-container-welcome-gap`                 | Gap between hero/image and the text block (default: `--g-spacing-6`)                                                                                |
+| `--g-aikit-empty-container-padding`                     | Padding around the content area (default: 48px 32px)                                                                                                |
+| `--g-aikit-empty-container-mobile-content-gap`          | Gap between content sections in mobile mode (default: 32px)                                                                                         |
+| `--g-aikit-empty-container-mobile-welcome-gap`          | Gap between hero/image and the text block in mobile mode (default: 18px)                                                                            |
+| `--g-aikit-empty-container-mobile-padding`              | Padding around the content area in mobile mode (default: `80px var(--g-spacing-4) 0`)                                                               |
+| `--g-aikit-empty-container-content-justify-content`     | Vertical distribution of content (default: `flex-start`)                                                                                            |
+| `--g-aikit-empty-container-content-overflow-y`          | Vertical overflow of the content area (default: `auto`)                                                                                             |
+| `--g-aikit-empty-container-suggestions-max-width`       | Maximum width of the suggestions section (default: `none`)                                                                                          |
+| `--g-aikit-empty-container-suggestions-flex`            | Flex sizing of the suggestions section (default: `1 1 auto`)                                                                                        |
+| `--g-aikit-empty-container-suggestions-align-self`      | Cross-axis alignment of suggestions (default: `stretch`)                                                                                            |
+| `--g-aikit-empty-container-suggestions-list-min-height` | Minimum height of the suggestions list (default: `70px`)                                                                                            |
+| `--g-aikit-empty-container-suggestions-display`         | Display of the suggestions section (default: `flex`); `none` takes the block out of the flow                                                        |
+| `--g-aikit-empty-container-hero-visibility`             | Visibility of the hero block (default: `visible`); `hidden` keeps its box so the layout does not shift                                              |
+| `--g-aikit-scroll-overscroll-behavior`                  | Overscroll behavior of the content area (default: `auto`); `contain` stops a scroll gesture from chaining to the page once the area reaches its end |
+| `--g-spacing-2`                                         | Spacing for show more button padding (default: 8px)                                                                                                 |
+| `--g-spacing-3`                                         | Gap between suggestions elements (default: 12px)                                                                                                    |
+| `--g-spacing-6`                                         | Gap in welcome section (default: 24px)                                                                                                              |
 
 ```css
 /* Example: Custom styling */

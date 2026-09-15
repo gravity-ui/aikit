@@ -1,4 +1,8 @@
-import {KEYBOARD_MIN_INSET, resolveKeyboardViewportFit} from '../useKeyboardViewportFit';
+import {
+    KEYBOARD_MIN_INSET,
+    VIEWPORT_HEIGHT_TOLERANCE,
+    resolveKeyboardViewportFit,
+} from '../useKeyboardViewportFit';
 
 describe('resolveKeyboardViewportFit', () => {
     it('should report a closed keyboard when the visual viewport matches the layout one', () => {
@@ -139,5 +143,146 @@ describe('resolveKeyboardViewportFit', () => {
                 20,
             ),
         ).toEqual({isKeyboardOpen: true, maxHeight: 780});
+    });
+});
+
+describe('resolveKeyboardViewportFit with a fixed container', () => {
+    it('should measure a fixed container against the visual viewport', () => {
+        // A fixed container that follows the visual viewport reports a top of zero, and the whole
+        // visible area is its height budget. The layout viewport reading would add the offset on
+        // top of that and let the container grow past the keyboard.
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 460,
+                viewportOffsetTop: 120,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+                containerFixed: true,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 460});
+    });
+
+    it('should count the part of a fixed container scrolled above the visible area', () => {
+        // A fixed container left pinned to the top of the layout viewport starts above the visible
+        // area, so it needs the offset back to reach the bottom of that area.
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 460,
+                viewportOffsetTop: 120,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: -120,
+                containerFixed: true,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 580});
+    });
+
+    it('should keep the layout viewport reading for a container that is not fixed', () => {
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 460,
+                viewportOffsetTop: 120,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 580});
+    });
+
+    it('should ignore the fixed flag while the visual viewport is not scrolled', () => {
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 460,
+                viewportOffsetTop: 0,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+                containerFixed: true,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 460});
+    });
+});
+
+describe('resolveKeyboardViewportFit with a measured viewport height', () => {
+    it('should treat a shortfall smaller than the tolerance as browser chrome', () => {
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 710,
+                viewportOffsetTop: 0,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+                measuredViewportHeight: 800,
+            }),
+        ).toEqual({isKeyboardOpen: false});
+    });
+
+    it('should not correct away the keyboard itself', () => {
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 400,
+                viewportOffsetTop: 0,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+                measuredViewportHeight: 800,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 400});
+    });
+
+    it('should drive the height limit with the corrected height', () => {
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 700,
+                viewportOffsetTop: 0,
+                scale: 1,
+                layoutHeight: 1000,
+                containerTop: 0,
+                measuredViewportHeight: 780,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 780});
+    });
+
+    it('should leave a shortfall of exactly the tolerance alone', () => {
+        const viewportHeight = 800 - VIEWPORT_HEIGHT_TOLERANCE;
+
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight,
+                viewportOffsetTop: 0,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+                measuredViewportHeight: 800,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: viewportHeight});
+    });
+
+    it('should not compare a zoomed visual viewport with a measured element', () => {
+        // The reported height is in zoomed pixels while a DOM rect is in CSS pixels.
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 400,
+                viewportOffsetTop: 0,
+                scale: 1.25,
+                layoutHeight: 800,
+                containerTop: 0,
+                measuredViewportHeight: 460,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 400});
+    });
+
+    it('should ignore a measured height smaller than the reported one', () => {
+        expect(
+            resolveKeyboardViewportFit({
+                viewportHeight: 460,
+                viewportOffsetTop: 0,
+                scale: 1,
+                layoutHeight: 800,
+                containerTop: 0,
+                measuredViewportHeight: 400,
+            }),
+        ).toEqual({isKeyboardOpen: true, maxHeight: 460});
     });
 });

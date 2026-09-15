@@ -419,6 +419,7 @@ assistant-message column.
 
 ## Styling
 
-| Variable                                        | Description                                                                            |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `--g-aikit-message-list-footer-content-padding` | Padding of the footer content row (default: `var(--g-spacing-4) 0 var(--g-spacing-2)`) |
+| Variable                                        | Description                                                                                                                                                |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-aikit-message-list-footer-content-padding` | Padding of the footer content row (default: `var(--g-spacing-4) 0 var(--g-spacing-2)`)                                                                     |
+| `--g-aikit-scroll-overscroll-behavior`          | Overscroll behavior of the message list scroll (default: `auto`); `contain` stops a scroll gesture from chaining to the page once the list reaches its end |

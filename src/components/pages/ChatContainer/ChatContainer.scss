@@ -1,3 +1,4 @@
+@use '../../../styles/mixins';
 @use '../../../styles/variables';
 
 .#{variables.$ns}chat-container {
@@ -9,6 +10,9 @@
     background: var(--g-aikit-chat-container-background);
 
     &_mobile {
+        // On a phone the chat fills a surface pinned to the visible viewport, and a gesture that
+        // chains out of an inner scroller drags that surface away. Desktop keeps native chaining.
+        --g-aikit-scroll-overscroll-behavior: contain;
         --g-aikit-layout-base-padding-m: var(--g-aikit-chat-container-mobile-padding);
         --g-aikit-empty-container-mobile-padding: var(
             --g-aikit-chat-container-mobile-empty-container-padding
@@ -52,6 +56,7 @@
         .#{variables.$ns}suggestions__container {
             min-height: 0;
             overflow: hidden auto;
+            @include mixins.scroll-contain;
         }
 
         // The title slot holds consumer content, so it shrinks first and can scroll inside
@@ -63,6 +68,7 @@
             flex-direction: column;
             min-height: var(--g-aikit-chat-container-mobile-suggestions-title-min-height);
             overflow: hidden auto;
+            @include mixins.scroll-contain;
         }
 
         // The cap gives the block a definite height, and in the default column layout that turns
@@ -79,11 +85,29 @@
     }
 
     // The container is clamped to the visible viewport while the on-screen keyboard is open, so the
-    // welcome screen trades its large top padding for the remaining space.
+    // welcome screen trades its large top padding for the remaining space and gives up the
+    // suggestions: the keyboard takes more than half the screen and they do not fit next to it.
     &_mobile#{&}_keyboard-open {
         --g-aikit-empty-container-mobile-padding: var(
             --g-aikit-chat-container-mobile-keyboard-empty-container-padding
         );
+        --g-aikit-empty-container-suggestions-display: var(
+            --g-aikit-chat-container-mobile-keyboard-suggestions-display
+        );
+    }
+
+    // Measures the visible area the way the browser sees it: iOS Safari reports a
+    // `visualViewport.height` short by the height of its own bottom bar, and comparing the two
+    // tells the difference between that bar and an open keyboard. Painting nothing and taking no
+    // space, it also collapses to zero where `dvh` is unsupported, which turns the check off.
+    &__viewport-probe {
+        position: fixed;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        width: 0;
+        height: 100dvh;
+        visibility: hidden;
+        pointer-events: none;
     }
 
     &_mobile .#{variables.$ns}markdown-renderer {

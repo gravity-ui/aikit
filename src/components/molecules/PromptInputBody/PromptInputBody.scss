@@ -1,4 +1,5 @@
 @use '../../../styles/variables.scss';
+@use '../../../styles/mixins';
 
 $block: '.#{variables.$ns}prompt-input-body';
 
@@ -14,6 +15,11 @@ $block: '.#{variables.$ns}prompt-input-body';
 
     &__textarea-control {
         resize: none;
+        // The native textarea is a scroll container of its own once the text is capped
+        @include mixins.scroll-contain;
+        // The textarea sets its own height from the text it holds; the cap makes the text scroll
+        // inside the field instead of pushing the chat out of the visible area. `none` by default.
+        max-height: var(--g-aikit-prompt-input-body-textarea-max-height, none);
     }
 
     .g-text-area_disabled {
