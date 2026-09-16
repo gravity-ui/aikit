@@ -40,7 +40,13 @@ describe('resolvePromptInputMaxHeight', () => {
 
 describe('resolveFooterChromeHeight', () => {
     it('should take everything the footer holds besides the field', () => {
-        expect(resolveFooterChromeHeight({footerHeight: 138, textareaHeight: 42})).toBe(96);
+        expect(
+            resolveFooterChromeHeight({
+                footerHeight: 138,
+                textareaHeight: 42,
+                isFooterSqueezed: false,
+            }),
+        ).toBe(96);
     });
 
     it('should stay the same once the field has grown', () => {
@@ -48,6 +54,7 @@ describe('resolveFooterChromeHeight', () => {
             resolveFooterChromeHeight({
                 footerHeight: 317,
                 textareaHeight: 221,
+                isFooterSqueezed: false,
                 lastChromeHeight: 96,
             }),
         ).toBe(96);
@@ -60,13 +67,44 @@ describe('resolveFooterChromeHeight', () => {
             resolveFooterChromeHeight({
                 footerHeight: 317,
                 textareaHeight: 322,
+                isFooterSqueezed: true,
                 lastChromeHeight: 96,
             }),
         ).toBe(96);
     });
 
-    it('should fall back to the squeezed measurement when there is nothing to remember', () => {
-        expect(resolveFooterChromeHeight({footerHeight: 317, textareaHeight: 322})).toBe(-5);
+    it('should keep the last height when the footer is squeezed by less than the furniture', () => {
+        // The field is shorter than the footer, so the subtraction looks sound - but the footer
+        // has already been squeezed out of 39 pixels of its furniture, and taking 57 for it would
+        // leave the limit at the height the field already has.
+        expect(
+            resolveFooterChromeHeight({
+                footerHeight: 317,
+                textareaHeight: 260,
+                isFooterSqueezed: true,
+                lastChromeHeight: 96,
+            }),
+        ).toBe(96);
+    });
+
+    it('should ask the caller to measure when there is nothing to remember', () => {
+        expect(
+            resolveFooterChromeHeight({
+                footerHeight: 317,
+                textareaHeight: 322,
+                isFooterSqueezed: true,
+            }),
+        ).toBeUndefined();
+    });
+
+    it('should not report negative furniture', () => {
+        expect(
+            resolveFooterChromeHeight({
+                footerHeight: 317,
+                textareaHeight: 322,
+                isFooterSqueezed: false,
+            }),
+        ).toBe(0);
     });
 });
 
