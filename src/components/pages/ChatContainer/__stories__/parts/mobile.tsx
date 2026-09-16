@@ -1,4 +1,4 @@
-import {type ReactNode, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {ChatContainer} from '../..';
 import {TestMascot} from '../../../../../demo/TestMascot';
@@ -322,103 +322,5 @@ export const MobileFloatingHeaderTallContent: Story = {
                 onSendMessage={async () => {}}
             />
         </div>
-    ),
-};
-
-// How much of the screen the on-screen keyboard takes, and what is left of a 748 tall phone.
-const KEYBOARD_INSET = 320;
-const KEYBOARD_SCREEN_HEIGHT = 720;
-
-const KEYBOARD_DRAFT = [
-    'Set up the infrastructure of a basic internet service with several virtual machines',
-    'for high availability, a managed database with a replica in another availability zone,',
-    'a load balancer in front of the group and a bucket for static files. Keep the whole thing',
-    'inside one network, give every machine a public address and tell me what it is going to',
-    'cost per month before anything is created. Put the machines behind a single security',
-    'group, open nothing but the ports the service needs, and keep the database unreachable',
-    'from the outside. Name everything after the service so the console stays readable.',
-].join(' ');
-
-/**
- * Keeps `visualViewport.height` short while the children are mounted, the way an on-screen
- * keyboard does. A desktop browser has no keyboard to open, and the layout the chat takes under
- * one is worth looking at, so the viewport is told to report the area the keyboard would leave.
- */
-function KeyboardViewportStub({inset, children}: {inset: number; children: ReactNode}) {
-    useEffect(() => {
-        const viewport = window.visualViewport;
-
-        if (!viewport) {
-            return undefined;
-        }
-
-        const descriptor = Object.getOwnPropertyDescriptor(viewport, 'height');
-        const height = viewport.height - inset;
-
-        Object.defineProperty(viewport, 'height', {configurable: true, get: () => height});
-        viewport.dispatchEvent(new Event('resize'));
-
-        return () => {
-            if (descriptor) {
-                Object.defineProperty(viewport, 'height', descriptor);
-            } else {
-                Reflect.deleteProperty(viewport, 'height');
-            }
-
-            viewport.dispatchEvent(new Event('resize'));
-        };
-    }, [inset]);
-
-    return <>{children}</>;
-}
-
-/**
- * Mobile chat clamped to the short area an open on-screen keyboard leaves: the prompt input holds
- * a draft long enough to fill the screen, so it stops under the header and scrolls inside itself,
- * the welcome mascot gives up its place once nothing is left for it, the suggestions are hidden
- * next to the keyboard, and the disclaimer under the field stays visible.
- */
-export const MobileKeyboardOpen: Story = {
-    args: {
-        isMobile: true,
-        adjustToKeyboard: true,
-        messages: [],
-        welcomeConfig: {
-            title: 'AI Assistant',
-            description: 'helps with everyday cloud tasks',
-            alignment: {title: 'center', description: 'center', image: 'center'},
-            suggestions: playgroundSuggestions,
-        },
-        texts: {
-            disclaimerText: 'AI can make mistakes. We do not train the model on your data.',
-        },
-        promptInputProps: {
-            initialValue: KEYBOARD_DRAFT,
-        },
-    },
-    render: (args) => (
-        <KeyboardViewportStub inset={KEYBOARD_INSET}>
-            <div style={{width: 380, height: KEYBOARD_SCREEN_HEIGHT}}>
-                <ChatContainer
-                    {...args}
-                    mascotConfig={{
-                        mascots: {
-                            hero: {
-                                idle: <TestMascot state="idle" size="8rem" />,
-                                reading: <TestMascot state="reading" size="8rem" />,
-                            },
-                        },
-                    }}
-                    onSendMessage={async () => {}}
-                />
-                {/* Место, которое занимает клавиатура: чат до него не доходит */}
-                <div
-                    style={{
-                        height: KEYBOARD_INSET,
-                        background: 'var(--g-color-base-generic)',
-                    }}
-                />
-            </div>
-        </KeyboardViewportStub>
     ),
 };
