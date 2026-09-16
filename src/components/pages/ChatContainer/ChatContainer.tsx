@@ -149,7 +149,11 @@ function buildFinalPromptInputProps(args: {
             ...restBodyProps,
             placeholder:
                 texts.promptPlaceholder || restBodyProps?.placeholder || i18n('prompt-placeholder'),
-            autoFocus: promptInputKey > 0 || restBodyProps?.autoFocus,
+            // The remount that clears the draft on a new or a freshly picked chat also puts the
+            // cursor in the field. On a touch device that raises the keyboard over half the
+            // screen, so a consumer that asked for no auto focus is taken at its word and keeps
+            // the clearing without the cursor.
+            autoFocus: restBodyProps?.autoFocus ?? promptInputKey > 0,
             qa:
                 resolveChatContainerQa(qaMap, 'promptInputBody', 'prompt-input-body') ??
                 restBodyProps?.qa,
