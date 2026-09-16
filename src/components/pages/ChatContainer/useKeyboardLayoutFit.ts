@@ -29,31 +29,37 @@ export function resolvePromptInputMaxHeight({
     return Math.max(0, Math.floor(rootHeight - headerHeight - footerChromeHeight));
 }
 
+export interface FooterChromeMetrics {
+    /** Height the footer takes right now. */
+    footerHeight: number;
+    /** Height of the autosized textarea inside it. */
+    textareaHeight: number;
+    /** What the same measurement gave the last time the field fitted the footer. */
+    lastChromeHeight?: number;
+}
+
 /**
  * Height of everything the footer holds besides the field - the buttons, the attachments, the
  * disclaimer. It stays the same whatever the text is, so the field may take the space left after
  * it.
  *
- * Measured with the field collapsed rather than by subtracting the field from the footer: a footer
- * that no longer fits is squeezed by the layout around it - it is allowed to be, so that the
- * suggestions can give their space back - while the field keeps the height it grew to and spills
- * out of the squeezed box. The subtraction would then give less than the furniture, down to a
- * negative number, and the limit computed from it would be the height that is already there, so
- * the field would never come back down. Collapsing the field first leaves the footer holding
- * nothing but its furniture, whatever state the layout is in.
- *
- * The collapse and the restore happen inside one layout effect, before the frame is painted.
+ * A footer that no longer fits is squeezed by the layout around it - it is allowed to be, so that
+ * the suggestions can give their space back - while the field keeps the height it grew to and
+ * spills out of the squeezed box. The subtraction then gives less than the furniture, down to a
+ * negative number, and the limit computed from it is exactly the height that is already there:
+ * the field would stay as tall as it was. The furniture is the same either way, so a squeezed
+ * footer is answered with the height measured while the field still fitted it.
  */
-function measureFooterChromeHeight(footer: HTMLElement, textarea: HTMLElement): number {
-    const restoreMaxHeight = textarea.style.maxHeight;
+export function resolveFooterChromeHeight({
+    footerHeight,
+    textareaHeight,
+    lastChromeHeight,
+}: FooterChromeMetrics): number {
+    if (textareaHeight > footerHeight && lastChromeHeight !== undefined) {
+        return lastChromeHeight;
+    }
 
-    textarea.style.maxHeight = '0px';
-
-    const chromeHeight = footer.getBoundingClientRect().height;
-
-    textarea.style.maxHeight = restoreMaxHeight;
-
-    return chromeHeight;
+    return footerHeight - textareaHeight;
 }
 
 export interface HeroFitMetrics {
@@ -111,17 +117,26 @@ export function useKeyboardLayoutFit(
             return undefined;
         }
 
+        // Survives the measurements, not the element: a footer that changed is measured anew.
+        let footerChromeHeight: number | undefined;
+
         const measurePromptInput = (): number | undefined => {
             const textarea = footer.querySelector(TEXTAREA_SELECTOR);
 
-            if (!(textarea instanceof HTMLElement)) {
+            if (!textarea) {
                 return undefined;
             }
+
+            footerChromeHeight = resolveFooterChromeHeight({
+                footerHeight: footer.getBoundingClientRect().height,
+                textareaHeight: textarea.getBoundingClientRect().height,
+                lastChromeHeight: footerChromeHeight,
+            });
 
             return resolvePromptInputMaxHeight({
                 rootHeight: root.getBoundingClientRect().height,
                 headerHeight: headerRef.current?.getBoundingClientRect().height ?? 0,
-                footerChromeHeight: measureFooterChromeHeight(footer, textarea),
+                footerChromeHeight,
             });
         };
 
