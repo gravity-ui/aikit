@@ -864,7 +864,19 @@ Two opt-in flags control automatic focusing of the prompt input:
 />
 ```
 
-Both flags default to `false`. When enabled, `ChatContainer` remounts the `PromptInput` with `autoFocus` set to `true` at the appropriate moment, so the cursor lands in the textarea without any extra user interaction.
+When enabled, `ChatContainer` remounts the `PromptInput` at the appropriate moment, which both drops the draft left in the field and puts the cursor into it, so no extra user interaction is needed.
+
+To keep the draft-clearing without the cursor - on a touch device the focus raises the on-screen keyboard over half the screen - leave the flags alone and pass `autoFocus: false`: an explicit value wins over the focus that comes with the remount.
+
+```tsx
+<ChatContainer
+  promptInputProps={{
+    bodyProps: {
+      autoFocus: false,
+    },
+  }}
+/>
+```
 
 ### historyProps
 

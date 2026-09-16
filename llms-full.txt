@@ -967,7 +967,7 @@ In mobile mode the history is a `Sheet`; these tokens shape it, `env(safe-area-i
 | `--g-aikit-prompt-input-full-padding`             | `var(--g-spacing-2)`                                                          | Padding of the `full` view                                                                  |
 | `--g-aikit-prompt-input-body-textarea-max-height` | `none`                                                                        | Max height of the textarea; past it the text scrolls inside the field instead of growing it |
 
-In mobile mode `ChatContainer` writes `--g-aikit-prompt-input-body-textarea-max-height` onto its root while the on-screen keyboard is open, measured as the root height minus the header and minus the part of the footer that is not the textarea.
+In mobile mode `ChatContainer` writes `--g-aikit-prompt-input-body-textarea-max-height` onto its root, measured as the root height minus the header and minus the part of the footer that is not the textarea. It is written whatever the on-screen keyboard is doing: a field that grew while the keyboard was away would otherwise come back taller than the space left for it.
 
 ### Empty Container
 
