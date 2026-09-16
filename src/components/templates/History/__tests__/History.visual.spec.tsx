@@ -122,6 +122,14 @@ test.describe('History', {tag: '@History'}, () => {
         await expect(page.getByPlaceholder('Search your chats')).toBeFocused();
     });
 
+    test('should give the popup an accessible name', async ({mount, page}) => {
+        await mount(<HistoryStories.NotForceOpen />);
+
+        await page.getByRole('button').first().click();
+
+        await expect(page.getByRole('dialog', {name: 'Chat history'})).toBeVisible();
+    });
+
     test('should keep the focus inside the popup while tabbing', async ({mount, page}) => {
         await mount(<HistoryStories.NotForceOpen />);
 

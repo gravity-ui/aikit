@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {Popup, type PopupProps, Sheet, useMobile, useUniqId} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
@@ -52,6 +54,12 @@ export function History(props: HistoryProps) {
     const isMobile = useMobile();
     const sheetId = useUniqId();
 
+    // `Popup` runs its props through uikit's `filterDOMProps` without the `labelable` option, so an
+    // `aria-label` passed to it never reaches the floating element. Set it on the element instead.
+    const labelPopup = React.useCallback((node: HTMLDivElement | null) => {
+        node?.setAttribute('aria-label', i18n('sheet-title'));
+    }, []);
+
     const handleChatClick = () => {
         onOpenChange?.(false);
     };
@@ -82,7 +90,7 @@ export function History(props: HistoryProps) {
             onOpenChange={onOpenChange}
             modal={modal}
             initialFocus={initialFocus}
-            aria-label={i18n('sheet-title')}
+            floatingRef={labelPopup}
         >
             {list}
         </Popup>
