@@ -1176,7 +1176,10 @@ Which viewport the container is measured against differs between browsers: clien
 back relative to the layout viewport almost everywhere and relative to the visual viewport in
 Safari. The same probe tells the two apart - pinned to the top of the layout viewport, it stays at
 zero in the first case and drops to minus the viewport offset in the second - so the chat reads the
-answer instead of guessing it, and never adds the viewport offset twice. The container does have to
+answer instead of guessing it, and never adds the viewport offset twice. A reading that is neither
+of the two is dropped and the limit falls back to the formula without a probe: `position: fixed`
+counts from an ancestor carrying a `transform`, a `filter` or a `contain: paint`, and panels that
+slide in are animated with exactly those. The container does have to
 be anchored to the top of the viewport: a bottom-anchored one moves its own top as soon as the
 returned limit shrinks it.
 

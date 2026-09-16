@@ -126,6 +126,33 @@ export function resolveKeyboardViewportFit(
     };
 }
 
+export interface ViewportOriginMetrics {
+    /** Top of the probe as `getBoundingClientRect` reports it. */
+    probeTop: number;
+    /** `visualViewport.offsetTop` at the same moment. */
+    viewportOffsetTop: number;
+}
+
+/**
+ * Top of the viewport the container is measured against, read from the probe.
+ *
+ * A probe pinned to the top of the layout viewport can only report two things: zero, where client
+ * rectangles are measured against the layout viewport, and minus the viewport offset, where they
+ * are measured against the visual viewport as in Safari. Anything else means the probe is not
+ * where it was asked to be: a `transform`, a `filter`, a `will-change` or a `contain: paint` on
+ * any ancestor - and panels that slide in are animated with exactly those - makes `position: fixed`
+ * count from that ancestor instead of the viewport. Such a reading is dropped, and the limit falls
+ * back to the formula without a probe rather than following the ancestor's own offset.
+ */
+export function resolveViewportOriginTop({
+    probeTop,
+    viewportOffsetTop,
+}: ViewportOriginMetrics): number {
+    const isPinnedToViewport = Math.abs(probeTop) < 1 || Math.abs(probeTop + viewportOffsetTop) < 1;
+
+    return isPinnedToViewport ? probeTop : 0;
+}
+
 export interface KeyboardViewportFitOptions {
     /**
      * Element pinned to the top of the layout viewport and sized to the dynamic viewport
@@ -180,7 +207,12 @@ export function useKeyboardViewportFit(
                 // The limit only depends on the top of the container, which the limit itself does
                 // not move - so applying it cannot feed back into the next measurement.
                 containerTop: container.getBoundingClientRect().top,
-                viewportOriginTop: probeBox?.top,
+                viewportOriginTop:
+                    probeBox &&
+                    resolveViewportOriginTop({
+                        probeTop: probeBox.top,
+                        viewportOffsetTop: viewport.offsetTop,
+                    }),
                 measuredViewportHeight: probeBox?.height,
             });
 

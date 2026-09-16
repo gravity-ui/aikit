@@ -2,6 +2,7 @@ import {
     KEYBOARD_MIN_INSET,
     VIEWPORT_HEIGHT_TOLERANCE,
     resolveKeyboardViewportFit,
+    resolveViewportOriginTop,
 } from '../useKeyboardViewportFit';
 
 describe('resolveKeyboardViewportFit', () => {
@@ -285,5 +286,23 @@ describe('resolveKeyboardViewportFit with a measured viewport height', () => {
                 measuredViewportHeight: 400,
             }),
         ).toEqual({isKeyboardOpen: true, maxHeight: 460});
+    });
+});
+
+describe('resolveViewportOriginTop', () => {
+    it('should keep a probe sitting at the top of the layout viewport', () => {
+        expect(resolveViewportOriginTop({probeTop: 0, viewportOffsetTop: 0})).toBe(0);
+    });
+
+    it('should keep a probe reported against the visual viewport', () => {
+        // Safari measures client rectangles against the visual viewport, so a probe pinned to the
+        // layout viewport comes back at minus its offset.
+        expect(resolveViewportOriginTop({probeTop: -48, viewportOffsetTop: 48})).toBe(-48);
+    });
+
+    it('should drop a probe that counts from a transformed ancestor', () => {
+        // `position: fixed` inside a transformed ancestor counts from that ancestor, and following
+        // its offset would push the bottom of the chat under the keyboard.
+        expect(resolveViewportOriginTop({probeTop: 120, viewportOffsetTop: 0})).toBe(0);
     });
 });
