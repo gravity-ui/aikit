@@ -45,6 +45,7 @@ export {
     MobileFloatingHeader,
     MobileSuggestionsOverflow,
     MobileFloatingHeaderTallContent,
+    MobileKeyboardOpen,
 } from './parts/mobile';
 
 export {

@@ -84,6 +84,20 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await expectScreenshot();
     });
 
+    test('should render mobile mode with the keyboard open', async ({mount, expectScreenshot}) => {
+        const component = await mount(<ChatContainerStories.MobileKeyboardOpen />);
+
+        // The draft is long enough to fill the screen, so the field has to stop at the limit
+        // the chat gives it and scroll the text inside itself.
+        const chat = component.locator('.g-aikit-chat-container');
+        const textarea = component.locator('.g-aikit-prompt-input-body__textarea-control');
+
+        await expect(chat).toHaveClass(/g-aikit-chat-container_keyboard-open/);
+        await expect(textarea).not.toHaveCSS('max-height', 'none');
+
+        await expectScreenshot();
+    });
+
     test('should render with history', async ({mount, expectScreenshot}) => {
         await mount(<ChatContainerStories.WithHistory />);
 
