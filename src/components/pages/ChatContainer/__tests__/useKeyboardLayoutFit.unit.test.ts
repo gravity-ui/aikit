@@ -1,26 +1,18 @@
-import {getIsHeroFitting, resolvePromptInputMaxHeight} from '../useKeyboardLayoutFit';
+import {
+    getIsHeroFitting,
+    resolveFooterChromeHeight,
+    resolvePromptInputMaxHeight,
+} from '../useKeyboardLayoutFit';
 
 describe('resolvePromptInputMaxHeight', () => {
     it('should leave the input the space between the header and the rest of the footer', () => {
-        // 377 tall chat, 60 of them the header, and a 150 footer holding a 60 tall field: the
-        // buttons and the disclaimer below the field take the remaining 90.
+        // 377 tall chat, 60 of them the header, and 90 taken by the buttons and the disclaimer
+        // below the field.
         expect(
             resolvePromptInputMaxHeight({
                 rootHeight: 377,
                 headerHeight: 60,
-                footerHeight: 150,
-                textareaHeight: 60,
-            }),
-        ).toBe(227);
-    });
-
-    it('should keep the same limit once the input has grown', () => {
-        expect(
-            resolvePromptInputMaxHeight({
-                rootHeight: 377,
-                headerHeight: 60,
-                footerHeight: 290,
-                textareaHeight: 200,
+                footerChromeHeight: 90,
             }),
         ).toBe(227);
     });
@@ -30,8 +22,7 @@ describe('resolvePromptInputMaxHeight', () => {
             resolvePromptInputMaxHeight({
                 rootHeight: 376.8,
                 headerHeight: 60,
-                footerHeight: 150.4,
-                textareaHeight: 60,
+                footerChromeHeight: 90.4,
             }),
         ).toBe(226);
     });
@@ -41,10 +32,41 @@ describe('resolvePromptInputMaxHeight', () => {
             resolvePromptInputMaxHeight({
                 rootHeight: 200,
                 headerHeight: 60,
-                footerHeight: 260,
-                textareaHeight: 60,
+                footerChromeHeight: 200,
             }),
         ).toBe(0);
+    });
+});
+
+describe('resolveFooterChromeHeight', () => {
+    it('should take everything the footer holds besides the field', () => {
+        expect(resolveFooterChromeHeight({footerHeight: 138, textareaHeight: 42})).toBe(96);
+    });
+
+    it('should stay the same once the field has grown', () => {
+        expect(
+            resolveFooterChromeHeight({
+                footerHeight: 317,
+                textareaHeight: 221,
+                lastChromeHeight: 96,
+            }),
+        ).toBe(96);
+    });
+
+    it('should keep the last height while the field spills out of a squeezed footer', () => {
+        // The keyboard came back under a field that grew while it was away: the footer is left
+        // with 317 and the field still asks for 322.
+        expect(
+            resolveFooterChromeHeight({
+                footerHeight: 317,
+                textareaHeight: 322,
+                lastChromeHeight: 96,
+            }),
+        ).toBe(96);
+    });
+
+    it('should fall back to the squeezed measurement when there is nothing to remember', () => {
+        expect(resolveFooterChromeHeight({footerHeight: 317, textareaHeight: 322})).toBe(-5);
     });
 });
 
