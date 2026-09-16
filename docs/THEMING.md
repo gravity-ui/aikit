@@ -182,7 +182,7 @@ Header and footer metrics, each with a `mobile-` counterpart applied in mobile m
 | `--g-aikit-chat-container-mobile-suggestions-max-height`       | `40vh`                                                                               | Max height of the suggestions block above the input in mobile mode; the block scrolls beyond it                                                                      |
 | `--g-aikit-chat-container-mobile-suggestions-title-min-height` | `48px`                                                                               | Floor for the suggestions title above the input in mobile mode                                                                                                       |
 | `--g-aikit-chat-container-mobile-keyboard-suggestions-display` | `none`                                                                               | `display` the suggestions block takes while the on-screen keyboard is open in mobile mode; the component binds `--g-aikit-empty-container-suggestions-display` to it |
-| `--g-aikit-chat-container-focus-guard-time`                    | `0.5s`                                                                               | Duration of the animation that runs on the focused textarea in mobile mode to stop iOS scrolling the page to it; `0s` turns the guard off                            |
+| `--g-aikit-chat-container-focus-guard-time`                    | `0.01s`                                                                              | Duration of the animation that runs on the focused textarea in mobile mode to stop iOS scrolling the page to it; `0s` turns the guard off                            |
 
 ## Light Theme Overrides (`light.css`)
 

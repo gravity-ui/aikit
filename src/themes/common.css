@@ -114,7 +114,7 @@
     --g-aikit-chat-container-mobile-keyboard-empty-container-padding: var(--g-spacing-4)
         var(--g-spacing-4) 0;
     --g-aikit-chat-container-mobile-keyboard-suggestions-display: none;
-    --g-aikit-chat-container-focus-guard-time: 0.5s;
+    --g-aikit-chat-container-focus-guard-time: 0.01s;
     --g-aikit-chat-container-mobile-message-list-inline-padding: calc(
         var(--g-aikit-layout-base-padding-m) + var(--g-spacing-2)
     );
