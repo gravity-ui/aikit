@@ -136,7 +136,7 @@ export function useKeyboardLayoutFit(
         const root = rootRef.current;
         const footer = footerRef.current;
 
-        if (!enabled || !root || !footer) {
+        if (!enabled || !root || !footer || typeof ResizeObserver === 'undefined') {
             setFit(FITTING);
 
             return undefined;
