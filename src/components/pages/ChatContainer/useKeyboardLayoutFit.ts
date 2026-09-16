@@ -34,46 +34,44 @@ export interface FooterChromeMetrics {
     footerHeight: number;
     /** Height of the autosized textarea inside it. */
     textareaHeight: number;
-    /** Whether the footer no longer holds everything it is given. */
-    isFooterSqueezed: boolean;
-    /** What the measurement gave the last time the footer held its content. */
+    /** Furniture height from the last measurement, `undefined` before the first one. */
     lastChromeHeight?: number;
 }
 
 /**
- * Height of everything the footer holds besides the field - the buttons, the attachments, the
- * disclaimer. It stays the same whatever the text is, so the field may take the space left after
- * it.
+ * Whether the furniture has to be measured again rather than taken from the last measurement.
  *
- * A footer that no longer fits is squeezed by the layout around it - it is allowed to be, so that
- * the suggestions can give their space back - and its own height then stops describing what it
- * holds. Subtracting the field from it gives less than the furniture, and the limit computed from
- * that is the height the field already has, so the field stays as tall as it was and the bottom of
- * the footer - the disclaimer, the row of buttons - is left under the keyboard. The furniture does
- * not change with the squeeze, so a squeezed footer is answered with the height measured while it
- * still held its content.
- *
- * `undefined` means there is nothing to answer with yet - a chat mounted straight into an area the
- * keyboard has already shrunk - and the caller has to measure the furniture on its own.
+ * Subtracting the field from the footer gives the furniture only while nothing is squeezed. A
+ * footer that no longer fits is squeezed by the layout around it - it is allowed to be, so that the
+ * suggestions can give their space back - and so is the prompt input inside it, while the field
+ * keeps the height it grew to; what is squeezed spills over what comes after it instead of pushing
+ * it down, so the disclaimer ends up under the row of buttons and every box still measures as if it
+ * fitted. The subtraction then comes back short, never long: a shorter answer is the squeeze, a
+ * longer one is furniture that really has grown - a wrapped disclaimer, an attachment - and only
+ * that is worth a fresh measurement.
  */
-export function resolveFooterChromeHeight({
+export function getIsFooterChromeStale({
     footerHeight,
     textareaHeight,
-    isFooterSqueezed,
     lastChromeHeight,
-}: FooterChromeMetrics): number | undefined {
-    if (isFooterSqueezed) {
-        return lastChromeHeight;
+}: FooterChromeMetrics): boolean {
+    if (lastChromeHeight === undefined) {
+        return true;
     }
 
-    return Math.max(0, footerHeight - textareaHeight);
+    // A pixel of slack: heights are fractional, and the rounding alone must not order a new
+    // measurement on every resize.
+    return footerHeight - textareaHeight > lastChromeHeight + 1;
 }
 
 /**
- * Height of the footer furniture taken with the field collapsed, so the footer holds nothing but
- * the furniture whatever state the layout is in. Costs a synchronous layout, so it is the answer
- * of last resort - for a chat mounted straight into an area the keyboard has already shrunk, where
- * there is no unsqueezed measurement to go by yet.
+ * Height of everything the footer holds besides the field - the buttons, the attachments, the
+ * disclaimer - measured with the field collapsed, so the footer holds nothing but its furniture
+ * whatever state the layout is in.
+ *
+ * Costs a synchronous layout, which is why {@link getIsFooterChromeStale} keeps it rare: the
+ * collapse and the restore happen inside one layout effect, before the frame is painted, but doing
+ * that on every measurement makes the field flicker its way through the keyboard animation.
  */
 function measureFooterChromeHeight(footer: HTMLElement, textarea: HTMLElement): number {
     const restoreMaxHeight = textarea.style.maxHeight;
@@ -152,16 +150,15 @@ export function useKeyboardLayoutFit(
                 return undefined;
             }
 
-            footerChromeHeight =
-                resolveFooterChromeHeight({
-                    footerHeight: footer.getBoundingClientRect().height,
-                    textareaHeight: textarea.getBoundingClientRect().height,
-                    // The footer does not scroll, so a scroll height past the client height is
-                    // content it was squeezed out of - read in the same frame as the rectangles
-                    // above, which costs no layout of its own.
-                    isFooterSqueezed: footer.scrollHeight > footer.clientHeight + 1,
-                    lastChromeHeight: footerChromeHeight,
-                }) ?? measureFooterChromeHeight(footer, textarea);
+            const isStale = getIsFooterChromeStale({
+                footerHeight: footer.getBoundingClientRect().height,
+                textareaHeight: textarea.getBoundingClientRect().height,
+                lastChromeHeight: footerChromeHeight,
+            });
+
+            if (isStale || footerChromeHeight === undefined) {
+                footerChromeHeight = measureFooterChromeHeight(footer, textarea);
+            }
 
             return resolvePromptInputMaxHeight({
                 rootHeight: root.getBoundingClientRect().height,

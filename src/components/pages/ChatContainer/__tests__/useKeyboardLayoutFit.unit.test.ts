@@ -1,6 +1,6 @@
 import {
+    getIsFooterChromeStale,
     getIsHeroFitting,
-    resolveFooterChromeHeight,
     resolvePromptInputMaxHeight,
 } from '../useKeyboardLayoutFit';
 
@@ -38,73 +38,53 @@ describe('resolvePromptInputMaxHeight', () => {
     });
 });
 
-describe('resolveFooterChromeHeight', () => {
-    it('should take everything the footer holds besides the field', () => {
-        expect(
-            resolveFooterChromeHeight({
-                footerHeight: 138,
-                textareaHeight: 42,
-                isFooterSqueezed: false,
-            }),
-        ).toBe(96);
+describe('getIsFooterChromeStale', () => {
+    it('should measure the furniture when there is none yet', () => {
+        expect(getIsFooterChromeStale({footerHeight: 138, textareaHeight: 42})).toBe(true);
     });
 
-    it('should stay the same once the field has grown', () => {
+    it('should keep the furniture while the footer only reports less of it', () => {
+        // The keyboard came back under a field that grew while it was away: the footer is left
+        // with 317, the row of buttons spills onto the disclaimer, and the subtraction comes back
+        // short - which is the squeeze, not furniture that shrank.
         expect(
-            resolveFooterChromeHeight({
+            getIsFooterChromeStale({
+                footerHeight: 317,
+                textareaHeight: 322,
+                lastChromeHeight: 96,
+            }),
+        ).toBe(false);
+    });
+
+    it('should keep the furniture while it measures the same', () => {
+        expect(
+            getIsFooterChromeStale({
                 footerHeight: 317,
                 textareaHeight: 221,
-                isFooterSqueezed: false,
                 lastChromeHeight: 96,
             }),
-        ).toBe(96);
+        ).toBe(false);
     });
 
-    it('should keep the last height while the field spills out of a squeezed footer', () => {
-        // The keyboard came back under a field that grew while it was away: the footer is left
-        // with 317 and the field still asks for 322.
+    it('should measure again once the furniture has really grown', () => {
+        // The disclaimer wrapped onto a second line.
         expect(
-            resolveFooterChromeHeight({
-                footerHeight: 317,
-                textareaHeight: 322,
-                isFooterSqueezed: true,
+            getIsFooterChromeStale({
+                footerHeight: 337,
+                textareaHeight: 221,
                 lastChromeHeight: 96,
             }),
-        ).toBe(96);
+        ).toBe(true);
     });
 
-    it('should keep the last height when the footer is squeezed by less than the furniture', () => {
-        // The field is shorter than the footer, so the subtraction looks sound - but the footer
-        // has already been squeezed out of 39 pixels of its furniture, and taking 57 for it would
-        // leave the limit at the height the field already has.
+    it('should not measure again over a fraction of a pixel', () => {
         expect(
-            resolveFooterChromeHeight({
-                footerHeight: 317,
-                textareaHeight: 260,
-                isFooterSqueezed: true,
+            getIsFooterChromeStale({
+                footerHeight: 317.6,
+                textareaHeight: 221,
                 lastChromeHeight: 96,
             }),
-        ).toBe(96);
-    });
-
-    it('should ask the caller to measure when there is nothing to remember', () => {
-        expect(
-            resolveFooterChromeHeight({
-                footerHeight: 317,
-                textareaHeight: 322,
-                isFooterSqueezed: true,
-            }),
-        ).toBeUndefined();
-    });
-
-    it('should not report negative furniture', () => {
-        expect(
-            resolveFooterChromeHeight({
-                footerHeight: 317,
-                textareaHeight: 322,
-                isFooterSqueezed: false,
-            }),
-        ).toBe(0);
+        ).toBe(false);
     });
 });
 
