@@ -109,6 +109,57 @@ test.describe('History', {tag: '@History'}, () => {
         await expect(page.getByText('Chat History')).toHaveCount(0);
     });
 
+    test('should move the focus into the popup when it opens', async ({mount, page}) => {
+        await mount(<HistoryStories.NotForceOpen />);
+
+        await page.getByRole('button').first().click();
+
+        const popup = page.getByRole('dialog');
+        await expect(popup).toBeVisible();
+        await expect(popup).toBeFocused();
+
+        await page.keyboard.press('Tab');
+        await expect(page.getByPlaceholder('Search your chats')).toBeFocused();
+    });
+
+    test('should keep the focus inside the popup while tabbing', async ({mount, page}) => {
+        await mount(<HistoryStories.NotForceOpen />);
+
+        await page.getByRole('button').first().click();
+        await expect(page.getByRole('dialog')).toBeVisible();
+
+        for (let i = 0; i < 12; i++) {
+            await page.keyboard.press('Tab');
+            await expect(page.locator('[data-floating-ui-portal] :focus')).toHaveCount(1);
+        }
+
+        await page.keyboard.press('Shift+Tab');
+        await expect(page.locator('[data-floating-ui-portal] :focus')).toHaveCount(1);
+    });
+
+    test('should close on Escape and return the focus to the trigger', async ({mount, page}) => {
+        await mount(<HistoryStories.NotForceOpen />);
+
+        const trigger = page.getByRole('button').first();
+        await trigger.click();
+        await expect(page.getByRole('dialog')).toBeVisible();
+
+        await page.keyboard.press('Escape');
+
+        await expect(page.locator('.g-aikit-history__container')).toHaveCount(0);
+        await expect(trigger).toBeFocused();
+    });
+
+    test('should leave the focus on the trigger with modal={false}', async ({mount, page}) => {
+        await mount(<HistoryStories.NotForceOpen modal={false} />);
+
+        const trigger = page.getByRole('button').first();
+        await trigger.click();
+
+        await expect(page.locator('.g-aikit-history__container')).toBeVisible();
+        await expect(trigger).toBeFocused();
+    });
+
     test('should use a custom date format for older groups', async ({mount, page}) => {
         await mount(
             <HistoryStories.Playground
