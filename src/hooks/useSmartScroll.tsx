@@ -66,6 +66,13 @@ export function useSmartScroll<T extends HTMLElement>({
     // Keep the last message visible when the scroll viewport itself shrinks - the on-screen
     // keyboard opening on mobile is the common case. The browser preserves `scrollTop`, so the
     // bottom of the list would otherwise slide out of view.
+    //
+    // The children are observed alongside the container, because a re-layout can change the
+    // content height while the container's own box stays the same: the messages re-wrap, the
+    // browser keeps `scrollTop`, and the list ends up in the middle of the history with nothing
+    // to bring it back - `scroll` never fires, since `scrollTop` itself did not move. iOS Safari
+    // does exactly that while the system snapshots the page for a screenshot. The children span
+    // the whole scrollable content, so their heights are what `scrollHeight` is made of.
     useEffect(() => {
         const container = containerRef.current;
         if (!container || typeof ResizeObserver === 'undefined') {
@@ -75,8 +82,40 @@ export function useSmartScroll<T extends HTMLElement>({
         const observer = new ResizeObserver(() => scrollToBottom('instant'));
         observer.observe(container);
 
+        // Only the difference is (un)observed: `observe()` re-delivers the current size for an
+        // already observed target, which would re-pin the list on every DOM mutation.
+        const observedChildren = new Set<Element>();
+
+        const syncObservedChildren = () => {
+            const children = new Set<Element>(Array.from(container.children));
+
+            for (const child of children) {
+                if (!observedChildren.has(child)) {
+                    observer.observe(child);
+                    observedChildren.add(child);
+                }
+            }
+
+            for (const child of observedChildren) {
+                if (!children.has(child)) {
+                    observer.unobserve(child);
+                    observedChildren.delete(child);
+                }
+            }
+        };
+
+        syncObservedChildren();
+
+        const childrenObserver =
+            typeof MutationObserver === 'undefined'
+                ? undefined
+                : new MutationObserver(syncObservedChildren);
+
+        childrenObserver?.observe(container, {childList: true});
+
         return () => {
             observer.disconnect();
+            childrenObserver?.disconnect();
         };
     }, [scrollToBottom]);
 
