@@ -34,9 +34,7 @@ export function History(props: HistoryProps) {
     const {open = false, onOpenChange, anchorElement, showSheetTitle = true, ...listProps} = props;
     const isMobile = useMobile();
     const sheetId = useUniqId();
-    // Searching through the chats raises the on-screen keyboard, which leaves the sheet hanging
-    // below it - the sheet is measured against the layout viewport, and that one does not shrink.
-    const {isKeyboardOpen} = useSheetKeyboardFit(isMobile);
+    const {isKeyboardOpen} = useSheetKeyboardFit(isMobile && open);
 
     const handleChatClick = () => {
         onOpenChange?.(false);

@@ -36,8 +36,6 @@ describe('resolveSheetKeyboardFit', () => {
     });
 
     it('should follow a visual viewport panned by iOS Safari', () => {
-        // Safari pans the visual viewport to reveal the focused input instead of scrolling the
-        // page, so the visible band moves down while the keyboard keeps the same height.
         expect(
             resolveSheetKeyboardFit({
                 viewportHeight: 377,

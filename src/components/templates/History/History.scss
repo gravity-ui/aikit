@@ -119,15 +119,10 @@ $block: '.#{variables.$ns}history';
         padding: spacing(2) spacing(4);
     }
 
-    // Both modifiers are repeated to outweigh the rules they correct - uikit's `height` on the
-    // sheet root and the sheet-mode defaults below - without depending on the order of the
-    // stylesheets in a bundle.
     &__sheet#{$block}__sheet_keyboard-open {
         @include mixins.sheet-keyboard-fit-root;
     }
 
-    // Above the keyboard the sheet gets a height limit instead of its natural height, so the list
-    // takes over the scrolling from the sheet content area and the search field stays put.
     &__sheet-content#{$block}__sheet-content_keyboard-open {
         @include mixins.sheet-keyboard-fit-content;
 
