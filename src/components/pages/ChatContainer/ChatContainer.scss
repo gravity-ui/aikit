@@ -155,6 +155,7 @@
     &_mobile &__header {
         --g-aikit-button-group-gap: var(--g-spacing-2);
 
+        flex-shrink: 0;
         min-height: var(--g-aikit-chat-container-mobile-header-height);
         padding: var(--g-aikit-chat-container-mobile-header-padding);
     }
