@@ -140,8 +140,9 @@ export function useKeyboardLayoutFit(
 
             const measured = Math.max(0, footerHeight - textareaHeight);
 
-            if (footerChromeHeight === undefined) {
+            if (footerChromeHeight === undefined || measured < footerChromeHeight) {
                 footerChromeHeight = measured;
+                pendingChromeHeight = undefined;
             } else if (isStale) {
                 const isConfirmed =
                     pendingChromeHeight !== undefined &&
