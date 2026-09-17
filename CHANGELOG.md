@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.20.2](https://github.com/gravity-ui/aikit/compare/v2.20.1...v2.20.2) (2026-09-17)
+
+
+### Bug Fixes
+
+* **BaseMessage:** keep message actions visible on touch devices ([#252](https://github.com/gravity-ui/aikit/issues/252)) ([9c5fb09](https://github.com/gravity-ui/aikit/commit/9c5fb09593fae3f561a1e9ce7dbd27857a5d9046))
+
 ## [2.20.1](https://github.com/gravity-ui/aikit/compare/v2.20.0...v2.20.1) (2026-08-31)
 
 
