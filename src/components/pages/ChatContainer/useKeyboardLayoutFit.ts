@@ -64,27 +64,6 @@ export function getIsFooterChromeStale({
     return footerHeight - textareaHeight > lastChromeHeight + 1;
 }
 
-/**
- * Height of everything the footer holds besides the field - the buttons, the attachments, the
- * disclaimer - measured with the field collapsed, so the footer holds nothing but its furniture
- * whatever state the layout is in.
- *
- * Costs a synchronous layout, which is why {@link getIsFooterChromeStale} keeps it rare: the
- * collapse and the restore happen inside one layout effect, before the frame is painted, but doing
- * that on every measurement makes the field flicker its way through the keyboard animation.
- */
-function measureFooterChromeHeight(footer: HTMLElement, textarea: HTMLElement): number {
-    const restoreMaxHeight = textarea.style.maxHeight;
-
-    textarea.style.maxHeight = '0px';
-
-    const chromeHeight = footer.getBoundingClientRect().height;
-
-    textarea.style.maxHeight = restoreMaxHeight;
-
-    return chromeHeight;
-}
-
 export interface HeroFitMetrics {
     /** Height left for the welcome content, padding excluded. */
     availableHeight: number;
@@ -142,6 +121,7 @@ export function useKeyboardLayoutFit(
 
         // Survives the measurements, not the element: a footer that changed is measured anew.
         let footerChromeHeight: number | undefined;
+        let pendingChromeHeight: number | undefined;
 
         const measurePromptInput = (): number | undefined => {
             const textarea = footer.querySelector(TEXTAREA_SELECTOR);
@@ -150,14 +130,30 @@ export function useKeyboardLayoutFit(
                 return undefined;
             }
 
+            const footerHeight = footer.getBoundingClientRect().height;
+            const textareaHeight = textarea.getBoundingClientRect().height;
             const isStale = getIsFooterChromeStale({
-                footerHeight: footer.getBoundingClientRect().height,
-                textareaHeight: textarea.getBoundingClientRect().height,
+                footerHeight,
+                textareaHeight,
                 lastChromeHeight: footerChromeHeight,
             });
 
-            if (isStale || footerChromeHeight === undefined) {
-                footerChromeHeight = measureFooterChromeHeight(footer, textarea);
+            const measured = Math.max(0, footerHeight - textareaHeight);
+
+            if (footerChromeHeight === undefined) {
+                footerChromeHeight = measured;
+            } else if (isStale) {
+                const isConfirmed =
+                    pendingChromeHeight !== undefined &&
+                    Math.abs(pendingChromeHeight - measured) <= 1;
+
+                pendingChromeHeight = measured;
+
+                if (isConfirmed) {
+                    footerChromeHeight = measured;
+                }
+            } else {
+                pendingChromeHeight = undefined;
             }
 
             return resolvePromptInputMaxHeight({
