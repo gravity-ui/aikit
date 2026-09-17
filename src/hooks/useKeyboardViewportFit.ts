@@ -91,6 +91,11 @@ export function useKeyboardViewportFit(
                 return;
             }
 
+            if (!container.contains(document.activeElement)) {
+                setFit((prev) => (prev.isKeyboardOpen ? CLOSED : prev));
+                return;
+            }
+
             const next = resolveKeyboardViewportFit({
                 viewportHeight: viewport.height,
                 viewportOffsetTop: viewport.offsetTop,
@@ -119,6 +124,8 @@ export function useKeyboardViewportFit(
         update();
         viewport.addEventListener('resize', schedule);
         viewport.addEventListener('scroll', schedule);
+        document.addEventListener('focusin', schedule);
+        document.addEventListener('focusout', schedule);
 
         return () => {
             if (frame) {
@@ -126,6 +133,8 @@ export function useKeyboardViewportFit(
             }
             viewport.removeEventListener('resize', schedule);
             viewport.removeEventListener('scroll', schedule);
+            document.removeEventListener('focusin', schedule);
+            document.removeEventListener('focusout', schedule);
         };
     }, [containerRef, enabled]);
 

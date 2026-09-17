@@ -1150,6 +1150,10 @@ viewport resizes, so auto-scroll survives the keyboard opening and closing. Pinc
 the visual viewport as well, so the measurement is scaled back by `visualViewport.scale` and a
 zoomed page is not mistaken for an open keyboard.
 
+Only a keyboard raised from inside the chat counts. A field that lives above the chat - the
+search input of the history sheet, an input in a dialog of the host application - raises the same
+keyboard, and the chat keeps its layout instead of reflowing behind that overlay.
+
 Set `adjustToKeyboard={false}` when the host application already handles the keyboard - for
 example with `interactive-widget=resizes-content` in the viewport meta tag, which shrinks the
 layout viewport itself. Such pages are left alone anyway: nothing of the layout viewport stays
