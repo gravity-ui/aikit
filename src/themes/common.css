@@ -90,7 +90,7 @@
     --g-aikit-empty-container-suggestions-align-self: stretch;
     --g-aikit-empty-container-suggestions-list-min-height: 70px;
     --g-aikit-empty-container-suggestions-display: flex;
-    --g-aikit-empty-container-hero-visibility: visible;
+    --g-aikit-empty-container-hero-visibility: inherit;
 
     /* === Message List === */
     --g-aikit-message-list-footer-content-padding: var(--g-spacing-4) 0 var(--g-spacing-2);
