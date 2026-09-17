@@ -22,13 +22,17 @@ $block: '.#{variables.$ns}base-message';
     }
 
     &_btn-hover {
-        #{$block}__actions {
-            visibility: hidden;
-        }
-
-        &:hover {
+        // Only where the pointer can hover. A touch device never enters `:hover`, so hiding the
+        // actions there would leave copy and rating permanently unreachable.
+        @media (hover: hover) {
             #{$block}__actions {
-                visibility: visible;
+                visibility: hidden;
+            }
+
+            &:hover {
+                #{$block}__actions {
+                    visibility: visible;
+                }
             }
         }
     }
