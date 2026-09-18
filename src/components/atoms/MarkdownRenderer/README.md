@@ -135,10 +135,11 @@ instead of a static value. It is called with the concrete message and its return
 
 The component uses CSS variables for theming:
 
-| Variable                                           | Default | Description                                     |
-| -------------------------------------------------- | ------- | ----------------------------------------------- |
-| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                      |
-| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps |
+| Variable                                           | Default | Description                                                                                                                                 |
+| -------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                                                                                                                  |
+| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps                                                                                             |
+| `--g-aikit-scroll-overscroll-behavior`             | `auto`  | Horizontal overscroll behavior of the table wrap; `contain` stops a scroll gesture from chaining to the page once the table reaches its end |
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 

@@ -341,16 +341,17 @@ The component uses CSS variables for theming:
 
 ### Color and Layout Variables
 
-| Variable                         | Description                        |
-| -------------------------------- | ---------------------------------- |
-| `--g-color-base-background`      | Background color                   |
-| `--g-color-line-generic`         | Border color                       |
-| `--g-color-text-primary`         | Primary text color                 |
-| `--g-color-text-secondary`       | Secondary text color (dates, etc.) |
-| `--g-color-base-simple-hover`    | Hover background color             |
-| `--g-color-base-selection`       | Selected chat background           |
-| `--g-color-base-selection-hover` | Selected chat hover background     |
-| `--g-spacing-*`                  | Spacing variables                  |
+| Variable                               | Description                                                                                                                                             |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-color-base-background`            | Background color                                                                                                                                        |
+| `--g-color-line-generic`               | Border color                                                                                                                                            |
+| `--g-color-text-primary`               | Primary text color                                                                                                                                      |
+| `--g-color-text-secondary`             | Secondary text color (dates, etc.)                                                                                                                      |
+| `--g-color-base-simple-hover`          | Hover background color                                                                                                                                  |
+| `--g-color-base-selection`             | Selected chat background                                                                                                                                |
+| `--g-color-base-selection-hover`       | Selected chat hover background                                                                                                                          |
+| `--g-spacing-*`                        | Spacing variables                                                                                                                                       |
+| `--g-aikit-scroll-overscroll-behavior` | Overscroll behavior of the chat list scroll (default: `auto`); `contain` stops a scroll gesture from chaining to the page once the list reaches its end |
 
 ### Component Size Variables
 

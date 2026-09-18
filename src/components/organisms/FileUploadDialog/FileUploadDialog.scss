@@ -1,4 +1,5 @@
 @use '../../../styles/variables';
+@use '../../../styles/mixins';
 
 $block: '.#{variables.$ns}file-upload-dialog';
 
@@ -12,6 +13,7 @@ $block: '.#{variables.$ns}file-upload-dialog';
         gap: var(--g-spacing-1);
         max-height: 240px;
         overflow-y: auto;
+        @include mixins.scroll-contain;
         margin-top: var(--g-spacing-4);
     }
 }

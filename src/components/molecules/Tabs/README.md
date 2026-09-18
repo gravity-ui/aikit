@@ -110,6 +110,7 @@ The component uses CSS variables for theming. Since it's built on Gravity UI's L
 
 ```css
 --g-color-base-generic-medium /* Scrollbar color (visible on hover) */
+--g-aikit-scroll-overscroll-behavior /* Horizontal overscroll behavior (default: auto; contain stops a scroll gesture from chaining to the page once the tabs reach their end) */
 ```
 
 ## Behavior

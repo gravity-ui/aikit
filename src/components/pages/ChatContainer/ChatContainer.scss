@@ -1,4 +1,15 @@
+@use '../../../styles/mixins';
 @use '../../../styles/variables';
+
+@keyframes g-aikit-prevent-scroll-on-focus {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
 
 .#{variables.$ns}chat-container {
     display: flex;
@@ -9,6 +20,9 @@
     background: var(--g-aikit-chat-container-background);
 
     &_mobile {
+        // On a phone the chat fills a surface pinned to the visible viewport, and a gesture that
+        // chains out of an inner scroller drags that surface away. Desktop keeps native chaining.
+        --g-aikit-scroll-overscroll-behavior: contain;
         --g-aikit-layout-base-padding-m: var(--g-aikit-chat-container-mobile-padding);
         --g-aikit-empty-container-mobile-padding: var(
             --g-aikit-chat-container-mobile-empty-container-padding
@@ -52,6 +66,7 @@
         .#{variables.$ns}suggestions__container {
             min-height: 0;
             overflow: hidden auto;
+            @include mixins.scroll-contain;
         }
 
         // The title slot holds consumer content, so it shrinks first and can scroll inside
@@ -63,6 +78,7 @@
             flex-direction: column;
             min-height: var(--g-aikit-chat-container-mobile-suggestions-title-min-height);
             overflow: hidden auto;
+            @include mixins.scroll-contain;
         }
 
         // The cap gives the block a definite height, and in the default column layout that turns
@@ -79,11 +95,38 @@
     }
 
     // The container is clamped to the visible viewport while the on-screen keyboard is open, so the
-    // welcome screen trades its large top padding for the remaining space.
+    // welcome screen trades its large top padding for the remaining space and gives up the
+    // suggestions: the keyboard takes more than half the screen and they do not fit next to it.
     &_mobile#{&}_keyboard-open {
         --g-aikit-empty-container-mobile-padding: var(
             --g-aikit-chat-container-mobile-keyboard-empty-container-padding
         );
+        --g-aikit-empty-container-suggestions-display: var(
+            --g-aikit-chat-container-mobile-keyboard-suggestions-display
+        );
+    }
+
+    // Answers two questions the `visualViewport` numbers alone cannot: how tall the browser itself
+    // considers the visible area to be - Safari reports a height short by its own bottom bar - and
+    // which viewport client rectangles are measured against, which this element shows by staying
+    // at the layout viewport origin. Painting nothing and taking no space, it also collapses to
+    // zero where `dvh` is unsupported, which turns the correction off.
+    &__viewport-probe {
+        position: fixed;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        width: 0;
+        height: 100dvh;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    // iOS scrolls the page to the focused input and drags fixed layout along with it, which
+    // makes a chat pinned to the visible viewport dive and come back. An animation running on
+    // focus suppresses that scroll; there is no JavaScript equivalent. Taken from the Alice chat:
+    // https://gist.github.com/kiding/72721a0553fa93198ae2bb6eefaa3299
+    &_mobile .#{variables.$ns}prompt-input-body__textarea-control:focus {
+        animation: g-aikit-prevent-scroll-on-focus var(--g-aikit-chat-container-focus-guard-time);
     }
 
     &_mobile .#{variables.$ns}markdown-renderer {
@@ -112,6 +155,7 @@
     &_mobile &__header {
         --g-aikit-button-group-gap: var(--g-spacing-2);
 
+        flex-shrink: 0;
         min-height: var(--g-aikit-chat-container-mobile-header-height);
         padding: var(--g-aikit-chat-container-mobile-header-padding);
     }

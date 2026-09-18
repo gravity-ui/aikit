@@ -15,6 +15,7 @@ $block: '.#{variables.$ns}history';
     &__list-wrapper {
         flex: 1;
         overflow: auto;
+        @include mixins.scroll-contain;
         max-height: var(--g-aikit-history-max-height);
     }
 

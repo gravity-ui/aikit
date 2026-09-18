@@ -1,4 +1,4 @@
-import {Fragment, type ReactNode, useCallback, useMemo, useRef} from 'react';
+import {type CSSProperties, Fragment, type ReactNode, useCallback, useMemo, useRef} from 'react';
 
 import {MobileProvider, useMobile} from '@gravity-ui/uikit';
 
@@ -22,6 +22,7 @@ import {i18n} from './i18n';
 import type {ChatContainerProps, ChatContainerTexts} from './types';
 import {useChatContainer} from './useChatContainer';
 import {useChatContainerMascot} from './useChatContainerMascot';
+import {useKeyboardLayoutFit} from './useKeyboardLayoutFit';
 
 import './ChatContainer.scss';
 
@@ -148,7 +149,11 @@ function buildFinalPromptInputProps(args: {
             ...restBodyProps,
             placeholder:
                 texts.promptPlaceholder || restBodyProps?.placeholder || i18n('prompt-placeholder'),
-            autoFocus: promptInputKey > 0 || restBodyProps?.autoFocus,
+            // The remount that clears the draft on a new or a freshly picked chat also puts the
+            // cursor in the field. On a touch device that raises the keyboard over half the
+            // screen, so a consumer that asked for no auto focus is taken at its word and keeps
+            // the clearing without the cursor.
+            autoFocus: restBodyProps?.autoFocus ?? promptInputKey > 0,
             qa:
                 resolveChatContainerQa(qaMap, 'promptInputBody', 'prompt-input-body') ??
                 restBodyProps?.qa,
@@ -223,11 +228,23 @@ export function ChatContainer(props: ChatContainerProps) {
     const isMobile = isMobileProp ?? isMobileContext;
 
     const rootRef = useRef<HTMLDivElement>(null);
+    const headerRef = useRef<HTMLDivElement>(null);
+    const footerRef = useRef<HTMLDivElement>(null);
+    const viewportProbeRef = useRef<HTMLDivElement>(null);
+    const isKeyboardTracked = isMobile && adjustToKeyboard;
     // Keeps the footer (prompt input + disclaimer) above the on-screen keyboard on iOS Safari,
     // where the layout viewport stays full-height while the keyboard is open.
-    const {isKeyboardOpen, maxHeight} = useKeyboardViewportFit(
+    const {isKeyboardOpen, maxHeight} = useKeyboardViewportFit(rootRef, isKeyboardTracked, {
+        viewportProbeRef,
+    });
+    // Measured at all times, not only while the keyboard is open: otherwise the field grows by
+    // its own row counter while the keyboard is away, and by the next time it comes back the
+    // field is already taller than the space left, with the cap long gone.
+    const {promptInputMaxHeight, isHeroFitting} = useKeyboardLayoutFit(
         rootRef,
-        isMobile && adjustToKeyboard,
+        headerRef,
+        footerRef,
+        isKeyboardTracked,
     );
 
     const hookState = useChatContainer(props);
@@ -641,6 +658,24 @@ export function ChatContainer(props: ChatContainerProps) {
 
     const showFooter = finalPromptInputProps || finalDisclaimerProps;
 
+    const rootStyle = useMemo<CSSProperties | undefined>(() => {
+        if (maxHeight === undefined && promptInputMaxHeight === undefined && isHeroFitting) {
+            return undefined;
+        }
+
+        return {
+            ...(maxHeight === undefined ? undefined : {maxHeight}),
+            ...(promptInputMaxHeight === undefined
+                ? undefined
+                : {
+                      '--g-aikit-prompt-input-body-textarea-max-height': `${promptInputMaxHeight}px`,
+                  }),
+            ...(isHeroFitting
+                ? undefined
+                : {'--g-aikit-empty-container-hero-visibility': 'hidden'}),
+        } as CSSProperties;
+    }, [maxHeight, promptInputMaxHeight, isHeroFitting]);
+
     return (
         <MobileProvider mobile={isMobile}>
             <div
@@ -653,10 +688,13 @@ export function ChatContainer(props: ChatContainerProps) {
                     },
                     className,
                 )}
-                style={maxHeight === undefined ? undefined : {maxHeight}}
+                style={rootStyle}
                 data-qa={resolveChatContainerRootQa(qaMap)}
             >
-                <div className={b('header', headerClassName)}>
+                {isKeyboardTracked && (
+                    <div className={b('viewport-probe')} ref={viewportProbeRef} aria-hidden />
+                )}
+                <div className={b('header', headerClassName)} ref={headerRef}>
                     <Header {...finalHeaderProps} />
                 </div>
                 <div className={b('content', {view: hookState.chatContentView}, contentClassName)}>
@@ -665,6 +703,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 {showFooter && (
                     <div
                         className={b('footer', {view: hookState.chatContentView}, footerClassName)}
+                        ref={footerRef}
                     >
                         {finalPromptInputProps && (
                             <PromptInput
