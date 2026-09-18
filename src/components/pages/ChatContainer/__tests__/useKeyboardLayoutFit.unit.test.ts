@@ -1,6 +1,7 @@
 import {
     getIsFooterChromeStale,
     getIsHeroFitting,
+    resolveFooterChromeHeight,
     resolvePromptInputMaxHeight,
 } from '../useKeyboardLayoutFit';
 
@@ -99,5 +100,56 @@ describe('getIsHeroFitting', () => {
 
     it('should keep a hero that fits exactly', () => {
         expect(getIsHeroFitting({availableHeight: 80, heroHeight: 80})).toBe(true);
+    });
+});
+
+describe('resolveFooterChromeHeight', () => {
+    it('should take the first measurement as it is', () => {
+        expect(resolveFooterChromeHeight({measured: 90})).toEqual({chromeHeight: 90});
+    });
+
+    it('should follow the furniture down at once', () => {
+        expect(resolveFooterChromeHeight({measured: 60, lastChromeHeight: 90})).toEqual({
+            chromeHeight: 60,
+        });
+    });
+
+    it('should hold the furniture while growth is unconfirmed', () => {
+        expect(resolveFooterChromeHeight({measured: 300, lastChromeHeight: 90})).toEqual({
+            chromeHeight: 90,
+            pendingChromeHeight: 300,
+        });
+    });
+
+    it('should adopt growth a second measurement agrees with', () => {
+        expect(
+            resolveFooterChromeHeight({
+                measured: 300,
+                lastChromeHeight: 90,
+                pendingChromeHeight: 300,
+            }),
+        ).toEqual({chromeHeight: 300, pendingChromeHeight: 300});
+    });
+
+    it('should let the limit recover after a spike instead of latching at zero', () => {
+        // A suggestions block opens inside the footer, is confirmed, and then closes again.
+        let state = resolveFooterChromeHeight({measured: 90});
+        state = resolveFooterChromeHeight({measured: 600, lastChromeHeight: state.chromeHeight});
+        state = resolveFooterChromeHeight({
+            measured: 600,
+            lastChromeHeight: state.chromeHeight,
+            pendingChromeHeight: state.pendingChromeHeight,
+        });
+        expect(state.chromeHeight).toBe(600);
+
+        state = resolveFooterChromeHeight({measured: 90, lastChromeHeight: state.chromeHeight});
+        expect(state.chromeHeight).toBe(90);
+        expect(
+            resolvePromptInputMaxHeight({
+                rootHeight: 377,
+                headerHeight: 60,
+                footerChromeHeight: state.chromeHeight,
+            }),
+        ).toBe(227);
     });
 });

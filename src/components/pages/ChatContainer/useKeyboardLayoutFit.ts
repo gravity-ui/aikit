@@ -64,6 +64,50 @@ export function getIsFooterChromeStale({
     return footerHeight - textareaHeight > lastChromeHeight + 1;
 }
 
+export interface FooterChromeState {
+    /** Furniture the footer shows right now, footer minus the field. */
+    measured: number;
+    /** Furniture the limit is currently built on, `undefined` before the first measurement. */
+    lastChromeHeight?: number;
+    /** Measurement waiting for a second, matching one before it is adopted. */
+    pendingChromeHeight?: number;
+}
+
+export interface FooterChromeDecision {
+    chromeHeight: number;
+    pendingChromeHeight?: number;
+}
+
+/**
+ * Furniture height to build the limit on, and the measurement still waiting for confirmation.
+ *
+ * Growth is adopted only once a second measurement agrees with it, because a footer caught
+ * mid-squeeze reports furniture that is not there. Shrinking is adopted at once: a smaller
+ * subtraction can only mean the footer really did lose furniture, and a value that could only ever
+ * grow would latch on the first spike and drive the limit to zero, collapsing the field.
+ */
+export function resolveFooterChromeHeight({
+    measured,
+    lastChromeHeight,
+    pendingChromeHeight,
+}: FooterChromeState): FooterChromeDecision {
+    if (lastChromeHeight === undefined || measured < lastChromeHeight) {
+        return {chromeHeight: measured};
+    }
+
+    if (!getIsFooterChromeStale({footerHeight: measured, textareaHeight: 0, lastChromeHeight})) {
+        return {chromeHeight: lastChromeHeight};
+    }
+
+    const isConfirmed =
+        pendingChromeHeight !== undefined && Math.abs(pendingChromeHeight - measured) <= 1;
+
+    return {
+        chromeHeight: isConfirmed ? measured : lastChromeHeight,
+        pendingChromeHeight: measured,
+    };
+}
+
 export interface HeroFitMetrics {
     /** Height left for the welcome content, padding excluded. */
     availableHeight: number;
@@ -132,30 +176,14 @@ export function useKeyboardLayoutFit(
 
             const footerHeight = footer.getBoundingClientRect().height;
             const textareaHeight = textarea.getBoundingClientRect().height;
-            const isStale = getIsFooterChromeStale({
-                footerHeight,
-                textareaHeight,
+            const decision = resolveFooterChromeHeight({
+                measured: Math.max(0, footerHeight - textareaHeight),
                 lastChromeHeight: footerChromeHeight,
+                pendingChromeHeight,
             });
 
-            const measured = Math.max(0, footerHeight - textareaHeight);
-
-            if (footerChromeHeight === undefined || measured < footerChromeHeight) {
-                footerChromeHeight = measured;
-                pendingChromeHeight = undefined;
-            } else if (isStale) {
-                const isConfirmed =
-                    pendingChromeHeight !== undefined &&
-                    Math.abs(pendingChromeHeight - measured) <= 1;
-
-                pendingChromeHeight = measured;
-
-                if (isConfirmed) {
-                    footerChromeHeight = measured;
-                }
-            } else {
-                pendingChromeHeight = undefined;
-            }
+            footerChromeHeight = decision.chromeHeight;
+            pendingChromeHeight = decision.pendingChromeHeight;
 
             return resolvePromptInputMaxHeight({
                 rootHeight: root.getBoundingClientRect().height,
