@@ -89,10 +89,10 @@ const chartMessage: TAssistantMessage<ChartMessageContent, TMessageMetadata> = {
     type: 'chart',
     data: {
       chartData: {
-        labels: ['Январь', 'Февраль', 'Март', 'Апрель'],
+        labels: ['January', 'February', 'March', 'April'],
         datasets: [
           {
-            label: 'Продажи',
+            label: 'Sales',
             data: [12, 19, 3, 5],
             color: '#0077ff',
           },
