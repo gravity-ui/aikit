@@ -389,6 +389,17 @@ To bring the desktop metrics back into the sheet:
 }
 ```
 
+### On-screen keyboard
+
+The search field raises the on-screen keyboard, and mobile browsers keep the layout viewport at
+full height while it is open - iOS Safari always, Chrome and Firefox under the
+`interactive-widget=resizes-visual` default. A uikit `Sheet` is measured against that viewport and
+pins its window to the bottom of it, so the sheet ends up below the keyboard with only the search
+field left on screen. While the keyboard is open the sheet ends where the keyboard starts and its
+content is capped to the visible area instead, so the chat list takes the remaining space and
+scrolls inside it. The geometry is published on the document element as
+`--g-aikit-sheet-visible-bottom` and `--g-aikit-sheet-visible-height`.
+
 ```css
 /* Example: Custom dimensions */
 .custom-chat-history {

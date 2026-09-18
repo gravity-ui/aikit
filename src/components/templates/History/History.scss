@@ -120,6 +120,25 @@ $block: '.#{variables.$ns}history';
         padding: spacing(2) spacing(4);
     }
 
+    &__sheet#{$block}__sheet_keyboard-open {
+        @include mixins.sheet-keyboard-fit-root;
+    }
+
+    &__sheet-content#{$block}__sheet-content_keyboard-open {
+        @include mixins.sheet-keyboard-fit-content;
+
+        #{$block}__container {
+            flex: 1;
+            min-height: 0;
+        }
+
+        #{$block}__list-wrapper {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+        }
+    }
+
     &__sheet-content {
         @include mixins.sheet-content-padding(
             var(--g-aikit-history-sheet-inline-padding),
