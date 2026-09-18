@@ -65,11 +65,8 @@ export function getIsFooterChromeStale({
 }
 
 export interface FooterChromeState {
-    /** Furniture the footer shows right now, footer minus the field. */
     measured: number;
-    /** Furniture the limit is currently built on, `undefined` before the first measurement. */
     lastChromeHeight?: number;
-    /** Measurement waiting for a second, matching one before it is adopted. */
     pendingChromeHeight?: number;
 }
 
@@ -78,14 +75,6 @@ export interface FooterChromeDecision {
     pendingChromeHeight?: number;
 }
 
-/**
- * Furniture height to build the limit on, and the measurement still waiting for confirmation.
- *
- * Growth is adopted only once a second measurement agrees with it, because a footer caught
- * mid-squeeze reports furniture that is not there. Shrinking is adopted at once: a smaller
- * subtraction can only mean the footer really did lose furniture, and a value that could only ever
- * grow would latch on the first spike and drive the limit to zero, collapsing the field.
- */
 export function resolveFooterChromeHeight({
     measured,
     lastChromeHeight,

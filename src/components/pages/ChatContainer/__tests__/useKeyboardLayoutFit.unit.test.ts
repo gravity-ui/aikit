@@ -132,7 +132,6 @@ describe('resolveFooterChromeHeight', () => {
     });
 
     it('should let the limit recover after a spike instead of latching at zero', () => {
-        // A suggestions block opens inside the footer, is confirmed, and then closes again.
         let state = resolveFooterChromeHeight({measured: 90});
         state = resolveFooterChromeHeight({measured: 600, lastChromeHeight: state.chromeHeight});
         state = resolveFooterChromeHeight({
