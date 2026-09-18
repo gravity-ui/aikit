@@ -1188,6 +1188,15 @@ example with `interactive-widget=resizes-content` in the viewport meta tag, whic
 layout viewport itself. Such pages are left alone anyway: nothing of the layout viewport stays
 under the keyboard, so there is nothing to clamp.
 
+The host page has to pin the document rather than compensate the viewport offset on the panel
+that holds the chat. Pin it: `html` and `body` both `position: fixed` with `overflow: clip`, and
+their height driven by `visualViewport.height`; never write `visualViewport.offsetTop` onto the
+panel. Chasing that offset loses either way, and measurably so on iOS: Safari shifts the visible
+area by the keyboard height within about 90ms of the tap, so following it late leaves the panel a
+keyboard height out of place, while following it immediately doubles the miss, because Safari
+takes the offset back inside the same frame. With the document pinned the offset stays at zero and
+there is nothing to chase; keyboard tracking is unstable without it.
+
 While the keyboard is open, the root gets a `_keyboard-open` modifier: the welcome screen trades
 its large top padding for the remaining space and gives up its suggestions, which do not fit next
 to a keyboard taking more than half the screen.
