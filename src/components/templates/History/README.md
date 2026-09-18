@@ -113,6 +113,8 @@ import ruLocale from 'dayjs/locale/ru.js';
 | `filterFunction`           | `ChatFilterFunction`             | -        | `defaultChatFilter` | Custom filter function for search                   |
 | `size`                     | `'s' \| 'm' \| 'l' \| 'xl'`      | -        | `m`, `xl` on mobile | Size of the list and of the row delete button       |
 | `showSheetTitle`           | `boolean`                        | -        | `true`              | Show the mobile sheet title (stays in `aria-label`) |
+| `modal`                    | `boolean`                        | -        | `true`              | Keep the keyboard focus inside the desktop popup    |
+| `initialFocus`             | `PopupProps['initialFocus']`     | -        | -                   | Element to focus when the desktop popup opens       |
 
 Without an explicit `size` the list is `m` on desktop and `xl` in mobile mode, and the row delete
 button follows it: `s` on desktop, `xl` with a `20px` icon on mobile, so a row keeps a comfortable
@@ -415,7 +417,12 @@ To bring the desktop metrics back into the sheet:
 - Uses semantic HTML with proper button elements
 - Keyboard navigation support through Popup and List components
 - Click areas are properly sized for touch devices
-- Focus management handled by underlying UI kit components
+- On desktop the popup is a modal dialog: opening it moves the focus inside, `Tab` and
+  `Shift + Tab` cycle through the search field and the chat list, and `Escape` closes the popup and
+  returns the focus to the trigger button. Pass `modal={false}` to opt out — the focus then stays on
+  the trigger and the popup is only reachable after tabbing through the rest of the page, because it
+  is rendered in a portal
+- The popup is labelled with the same "Chat history" string as the mobile sheet
 
 ## Internationalization
 
