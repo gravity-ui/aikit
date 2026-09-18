@@ -69,8 +69,10 @@ import {PromptInputBody} from '@gravity-ui/aikit';
 
 The component uses CSS variables for theming:
 
-| Variable        | Description            |
-| --------------- | ---------------------- |
-| `--g-spacing-3` | Padding around content |
+| Variable                                          | Description                                                                                                                                         |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-spacing-3`                                   | Padding around content                                                                                                                              |
+| `--g-aikit-prompt-input-body-textarea-max-height` | Maximum height of the autosized textarea (default: `none`); caps the field so its text scrolls inside instead of growing further                    |
+| `--g-aikit-scroll-overscroll-behavior`            | Overscroll behavior of the textarea (default: `auto`); `contain` stops a scroll gesture from chaining to the page once the textarea reaches its end |
 
 The component uses a clear view style from Gravity UI with no visible borders by default.

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.21.0](https://github.com/gravity-ui/aikit/compare/v2.20.2...v2.21.0) (2026-09-18)
+
+
+### Features
+
+* **ChatContainer:** hold the chat in the visible viewport with the keyboard open ([#256](https://github.com/gravity-ui/aikit/issues/256)) ([8bc6667](https://github.com/gravity-ui/aikit/commit/8bc666793cfe3d981ae1410825c814f8148f7138))
+
 ## [2.20.2](https://github.com/gravity-ui/aikit/compare/v2.20.1...v2.20.2) (2026-09-17)
 
 

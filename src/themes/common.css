@@ -10,6 +10,9 @@
     /* === Layout === */
     --g-aikit-layout-base-padding-m: 12px;
 
+    /* === Scrolling === */
+    --g-aikit-scroll-overscroll-behavior: auto;
+
     /* === Messages === */
     --g-aikit-color-bg-message-user: #0077ff;
     --g-aikit-color-bg-message-assistant: #f0f0f0;
@@ -70,6 +73,7 @@
     --g-aikit-prompt-input-simple-padding: var(--g-spacing-1) var(--g-spacing-1) var(--g-spacing-1)
         var(--g-spacing-3);
     --g-aikit-prompt-input-full-padding: var(--g-spacing-2);
+    --g-aikit-prompt-input-body-textarea-max-height: none;
 
     /* === Empty Container === */
     --g-aikit-empty-container-background: var(--g-color-base-background);
@@ -85,6 +89,8 @@
     --g-aikit-empty-container-suggestions-flex: 1 1 auto;
     --g-aikit-empty-container-suggestions-align-self: stretch;
     --g-aikit-empty-container-suggestions-list-min-height: 70px;
+    --g-aikit-empty-container-suggestions-display: flex;
+    --g-aikit-empty-container-hero-visibility: inherit;
 
     /* === Message List === */
     --g-aikit-message-list-footer-content-padding: var(--g-spacing-4) 0 var(--g-spacing-2);
@@ -107,6 +113,8 @@
     --g-aikit-chat-container-mobile-empty-container-padding: 80px var(--g-spacing-4) 0;
     --g-aikit-chat-container-mobile-keyboard-empty-container-padding: var(--g-spacing-4)
         var(--g-spacing-4) 0;
+    --g-aikit-chat-container-mobile-keyboard-suggestions-display: none;
+    --g-aikit-chat-container-focus-guard-time: 0.01s;
     --g-aikit-chat-container-mobile-message-list-inline-padding: calc(
         var(--g-aikit-layout-base-padding-m) + var(--g-spacing-2)
     );

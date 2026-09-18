@@ -7,6 +7,13 @@ import {type RefObject, useEffect, useState} from 'react';
  */
 export const KEYBOARD_MIN_INSET = 80;
 
+/**
+ * Largest shortfall of `visualViewport.height` against a measured reference that is still
+ * attributed to the browser's own bottom chrome. Anything larger is the keyboard itself and
+ * must not be corrected away.
+ */
+export const VIEWPORT_HEIGHT_TOLERANCE = 100;
+
 export interface KeyboardViewportMetrics {
     /** `visualViewport.height` - height of the area not covered by the keyboard. */
     viewportHeight: number;
@@ -18,6 +25,19 @@ export interface KeyboardViewportMetrics {
     layoutHeight: number;
     /** Top of the container in layout viewport coordinates (`getBoundingClientRect().top`). */
     containerTop: number;
+    /**
+     * Top of an element pinned to the top of the layout viewport (`position: fixed; top: 0`), read
+     * with `getBoundingClientRect()`. Client rectangles are relative to the layout viewport in most
+     * browsers and to the visual viewport in Safari, and this reading tells the two apart: it stays
+     * at zero in the first case and drops to minus the viewport offset in the second. `0` by
+     * default, which keeps the layout viewport reading.
+     */
+    viewportOriginTop?: number;
+    /**
+     * Height of a reference element sized to the dynamic viewport (`height: 100dvh`), read from
+     * the DOM. iOS Safari reports a visible area short by the height of its bottom toolbar.
+     */
+    measuredViewportHeight?: number;
 }
 
 export interface KeyboardViewportFit {
@@ -33,6 +53,30 @@ export interface KeyboardViewportFit {
 const CLOSED: KeyboardViewportFit = {isKeyboardOpen: false};
 
 /**
+ * `visualViewport.height` can come back short by the height of the browser bottom chrome, which
+ * makes the container shrink while no keyboard is open. A reference element sized to the dynamic
+ * viewport measures the same area without that shortfall, so the larger of the two wins - but only
+ * while the difference stays inside the tolerance, otherwise the keyboard itself would be
+ * corrected away. The correction is one-way: it can only raise the visible height.
+ */
+function resolveVisibleHeight(
+    reportedHeight: number,
+    measuredHeight: number | undefined,
+    scale: number,
+    tolerance: number,
+): number {
+    // A DOM rect is in CSS pixels while `visualViewport.height` shrinks with pinch zoom, so the
+    // two are only comparable on an unzoomed page.
+    if (measuredHeight === undefined || scale !== 1) {
+        return reportedHeight;
+    }
+
+    const difference = measuredHeight - reportedHeight;
+
+    return difference > 0 && difference < tolerance ? measuredHeight : reportedHeight;
+}
+
+/**
  * Height limit for a container whose bottom would otherwise end up under the on-screen keyboard.
  *
  * Browsers keep the layout viewport at full height while the keyboard is open (iOS Safari always,
@@ -45,34 +89,96 @@ export function resolveKeyboardViewportFit(
     metrics: KeyboardViewportMetrics,
     minInset: number = KEYBOARD_MIN_INSET,
 ): KeyboardViewportFit {
-    const {viewportHeight, viewportOffsetTop, scale, layoutHeight, containerTop} = metrics;
+    const {
+        viewportHeight,
+        viewportOffsetTop,
+        scale,
+        layoutHeight,
+        containerTop,
+        viewportOriginTop = 0,
+        measuredViewportHeight,
+    } = metrics;
+
+    const visibleHeight = resolveVisibleHeight(
+        viewportHeight,
+        measuredViewportHeight,
+        scale,
+        VIEWPORT_HEIGHT_TOLERANCE,
+    );
 
     // Pinch zoom shrinks `visualViewport.height` just like the keyboard does, so the height is
     // scaled back to layout pixels first: what remains is the part of the layout viewport that the
     // user cannot reach by panning, which is the keyboard. A page that opted into
     // `interactive-widget=resizes-content` shrinks the layout viewport itself and lands here with a
     // zero inset - the browser has already done the work and the container is left alone.
-    if (layoutHeight - viewportHeight * scale < minInset) {
+    if (layoutHeight - visibleHeight * scale < minInset) {
         return CLOSED;
     }
 
+    // Where the visible area ends, in the same coordinates the container was measured in. Reading
+    // the origin from the DOM keeps this right in a browser that reports rectangles against the
+    // visual viewport, where adding the offset back would count it twice.
+    const visibleBottom = viewportOffsetTop + viewportOriginTop + visibleHeight;
+
     return {
         isKeyboardOpen: true,
-        maxHeight: Math.max(0, Math.floor(viewportOffsetTop + viewportHeight - containerTop)),
+        maxHeight: Math.max(0, Math.floor(visibleBottom - containerTop)),
     };
+}
+
+export interface ViewportOriginMetrics {
+    /** Top of the probe as `getBoundingClientRect` reports it. */
+    probeTop: number;
+    /** `visualViewport.offsetTop` at the same moment. */
+    viewportOffsetTop: number;
+}
+
+/**
+ * Top of the viewport the container is measured against, read from the probe.
+ *
+ * A probe pinned to the top of the layout viewport can only report two things: zero, where client
+ * rectangles are measured against the layout viewport, and minus the viewport offset, where they
+ * are measured against the visual viewport as in Safari. Anything else means the probe is not
+ * where it was asked to be: a `transform`, a `filter`, a `will-change` or a `contain: paint` on
+ * any ancestor - and panels that slide in are animated with exactly those - makes `position: fixed`
+ * count from that ancestor instead of the viewport. Such a reading is dropped, and the limit falls
+ * back to the formula without a probe rather than following the ancestor's own offset.
+ */
+export function resolveViewportOriginTop({
+    probeTop,
+    viewportOffsetTop,
+}: ViewportOriginMetrics): number {
+    const isPinnedToViewport = Math.abs(probeTop) < 1 || Math.abs(probeTop + viewportOffsetTop) < 1;
+
+    return isPinnedToViewport ? probeTop : 0;
+}
+
+export interface KeyboardViewportFitOptions {
+    /**
+     * Element pinned to the top of the layout viewport and sized to the dynamic viewport
+     * (`position: fixed; top: 0; height: 100dvh`). Its rectangle answers two questions the
+     * `visualViewport` numbers alone cannot: which viewport client rectangles are measured
+     * against, and how tall the browser itself considers the visible area to be. See
+     * {@link VIEWPORT_HEIGHT_TOLERANCE}.
+     */
+    viewportProbeRef?: RefObject<HTMLElement | null>;
 }
 
 /**
  * Tracks the on-screen keyboard through `visualViewport` and returns the height limit that keeps
- * the referenced container inside the visible area.
+ * the referenced container inside the visible area. The container has to be anchored to the top of
+ * the viewport: a bottom-anchored one moves its own top as soon as the limit shrinks it.
  *
  * @param containerRef - element to fit into the visual viewport
  * @param enabled - disables tracking (e.g. outside mobile mode)
+ * @param options - optional dynamic viewport probe, see {@link KeyboardViewportFitOptions}
  */
 export function useKeyboardViewportFit(
     containerRef: RefObject<HTMLElement>,
     enabled = true,
+    options: KeyboardViewportFitOptions = {},
 ): KeyboardViewportFit {
+    const {viewportProbeRef} = options;
     const [fit, setFit] = useState<KeyboardViewportFit>(CLOSED);
 
     useEffect(() => {
@@ -96,6 +202,8 @@ export function useKeyboardViewportFit(
                 return;
             }
 
+            const probeBox = viewportProbeRef?.current?.getBoundingClientRect();
+
             const next = resolveKeyboardViewportFit({
                 viewportHeight: viewport.height,
                 viewportOffsetTop: viewport.offsetTop,
@@ -104,6 +212,13 @@ export function useKeyboardViewportFit(
                 // The limit only depends on the top of the container, which the limit itself does
                 // not move - so applying it cannot feed back into the next measurement.
                 containerTop: container.getBoundingClientRect().top,
+                viewportOriginTop:
+                    probeBox &&
+                    resolveViewportOriginTop({
+                        probeTop: probeBox.top,
+                        viewportOffsetTop: viewport.offsetTop,
+                    }),
+                measuredViewportHeight: probeBox?.height,
             });
 
             setFit((prev) =>
@@ -136,7 +251,7 @@ export function useKeyboardViewportFit(
             document.removeEventListener('focusin', schedule);
             document.removeEventListener('focusout', schedule);
         };
-    }, [containerRef, enabled]);
+    }, [containerRef, enabled, viewportProbeRef]);
 
     return fit;
 }

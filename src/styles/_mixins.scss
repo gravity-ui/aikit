@@ -44,3 +44,17 @@
         outline: 2px solid var(--g-color-line-focus);
     }
 }
+
+// A gesture that starts inside a scroller chains to its ancestor as soon as the scroller reaches
+// its end. Inside a panel pinned to the visible viewport that drags the whole panel away on iOS,
+// so every scroller of the chat opts out of chaining. The token stays `auto` by default and
+// ChatContainer switches it to `contain` in mobile mode, where the problem lives; a consumer can
+// set it on any ancestor to force either behaviour.
+
+@mixin scroll-contain {
+    overscroll-behavior: var(--g-aikit-scroll-overscroll-behavior, auto);
+}
+
+@mixin scroll-contain-x {
+    overscroll-behavior-x: var(--g-aikit-scroll-overscroll-behavior, auto);
+}
