@@ -66,8 +66,6 @@ export function getIsFooterChromeStale({
 
 export interface FooterChromeState {
     measured: number;
-    isFieldCapped: boolean;
-    isFooterOverflowing: boolean;
     lastChromeHeight?: number;
     pendingChromeHeight?: number;
 }
@@ -79,17 +77,11 @@ export interface FooterChromeDecision {
 
 export function resolveFooterChromeHeight({
     measured,
-    isFieldCapped,
-    isFooterOverflowing,
     lastChromeHeight,
     pendingChromeHeight,
 }: FooterChromeState): FooterChromeDecision {
-    if (lastChromeHeight === undefined || (isFooterOverflowing && measured > lastChromeHeight)) {
+    if (lastChromeHeight === undefined || measured < lastChromeHeight) {
         return {chromeHeight: measured};
-    }
-
-    if (measured < lastChromeHeight) {
-        return {chromeHeight: isFieldCapped ? lastChromeHeight : measured};
     }
 
     if (!getIsFooterChromeStale({footerHeight: measured, textareaHeight: 0, lastChromeHeight})) {
@@ -163,7 +155,6 @@ export function useKeyboardLayoutFit(
         // Survives the measurements, not the element: a footer that changed is measured anew.
         let footerChromeHeight: number | undefined;
         let pendingChromeHeight: number | undefined;
-        let appliedCap: number | undefined;
 
         const measurePromptInput = (): number | undefined => {
             const textarea = footer.querySelector(TEXTAREA_SELECTOR);
@@ -174,25 +165,20 @@ export function useKeyboardLayoutFit(
 
             const footerHeight = footer.getBoundingClientRect().height;
             const textareaHeight = textarea.getBoundingClientRect().height;
-            const rootHeight = root.getBoundingClientRect().height;
-            const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
             const decision = resolveFooterChromeHeight({
                 measured: Math.max(0, footerHeight - textareaHeight),
-                isFieldCapped: appliedCap !== undefined && textareaHeight >= appliedCap - 1,
-                isFooterOverflowing: footerHeight > rootHeight - headerHeight + 1,
                 lastChromeHeight: footerChromeHeight,
                 pendingChromeHeight,
             });
 
             footerChromeHeight = decision.chromeHeight;
             pendingChromeHeight = decision.pendingChromeHeight;
-            appliedCap = resolvePromptInputMaxHeight({
-                rootHeight,
-                headerHeight,
+
+            return resolvePromptInputMaxHeight({
+                rootHeight: root.getBoundingClientRect().height,
+                headerHeight: headerRef.current?.getBoundingClientRect().height ?? 0,
                 footerChromeHeight,
             });
-
-            return appliedCap;
         };
 
         const measureHero = (): boolean => {

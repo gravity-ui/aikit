@@ -105,37 +105,17 @@ describe('getIsHeroFitting', () => {
 
 describe('resolveFooterChromeHeight', () => {
     it('should take the first measurement as it is', () => {
-        expect(
-            resolveFooterChromeHeight({
-                measured: 90,
-                isFieldCapped: false,
-                isFooterOverflowing: false,
-            }),
-        ).toEqual({chromeHeight: 90});
+        expect(resolveFooterChromeHeight({measured: 90})).toEqual({chromeHeight: 90});
     });
 
     it('should follow the furniture down at once', () => {
-        expect(
-            resolveFooterChromeHeight({
-                measured: 60,
-                isFieldCapped: false,
-                isFooterOverflowing: false,
-                lastChromeHeight: 90,
-            }),
-        ).toEqual({
+        expect(resolveFooterChromeHeight({measured: 60, lastChromeHeight: 90})).toEqual({
             chromeHeight: 60,
         });
     });
 
     it('should hold the furniture while growth is unconfirmed', () => {
-        expect(
-            resolveFooterChromeHeight({
-                measured: 300,
-                isFieldCapped: false,
-                isFooterOverflowing: false,
-                lastChromeHeight: 90,
-            }),
-        ).toEqual({
+        expect(resolveFooterChromeHeight({measured: 300, lastChromeHeight: 90})).toEqual({
             chromeHeight: 90,
             pendingChromeHeight: 300,
         });
@@ -145,8 +125,6 @@ describe('resolveFooterChromeHeight', () => {
         expect(
             resolveFooterChromeHeight({
                 measured: 300,
-                isFieldCapped: false,
-                isFooterOverflowing: false,
                 lastChromeHeight: 90,
                 pendingChromeHeight: 300,
             }),
@@ -154,32 +132,16 @@ describe('resolveFooterChromeHeight', () => {
     });
 
     it('should let the limit recover after a spike instead of latching at zero', () => {
-        let state = resolveFooterChromeHeight({
-            measured: 90,
-            isFieldCapped: false,
-            isFooterOverflowing: false,
-        });
+        let state = resolveFooterChromeHeight({measured: 90});
+        state = resolveFooterChromeHeight({measured: 600, lastChromeHeight: state.chromeHeight});
         state = resolveFooterChromeHeight({
             measured: 600,
-            isFieldCapped: false,
-            isFooterOverflowing: false,
-            lastChromeHeight: state.chromeHeight,
-        });
-        state = resolveFooterChromeHeight({
-            measured: 600,
-            isFieldCapped: false,
-            isFooterOverflowing: false,
             lastChromeHeight: state.chromeHeight,
             pendingChromeHeight: state.pendingChromeHeight,
         });
         expect(state.chromeHeight).toBe(600);
 
-        state = resolveFooterChromeHeight({
-            measured: 90,
-            isFieldCapped: false,
-            isFooterOverflowing: false,
-            lastChromeHeight: state.chromeHeight,
-        });
+        state = resolveFooterChromeHeight({measured: 90, lastChromeHeight: state.chromeHeight});
         expect(state.chromeHeight).toBe(90);
         expect(
             resolvePromptInputMaxHeight({
@@ -188,42 +150,5 @@ describe('resolveFooterChromeHeight', () => {
                 footerChromeHeight: state.chromeHeight,
             }),
         ).toBe(227);
-    });
-});
-
-describe('resolveFooterChromeHeight with the field at its cap', () => {
-    it('should ignore a short measurement while the field is capped', () => {
-        expect(
-            resolveFooterChromeHeight({
-                measured: 20,
-                isFieldCapped: true,
-                isFooterOverflowing: false,
-                lastChromeHeight: 90,
-            }),
-        ).toEqual({chromeHeight: 90});
-    });
-
-    it('should still follow the furniture down once the field is off its cap', () => {
-        expect(
-            resolveFooterChromeHeight({
-                measured: 20,
-                isFieldCapped: false,
-                isFooterOverflowing: false,
-                lastChromeHeight: 90,
-            }),
-        ).toEqual({chromeHeight: 20});
-    });
-});
-
-describe('resolveFooterChromeHeight with the footer over its space', () => {
-    it('should adopt a bigger measurement at once when the footer does not fit', () => {
-        expect(
-            resolveFooterChromeHeight({
-                measured: 140,
-                isFieldCapped: true,
-                isFooterOverflowing: true,
-                lastChromeHeight: 106,
-            }),
-        ).toEqual({chromeHeight: 140});
     });
 });
