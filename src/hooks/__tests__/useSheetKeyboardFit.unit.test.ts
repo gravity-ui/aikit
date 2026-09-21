@@ -32,7 +32,7 @@ describe('resolveSheetKeyboardFit', () => {
                 scale: 1,
                 layoutHeight: 800,
             }),
-        ).toEqual({isKeyboardOpen: true, visibleBottom: 460, maxContentHeightCoefficient: 0.5175});
+        ).toEqual({isKeyboardOpen: true, visibleBottom: 460, visibleHeight: 460});
     });
 
     it('should follow a visual viewport panned by iOS Safari', () => {
@@ -46,7 +46,7 @@ describe('resolveSheetKeyboardFit', () => {
         ).toEqual({
             isKeyboardOpen: true,
             visibleBottom: 607,
-            maxContentHeightCoefficient: (377 * 0.9) / 714,
+            visibleHeight: 377,
         });
     });
 
@@ -61,7 +61,7 @@ describe('resolveSheetKeyboardFit', () => {
         ).toEqual({isKeyboardOpen: false});
     });
 
-    it('should round the sheet bottom down to whole pixels', () => {
+    it('should round the geometry down to whole pixels', () => {
         expect(
             resolveSheetKeyboardFit({
                 viewportHeight: 376.6,
@@ -72,7 +72,7 @@ describe('resolveSheetKeyboardFit', () => {
         ).toEqual({
             isKeyboardOpen: true,
             visibleBottom: 606,
-            maxContentHeightCoefficient: (376.6 * 0.9) / 714,
+            visibleHeight: 376,
         });
     });
 
@@ -90,7 +90,7 @@ describe('resolveSheetKeyboardFit', () => {
         ).toEqual({
             isKeyboardOpen: true,
             visibleBottom: 780,
-            maxContentHeightCoefficient: (780 * 0.9) / 800,
+            visibleHeight: 780,
         });
     });
 });

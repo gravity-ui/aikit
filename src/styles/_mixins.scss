@@ -17,8 +17,23 @@
     }
 }
 
+$sheet-max-content-height-coefficient: 0.9;
+
 @mixin sheet-keyboard-fit-root {
     height: var(--g-aikit-sheet-visible-bottom, 100%);
+}
+
+@mixin sheet-keyboard-fit-content {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(
+        var(--g-aikit-sheet-visible-height, 100%) *
+            #{$sheet-max-content-height-coefficient} - var(--_--top-height, 20px)
+    );
+
+    > * {
+        flex-shrink: 0;
+    }
 }
 
 @mixin link {
