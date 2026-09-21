@@ -38,40 +38,6 @@ export function resolveSheetKeyboardFit(
     };
 }
 
-type Subscriber = (fit: SheetKeyboardFit) => void;
-
-const subscribers = new Set<Subscriber>();
-let frame = 0;
-let published: SheetKeyboardFit = CLOSED;
-
-function publish() {
-    frame = 0;
-
-    const viewport = window.visualViewport;
-    if (!viewport) {
-        return;
-    }
-
-    const next = resolveSheetKeyboardFit({
-        viewportHeight: viewport.height,
-        viewportOffsetTop: viewport.offsetTop,
-        scale: viewport.scale,
-        layoutHeight: window.innerHeight,
-    });
-
-    if (
-        next.isKeyboardOpen === published.isKeyboardOpen &&
-        next.visibleBottom === published.visibleBottom &&
-        next.visibleHeight === published.visibleHeight
-    ) {
-        return;
-    }
-
-    published = next;
-    writeCustomProperties(next);
-    subscribers.forEach((subscriber) => subscriber(next));
-}
-
 function writeCustomProperties(fit: SheetKeyboardFit) {
     const {style} = document.documentElement;
 
@@ -84,45 +50,6 @@ function writeCustomProperties(fit: SheetKeyboardFit) {
     }
 }
 
-function schedule() {
-    if (!frame) {
-        frame = requestAnimationFrame(publish);
-    }
-}
-
-function subscribe(subscriber: Subscriber) {
-    const viewport = window.visualViewport;
-    if (!viewport) {
-        return undefined;
-    }
-
-    if (!subscribers.size) {
-        viewport.addEventListener('resize', schedule);
-        viewport.addEventListener('scroll', schedule);
-    }
-
-    subscribers.add(subscriber);
-    publish();
-    subscriber(published);
-
-    return () => {
-        subscribers.delete(subscriber);
-
-        if (!subscribers.size) {
-            viewport.removeEventListener('resize', schedule);
-            viewport.removeEventListener('scroll', schedule);
-
-            if (frame) {
-                cancelAnimationFrame(frame);
-                frame = 0;
-            }
-
-            published = CLOSED;
-            writeCustomProperties(CLOSED);
-        }
-    };
-}
-
 export function useSheetKeyboardFit(enabled = true): SheetKeyboardFit {
     const [fit, setFit] = useState<SheetKeyboardFit>(CLOSED);
 
@@ -132,7 +59,43 @@ export function useSheetKeyboardFit(enabled = true): SheetKeyboardFit {
             return undefined;
         }
 
-        return subscribe(setFit);
+        const apply = (next: SheetKeyboardFit) => {
+            writeCustomProperties(next);
+            setFit((prev) =>
+                prev.isKeyboardOpen === next.isKeyboardOpen &&
+                prev.visibleBottom === next.visibleBottom &&
+                prev.visibleHeight === next.visibleHeight
+                    ? prev
+                    : next,
+            );
+        };
+
+        const measure = () => {
+            const viewport = window.visualViewport;
+            if (!viewport) {
+                return;
+            }
+
+            apply(
+                resolveSheetKeyboardFit({
+                    viewportHeight: viewport.height,
+                    viewportOffsetTop: viewport.offsetTop,
+                    scale: viewport.scale,
+                    layoutHeight: window.innerHeight,
+                }),
+            );
+        };
+
+        const reset = () => apply(CLOSED);
+
+        document.addEventListener('input', measure, true);
+        document.addEventListener('focusout', reset, true);
+
+        return () => {
+            document.removeEventListener('input', measure, true);
+            document.removeEventListener('focusout', reset, true);
+            writeCustomProperties(CLOSED);
+        };
     }, [enabled]);
 
     return fit;
