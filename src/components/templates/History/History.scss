@@ -120,6 +120,10 @@ $block: '.#{variables.$ns}history';
         padding: spacing(2) spacing(4);
     }
 
+    &__sheet {
+        transition: height 0.3s ease;
+    }
+
     &__sheet#{$block}__sheet_keyboard-open {
         @include mixins.sheet-keyboard-fit-root;
     }
