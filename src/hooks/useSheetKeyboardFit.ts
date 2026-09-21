@@ -142,7 +142,12 @@ export function useSheetKeyboardFit(enabled = true): SheetKeyboardFit {
             });
 
             if (next.isKeyboardOpen) {
-                writeKnownKeyboardHeight(window.innerHeight - viewport.height);
+                // The tallest shrink is the keyboard; smaller readings come from its opening and
+                // closing animation and must not overwrite the remembered height with a stray value.
+                const measured = window.innerHeight - viewport.height;
+                if (measured > readKnownKeyboardHeight()) {
+                    writeKnownKeyboardHeight(measured);
+                }
             }
 
             apply(next);
