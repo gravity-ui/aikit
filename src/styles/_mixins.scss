@@ -21,16 +21,6 @@
     height: var(--g-aikit-sheet-visible-bottom, 100%);
 }
 
-@mixin sheet-keyboard-fit-content {
-    display: flex;
-    flex-direction: column;
-    max-height: calc(var(--g-aikit-sheet-visible-height, 100%) - var(--_--top-height, 20px));
-
-    > * {
-        flex-shrink: 0;
-    }
-}
-
 @mixin link {
     color: var(--g-color-text-link);
     text-decoration: none;

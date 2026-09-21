@@ -34,7 +34,7 @@ export function History(props: HistoryProps) {
     const {open = false, onOpenChange, anchorElement, showSheetTitle = true, ...listProps} = props;
     const isMobile = useMobile();
     const sheetId = useUniqId();
-    const {isKeyboardOpen} = useSheetKeyboardFit(isMobile && open);
+    const {isKeyboardOpen, maxContentHeightCoefficient} = useSheetKeyboardFit(isMobile && open);
 
     const handleChatClick = () => {
         onOpenChange?.(false);
@@ -50,10 +50,8 @@ export function History(props: HistoryProps) {
                 visible={open}
                 onClose={() => onOpenChange?.(false)}
                 className={b('sheet', {'keyboard-open': isKeyboardOpen})}
-                contentClassName={b('sheet-content', {
-                    'without-title': !showSheetTitle,
-                    'keyboard-open': isKeyboardOpen,
-                })}
+                contentClassName={b('sheet-content', {'without-title': !showSheetTitle})}
+                maxContentHeightCoefficient={maxContentHeightCoefficient}
                 qa="history-sheet"
                 allowHideOnContentScroll
             >

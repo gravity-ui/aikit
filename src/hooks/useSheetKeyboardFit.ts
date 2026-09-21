@@ -4,7 +4,7 @@ import {KEYBOARD_MIN_INSET} from './useKeyboardViewportFit';
 
 export const SHEET_VISIBLE_BOTTOM_VAR = '--g-aikit-sheet-visible-bottom';
 
-export const SHEET_VISIBLE_HEIGHT_VAR = '--g-aikit-sheet-visible-height';
+export const SHEET_MAX_CONTENT_HEIGHT_COEFFICIENT = 0.9;
 
 export interface SheetKeyboardMetrics {
     viewportHeight: number;
@@ -16,7 +16,7 @@ export interface SheetKeyboardMetrics {
 export interface SheetKeyboardFit {
     isKeyboardOpen: boolean;
     visibleBottom?: number;
-    visibleHeight?: number;
+    maxContentHeightCoefficient?: number;
 }
 
 const CLOSED: SheetKeyboardFit = {isKeyboardOpen: false};
@@ -34,7 +34,8 @@ export function resolveSheetKeyboardFit(
     return {
         isKeyboardOpen: true,
         visibleBottom: Math.max(0, Math.floor(viewportOffsetTop + viewportHeight)),
-        visibleHeight: Math.max(0, Math.floor(viewportHeight)),
+        maxContentHeightCoefficient:
+            (viewportHeight * SHEET_MAX_CONTENT_HEIGHT_COEFFICIENT) / layoutHeight,
     };
 }
 
@@ -61,8 +62,7 @@ function publish() {
 
     if (
         next.isKeyboardOpen === published.isKeyboardOpen &&
-        next.visibleBottom === published.visibleBottom &&
-        next.visibleHeight === published.visibleHeight
+        next.visibleBottom === published.visibleBottom
     ) {
         return;
     }
@@ -70,6 +70,7 @@ function publish() {
     published = next;
     writeCustomProperties(next);
     subscribers.forEach((subscriber) => subscriber(next));
+    window.dispatchEvent(new Event('resize'));
 }
 
 function writeCustomProperties(fit: SheetKeyboardFit) {
@@ -77,10 +78,8 @@ function writeCustomProperties(fit: SheetKeyboardFit) {
 
     if (fit.isKeyboardOpen) {
         style.setProperty(SHEET_VISIBLE_BOTTOM_VAR, `${fit.visibleBottom}px`);
-        style.setProperty(SHEET_VISIBLE_HEIGHT_VAR, `${fit.visibleHeight}px`);
     } else {
         style.removeProperty(SHEET_VISIBLE_BOTTOM_VAR);
-        style.removeProperty(SHEET_VISIBLE_HEIGHT_VAR);
     }
 }
 
