@@ -1183,9 +1183,11 @@ slide in are animated with exactly those. The container does have to
 be anchored to the top of the viewport: a bottom-anchored one moves its own top as soon as the
 returned limit shrinks it.
 
-Only a keyboard raised from inside the chat counts. A field that lives above the chat - the
-search input of the history sheet, an input in a dialog of the host application - raises the same
-keyboard, and the chat keeps its layout instead of reflowing behind that overlay.
+A keyboard raised from outside the chat does not count. A field that lives above it - the search
+input of the history sheet, an input in a dialog of the host application - raises the same
+keyboard, and the chat keeps its layout instead of reflowing behind that overlay. Only an explicit
+foreign focus is read that way: a keyboard that outlives the field which raised it, as when
+sending a message remounts the prompt input, still belongs to the chat.
 
 Set `adjustToKeyboard={false}` when the host application already handles the keyboard - for
 example with `interactive-widget=resizes-content` in the viewport meta tag, which shrinks the

@@ -331,7 +331,7 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
 
             event.preventDefault();
             event.stopImmediatePropagation();
-            suppressClicksUntil = Number.POSITIVE_INFINITY;
+            suppressClicksUntil = performance.now() + SUPPRESS_CLICK_MS;
 
             anchor = createAnchor();
             document.body.appendChild(anchor);
@@ -374,8 +374,16 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
             }, HANDOVER_WAIT_MS);
         };
 
+        // Only the click the intercepted tap is about to produce, and only inside the sheet: the
+        // listener sits on the document, so a wider guard would swallow clicks of the whole page.
         const onSyntheticClick = (event: Event) => {
-            if (performance.now() > suppressClicksUntil) {
+            const target = event.target;
+            if (
+                performance.now() > suppressClicksUntil ||
+                !(target instanceof Element) ||
+                !sheetSelector ||
+                !target.closest(sheetSelector)
+            ) {
                 return;
             }
 
