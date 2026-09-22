@@ -20,6 +20,8 @@ const HANDOVER_STABLE_FRAMES = 4;
 
 const SUPPRESS_CLICK_MS = 600;
 
+const KEYBOARD_CLOSE_MS = 700;
+
 export interface SheetKeyboardMetrics {
     viewportHeight: number;
     viewportOffsetTop: number;
@@ -161,6 +163,7 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
         let guard = 0;
         let syncFallback = 0;
         let desired: SheetKeyboardFit = CLOSED;
+        let releaseTimer = 0;
         let anchor: HTMLInputElement | null = null;
         let handoverTimer = 0;
         let handoverFrame = 0;
@@ -235,6 +238,20 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
             }
 
             apply(next);
+
+            if (!tracking && !next.isKeyboardOpen) {
+                window.clearTimeout(releaseTimer);
+                releaseTimer = 0;
+                viewport.removeEventListener('resize', measure);
+                viewport.removeEventListener('scroll', measure);
+            }
+        };
+
+        const release = () => {
+            releaseTimer = 0;
+            viewport.removeEventListener('resize', measure);
+            viewport.removeEventListener('scroll', measure);
+            apply(CLOSED);
         };
 
         const onFocusIn = (event: FocusEvent) => {
@@ -271,9 +288,13 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
 
             tracking = false;
             window.clearTimeout(guard);
-            viewport.removeEventListener('resize', measure);
-            viewport.removeEventListener('scroll', measure);
-            apply(CLOSED);
+
+            // The keyboard is still on screen and the visual viewport is still short; undoing the
+            // fit now rebuilds the sheet against a viewport that is about to change again. The
+            // listeners stay on until `measure` sees the viewport back at full height, with a
+            // timer for the cases that never send a resize (a hardware keyboard).
+            window.clearTimeout(releaseTimer);
+            releaseTimer = window.setTimeout(release, KEYBOARD_CLOSE_MS);
         };
 
         const handOver = (field: HTMLElement) => {
@@ -375,6 +396,7 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
             document.removeEventListener('click', onSyntheticClick, true);
             window.clearTimeout(guard);
             window.clearTimeout(syncFallback);
+            window.clearTimeout(releaseTimer);
             observer?.disconnect();
             document.removeEventListener('focusin', onFocusIn, true);
             document.removeEventListener('focusout', onFocusOut, true);
