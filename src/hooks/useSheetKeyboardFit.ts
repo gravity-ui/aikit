@@ -14,6 +14,12 @@ const PREDICT_GUARD_MS = 500;
 
 const SYNC_FALLBACK_MS = 400;
 
+const HANDOVER_WAIT_MS = 1500;
+
+const HANDOVER_STABLE_FRAMES = 4;
+
+const SUPPRESS_CLICK_MS = 600;
+
 export interface SheetKeyboardMetrics {
     viewportHeight: number;
     viewportOffsetTop: number;
@@ -93,6 +99,19 @@ function writeKnownKeyboardHeight(height: number) {
     }
 }
 
+function createAnchor(): HTMLInputElement {
+    const anchor = document.createElement('input');
+
+    anchor.setAttribute('aria-hidden', 'true');
+    anchor.tabIndex = -1;
+    anchor.setAttribute(
+        'style',
+        'position:fixed;top:0;left:0;z-index:-1;width:1px;height:1px;font-size:16px;opacity:0;pointer-events:none;border:0;padding:0',
+    );
+
+    return anchor;
+}
+
 function writeVar(name: string, value: number | undefined) {
     const {style} = document.documentElement;
 
@@ -118,6 +137,13 @@ function writeVar(name: string, value: number | undefined) {
  * that for ~150ms while the keyboard slides in). The root height is therefore written from a
  * `ResizeObserver` on the same box uikit watches, which is delivered in the same frame.
  *
+ * A field that sits below the line the keyboard will take (a short, filtered sheet at the bottom of
+ * the screen) makes Safari pan the visual viewport to reveal it, and the pan drags every fixed box
+ * up with it. To keep the field where Safari can see it, the tap is intercepted: an invisible
+ * anchor at the top of the screen takes the focus and raises the keyboard, the sheet rises with it,
+ * and once the keyboard has settled the focus is handed over to the field, which is above the
+ * keyboard by then.
+ *
  * @param enabled - disables tracking (e.g. while the sheet is closed or outside mobile mode)
  * @param sheetSelector - selector of the sheet root, used to find the content box uikit observes
  */
@@ -135,6 +161,21 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
         let guard = 0;
         let syncFallback = 0;
         let desired: SheetKeyboardFit = CLOSED;
+        let anchor: HTMLInputElement | null = null;
+        let handoverTimer = 0;
+        let handoverFrame = 0;
+        let suppressClicksUntil = 0;
+
+        const getIsKeyboardShown = () => window.innerHeight - viewport.height >= KEYBOARD_MIN_INSET;
+
+        const removeAnchor = () => {
+            window.clearTimeout(handoverTimer);
+            window.cancelAnimationFrame(handoverFrame);
+            handoverTimer = 0;
+            handoverFrame = 0;
+            anchor?.remove();
+            anchor = null;
+        };
 
         const writeBottom = () => {
             window.clearTimeout(syncFallback);
@@ -223,8 +264,8 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
             }, PREDICT_GUARD_MS);
         };
 
-        const onFocusOut = () => {
-            if (!tracking) {
+        const onFocusOut = (event: FocusEvent) => {
+            if (!tracking || getIsTextEntryTarget(event.relatedTarget)) {
                 return;
             }
 
@@ -235,10 +276,103 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
             apply(CLOSED);
         };
 
+        const handOver = (field: HTMLElement) => {
+            removeAnchor();
+            field.focus({preventScroll: true});
+
+            if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
+                const {length} = field.value;
+                field.setSelectionRange(length, length);
+            }
+
+            suppressClicksUntil = performance.now() + SUPPRESS_CLICK_MS;
+        };
+
+        const onPointerDown = (event: Event) => {
+            const target = event.target;
+            if (!(target instanceof Element) || !sheetSelector || !target.closest(sheetSelector)) {
+                return;
+            }
+
+            const field = target.closest('input, textarea, [contenteditable]');
+            if (!(field instanceof HTMLElement) || !getIsTextEntryTarget(field)) {
+                return;
+            }
+
+            const known = readKnownKeyboardHeight();
+            if (!known || getIsKeyboardShown() || anchor) {
+                return;
+            }
+
+            if (field.getBoundingClientRect().bottom <= window.innerHeight - known) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            suppressClicksUntil = Number.POSITIVE_INFINITY;
+
+            anchor = createAnchor();
+            document.body.appendChild(anchor);
+            anchor.focus({preventScroll: true});
+
+            let stableFrames = 0;
+            let lastHeight = 0;
+
+            const settle = () => {
+                if (!anchor) {
+                    return;
+                }
+
+                const isSteady = viewport.height === lastHeight;
+                lastHeight = viewport.height;
+                const isVisible = field.getBoundingClientRect().bottom <= viewport.height + 1;
+                stableFrames = isSteady && isVisible ? stableFrames + 1 : 0;
+
+                if (stableFrames >= HANDOVER_STABLE_FRAMES) {
+                    handOver(field);
+                    return;
+                }
+
+                handoverFrame = window.requestAnimationFrame(settle);
+            };
+
+            const onKeyboardShown = () => {
+                if (!getIsKeyboardShown()) {
+                    return;
+                }
+
+                viewport.removeEventListener('resize', onKeyboardShown);
+                settle();
+            };
+
+            viewport.addEventListener('resize', onKeyboardShown);
+            handoverTimer = window.setTimeout(() => {
+                viewport.removeEventListener('resize', onKeyboardShown);
+                handOver(field);
+            }, HANDOVER_WAIT_MS);
+        };
+
+        const onSyntheticClick = (event: Event) => {
+            if (performance.now() > suppressClicksUntil) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        };
+
         document.addEventListener('focusin', onFocusIn, true);
         document.addEventListener('focusout', onFocusOut, true);
+        document.addEventListener('pointerdown', onPointerDown, true);
+        document.addEventListener('mousedown', onSyntheticClick, true);
+        document.addEventListener('click', onSyntheticClick, true);
 
         return () => {
+            removeAnchor();
+            document.removeEventListener('pointerdown', onPointerDown, true);
+            document.removeEventListener('mousedown', onSyntheticClick, true);
+            document.removeEventListener('click', onSyntheticClick, true);
             window.clearTimeout(guard);
             window.clearTimeout(syncFallback);
             observer?.disconnect();
