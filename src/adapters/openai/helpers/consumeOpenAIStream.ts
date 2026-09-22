@@ -7,7 +7,6 @@ import {contentPartsToMessageContent} from './contentPartsToMessageContent';
 import {getOpenAIMessageItemIdFromOutputItemAdded} from './getOpenAIMessageItemIdFromOutputItemAdded';
 import {getStreamEndResult} from './getStreamEndResult';
 import {getStreamEventContentUpdate} from './getStreamEventContentUpdate';
-import {isMessageOutputItemDoneEvent} from './isMessageOutputItemDoneEvent';
 import {isStreamEndOrErrorEvent} from './isStreamEndOrErrorEvent';
 
 function waitForNextTask(): Promise<void> {
@@ -20,11 +19,10 @@ function shouldYieldAfterUpdate(update: ReturnType<typeof getStreamEventContentU
 
 export type ConsumeStreamCallbacks = {
     baseMessages: TChatMessage[];
-    getAssistantMessageId: (index: number) => string;
+    getAssistantMessageId: () => string;
     /** When the API sends `response.output_item.added` for a message, exposes OpenAI item id (e.g. msg-cc-…) for reactions. */
     onAssistantMessageIdResolved?: (previousId: string, openaiItemId: string) => void;
     onContentUpdate: (messageId: string, content: TAssistantMessage['content']) => void;
-    onNewMessage: (messageId: string) => void;
     onEnd: (finalMessages: TChatMessage[], status: 'done' | 'error', error?: Error) => void;
     getIsCancelled: () => boolean;
 };
@@ -40,14 +38,12 @@ export async function consumeOpenAIStream(
         getAssistantMessageId,
         onAssistantMessageIdResolved,
         onContentUpdate,
-        onNewMessage,
         onEnd,
         getIsCancelled,
     } = callbacks;
 
-    const completedAssistantMessages: {id: string; content: TAssistantMessage['content']}[] = [];
-    let messageIndex = 0;
-    let currentAssistantMessageId = getAssistantMessageId(0);
+    let currentAssistantMessageId = getAssistantMessageId();
+    let assistantMessageItemIdResolved = false;
     let contentParts: TMessageContentUnion[] = [];
 
     const applyContentToCurrentMessage = (parts: TMessageContentUnion[]) => {
@@ -55,24 +51,31 @@ export async function consumeOpenAIStream(
         onContentUpdate(currentAssistantMessageId, contentPartsToMessageContent(parts));
     };
 
+    const resolveAssistantMessageId = (openaiMessageItemId: string) => {
+        if (assistantMessageItemIdResolved) return;
+        assistantMessageItemIdResolved = true;
+        if (openaiMessageItemId === currentAssistantMessageId) return;
+
+        const previousId = currentAssistantMessageId;
+        currentAssistantMessageId = openaiMessageItemId;
+        if (!getIsCancelled()) {
+            onAssistantMessageIdResolved?.(previousId, openaiMessageItemId);
+        }
+    };
+
     try {
         for await (const event of stream) {
             if (getIsCancelled()) return;
 
             const openaiMessageItemId = getOpenAIMessageItemIdFromOutputItemAdded(event);
-            if (openaiMessageItemId && openaiMessageItemId !== currentAssistantMessageId) {
-                const previousId = currentAssistantMessageId;
-                currentAssistantMessageId = openaiMessageItemId;
-                if (!getIsCancelled()) {
-                    onAssistantMessageIdResolved?.(previousId, openaiMessageItemId);
-                }
+            if (openaiMessageItemId) {
+                resolveAssistantMessageId(openaiMessageItemId);
                 continue;
             }
 
             if (isStreamEndOrErrorEvent(event)) {
                 const finalMessages = buildFinalMessages({
                     baseMessages,
-                    completedAssistantMessages,
                     currentAssistantMessageId,
                     contentParts,
                 });
@@ -84,19 +87,6 @@ export async function consumeOpenAIStream(
                     endResult.status === 'error' ? endResult.error : undefined,
                 );
                 return;
-            }
-
-            if (isMessageOutputItemDoneEvent(event)) {
-                completedAssistantMessages.push({
-                    id: currentAssistantMessageId,
-                    content: contentPartsToMessageContent(contentParts),
-                });
-                messageIndex += 1;
-                currentAssistantMessageId = getAssistantMessageId(messageIndex);
-                contentParts = [];
-                if (getIsCancelled()) return;
-                onNewMessage(currentAssistantMessageId);
-                continue;
             }
 
             const update = getStreamEventContentUpdate(event);
@@ -116,7 +106,6 @@ export async function consumeOpenAIStream(
         if (!getIsCancelled()) {
             const finalMessages = buildFinalMessages({
                 baseMessages,
-                completedAssistantMessages,
                 currentAssistantMessageId,
                 contentParts,
             });
@@ -126,7 +115,6 @@ export async function consumeOpenAIStream(
         if (!getIsCancelled()) {
             const finalMessages = buildFinalMessages({
                 baseMessages,
-                completedAssistantMessages,
                 currentAssistantMessageId,
                 contentParts,
             });
