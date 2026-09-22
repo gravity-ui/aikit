@@ -331,9 +331,7 @@ export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): She
 
             event.preventDefault();
             event.stopImmediatePropagation();
-            // Until the focus is handed over: the click of this very tap must not reach the field
-            // before the sheet has risen, and the keyboard decides when that is.
-            suppressClicksUntil = Number.POSITIVE_INFINITY;
+            suppressClicksUntil = performance.now() + SUPPRESS_CLICK_MS;
 
             anchor = createAnchor();
             document.body.appendChild(anchor);
