@@ -26,7 +26,7 @@ $sheet-max-content-height-coefficient: 0.9;
 @mixin sheet-keyboard-fit-content {
     display: flex;
     flex-direction: column;
-    height: calc(
+    max-height: calc(
         var(--g-aikit-sheet-visible-height, 100%) *
             #{$sheet-max-content-height-coefficient} - var(--_--top-height, 20px)
     );
