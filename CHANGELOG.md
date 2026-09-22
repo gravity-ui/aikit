@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.21.2](https://github.com/gravity-ui/aikit/compare/v2.21.1...v2.21.2) (2026-09-22)
+
+
+### Bug Fixes
+
+* **History,ChatContainer:** keep the history sheet above the on-screen keyboard ([#259](https://github.com/gravity-ui/aikit/issues/259)) ([034b3d0](https://github.com/gravity-ui/aikit/commit/034b3d0a93dca7e6eccd609f9cac043835badb10))
+
 ## [2.21.1](https://github.com/gravity-ui/aikit/compare/v2.21.0...v2.21.1) (2026-09-22)
 
 
