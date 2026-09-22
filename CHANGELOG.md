@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.21.3](https://github.com/gravity-ui/aikit/compare/v2.21.2...v2.21.3) (2026-09-22)
+
+
+### Bug Fixes
+
+* **ChatContainer:** keep following the keyboard when focus is empty ([#261](https://github.com/gravity-ui/aikit/issues/261)) ([34805c7](https://github.com/gravity-ui/aikit/commit/34805c7ae0d969ed363d9e282cb1f0d821a0fcac))
+
 ## [2.21.2](https://github.com/gravity-ui/aikit/compare/v2.21.1...v2.21.2) (2026-09-22)
 
 
