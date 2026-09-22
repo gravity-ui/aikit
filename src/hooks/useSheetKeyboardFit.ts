@@ -6,9 +6,13 @@ export const SHEET_VISIBLE_BOTTOM_VAR = '--g-aikit-sheet-visible-bottom';
 
 export const SHEET_VISIBLE_HEIGHT_VAR = '--g-aikit-sheet-visible-height';
 
+const SHEET_MARGIN_BOX_SELECTOR = '.g-sheet-content-area__margin-box';
+
 const KEYBOARD_HEIGHT_STORAGE_PREFIX = 'g-aikit-sheet-keyboard-height';
 
 const PREDICT_GUARD_MS = 500;
+
+const SYNC_FALLBACK_MS = 400;
 
 export interface SheetKeyboardMetrics {
     viewportHeight: number;
@@ -89,15 +93,13 @@ function writeKnownKeyboardHeight(height: number) {
     }
 }
 
-function writeCustomProperties(fit: SheetKeyboardFit) {
+function writeVar(name: string, value: number | undefined) {
     const {style} = document.documentElement;
 
-    if (fit.isKeyboardOpen) {
-        style.setProperty(SHEET_VISIBLE_BOTTOM_VAR, `${fit.visibleBottom}px`);
-        style.setProperty(SHEET_VISIBLE_HEIGHT_VAR, `${fit.visibleHeight}px`);
+    if (value === undefined) {
+        style.removeProperty(name);
     } else {
-        style.removeProperty(SHEET_VISIBLE_BOTTOM_VAR);
-        style.removeProperty(SHEET_VISIBLE_HEIGHT_VAR);
+        style.setProperty(name, `${value}px`);
     }
 }
 
@@ -108,8 +110,18 @@ function writeCustomProperties(fit: SheetKeyboardFit) {
  * keyboard is remembered per screen size, so the sheet rises together with the keyboard instead of
  * jumping once it has finished sliding in. The first time on a screen there is nothing to predict,
  * so the fit is applied when the visual viewport settles, and the height is remembered for later.
+ *
+ * Two things move the sheet: the cap on its content, which uikit answers by resizing and
+ * translating the window from its `ResizeObserver`, and the height of the root, which sets the
+ * bottom edge. Both are animated, so they have to start in the same frame - otherwise the window
+ * hangs off the top of the screen for as long as the browser holds the observer back (Safari does
+ * that for ~150ms while the keyboard slides in). The root height is therefore written from a
+ * `ResizeObserver` on the same box uikit watches, which is delivered in the same frame.
+ *
+ * @param enabled - disables tracking (e.g. while the sheet is closed or outside mobile mode)
+ * @param sheetSelector - selector of the sheet root, used to find the content box uikit observes
  */
-export function useSheetKeyboardFit(enabled = true): SheetKeyboardFit {
+export function useSheetKeyboardFit(enabled = true, sheetSelector?: string): SheetKeyboardFit {
     const [fit, setFit] = useState<SheetKeyboardFit>(CLOSED);
 
     useEffect(() => {
@@ -121,9 +133,32 @@ export function useSheetKeyboardFit(enabled = true): SheetKeyboardFit {
 
         let tracking = false;
         let guard = 0;
+        let syncFallback = 0;
+        let desired: SheetKeyboardFit = CLOSED;
+
+        const writeBottom = () => {
+            window.clearTimeout(syncFallback);
+            syncFallback = 0;
+            writeVar(SHEET_VISIBLE_BOTTOM_VAR, desired.visibleBottom);
+        };
+
+        const box =
+            typeof ResizeObserver === 'undefined' || !sheetSelector
+                ? null
+                : document.querySelector(`${sheetSelector} ${SHEET_MARGIN_BOX_SELECTOR}`);
+        let observer: ResizeObserver | null = null;
+        if (box) {
+            observer = new ResizeObserver(writeBottom);
+            observer.observe(box);
+        }
 
         const apply = (next: SheetKeyboardFit) => {
-            writeCustomProperties(next);
+            const isCapChanging =
+                next.isKeyboardOpen !== desired.isKeyboardOpen ||
+                next.visibleHeight !== desired.visibleHeight;
+
+            desired = next;
+            writeVar(SHEET_VISIBLE_HEIGHT_VAR, next.visibleHeight);
             setFit((prev) =>
                 prev.isKeyboardOpen === next.isKeyboardOpen &&
                 prev.visibleBottom === next.visibleBottom &&
@@ -131,6 +166,14 @@ export function useSheetKeyboardFit(enabled = true): SheetKeyboardFit {
                     ? prev
                     : next,
             );
+
+            if (!observer || !isCapChanging) {
+                writeBottom();
+                return;
+            }
+
+            window.clearTimeout(syncFallback);
+            syncFallback = window.setTimeout(writeBottom, SYNC_FALLBACK_MS);
         };
 
         const measure = () => {
@@ -197,13 +240,16 @@ export function useSheetKeyboardFit(enabled = true): SheetKeyboardFit {
 
         return () => {
             window.clearTimeout(guard);
+            window.clearTimeout(syncFallback);
+            observer?.disconnect();
             document.removeEventListener('focusin', onFocusIn, true);
             document.removeEventListener('focusout', onFocusOut, true);
             viewport.removeEventListener('resize', measure);
             viewport.removeEventListener('scroll', measure);
-            writeCustomProperties(CLOSED);
+            writeVar(SHEET_VISIBLE_BOTTOM_VAR, undefined);
+            writeVar(SHEET_VISIBLE_HEIGHT_VAR, undefined);
         };
-    }, [enabled]);
+    }, [enabled, sheetSelector]);
 
     return fit;
 }

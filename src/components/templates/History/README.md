@@ -395,12 +395,12 @@ The search field raises the on-screen keyboard, and mobile browsers keep the lay
 full height while it is open - iOS Safari always, Chrome and Firefox under the
 `interactive-widget=resizes-visual` default. A uikit `Sheet` is measured against that viewport and
 pins its window to the bottom of it, so the sheet ends up below the keyboard with only the search
-field left on screen. The sheet is refitted on input into the search field, not while the keyboard
-opens - the opening is left to the browser, so the sheet does not jump. On the first keystroke its
-root is cut to `--g-aikit-sheet-visible-bottom` and its content is capped to
-`--g-aikit-sheet-visible-height`, both published on the document element, and the sheet ends where
-the keyboard starts. Every further keystroke refits it, and the search field stays put while the
-chat list scrolls under it.
+field left on screen. On the focus of the search field the sheet is fitted to the area the keyboard
+is about to leave: its content is capped to `--g-aikit-sheet-visible-height` and its root is cut to
+`--g-aikit-sheet-visible-bottom`, both published on the document element, so the sheet rises
+together with the keyboard instead of jumping after it. The height of the keyboard is remembered
+per screen size; the first time on a screen the fit waits for the visual viewport to settle. The
+search field stays put while the chat list scrolls under it.
 
 ```css
 /* Example: Custom dimensions */

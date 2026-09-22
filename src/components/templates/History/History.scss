@@ -121,11 +121,9 @@ $block: '.#{variables.$ns}history';
     }
 
     &__sheet {
-        transition: height 0.3s ease;
-    }
-
-    &__sheet#{$block}__sheet_keyboard-open {
         @include mixins.sheet-keyboard-fit-root;
+
+        transition: height 0.3s ease;
     }
 
     &__sheet-content#{$block}__sheet-content_keyboard-open {
