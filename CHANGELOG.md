@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.21.1](https://github.com/gravity-ui/aikit/compare/v2.21.0...v2.21.1) (2026-09-22)
+
+
+### Bug Fixes
+
+* **PromptInput:** place caret at end on initial focus ([#237](https://github.com/gravity-ui/aikit/issues/237)) ([17d6d13](https://github.com/gravity-ui/aikit/commit/17d6d131a50cb35be375da8b68b0e7673897763f))
+
 ## [2.21.0](https://github.com/gravity-ui/aikit/compare/v2.20.2...v2.21.0) (2026-09-18)
 
 
