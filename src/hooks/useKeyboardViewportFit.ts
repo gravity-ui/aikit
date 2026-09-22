@@ -197,7 +197,8 @@ export function useKeyboardViewportFit(
                 return;
             }
 
-            if (!container.contains(document.activeElement)) {
+            const active = document.activeElement;
+            if (active && active !== document.body && !container.contains(active)) {
                 setFit((prev) => (prev.isKeyboardOpen ? CLOSED : prev));
                 return;
             }
