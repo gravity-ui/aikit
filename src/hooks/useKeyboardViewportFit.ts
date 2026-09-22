@@ -197,12 +197,7 @@ export function useKeyboardViewportFit(
                 return;
             }
 
-            // A keyboard raised by a field outside the container - the search input of a sheet
-            // above the chat - is not the container's business. An empty focus is: the field that
-            // raised the keyboard can be remounted away (sending a message does that), and the
-            // keyboard stays until the browser takes it down.
-            const active = document.activeElement;
-            if (active && active !== document.body && !container.contains(active)) {
+            if (!container.contains(document.activeElement)) {
                 setFit((prev) => (prev.isKeyboardOpen ? CLOSED : prev));
                 return;
             }
