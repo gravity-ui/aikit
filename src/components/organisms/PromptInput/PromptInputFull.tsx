@@ -49,6 +49,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         minRows = 1,
         maxRows = 15,
         autoFocus = false,
+        disabledInput = false,
         inputRef,
         qa: bodyQa,
     } = bodyProps;
@@ -73,7 +74,8 @@ export function PromptInputFull(props: PromptInputFullProps) {
         qa: footerQa,
     } = footerProps;
 
-    const {value, submitButtonState, handleChange, handleKeyDown, handleSubmit} = hookState;
+    const {value, submitButtonState, isInputDisabled, handleChange, handleKeyDown, handleSubmit} =
+        hookState;
 
     const shouldShowHeader = topContent || contextItems.length > 0 || showContextIndicator;
 
@@ -98,6 +100,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                 minRows={minRows}
                 maxRows={maxRows}
                 autoFocus={autoFocus}
+                disabledInput={isInputDisabled || disabledInput}
                 ref={inputRef}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
