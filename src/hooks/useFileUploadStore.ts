@@ -33,7 +33,7 @@ export type UseFileUploadStoreReturn<Meta = {id: string; name: string}> = {
     uploadedMetas: Meta[];
 };
 
-function createFileId(sequence: number): string {
+function createFileId({sequence}: {sequence: number}): string {
     return `file-${sequence}`;
 }
 
@@ -70,7 +70,7 @@ export function useFileUploadStore<Meta = {id: string; name: string}>(
             const filesToUpload = files.slice(0, remaining).map((file) => {
                 idCounterRef.current += 1;
 
-                return {id: createFileId(idCounterRef.current), file};
+                return {id: createFileId({sequence: idCounterRef.current}), file};
             });
 
             if (filesToUpload.length === 0) return;
