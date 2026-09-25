@@ -33,6 +33,10 @@ export interface SubmitButtonProps {
      */
     size?: ButtonButtonProps['size'];
     /**
+     * Force the button into a disabled state
+     */
+    disabled?: ButtonButtonProps['disabled'];
+    /**
      * Custom tooltip for enabled state
      */
     tooltipSend?: string;
@@ -66,6 +70,7 @@ export function SubmitButton({
     state,
     className,
     size: sizeProp,
+    disabled = false,
     tooltipSend,
     tooltipCancel,
     cancelableText,
@@ -75,17 +80,21 @@ export function SubmitButton({
     const iconSize = getControlIconSize(size);
     const isCancelable = state === 'cancelable';
     const isLoading = state === 'loading';
-    const isDisabled = state === 'disabled';
+    const isDisabled = disabled || state === 'disabled';
     const handleClick = useCallback(async () => {
-        if (['enabled', 'cancelable'].includes(state)) {
+        if (!disabled && ['enabled', 'cancelable'].includes(state)) {
             return onClick();
         }
 
         return Promise.resolve();
-    }, [state, onClick]);
+    }, [disabled, state, onClick]);
 
     // Get tooltip based on state
     const getTooltipTitle = (): string | undefined => {
+        if (disabled) {
+            return undefined;
+        }
+
         switch (state) {
             case 'enabled':
                 return tooltipSend || i18n('tooltip-send');

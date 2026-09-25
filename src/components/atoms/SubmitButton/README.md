@@ -41,6 +41,7 @@ const [state, setState] = useState<'enabled' | 'disabled' | 'loading' | 'cancela
 | `state`     | `'enabled' \| 'disabled' \| 'loading' \| 'cancelable'` | Yes      | -                            | Button state                               |
 | `className` | `string`                                               | No       | -                            | Additional CSS class                       |
 | `size`      | `ButtonButtonProps['size']`                            | No       | `'m'` desktop, `'xl'` mobile | Button size; icon size follows (`16`/`20`) |
+| `disabled`  | `boolean`                                              | No       | `false`                      | Force the button into a disabled state     |
 | `qa`        | `string`                                               | No       | -                            | QA/test identifier                         |
 
 ## States

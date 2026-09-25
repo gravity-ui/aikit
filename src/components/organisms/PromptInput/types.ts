@@ -93,8 +93,7 @@ export type PromptInputFooterConfig = {
     /** Size of footer action buttons */
     buttonSize?: ButtonButtonProps['size'];
     /** Props for the submit button. State, click handling, and size are managed by PromptInput. */
-    submitButtonProps?: Omit<SubmitButtonProps, 'state' | 'onClick' | 'size'> &
-        Pick<ButtonButtonProps, 'disabled'>;
+    submitButtonProps?: Omit<SubmitButtonProps, 'state' | 'onClick' | 'size'>;
     /** Custom content for footer area (SubmitButton will still be shown) */
     bottomContent?: ReactNode;
     /** Show settings icon in footer */

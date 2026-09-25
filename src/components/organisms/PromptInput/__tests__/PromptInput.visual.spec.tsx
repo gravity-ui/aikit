@@ -190,8 +190,13 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
                 />,
             );
 
-            await expect(page.getByRole('textbox')).toBeEnabled();
+            const textbox = page.getByRole('textbox');
+
+            await expect(textbox).toBeEnabled();
             await expect(page.getByRole('button')).toBeDisabled();
+
+            await textbox.press('Enter');
+            await expect(textbox).toHaveValue('');
         });
     }
 });

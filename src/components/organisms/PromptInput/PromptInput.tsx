@@ -84,7 +84,7 @@ export function PromptInput(props: PromptInputProps) {
         onSend,
         onCancel,
         initialValue,
-        disabled: disabled || footerProps?.submitButtonProps?.disabled,
+        disabled,
         status,
         maxLength,
         onValueChange,
