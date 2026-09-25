@@ -179,5 +179,24 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
 
             await expect(page.getByRole('textbox')).toBeDisabled();
         });
+
+        test(`should disable ${view} submit button through footer props`, async ({mount, page}) => {
+            await mount(
+                <PromptInput
+                    view={view}
+                    initialValue="Ready to send"
+                    onSend={async () => {}}
+                    footerProps={{submitButtonProps: {disabled: true}}}
+                />,
+            );
+
+            const textbox = page.getByRole('textbox');
+
+            await expect(textbox).toBeEnabled();
+            await expect(page.getByRole('button')).toBeDisabled();
+
+            await textbox.press('Enter');
+            await expect(textbox).toHaveValue('');
+        });
     }
 });
