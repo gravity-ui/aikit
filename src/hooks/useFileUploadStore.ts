@@ -33,6 +33,10 @@ export type UseFileUploadStoreReturn<Meta = {id: string; name: string}> = {
     uploadedMetas: Meta[];
 };
 
+function createFileId({sequence}: {sequence: number}): string {
+    return `file-${sequence}`;
+}
+
 /**
  * State machine for managing the file upload lifecycle.
  * The consumer provides an `upload` function — this hook never calls any API directly.
@@ -43,76 +47,81 @@ export function useFileUploadStore<Meta = {id: string; name: string}>(
     const optionsRef = useRef(options);
     optionsRef.current = options;
 
+    // `entries` is stored in state so that changes trigger a re-render.
+    // `entriesRef` stores the latest value synchronously so that multiple calls before the next
+    // render correctly account for already added files and respect `maxFiles`.
     const [entries, setEntries] = useState<FileUploadEntry<Meta>[]>([]);
+    const entriesRef = useRef<FileUploadEntry<Meta>[]>([]);
+    const applyEntriesUpdate = useCallback(
+        (updater: (current: FileUploadEntry<Meta>[]) => FileUploadEntry<Meta>[]) => {
+            const nextEntries = updater(entriesRef.current);
+            entriesRef.current = nextEntries;
+            setEntries(nextEntries);
+        },
+        [],
+    );
     const idCounterRef = useRef(0);
-    const nextId = useCallback((): string => {
-        idCounterRef.current += 1;
-        return `file-${idCounterRef.current}`;
-    }, []);
 
     const addFiles = useCallback(
         (files: File[]) => {
             const {upload: up, withoutApply: wa, onUpload: ou, maxFiles: mf} = optionsRef.current;
+            const remaining =
+                mf === undefined ? files.length : Math.max(0, mf - entriesRef.current.length);
+            const filesToUpload = files.slice(0, remaining).map((file) => {
+                idCounterRef.current += 1;
 
-            const pending: {id: string; file: File}[] = [];
-            const filesToUpload: {id: string; file: File}[] = [];
-
-            setEntries((prev) => {
-                const remaining = mf === undefined ? files.length : Math.max(0, mf - prev.length);
-                const sliced = files.slice(0, remaining);
-
-                for (const file of sliced) {
-                    const id = nextId();
-                    pending.push({id, file});
-                }
-
-                return [
-                    ...prev,
-                    ...pending.map(({id, file}) => ({status: 'pending' as const, id, file})),
-                ];
+                return {id: createFileId({sequence: idCounterRef.current}), file};
             });
 
-            if (pending.length === 0) return;
+            if (filesToUpload.length === 0) return;
+
+            applyEntriesUpdate((current) => [
+                ...current,
+                ...filesToUpload.map(({id, file}) => ({status: 'pending' as const, id, file})),
+            ]);
 
             if (wa) {
-                ou?.(pending.map((e) => e.file));
+                ou?.(filesToUpload.map((entry) => entry.file));
                 return;
             }
 
-            filesToUpload.push(...pending);
-
             for (const {id, file} of filesToUpload) {
-                setEntries((prev) =>
-                    prev.map((e) => (e.id === id ? {status: 'uploading' as const, id, file} : e)),
+                applyEntriesUpdate((current) =>
+                    current.map((e) =>
+                        e.id === id ? {status: 'uploading' as const, id, file} : e,
+                    ),
                 );
 
                 up(file)
                     .then((meta) => {
-                        setEntries((prev) =>
-                            prev.map((e) =>
+                        applyEntriesUpdate((current) =>
+                            current.map((e) =>
                                 e.id === id ? {status: 'done' as const, id, file, meta} : e,
                             ),
                         );
                     })
                     .catch((error) => {
-                        setEntries((prev) =>
-                            prev.map((e) =>
+                        applyEntriesUpdate((current) =>
+                            current.map((e) =>
                                 e.id === id ? {status: 'error' as const, id, file, error} : e,
                             ),
                         );
                     });
             }
         },
-        [nextId],
+        [applyEntriesUpdate],
     );
 
-    const removeFile = useCallback((id: string) => {
-        setEntries((prev) => prev.filter((e) => e.id !== id));
-    }, []);
+    const removeFile = useCallback(
+        (id: string) => {
+            applyEntriesUpdate((current) => current.filter((entry) => entry.id !== id));
+        },
+        [applyEntriesUpdate],
+    );
 
     const reset = useCallback(() => {
-        setEntries([]);
-    }, []);
+        applyEntriesUpdate(() => []);
+    }, [applyEntriesUpdate]);
 
     const isLoading = entries.some((e) => e.status === 'uploading');
     const uploadedMetas = entries
