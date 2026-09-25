@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.22.0](https://github.com/gravity-ui/aikit/compare/v2.21.3...v2.22.0) (2026-09-25)
+
+
+### Features
+
+* **PromptInput:** support disabled body input ([#266](https://github.com/gravity-ui/aikit/issues/266)) ([fac4e4c](https://github.com/gravity-ui/aikit/commit/fac4e4c52669878d29d04a19055e938be11b5985))
+
+
+### Bug Fixes
+
+* **useFileUploadStore:** prepare files before state update (variant 2) ([#265](https://github.com/gravity-ui/aikit/issues/265)) ([80f930c](https://github.com/gravity-ui/aikit/commit/80f930c1d7ff5b5549fdcc044adb80216e229000))
+
 ## [2.21.3](https://github.com/gravity-ui/aikit/compare/v2.21.2...v2.21.3) (2026-09-22)
 
 
