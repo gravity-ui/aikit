@@ -1,5 +1,7 @@
 import {expect, test} from '~playwright/core';
 
+import {PromptInput} from '../PromptInput';
+
 import {PromptInputStories} from './helpersPlaywright';
 
 test.describe('PromptInput', {tag: '@PromptInput'}, () => {
@@ -164,4 +166,18 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
 
         await expectScreenshot();
     });
+
+    for (const view of ['simple', 'full'] as const) {
+        test(`should disable ${view} body textarea through body props`, async ({mount, page}) => {
+            await mount(
+                <PromptInput
+                    view={view}
+                    onSend={async () => {}}
+                    bodyProps={{disabledInput: true}}
+                />,
+            );
+
+            await expect(page.getByRole('textbox')).toBeDisabled();
+        });
+    }
 });

@@ -157,6 +157,7 @@ import {PromptInput} from '@gravity-ui/aikit';
 | `minRows`               | `number`                   | -        | `1`                                     | Minimum number of textarea rows             |
 | `maxRows`               | `number`                   | -        | `15`                                    | Maximum number of textarea rows             |
 | `autoFocus`             | `boolean`                  | -        | `false`                                 | Auto focus textarea on mount                |
+| `disabledInput`         | `boolean`                  | -        | `false`                                 | Disabled state for textarea                 |
 | `autoFocusOnNewChat`    | `boolean`                  | -        | `false`                                 | Auto focus textarea when a new chat is open |
 | `autoFocusOnChatSelect` | `boolean`                  | -        | `false`                                 | Auto focus textarea when a chat is selected |
 
