@@ -33,6 +33,10 @@ export type UseFileUploadStoreReturn<Meta = {id: string; name: string}> = {
     uploadedMetas: Meta[];
 };
 
+function createFileId(sequence: number): string {
+    return `file-${sequence}`;
+}
+
 /**
  * State machine for managing the file upload lifecycle.
  * The consumer provides an `upload` function — this hook never calls any API directly.
@@ -57,20 +61,17 @@ export function useFileUploadStore<Meta = {id: string; name: string}>(
         [],
     );
     const idCounterRef = useRef(0);
-    const nextId = useCallback((): string => {
-        idCounterRef.current += 1;
-        return `file-${idCounterRef.current}`;
-    }, []);
 
     const addFiles = useCallback(
         (files: File[]) => {
             const {upload: up, withoutApply: wa, onUpload: ou, maxFiles: mf} = optionsRef.current;
             const remaining =
                 mf === undefined ? files.length : Math.max(0, mf - entriesRef.current.length);
-            const filesToUpload = files.slice(0, remaining).map((file) => ({
-                id: nextId(),
-                file,
-            }));
+            const filesToUpload = files.slice(0, remaining).map((file) => {
+                idCounterRef.current += 1;
+
+                return {id: createFileId(idCounterRef.current), file};
+            });
 
             if (filesToUpload.length === 0) return;
 
@@ -108,7 +109,7 @@ export function useFileUploadStore<Meta = {id: string; name: string}>(
                     });
             }
         },
-        [applyEntriesUpdate, nextId],
+        [applyEntriesUpdate],
     );
 
     const removeFile = useCallback(
