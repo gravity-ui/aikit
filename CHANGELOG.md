@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.22.1](https://github.com/gravity-ui/aikit/compare/v2.22.0...v2.22.1) (2026-09-29)
+
+
+### Bug Fixes
+
+* **History:** trap the keyboard focus inside the desktop popup ([#250](https://github.com/gravity-ui/aikit/issues/250)) ([a43f33d](https://github.com/gravity-ui/aikit/commit/a43f33dbae1909e605291fe50f61a03bbadcfc90))
+
 ## [2.22.0](https://github.com/gravity-ui/aikit/compare/v2.21.3...v2.22.0) (2026-09-25)
 
 
