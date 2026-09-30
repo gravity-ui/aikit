@@ -167,6 +167,39 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await expectScreenshot();
     });
 
+    test('should return the focus to the textarea once the answer is submitted', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<PromptInputStories.SubmittedThenReady />);
+
+        const textarea = page.getByRole('textbox');
+        await textarea.fill('Hello');
+        await textarea.press('Enter');
+
+        await expect(textarea).toBeDisabled();
+        await expect(textarea).toBeEnabled();
+        await expect(textarea).toBeFocused();
+    });
+
+    test('should keep the focus where the user moved it while the textarea was disabled', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<PromptInputStories.SubmittedThenReady />);
+
+        const textarea = page.getByRole('textbox');
+        await textarea.fill('Hello');
+        await textarea.press('Enter');
+        await expect(textarea).toBeDisabled();
+
+        const attachmentButton = page.locator('.g-aikit-prompt-input-footer__action-button');
+        await attachmentButton.focus();
+
+        await expect(textarea).toBeEnabled();
+        await expect(attachmentButton).toBeFocused();
+    });
+
     for (const view of ['simple', 'full'] as const) {
         test(`should disable ${view} body textarea through body props`, async ({mount, page}) => {
             await mount(

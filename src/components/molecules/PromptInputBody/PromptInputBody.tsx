@@ -1,7 +1,7 @@
-import {ReactNode, forwardRef, useRef} from 'react';
+import {ReactNode, forwardRef, useLayoutEffect, useRef} from 'react';
 
 import type {TextAreaProps} from '@gravity-ui/uikit';
-import {TextArea} from '@gravity-ui/uikit';
+import {TextArea, useForkRef} from '@gravity-ui/uikit';
 
 import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
@@ -86,6 +86,25 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
         const resolvedSize = useMobileControlSize(size, 'l', 'xl');
         const hasHandledInitialFocusRef = useRef(false);
         const pendingInitialPointerIdRef = useRef<number | null>(null);
+        const controlRef = useRef<HTMLTextAreaElement | null>(null);
+        const isFocusedRef = useRef(false);
+        const setControlRef = useForkRef(ref, controlRef);
+
+        useLayoutEffect(() => {
+            if (disabledInput || !isFocusedRef.current) {
+                return;
+            }
+
+            const textarea = controlRef.current;
+            const activeElement = textarea?.ownerDocument.activeElement;
+
+            // Do not pull the focus back if it has moved to another element in the meantime.
+            if (!textarea || (activeElement && activeElement !== textarea.ownerDocument.body)) {
+                return;
+            }
+
+            textarea.focus();
+        }, [disabledInput]);
 
         const handlePointerDown = (event: React.PointerEvent<HTMLTextAreaElement>) => {
             pendingInitialPointerIdRef.current =
@@ -110,6 +129,8 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
         };
 
         const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement>) => {
+            isFocusedRef.current = true;
+
             if (hasHandledInitialFocusRef.current) {
                 return;
             }
@@ -127,6 +148,17 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
             }
         };
 
+        const handleBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
+            // The browser blurs a focused element as soon as it becomes disabled. The input is
+            // only blocked while the answer is loading, so keep it marked as focused and take the
+            // focus back once it is enabled again instead of leaving the user on `document.body`.
+            if (event.currentTarget.disabled) {
+                return;
+            }
+
+            isFocusedRef.current = false;
+        };
+
         // If custom content is provided, render it
         if (children) {
             return (
@@ -140,7 +172,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
         return (
             <div className={b(null, className)} data-qa={qa}>
                 <TextArea
-                    controlRef={ref}
+                    controlRef={setControlRef}
                     size={resolvedSize}
                     value={value}
                     placeholder={placeholder}
@@ -150,6 +182,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
                     disabled={disabledInput}
                     onUpdate={onChange}
                     onFocus={handleFocus}
+                    onBlur={handleBlur}
                     onKeyDown={onKeyDown}
                     view="clear"
                     className={b('textarea')}

@@ -398,6 +398,34 @@ export const Streaming: Story = {
     decorators: defaultDecorators,
 };
 
+export const SubmittedThenReady: Story = {
+    render: (args) => {
+        const [status, setStatus] = useState<ChatStatus>('ready');
+
+        const handleSendSubmitted = async () => {
+            setStatus('submitted');
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setStatus('ready');
+        };
+
+        return (
+            <PromptInput
+                {...args}
+                view="full"
+                onSend={handleSendSubmitted}
+                status={status}
+                bodyProps={{
+                    placeholder: 'Plan, code, build and test anything',
+                }}
+                footerProps={{
+                    showAttachment: true,
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
 export const ComplexExample: Story = {
     render: (args) => {
         const [status, setStatus] = useState<ChatStatus>('ready');
