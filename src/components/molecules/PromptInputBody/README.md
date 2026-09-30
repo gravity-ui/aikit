@@ -9,7 +9,7 @@ A body component for prompt input that displays a textarea with auto-growing cap
 - **Maximum Length**: Optional character limit
 - **Custom Content**: Replace default textarea with any custom React content
 - **Keyboard Support**: Full keyboard event handling
-- **Focus Preservation**: A textarea that was focused when `disabledInput` turned on gets the focus back once it is enabled again, unless the focus has moved elsewhere in the meantime
+- **Focus Preservation**: A textarea that was focused when `disabledInput` turned on gets the focus back once it is enabled again, and a textarea mounted with `autoFocus` while already disabled takes the focus as soon as it is enabled — in both cases only while nothing else holds the focus
 
 ## Usage
 

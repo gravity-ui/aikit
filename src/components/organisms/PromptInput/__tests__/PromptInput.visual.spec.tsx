@@ -182,6 +182,16 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         await expect(textarea).toBeFocused();
     });
 
+    test('should apply autoFocus once the textarea stops being disabled', async ({mount, page}) => {
+        await mount(<PromptInputStories.AutoFocusWhileLoading />);
+
+        const textarea = page.getByRole('textbox');
+
+        await expect(textarea).toBeDisabled();
+        await expect(textarea).toBeEnabled();
+        await expect(textarea).toBeFocused();
+    });
+
     test('should keep the focus where the user moved it while the textarea was disabled', async ({
         mount,
         page,

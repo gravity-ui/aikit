@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {Xmark} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
@@ -419,6 +419,32 @@ export const SubmittedThenReady: Story = {
                 }}
                 footerProps={{
                     showAttachment: true,
+                }}
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const AutoFocusWhileLoading: Story = {
+    render: (args) => {
+        const [status, setStatus] = useState<ChatStatus>('submitted');
+
+        useEffect(() => {
+            const timeout = setTimeout(() => setStatus('ready'), 800);
+
+            return () => clearTimeout(timeout);
+        }, []);
+
+        return (
+            <PromptInput
+                {...args}
+                view="full"
+                onSend={handleSend}
+                status={status}
+                bodyProps={{
+                    autoFocus: true,
+                    placeholder: 'Plan, code, build and test anything',
                 }}
             />
         );

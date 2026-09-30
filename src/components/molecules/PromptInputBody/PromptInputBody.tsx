@@ -88,12 +88,18 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
         const pendingInitialPointerIdRef = useRef<number | null>(null);
         const controlRef = useRef<HTMLTextAreaElement | null>(null);
         const isFocusedRef = useRef(false);
+        // `autoFocus` does nothing for a textarea that is already disabled on mount, which is what
+        // happens when the input is remounted while an answer is still loading. Remember the
+        // request and honour it as soon as the textarea is enabled.
+        const awaitsAutoFocusRef = useRef(autoFocus && disabledInput);
         const setControlRef = useForkRef(ref, controlRef);
 
         useLayoutEffect(() => {
-            if (disabledInput || !isFocusedRef.current) {
+            if (disabledInput || !(isFocusedRef.current || awaitsAutoFocusRef.current)) {
                 return;
             }
+
+            awaitsAutoFocusRef.current = false;
 
             const textarea = controlRef.current;
             const activeElement = textarea?.ownerDocument.activeElement;
