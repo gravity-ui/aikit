@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.22.2](https://github.com/gravity-ui/aikit/compare/v2.22.1...v2.22.2) (2026-10-05)
+
+
+### Bug Fixes
+
+* **open-ai-adapter:** show assistant answer as one message ([#247](https://github.com/gravity-ui/aikit/issues/247)) ([0f53767](https://github.com/gravity-ui/aikit/commit/0f53767d9d3249f81638a5d705c903ffd96a144c))
+
 ## [2.22.1](https://github.com/gravity-ui/aikit/compare/v2.22.0...v2.22.1) (2026-09-29)
 
 
