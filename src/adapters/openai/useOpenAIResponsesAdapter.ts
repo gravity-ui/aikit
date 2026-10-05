@@ -1,9 +1,8 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 
-import type {TAssistantMessage, TChatMessage, TMessageContentUnion} from '../../types';
+import type {TAssistantMessage, TChatMessage} from '../../types';
 
 import {type ConsumeStreamCallbacks, consumeOpenAIStream} from './helpers/consumeOpenAIStream';
-import {contentPartsToMessageContent} from './helpers/contentPartsToMessageContent';
 import {fetchResponseToStreamEvents} from './helpers/fetchResponseToStreamEvents';
 import {isFetchResponse} from './helpers/isFetchResponse';
 import {openAIResponseToMessages} from './helpers/openAIResponseToMessages';
@@ -23,80 +22,9 @@ export type {
 
 /** Single non-streaming response → TChatMessage[]. For streaming use useOpenAIStreamAdapter. */
 
-function isToolPart(p: TMessageContentUnion): p is Extract<TMessageContentUnion, {type: 'tool'}> {
-    return p.type === 'tool';
-}
-
-/**
- * When the stream splits the reply into two consecutive assistant messages, the same tool call can
- * appear in both. Moves matching tool parts into the earlier segment and drops the duplicate from
- * the later one so the UI does not show orphaned repeats.
- *
- * @param messages - Chat messages (possibly with duplicate tool parts across adjacent assistants).
- * @returns A shallow-copied message list with orphan duplicates collapsed.
- */
-export function collapseOrphanToolBetweenAssistantSegments(
-    messages: TChatMessage[],
-): TChatMessage[] {
-    const result = messages.map((m) =>
-        m.role === 'assistant' ? ({...m} as TAssistantMessage) : m,
-    );
-
-    for (let i = result.length - 1; i >= 1; i--) {
-        const next = result[i] as TAssistantMessage;
-        const prev = result[i - 1] as TAssistantMessage;
-        if (prev.role !== 'assistant' || next.role !== 'assistant') {
-            continue;
-        }
-
-        const nextContent = next.content;
-        if (!Array.isArray(nextContent)) {
-            continue;
-        }
-
-        const prevContent = prev.content;
-        if (!Array.isArray(prevContent)) {
-            continue;
-        }
-
-        const updatedNextParts = [...nextContent] as TMessageContentUnion[];
-        let updatedPrevParts = [...prevContent] as TMessageContentUnion[];
-        let changed = false;
-
-        for (let t = updatedNextParts.length - 1; t >= 0; t--) {
-            const part = updatedNextParts[t];
-            if (!isToolPart(part) || !part.id) {
-                continue;
-            }
-            const pIdx = updatedPrevParts.findIndex((p) => isToolPart(p) && p.id === part.id);
-            if (pIdx < 0) {
-                continue;
-            }
-            updatedPrevParts = updatedPrevParts.map((p, j) => (j === pIdx ? part : p));
-            updatedNextParts.splice(t, 1);
-            changed = true;
-        }
-
-        if (!changed) {
-            continue;
-        }
-
-        result[i - 1] = {
-            ...prev,
-            content: contentPartsToMessageContent(updatedPrevParts),
-        };
-        result[i] = {
-            ...next,
-            content: contentPartsToMessageContent(updatedNextParts),
-        };
-    }
-
-    return result;
-}
-
 /**
  * Index of the assistant message that should receive streamed content for `messageId`.
- * Uses an exact id match when present; otherwise the last assistant (current streaming segment),
+ * Uses an exact id match when present; otherwise the last assistant (current streaming message),
  * which covers events that reference an id before our list has caught up.
  *
  * @param messages - Current chat messages while streaming.
@@ -208,13 +136,12 @@ export function useOpenAIStreamAdapter(
         };
 
         const baseMessages = initialMessagesRef.current;
-        const getAssistantMessageId = (index: number) =>
-            index === 0 ? assistantMessageId : `${assistantMessageId}-${index}`;
+        const getAssistantMessageId = () => assistantMessageId;
 
         setMessages([
             ...baseMessages,
             {
-                id: getAssistantMessageId(0),
+                id: getAssistantMessageId(),
                 role: 'assistant',
                 content: '',
             } as TAssistantMessage,
@@ -243,14 +170,12 @@ export function useOpenAIStreamAdapter(
             onAssistantMessageIdResolved: (previousId, openaiItemId) => {
                 if (cancelled) return;
                 setMessages((prev) =>
-                    collapseOrphanToolBetweenAssistantSegments(
-                        prev.map((msg): TChatMessage => {
-                            if (msg.id === previousId && msg.role === 'assistant') {
-                                return {...msg, id: openaiItemId} as TAssistantMessage;
-                            }
-                            return msg;
-                        }),
-                    ),
+                    prev.map((msg): TChatMessage => {
+                        if (msg.id === previousId && msg.role === 'assistant') {
+                            return {...msg, id: openaiItemId} as TAssistantMessage;
+                        }
+                        return msg;
+                    }),
                 );
             },
             onContentUpdate: (messageId, content) => {
@@ -258,34 +183,20 @@ export function useOpenAIStreamAdapter(
                 setMessages((prev) => {
                     const targetIndex = resolveStreamContentTargetIndex(prev, messageId);
                     if (targetIndex < 0) {
-                        return collapseOrphanToolBetweenAssistantSegments(prev);
+                        return prev;
                     }
-                    const mapped = prev.map((msg, i) => {
+                    return prev.map((msg, i) => {
                         if (i !== targetIndex) {
                             return msg;
                         }
                         return {...msg, content} as TAssistantMessage;
                     });
-                    return collapseOrphanToolBetweenAssistantSegments(mapped);
                 });
-            },
-            onNewMessage: (messageId) => {
-                if (cancelled) return;
-                setMessages((prev) => [
-                    ...prev,
-                    {
-                        id: messageId,
-                        role: 'assistant',
-                        content: '',
-                    } as TAssistantMessage,
-                ]);
             },
             onEnd: (finalMessages, s, err) => {
                 setStatus(s === 'done' ? 'ready' : s);
                 setError(err ?? null);
-                const normalized = injectUsageMetadata(
-                    collapseOrphanToolBetweenAssistantSegments(finalMessages),
-                );
+                const normalized = injectUsageMetadata(finalMessages);
                 if (!cancelled) {
                     setMessages(normalized);
                 }
