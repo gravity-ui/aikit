@@ -259,7 +259,8 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
 
 Enable the built-in [Gravity mascot](https://zaklepysh.website.yandexcloud.net/) with
 `showMascot`. The animated SVGs ship with AIKit and need no asset URLs or custom renderer.
-The mascot is disabled by default.
+The mascot is disabled by default. Its SVG renderer loads on demand when a built-in
+mascot first appears; a placeholder preserves the mascot's size while it loads.
 
 ```tsx
 <ChatContainer messages={messages} onSendMessage={handleSend} showMascot />
@@ -1325,6 +1326,9 @@ The built-in mascot source files live in `ChatContainer/assets/*.svg`. Run
 Generation also runs automatically during installation, type checking, linting,
 package builds, Storybook startup and Playwright runs. Published builds contain
 the generated JavaScript, so consumers do not need an SVG loader.
+The renderer and SVG components are imported dynamically, allowing browser bundlers
+to keep them in a separate chunk. Disabled mascots and custom renderers do not load
+that module.
 
 The component uses the `useChatContainer` hook for state management:
 

@@ -38,10 +38,6 @@ export const WithMascot: Story = {
     args: {
         welcomeConfig: {title: 'Mascot support', description: 'Type to see reading'},
         showMascot: true,
-        mascotConfig: {
-            sleepDelayMs: 5_000,
-            onceDurations: {done: 2_000},
-        },
     },
     decorators: defaultDecorators,
     render: (args) => <MascotChat {...args} />,

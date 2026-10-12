@@ -503,7 +503,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
     }) => {
         await mount(<MessageListStories.WithFooterContent />);
 
-        await expect(page.locator('[data-qa="test-mascot"]')).toBeVisible();
+        await expect(page.locator('[data-qa="test-mascot"] svg')).toBeVisible();
         const scroller = page.locator('[data-qa="message-list"]');
         expect(
             await scroller.evaluate((element) => element.scrollHeight <= element.clientHeight),
@@ -521,7 +521,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         const scroller = page.locator(VIRTUAL_SCROLLER);
         await expect(scroller).toBeVisible();
         await page.waitForTimeout(200);
-        await expect(page.locator('[data-qa="test-mascot"]')).toBeVisible();
+        await expect(page.locator('[data-qa="test-mascot"] svg')).toBeVisible();
         expect(await scroller.evaluate(distanceFromBottom)).toBeLessThan(10);
 
         const wrapperBox = await page.locator('.content-wrapper').boundingBox();

@@ -1,60 +1,29 @@
-import {useEffect, useId, useRef} from 'react';
+import {Suspense, lazy} from 'react';
 
 import type {MascotCollection, MascotState, MascotView} from '../../../types/mascot';
 import {block} from '../../../utils/cn';
 
-import {gravityMascotAssets} from './gravityMascotAssets';
-
 import './GravityMascot.scss';
 
 const b = block('chat-container');
-const chatAssets = {
-    ...gravityMascotAssets,
-    idle: gravityMascotAssets.chatIdle,
-    reading: gravityMascotAssets.chatReading,
-};
+const LazyGravityMascotRenderer = lazy(() =>
+    import('./GravityMascotRenderer.js').then(({GravityMascotRenderer}) => ({
+        default: GravityMascotRenderer,
+    })),
+);
 
-/** Internal renderer for the bundled Gravity mascot. */
-export function GravityMascot({
-    state,
-    view,
-    animated = true,
-}: {
+export interface GravityMascotProps {
     state: MascotState;
     view: MascotView;
     animated?: boolean;
-}) {
-    const instanceId = useId();
-    const ref = useRef<HTMLDivElement>(null);
-    const Asset =
-        view === 'hero'
-            ? gravityMascotAssets[state === 'reading' ? 'heroReading' : 'heroIdle']
-            : chatAssets[state];
+}
 
-    useEffect(() => {
-        const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const svg = ref.current?.querySelector('svg');
-        const update = () => {
-            // CSS handles CSS animations; SVG timelines also need to be paused for SMIL animations.
-            if (!animated || media.matches) {
-                svg?.pauseAnimations();
-            } else {
-                svg?.unpauseAnimations();
-            }
-        };
-        update();
-        media.addEventListener('change', update);
-        return () => media.removeEventListener('change', update);
-    }, [animated, state, view]);
-
+/** Internal renderer for the bundled Gravity mascot. */
+export function GravityMascot({state, view, animated = true}: GravityMascotProps) {
     return (
-        <div
-            ref={ref}
-            className={b('default-mascot', {view, animation: animated ? 'on' : 'off'})}
-            aria-hidden="true"
-        >
-            <Asset key={`${view}-${state}`} id={`g-aikit-zk-${instanceId}`} />
-        </div>
+        <Suspense fallback={<div className={b('default-mascot', {view})} aria-hidden="true" />}>
+            <LazyGravityMascotRenderer state={state} view={view} animated={animated} />
+        </Suspense>
     );
 }
 
