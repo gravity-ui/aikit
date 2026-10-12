@@ -1,0 +1,126 @@
+<!-- Gravity artwork from https://zaklepysh.website.yandexcloud.net/ -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-10 -10 141 80"
+    width="141"
+    height="80"
+    role="img"
+    class="g-aikit-zk-chatReading"
+    aria-label="Gravity mascot: chat reading"
+>
+    <defs>
+        <radialGradient
+            id="zk-chatReading"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--zk-b1, #ffff00)"
+            ></stop>
+            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-zk-chatReading-zk-eyes-x {
+            animation: g-aikit-zk-chatReading-heroReadX 2.6s ease-in-out infinite;
+        }
+        .g-aikit-zk-chatReading-zk-eyes-y {
+            animation: g-aikit-zk-chatReading-heroReadY 2.6s ease-in-out infinite;
+        }
+        @keyframes g-aikit-zk-chatReading-heroReadX {
+            0% {
+                transform: translateX(-3.4px);
+            }
+            22% {
+                transform: translateX(3.4px);
+            }
+            25% {
+                transform: translateX(-3.4px);
+            }
+            47% {
+                transform: translateX(3.4px);
+            }
+            50% {
+                transform: translateX(-3.4px);
+            }
+            72% {
+                transform: translateX(3.4px);
+            }
+            75% {
+                transform: translateX(-3.4px);
+            }
+            100% {
+                transform: translateX(-3.4px);
+            }
+        }
+        @keyframes g-aikit-zk-chatReading-heroReadY {
+            0%,
+            22% {
+                transform: translateY(4.2px);
+            }
+            25%,
+            47% {
+                transform: translateY(4.9px);
+            }
+            50%,
+            72% {
+                transform: translateY(5.6px);
+            }
+            75%,
+            100% {
+                transform: translateY(4.2px);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-zk-chatReading-zk-eyes-x,
+            .g-aikit-zk-chatReading-zk-eyes-y {
+                animation: none;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-zk-chatReading * {
+                animation: none;
+            }
+        }
+    </style>
+    <g>
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-chatReading)" />
+        <circle
+            cx="30.298"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--zk-eye, #ffffff)"
+        />
+        <circle
+            cx="90.897"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--zk-eye, #ffffff)"
+        />
+        <g class="g-aikit-zk-chatReading-zk-eyes-x">
+            <g class="g-aikit-zk-chatReading-zk-eyes-y">
+                <circle
+                    cx="30.298"
+                    cy="29.794"
+                    r="7.5752"
+                    fill="#000000"
+                    style="fill: var(--zk-pup, #000000)"
+                />
+                <circle
+                    cx="90.897"
+                    cy="29.794"
+                    r="7.5752"
+                    fill="#000000"
+                    style="fill: var(--zk-pup, #000000)"
+                />
+            </g>
+        </g>
+    </g>
+</svg>

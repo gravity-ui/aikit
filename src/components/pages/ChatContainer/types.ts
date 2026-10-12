@@ -276,7 +276,9 @@ export interface ChatContainerProps {
     // Configuration
     /** MessageList configuration for actions and loader behavior */
     messageListConfig?: MessageListConfig;
-    /** Mascot renderer, assets and lifecycle configuration. */
+    /** Enable the built-in Gravity mascot. Custom mascot configuration takes precedence. */
+    showMascot?: boolean;
+    /** Mascot renderer, assets and lifecycle configuration. Enables custom mascots independently of `showMascot`. */
     mascotConfig?: MascotConfig;
 
     // Component props overrides

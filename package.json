@@ -700,7 +700,7 @@
   },
   "homepage": "https://github.com/gravity-ui/aikit#readme",
   "scripts": {
-    "prepare": "husky",
+    "prepare": "npm run generate:mascot && husky",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint 'src/**/*.scss'",
     "lint": "run-p lint:js lint:styles lint:prettier typecheck",
@@ -728,7 +728,13 @@
     "playwright:clear-cache": "rm -rf ./playwright/.cache",
     "playwright:docker": "./playwright/run-docker-command.sh npm run playwright --",
     "playwright:docker:update": "./playwright/run-docker-command.sh npm run playwright:update --",
-    "playwright:docker:clear-cache": "./playwright/run-docker-command.sh clear-cache"
+    "playwright:docker:clear-cache": "./playwright/run-docker-command.sh clear-cache",
+    "pretypecheck": "npm run generate:mascot",
+    "prelint:js": "npm run generate:mascot",
+    "prebuild": "npm run generate:mascot",
+    "prestart": "npm run generate:mascot",
+    "preplaywright": "npm run generate:mascot",
+    "generate:mascot": "node scripts/generate-mascot-assets.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.5",
@@ -753,6 +759,8 @@
     "@storybook/addon-webpack5-compiler-babel": "^3.0.6",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/react-webpack5": "^9.0.5",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

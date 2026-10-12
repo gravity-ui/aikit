@@ -12,6 +12,7 @@ import {PromptInput, type PromptInputProps} from '../../organisms/PromptInput';
 import {ChatContent} from '../../templates/ChatContent';
 import {History} from '../../templates/History';
 
+import {defaultGravityMascots} from './GravityMascot';
 import {
     normalizeChatContainerQa,
     resolveChatContainerQa,
@@ -19,7 +20,7 @@ import {
     resolveHeaderMenuItemQa,
 } from './chatContainerQa';
 import {i18n} from './i18n';
-import type {ChatContainerProps, ChatContainerTexts} from './types';
+import type {ChatContainerProps, ChatContainerTexts, MascotConfig} from './types';
 import {useChatContainer} from './useChatContainer';
 import {useChatContainerMascot} from './useChatContainerMascot';
 import {useKeyboardLayoutFit} from './useKeyboardLayoutFit';
@@ -27,6 +28,7 @@ import {useKeyboardLayoutFit} from './useKeyboardLayoutFit';
 import './ChatContainer.scss';
 
 const b = block('chat-container');
+const DEFAULT_MASCOT_CONFIG: MascotConfig = {};
 
 type NormalizedChatContainerQa = ReturnType<typeof normalizeChatContainerQa>;
 
@@ -204,7 +206,8 @@ export function ChatContainer(props: ChatContainerProps) {
         openMarkdownLinksInNewTab,
         mdxProps,
         messageListConfig,
-        mascotConfig,
+        showMascot = false,
+        mascotConfig: customMascotConfig,
         headerProps = {},
         contentProps = {},
         emptyContainerProps = {},
@@ -249,6 +252,7 @@ export function ChatContainer(props: ChatContainerProps) {
 
     const hookState = useChatContainer(props);
 
+    const mascotConfig = customMascotConfig ?? (showMascot ? DEFAULT_MASCOT_CONFIG : undefined);
     const mascotState = useChatContainerMascot({
         config: mascotConfig,
         view: hookState.chatContentView === 'empty' ? 'hero' : 'chat',
@@ -289,8 +293,15 @@ export function ChatContainer(props: ChatContainerProps) {
         [mascotConfig?.assets, mascotConfig?.defaultAssets],
     );
     const resolvedMascots = useMemo(
-        () => resolveMascotCollection(mascotConfig?.defaultMascots, mascotConfig?.mascots),
-        [mascotConfig?.defaultMascots, mascotConfig?.mascots],
+        () =>
+            resolveMascotCollection(
+                resolveMascotCollection(
+                    showMascot ? defaultGravityMascots : undefined,
+                    mascotConfig?.defaultMascots,
+                ),
+                mascotConfig?.mascots,
+            ),
+        [showMascot, mascotConfig?.defaultMascots, mascotConfig?.mascots],
     );
     const mascotView = hookState.chatContentView === 'empty' ? 'hero' : 'chat';
     const mascotNode = useMemo(() => {

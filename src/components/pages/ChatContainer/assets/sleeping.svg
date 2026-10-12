@@ -1,0 +1,194 @@
+<!-- Gravity artwork from https://zaklepysh.website.yandexcloud.net/ -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-10 -10 141 80"
+    width="141"
+    height="80"
+    role="img"
+    class="g-aikit-zk-sleeping"
+    aria-label="Gravity mascot: sleeping"
+>
+    <defs>
+        <radialGradient
+            id="zk-sleeping"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--zk-b1, #ffff00)"
+            ></stop>
+            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-zk-sleeping-sd {
+            animation: g-aikit-zk-sleeping-slpDrift 5.9s ease-in-out infinite;
+        }
+        @keyframes g-aikit-zk-sleeping-slpDrift {
+            0%,
+            100% {
+                transform: translateX(-2.5px);
+            }
+            50% {
+                transform: translateX(2.5px);
+            }
+        }
+        .g-aikit-zk-sleeping-sb {
+            transform-box: fill-box;
+            transform-origin: 50% 70%;
+            animation: g-aikit-zk-sleeping-slpBob 4.6s ease-in-out infinite;
+        }
+        @keyframes g-aikit-zk-sleeping-slpBob {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(2px);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-zk-sleeping-sd,
+            .g-aikit-zk-sleeping-sb {
+                animation: none;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-zk-sleeping * {
+                animation: none;
+            }
+        }
+    </style>
+    <defs>
+        <clipPath id="sClipL">
+            <rect x="10.30" y="26.52" width="40" height="6.55" rx="6.5">
+                <animate
+                    attributeName="height"
+                    values="6.55;3.51;6.55"
+                    dur="4.2s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+                <animate
+                    attributeName="y"
+                    values="26.52;28.04;26.52"
+                    dur="4.2s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+            </rect>
+        </clipPath>
+        <clipPath id="sClipR">
+            <rect x="70.90" y="25.93" width="40" height="7.73" rx="6.5">
+                <animate
+                    attributeName="height"
+                    values="7.73;4.14;7.73"
+                    dur="5s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+                <animate
+                    attributeName="y"
+                    values="25.93;27.72;25.93"
+                    dur="5s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+            </rect>
+        </clipPath>
+    </defs>
+    <g class="g-aikit-zk-sleeping-sb">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-sleeping)" />
+        <rect
+            x="10.30"
+            y="26.52"
+            width="40"
+            height="6.55"
+            rx="6.5"
+            fill="#FFFFFF"
+            style="fill: var(--zk-eye, #ffffff)"
+        >
+            <animate
+                attributeName="height"
+                values="6.55;3.51;6.55"
+                dur="4.2s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+            <animate
+                attributeName="y"
+                values="26.52;28.04;26.52"
+                dur="4.2s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+        </rect>
+        <rect
+            x="70.90"
+            y="25.93"
+            width="40"
+            height="7.73"
+            rx="6.5"
+            fill="#FFFFFF"
+            style="fill: var(--zk-eye, #ffffff)"
+        >
+            <animate
+                attributeName="height"
+                values="7.73;4.14;7.73"
+                dur="5s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+            <animate
+                attributeName="y"
+                values="25.93;27.72;25.93"
+                dur="5s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+        </rect>
+        <g clip-path="url(#sClipL)">
+            <g class="g-aikit-zk-sleeping-sd">
+                <circle
+                    cx="30.298"
+                    cy="29.794"
+                    r="7.5752"
+                    fill="#000000"
+                    style="fill: var(--zk-pup, #000000)"
+                />
+            </g>
+        </g>
+        <g clip-path="url(#sClipR)">
+            <g class="g-aikit-zk-sleeping-sd">
+                <circle
+                    cx="90.897"
+                    cy="29.794"
+                    r="7.5752"
+                    fill="#000000"
+                    style="fill: var(--zk-pup, #000000)"
+                />
+            </g>
+        </g>
+    </g>
+</svg>

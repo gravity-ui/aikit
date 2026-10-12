@@ -1,0 +1,100 @@
+<!-- Gravity artwork from https://zaklepysh.website.yandexcloud.net/ -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-20 -12 162 84"
+    width="162"
+    height="84"
+    role="img"
+    class="g-aikit-zk-reveal"
+    aria-label="Gravity mascot: reveal"
+>
+    <defs>
+        <radialGradient
+            id="zk-reveal"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--zk-b1, #ffff00)"
+            ></stop>
+            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-zk-reveal-zoom {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: g-aikit-zk-reveal-zoom 480ms both;
+        }
+        @keyframes g-aikit-zk-reveal-zoom {
+            0% {
+                transform: scale(0);
+                animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+            }
+            62% {
+                transform: scale(1.3);
+                animation-timing-function: cubic-bezier(0.4, 0, 0.4, 1);
+            }
+            82% {
+                transform: scale(0.88);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-zk-reveal-zoom {
+                animation: none;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-zk-reveal * {
+                animation: none;
+            }
+        }
+    </style>
+    <g class="g-aikit-zk-reveal-zoom">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-reveal)" />
+        <rect
+            x="75.748"
+            y="14.6445"
+            width="30.299"
+            height="30.299"
+            rx="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--zk-eye, #ffffff)"
+        />
+        <rect
+            x="15.1484"
+            y="14.6445"
+            width="30.299"
+            height="30.299"
+            rx="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--zk-eye, #ffffff)"
+        />
+        <rect
+            x="22.7227"
+            y="22.2188"
+            width="15.1504"
+            height="15.1504"
+            rx="7.57519"
+            fill="#000000"
+            style="fill: var(--zk-pup, #000000)"
+        />
+        <rect
+            x="83.3223"
+            y="22.2188"
+            width="15.1504"
+            height="15.1504"
+            rx="7.57519"
+            fill="#000000"
+            style="fill: var(--zk-pup, #000000)"
+        />
+    </g>
+</svg>

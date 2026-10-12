@@ -86,4 +86,4 @@ export {WithAttachmentInput} from './parts/attachments';
 
 export {WithCustomMessageTypes, WithLazyCustomMessageType} from './parts/customMessageTypes';
 
-export {WithMascot} from './parts/mascot';
+export {WithMascot, MascotColors} from './parts/mascot';

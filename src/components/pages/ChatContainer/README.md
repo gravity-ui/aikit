@@ -257,41 +257,45 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
 
 ## Mascot support
 
+Enable the built-in [Gravity mascot](https://zaklepysh.website.yandexcloud.net/) with
+`showMascot`. The animated SVGs ship with AIKit and need no asset URLs or custom renderer.
+The mascot is disabled by default.
+
+```tsx
+<ChatContainer messages={messages} onSendMessage={handleSend} showMascot />
+```
+
+The existing `mascotConfig` API continues to work without `showMascot`. When both are supplied,
+custom SVGs or React nodes override the built-in mascot per surface and state:
+
 ```tsx
 <ChatContainer
   messages={messages}
-  status={status}
   onSendMessage={handleSend}
+  showMascot
   mascotConfig={{
     mascots: {
-      hero: {
-        idle: <img src="/mascot/hero-idle.svg" alt="" />,
-        reading: <img src="/mascot/hero-reading.svg" alt="" />,
-      },
-      chat: {
-        reveal: <img src="/mascot/chat-reveal.svg" alt="" />,
-        thinking: <img src="/mascot/chat-thinking.svg" alt="" />,
-        done: <img src="/mascot/chat-done.svg" alt="" />,
-        idle: <img src="/mascot/chat-idle.svg" alt="" />,
-        error: <img src="/mascot/chat-error.svg" alt="" />,
-        stopped: <img src="/mascot/chat-stopped.svg" alt="" />,
-        sleeping: <img src="/mascot/chat-sleeping.svg" alt="" />,
-        listening: <img src="/mascot/chat-listening.svg" alt="" />,
-        speaking: <img src="/mascot/chat-speaking.svg" alt="" />,
-      },
+      hero: {idle: <YourWelcomeSvg />},
+      chat: {thinking: <YourThinkingSvg />},
     },
   }}
 />
 ```
+
+With `showMascot`, the order is built-in SVGs → `defaultMascots` → `mascots`.
+Unspecified states use the built-in SVG. Without `showMascot`, missing custom states
+continue to fall back to the custom `idle` node on the same surface.
+`renderMascot` takes precedence over all collections, and `assets` / `defaultAssets`
+are still passed to that renderer. `showOnWelcome: false` and `showInChat: false` hide
+the corresponding surface, including the built-in mascot.
 
 `ChatContainer` derives states from chat status, prompt activity and cancel events. Use
 `stateOverride` for states that aikit cannot infer, such as `listening` and `speaking`. An override
 cancels the active one-shot animation; removing it recomputes the state from current inputs.
 
 AIKit owns placement: hero mascots are centered in the welcome area; chat mascots are rendered once
-as the final scrollable list row and aligned left. AIKit does not impose mascot dimensions, so the
-provided element or animation controls its own size. Missing states fall back to `idle` on the same
-surface. Use `defaultMascots` for a product-wide set and `mascots` for per-container overrides.
+as the final scrollable list row and aligned left. The built-in mascot uses a stable 8rem square on the welcome screen and a 4rem square in chat.
+Custom elements or animations control their own dimensions. Use `defaultMascots` for a product-wide set and `mascots` for per-container overrides.
 `renderMascot` remains available for advanced asset-driven rendering and takes precedence over the
 collection.
 
@@ -417,6 +421,8 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `contextItems`              | `ContextItemConfig[]`                  | -                  | `[]`      | Array of context items to display in prompt input header                                                                                                                      |
 | `transformOptions`          | `OptionsType`                          | -                  | -         | Transform options for markdown rendering                                                                                                                                      |
 | `openMarkdownLinksInNewTab` | `boolean`                              | -                  | `false`   | Open markdown links rendered by default message renderers in a new tab, except hash-only and relative same-document anchors                                                   |
+| `showMascot`                | `boolean`                              | -                  | `false`   | Enable the built-in Gravity mascot; custom SVGs and renderers take precedence                                                                                                 |
+| `mascotConfig`              | `MascotConfig`                         | -                  | -         | Custom mascot nodes, renderer, visibility and lifecycle settings; works without `showMascot`                                                                                  |
 | `messageListConfig`         | `MessageListConfig`                    | -                  | -         | Configuration for MessageList (actions, loader statuses)                                                                                                                      |
 | `headerProps`               | `Partial<HeaderProps>`                 | -                  | -         | Props override for Header component                                                                                                                                           |
 | `contentProps`              | `Partial<ChatContentProps>`            | -                  | -         | Props override for ChatContent component                                                                                                                                      |
@@ -1058,6 +1064,55 @@ function App() {
 
 ## Styling
 
+### Built-in mascot
+
+The SVGs render inline, so these variables can be set on `ChatContainer` or any ancestor.
+The built-in mascot is decorative and respects `prefers-reduced-motion`.
+
+Try **pages/ChatContainer → MascotColors** in Storybook: the four color controls
+update the CSS variables live. Send a message to see the same colors in chat.
+
+| Variable                     | Default   | Description                            |
+| ---------------------------- | --------- | -------------------------------------- |
+| `--zk-b1`                    | `#FFFF00` | Center color of the body gradient      |
+| `--zk-b2`                    | `#FF3377` | Edge color of the body gradient        |
+| `--zk-eye`                   | `#FFFFFF` | Eye color                              |
+| `--zk-pup`                   | `#000000` | Pupil and listening ring color         |
+| `--g-aikit-mascot-hero-size` | `8rem`    | Width and height of the welcome mascot |
+| `--g-aikit-mascot-chat-size` | `4rem`    | Width and height of the chat mascot    |
+
+```css
+.custom-chat {
+  --zk-b1: #b24dff;
+  --zk-b2: #4cb2ff;
+  --zk-eye: #ffffff;
+  --zk-pup: #171717;
+  --g-aikit-mascot-hero-size: 144px;
+  --g-aikit-mascot-chat-size: 72px;
+}
+```
+
+```tsx
+<ChatContainer className="custom-chat" messages={messages} onSendMessage={handleSend} showMascot />
+```
+
+For dynamic colors, set the variables on a wrapper using React styles:
+
+```tsx
+import type {CSSProperties} from 'react';
+
+const mascotColors = {
+  '--zk-b1': '#b24dff',
+  '--zk-b2': '#4cb2ff',
+  '--zk-eye': '#ffffff',
+  '--zk-pup': '#171717',
+} as CSSProperties;
+
+<div style={mascotColors}>
+  <ChatContainer messages={messages} onSendMessage={handleSend} showMascot />
+</div>;
+```
+
 The component uses CSS variables for theming:
 
 | Variable                                             | Description                                                                                                                             |
@@ -1263,6 +1318,13 @@ prompt input and scrolls inside itself instead of pushing the input out of the c
 ```
 
 ## Implementation Details
+
+The built-in mascot source files live in `ChatContainer/assets/*.svg`. Run
+`npm run generate:mascot` after editing an SVG. SVGR generates React components in
+`assets/generated/`; those files are ignored by Git and must not be edited by hand.
+Generation also runs automatically during installation, type checking, linting,
+package builds, Storybook startup and Playwright runs. Published builds contain
+the generated JavaScript, so consumers do not need an SVG loader.
 
 The component uses the `useChatContainer` hook for state management:
 

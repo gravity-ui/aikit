@@ -1,0 +1,103 @@
+<!-- Gravity artwork from https://zaklepysh.website.yandexcloud.net/ -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-14 -16 149 96"
+    width="149"
+    height="96"
+    role="img"
+    class="g-aikit-zk-stopped"
+    aria-label="Gravity mascot: stopped"
+>
+    <defs>
+        <radialGradient
+            id="zk-stopped"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--zk-b1, #ffff00)"
+            ></stop>
+            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-zk-stopped-sw {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: g-aikit-zk-stopped-winkR 300ms ease both;
+        }
+        .g-aikit-zk-stopped-ss {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: g-aikit-zk-stopped-shiftB 300ms ease both;
+        }
+        @keyframes g-aikit-zk-stopped-winkR {
+            0% {
+                transform: scaleY(1);
+            }
+            35% {
+                transform: scaleY(0.08);
+            }
+            55% {
+                transform: scaleY(0.08);
+            }
+            100% {
+                transform: scaleY(1);
+            }
+        }
+        @keyframes g-aikit-zk-stopped-shiftB {
+            0% {
+                transform: translate(0, 0) rotate(0);
+            }
+            35% {
+                transform: translate(4px, 2px) rotate(4.8deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(0);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-zk-stopped * {
+                animation: none;
+            }
+        }
+    </style>
+    <g class="g-aikit-zk-stopped-ss">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-stopped)" />
+        <circle
+            cx="30.298"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--zk-eye, #ffffff)"
+        />
+        <circle
+            cx="30.298"
+            cy="29.794"
+            r="7.5752"
+            fill="#000000"
+            style="fill: var(--zk-pup, #000000)"
+        />
+        <g class="g-aikit-zk-stopped-sw">
+            <circle
+                cx="90.897"
+                cy="29.794"
+                r="15.1495"
+                fill="#FFFFFF"
+                style="fill: var(--zk-eye, #ffffff)"
+            />
+            <circle
+                cx="90.897"
+                cy="29.794"
+                r="7.5752"
+                fill="#000000"
+                style="fill: var(--zk-pup, #000000)"
+            />
+        </g>
+    </g>
+</svg>

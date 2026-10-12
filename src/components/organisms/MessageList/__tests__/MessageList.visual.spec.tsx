@@ -496,7 +496,11 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         }
     });
 
-    test('should render footer content in the plain list', async ({mount, page}) => {
+    test('should render footer content in the plain list', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
         await mount(<MessageListStories.WithFooterContent />);
 
         await expect(page.locator('[data-qa="test-mascot"]')).toBeVisible();
@@ -504,9 +508,14 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         expect(
             await scroller.evaluate((element) => element.scrollHeight <= element.clientHeight),
         ).toBe(true);
+        await expectScreenshot();
     });
 
-    test('should render footer content as the last virtualized row', async ({mount, page}) => {
+    test('should render footer content as the last virtualized row', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
         await mount(<MessageListStories.VirtualizedWithFooterContent />);
 
         const scroller = page.locator(VIRTUAL_SCROLLER);
@@ -520,6 +529,7 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         expect(wrapperBox).not.toBeNull();
         expect(listBox).not.toBeNull();
         expect(listBox?.height).toBeLessThanOrEqual(wrapperBox?.height ?? 0);
+        await expectScreenshot();
     });
 
     test('should not auto-scroll when the user scrolled up during streaming', async ({
