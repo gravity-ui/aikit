@@ -257,7 +257,7 @@ import type {ChatType, TMessage, TSubmitData} from '@gravity-ui/aikit';
 
 ## Mascot support
 
-Enable the built-in [Gravity mascot](https://zaklepysh.website.yandexcloud.net/) with
+Enable the built-in Gravity mascot with
 `showMascot`. The animated SVGs ship with AIKit and need no asset URLs or custom renderer.
 The mascot is disabled by default. Its SVG renderer loads on demand when a built-in
 mascot first appears; a placeholder preserves the mascot's size while it loads.
