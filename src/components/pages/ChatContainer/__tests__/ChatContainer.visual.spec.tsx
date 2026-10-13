@@ -646,18 +646,18 @@ test.describe('ChatContainer', {tag: '@ChatContainer'}, () => {
         await page.emulateMedia({reducedMotion: 'reduce'});
         await mount(<ChatContainerStories.WithMascot />);
 
-        await expect(page.locator('svg.g-aikit-zk-heroIdle')).toBeVisible();
+        await expect(page.locator('svg.g-aikit-mascot-heroIdle')).toBeVisible();
         await expectScreenshot();
 
         await page.locator('textarea').fill('Hello from the built-in mascot demo');
-        await expect(page.locator('svg.g-aikit-zk-heroReading')).toBeVisible();
+        await expect(page.locator('svg.g-aikit-mascot-heroReading')).toBeVisible();
         await page.locator('textarea').press('Enter');
 
         await expect(page.locator('.g-aikit-user-message')).toContainText(
             'Hello from the built-in mascot demo',
         );
         await expect(page.locator('.g-aikit-assistant-message')).toContainText('Mascot state demo');
-        await expect(page.locator('svg.g-aikit-zk-chatIdle')).toBeVisible();
+        await expect(page.locator('svg.g-aikit-mascot-chatIdle')).toBeVisible();
         await expect(page.locator('.g-aikit-chat-container__default-mascot_view_hero')).toHaveCount(
             0,
         );
@@ -700,7 +700,7 @@ test.describe('ChatContainer mobile playground', {tag: '@ChatContainer'}, () => 
         await mount(<ChatContainerStories.MobilePlayground />);
 
         await expect(page.getByText('helps with everyday cloud tasks')).toBeVisible();
-        await expect(page.locator('svg.g-aikit-zk-heroIdle')).toBeVisible();
+        await expect(page.locator('svg.g-aikit-mascot-heroIdle')).toBeVisible();
         await expect(page.getByText('catalog-dashboard.json')).toBeVisible();
         await expect(
             page.getByText('AI can make mistakes. We do not train the model on your data.'),

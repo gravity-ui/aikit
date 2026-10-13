@@ -4,9 +4,7 @@
     viewBox="-10 -10 141 80"
     width="141"
     height="80"
-    role="img"
-    class="g-aikit-zk-chatReading"
-    aria-label="Gravity mascot: chat reading"
+    class="g-aikit-mascot-chatReading"
 >
     <defs>
         <radialGradient
@@ -20,19 +18,23 @@
             <stop
                 offset="0.0287184"
                 stop-color="#FFFF00"
-                style="stop-color: var(--zk-b1, #ffff00)"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
             ></stop>
-            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
         </radialGradient>
     </defs>
     <style>
-        .g-aikit-zk-chatReading-zk-eyes-x {
-            animation: g-aikit-zk-chatReading-heroReadX 2.6s ease-in-out infinite;
+        .g-aikit-mascot-chatReading-zk-eyes-x {
+            animation: g-aikit-mascot-chatReading-heroReadX 2.6s ease-in-out infinite;
         }
-        .g-aikit-zk-chatReading-zk-eyes-y {
-            animation: g-aikit-zk-chatReading-heroReadY 2.6s ease-in-out infinite;
+        .g-aikit-mascot-chatReading-zk-eyes-y {
+            animation: g-aikit-mascot-chatReading-heroReadY 2.6s ease-in-out infinite;
         }
-        @keyframes g-aikit-zk-chatReading-heroReadX {
+        @keyframes g-aikit-mascot-chatReading-heroReadX {
             0% {
                 transform: translateX(-3.4px);
             }
@@ -58,7 +60,7 @@
                 transform: translateX(-3.4px);
             }
         }
-        @keyframes g-aikit-zk-chatReading-heroReadY {
+        @keyframes g-aikit-mascot-chatReading-heroReadY {
             0%,
             22% {
                 transform: translateY(4.2px);
@@ -77,13 +79,13 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-chatReading-zk-eyes-x,
-            .g-aikit-zk-chatReading-zk-eyes-y {
+            .g-aikit-mascot-chatReading-zk-eyes-x,
+            .g-aikit-mascot-chatReading-zk-eyes-y {
                 animation: none;
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-chatReading * {
+            .g-aikit-mascot-chatReading * {
                 animation: none;
             }
         }
@@ -95,30 +97,30 @@
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
         <circle
             cx="90.897"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
-        <g class="g-aikit-zk-chatReading-zk-eyes-x">
-            <g class="g-aikit-zk-chatReading-zk-eyes-y">
+        <g class="g-aikit-mascot-chatReading-zk-eyes-x">
+            <g class="g-aikit-mascot-chatReading-zk-eyes-y">
                 <circle
                     cx="30.298"
                     cy="29.794"
                     r="7.5752"
                     fill="#000000"
-                    style="fill: var(--zk-pup, #000000)"
+                    style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
                 />
                 <circle
                     cx="90.897"
                     cy="29.794"
                     r="7.5752"
                     fill="#000000"
-                    style="fill: var(--zk-pup, #000000)"
+                    style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
                 />
             </g>
         </g>

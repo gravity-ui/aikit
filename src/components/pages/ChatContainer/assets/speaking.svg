@@ -4,9 +4,7 @@
     viewBox="-10 -12 141 84"
     width="141"
     height="84"
-    role="img"
-    class="g-aikit-zk-speaking"
-    aria-label="Gravity mascot: speaking"
+    class="g-aikit-mascot-speaking"
 >
     <defs>
         <radialGradient
@@ -20,16 +18,20 @@
             <stop
                 offset="0.0287184"
                 stop-color="#FFFF00"
-                style="stop-color: var(--zk-b1, #ffff00)"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
             ></stop>
-            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
         </radialGradient>
     </defs>
     <style>
-        .g-aikit-zk-speaking-sr {
-            animation: g-aikit-zk-speaking-readScan 2.2s linear infinite;
+        .g-aikit-mascot-speaking-sr {
+            animation: g-aikit-mascot-speaking-readScan 2.2s linear infinite;
         }
-        @keyframes g-aikit-zk-speaking-readScan {
+        @keyframes g-aikit-mascot-speaking-readScan {
             0% {
                 transform: translate(-4.5px, -3px);
             }
@@ -55,10 +57,10 @@
                 transform: translate(-4.5px, -3px);
             }
         }
-        .g-aikit-zk-speaking-sm {
-            animation: g-aikit-zk-speaking-mutter 0.28s ease-in-out infinite;
+        .g-aikit-mascot-speaking-sm {
+            animation: g-aikit-mascot-speaking-mutter 0.28s ease-in-out infinite;
         }
-        @keyframes g-aikit-zk-speaking-mutter {
+        @keyframes g-aikit-mascot-speaking-mutter {
             0%,
             100% {
                 transform: translate(0, 0) rotate(0);
@@ -68,41 +70,41 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-speaking * {
+            .g-aikit-mascot-speaking * {
                 animation: none;
             }
         }
     </style>
-    <g class="g-aikit-zk-speaking-sm">
+    <g class="g-aikit-mascot-speaking-sm">
         <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-speaking)" />
         <circle
             cx="30.298"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
         <circle
             cx="90.897"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
-        <g class="g-aikit-zk-speaking-sr">
+        <g class="g-aikit-mascot-speaking-sr">
             <circle
                 cx="30.298"
                 cy="29.794"
                 r="7.5752"
                 fill="#000000"
-                style="fill: var(--zk-pup, #000000)"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
             />
             <circle
                 cx="90.897"
                 cy="29.794"
                 r="7.5752"
                 fill="#000000"
-                style="fill: var(--zk-pup, #000000)"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
             />
         </g>
     </g>

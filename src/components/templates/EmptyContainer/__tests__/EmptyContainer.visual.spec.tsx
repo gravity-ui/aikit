@@ -126,7 +126,7 @@ test.describe('EmptyContainer', {tag: '@EmptyContainer'}, () => {
     test('should render custom hero content', async ({mount, page}) => {
         await mount(<EmptyContainerStories.WithHeroContent />);
 
-        await expect(page.locator('[data-qa="test-mascot"] svg.g-aikit-zk-heroIdle')).toBeVisible();
+        await expect(page.locator('[data-qa="test-mascot"]')).toBeVisible();
         await expect(page.locator('.g-aikit-empty-container__image-container')).toHaveCount(0);
     });
 

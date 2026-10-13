@@ -86,7 +86,7 @@ export const WithImage: Story = {
 export const WithHeroContent: Story = {
     args: {
         image: <Icon data={CircleInfo} size={120} />,
-        heroContent: <TestMascot state="idle" view="hero" size="8rem" decorative />,
+        heroContent: <TestMascot state="idle" size="8rem" decorative />,
         title: 'Custom hero replaces the image',
         alignment: {hero: 'center', title: 'center'},
     },

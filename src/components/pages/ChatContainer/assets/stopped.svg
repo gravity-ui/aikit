@@ -4,9 +4,7 @@
     viewBox="-14 -16 149 96"
     width="149"
     height="96"
-    role="img"
-    class="g-aikit-zk-stopped"
-    aria-label="Gravity mascot: stopped"
+    class="g-aikit-mascot-stopped"
 >
     <defs>
         <radialGradient
@@ -20,23 +18,27 @@
             <stop
                 offset="0.0287184"
                 stop-color="#FFFF00"
-                style="stop-color: var(--zk-b1, #ffff00)"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
             ></stop>
-            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
         </radialGradient>
     </defs>
     <style>
-        .g-aikit-zk-stopped-sw {
+        .g-aikit-mascot-stopped-sw {
             transform-box: fill-box;
             transform-origin: 50% 50%;
-            animation: g-aikit-zk-stopped-winkR 300ms ease both;
+            animation: g-aikit-mascot-stopped-winkR 300ms ease both;
         }
-        .g-aikit-zk-stopped-ss {
+        .g-aikit-mascot-stopped-ss {
             transform-box: fill-box;
             transform-origin: 50% 50%;
-            animation: g-aikit-zk-stopped-shiftB 300ms ease both;
+            animation: g-aikit-mascot-stopped-shiftB 300ms ease both;
         }
-        @keyframes g-aikit-zk-stopped-winkR {
+        @keyframes g-aikit-mascot-stopped-winkR {
             0% {
                 transform: scaleY(1);
             }
@@ -50,7 +52,7 @@
                 transform: scaleY(1);
             }
         }
-        @keyframes g-aikit-zk-stopped-shiftB {
+        @keyframes g-aikit-mascot-stopped-shiftB {
             0% {
                 transform: translate(0, 0) rotate(0);
             }
@@ -62,41 +64,41 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-stopped * {
+            .g-aikit-mascot-stopped * {
                 animation: none;
             }
         }
     </style>
-    <g class="g-aikit-zk-stopped-ss">
+    <g class="g-aikit-mascot-stopped-ss">
         <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-stopped)" />
         <circle
             cx="30.298"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
         <circle
             cx="30.298"
             cy="29.794"
             r="7.5752"
             fill="#000000"
-            style="fill: var(--zk-pup, #000000)"
+            style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
         />
-        <g class="g-aikit-zk-stopped-sw">
+        <g class="g-aikit-mascot-stopped-sw">
             <circle
                 cx="90.897"
                 cy="29.794"
                 r="15.1495"
                 fill="#FFFFFF"
-                style="fill: var(--zk-eye, #ffffff)"
+                style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
             />
             <circle
                 cx="90.897"
                 cy="29.794"
                 r="7.5752"
                 fill="#000000"
-                style="fill: var(--zk-pup, #000000)"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
             />
         </g>
     </g>

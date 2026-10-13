@@ -4,9 +4,7 @@
     viewBox="-10 -10 141 80"
     width="141"
     height="80"
-    role="img"
-    class="g-aikit-zk-listening"
-    aria-label="Gravity mascot: listening"
+    class="g-aikit-mascot-listening"
 >
     <defs>
         <radialGradient
@@ -20,18 +18,22 @@
             <stop
                 offset="0.0287184"
                 stop-color="#FFFF00"
-                style="stop-color: var(--zk-b1, #ffff00)"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
             ></stop>
-            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
         </radialGradient>
     </defs>
     <style>
-        .g-aikit-zk-listening-lv {
+        .g-aikit-mascot-listening-lv {
             transform-box: fill-box;
             transform-origin: 50% 50%;
-            animation: g-aikit-zk-listening-lvPulse 1.6s ease-in-out infinite;
+            animation: g-aikit-mascot-listening-lvPulse 1.6s ease-in-out infinite;
         }
-        @keyframes g-aikit-zk-listening-lvPulse {
+        @keyframes g-aikit-mascot-listening-lvPulse {
             0%,
             100% {
                 transform: scale(1);
@@ -40,18 +42,18 @@
                 transform: scale(1.06);
             }
         }
-        .g-aikit-zk-listening-ci-ring {
+        .g-aikit-mascot-listening-ci-ring {
             transform-box: fill-box;
             transform-origin: 50% 50%;
-            animation: g-aikit-zk-listening-ringShrink 2s linear infinite;
+            animation: g-aikit-mascot-listening-ringShrink 2s linear infinite;
         }
-        .g-aikit-zk-listening-lv g .g-aikit-zk-listening-ci-ring:nth-child(2) {
+        .g-aikit-mascot-listening-lv g .g-aikit-mascot-listening-ci-ring:nth-child(2) {
             animation-delay: -0.67s;
         }
-        .g-aikit-zk-listening-lv g .g-aikit-zk-listening-ci-ring:nth-child(3) {
+        .g-aikit-mascot-listening-lv g .g-aikit-mascot-listening-ci-ring:nth-child(3) {
             animation-delay: -1.33s;
         }
-        @keyframes g-aikit-zk-listening-ringShrink {
+        @keyframes g-aikit-mascot-listening-ringShrink {
             0% {
                 transform: scale(1);
                 opacity: 0;
@@ -68,7 +70,7 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-listening * {
+            .g-aikit-mascot-listening * {
                 animation: none;
             }
         }
@@ -77,83 +79,83 @@
         <clipPath id="elL"><circle cx="30.298" cy="29.794" r="15.1495" /></clipPath>
         <clipPath id="elR"><circle cx="90.897" cy="29.794" r="15.1495" /></clipPath>
     </defs>
-    <g class="g-aikit-zk-listening-lv">
+    <g class="g-aikit-mascot-listening-lv">
         <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-listening)" />
         <circle
             cx="30.298"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
         <circle
             cx="90.897"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
         <g clip-path="url(#elL)">
             <circle
-                class="g-aikit-zk-listening-ci-ring"
+                class="g-aikit-mascot-listening-ci-ring"
                 cx="30.298"
                 cy="29.794"
                 r="15.1495"
                 fill="none"
                 stroke="#000000"
-                style="stroke: var(--zk-pup, #000000)"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
                 stroke-width="3.6"
             />
             <circle
-                class="g-aikit-zk-listening-ci-ring"
+                class="g-aikit-mascot-listening-ci-ring"
                 cx="30.298"
                 cy="29.794"
                 r="15.1495"
                 fill="none"
                 stroke="#000000"
-                style="stroke: var(--zk-pup, #000000)"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
                 stroke-width="3.6"
             />
             <circle
-                class="g-aikit-zk-listening-ci-ring"
+                class="g-aikit-mascot-listening-ci-ring"
                 cx="30.298"
                 cy="29.794"
                 r="15.1495"
                 fill="none"
                 stroke="#000000"
-                style="stroke: var(--zk-pup, #000000)"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
                 stroke-width="3.6"
             />
         </g>
         <g clip-path="url(#elR)">
             <circle
-                class="g-aikit-zk-listening-ci-ring"
+                class="g-aikit-mascot-listening-ci-ring"
                 cx="90.897"
                 cy="29.794"
                 r="15.1495"
                 fill="none"
                 stroke="#000000"
-                style="stroke: var(--zk-pup, #000000)"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
                 stroke-width="3.6"
             />
             <circle
-                class="g-aikit-zk-listening-ci-ring"
+                class="g-aikit-mascot-listening-ci-ring"
                 cx="90.897"
                 cy="29.794"
                 r="15.1495"
                 fill="none"
                 stroke="#000000"
-                style="stroke: var(--zk-pup, #000000)"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
                 stroke-width="3.6"
             />
             <circle
-                class="g-aikit-zk-listening-ci-ring"
+                class="g-aikit-mascot-listening-ci-ring"
                 cx="90.897"
                 cy="29.794"
                 r="15.1495"
                 fill="none"
                 stroke="#000000"
-                style="stroke: var(--zk-pup, #000000)"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
                 stroke-width="3.6"
             />
         </g>

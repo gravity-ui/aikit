@@ -4,9 +4,7 @@
     viewBox="-10 -10 141 80"
     width="141"
     height="80"
-    role="img"
-    class="g-aikit-zk-sleeping"
-    aria-label="Gravity mascot: sleeping"
+    class="g-aikit-mascot-sleeping"
 >
     <defs>
         <radialGradient
@@ -20,16 +18,20 @@
             <stop
                 offset="0.0287184"
                 stop-color="#FFFF00"
-                style="stop-color: var(--zk-b1, #ffff00)"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
             ></stop>
-            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
         </radialGradient>
     </defs>
     <style>
-        .g-aikit-zk-sleeping-sd {
-            animation: g-aikit-zk-sleeping-slpDrift 5.9s ease-in-out infinite;
+        .g-aikit-mascot-sleeping-sd {
+            animation: g-aikit-mascot-sleeping-slpDrift 5.9s ease-in-out infinite;
         }
-        @keyframes g-aikit-zk-sleeping-slpDrift {
+        @keyframes g-aikit-mascot-sleeping-slpDrift {
             0%,
             100% {
                 transform: translateX(-2.5px);
@@ -38,12 +40,12 @@
                 transform: translateX(2.5px);
             }
         }
-        .g-aikit-zk-sleeping-sb {
+        .g-aikit-mascot-sleeping-sb {
             transform-box: fill-box;
             transform-origin: 50% 70%;
-            animation: g-aikit-zk-sleeping-slpBob 4.6s ease-in-out infinite;
+            animation: g-aikit-mascot-sleeping-slpBob 4.6s ease-in-out infinite;
         }
-        @keyframes g-aikit-zk-sleeping-slpBob {
+        @keyframes g-aikit-mascot-sleeping-slpBob {
             0%,
             100% {
                 transform: translateY(0);
@@ -53,13 +55,13 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-sleeping-sd,
-            .g-aikit-zk-sleeping-sb {
+            .g-aikit-mascot-sleeping-sd,
+            .g-aikit-mascot-sleeping-sb {
                 animation: none;
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-sleeping * {
+            .g-aikit-mascot-sleeping * {
                 animation: none;
             }
         }
@@ -110,7 +112,7 @@
             </rect>
         </clipPath>
     </defs>
-    <g class="g-aikit-zk-sleeping-sb">
+    <g class="g-aikit-mascot-sleeping-sb">
         <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-sleeping)" />
         <rect
             x="10.30"
@@ -119,7 +121,7 @@
             height="6.55"
             rx="6.5"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         >
             <animate
                 attributeName="height"
@@ -147,7 +149,7 @@
             height="7.73"
             rx="6.5"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         >
             <animate
                 attributeName="height"
@@ -169,24 +171,24 @@
             />
         </rect>
         <g clip-path="url(#sClipL)">
-            <g class="g-aikit-zk-sleeping-sd">
+            <g class="g-aikit-mascot-sleeping-sd">
                 <circle
                     cx="30.298"
                     cy="29.794"
                     r="7.5752"
                     fill="#000000"
-                    style="fill: var(--zk-pup, #000000)"
+                    style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
                 />
             </g>
         </g>
         <g clip-path="url(#sClipR)">
-            <g class="g-aikit-zk-sleeping-sd">
+            <g class="g-aikit-mascot-sleeping-sd">
                 <circle
                     cx="90.897"
                     cy="29.794"
                     r="7.5752"
                     fill="#000000"
-                    style="fill: var(--zk-pup, #000000)"
+                    style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
                 />
             </g>
         </g>

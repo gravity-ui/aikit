@@ -4,9 +4,7 @@
     viewBox="-12 -16 145 92"
     width="145"
     height="92"
-    role="img"
-    class="g-aikit-zk-error"
-    aria-label="Gravity mascot: error"
+    class="g-aikit-mascot-error"
 >
     <defs>
         <radialGradient
@@ -20,19 +18,23 @@
             <stop
                 offset="0.0287184"
                 stop-color="#FFFF00"
-                style="stop-color: var(--zk-b1, #ffff00)"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
             ></stop>
-            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
         </radialGradient>
     </defs>
     <style>
-        .g-aikit-zk-error-eL {
-            animation: g-aikit-zk-error-errL 800ms cubic-bezier(0.15, 0.6, 0.3, 1) both;
+        .g-aikit-mascot-error-eL {
+            animation: g-aikit-mascot-error-errL 800ms cubic-bezier(0.15, 0.6, 0.3, 1) both;
         }
-        .g-aikit-zk-error-eR {
-            animation: g-aikit-zk-error-errR 800ms cubic-bezier(0.15, 0.6, 0.3, 1) both;
+        .g-aikit-mascot-error-eR {
+            animation: g-aikit-mascot-error-errR 800ms cubic-bezier(0.15, 0.6, 0.3, 1) both;
         }
-        @keyframes g-aikit-zk-error-errL {
+        @keyframes g-aikit-mascot-error-errL {
             0.0% {
                 transform: translate(0px, 0px);
             }
@@ -157,7 +159,7 @@
                 transform: translate(0px, -0px);
             }
         }
-        @keyframes g-aikit-zk-error-errR {
+        @keyframes g-aikit-mascot-error-errR {
             0.0% {
                 transform: translate(0px, 0px);
             }
@@ -324,10 +326,10 @@
                 transform: translate(-0px, -0px);
             }
         }
-        .g-aikit-zk-error-et {
-            animation: g-aikit-zk-error-errTr 800ms linear both;
+        .g-aikit-mascot-error-et {
+            animation: g-aikit-mascot-error-errTr 800ms linear both;
         }
-        @keyframes g-aikit-zk-error-errTr {
+        @keyframes g-aikit-mascot-error-errTr {
             0% {
                 transform: translate(0, 0);
             }
@@ -354,43 +356,43 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-error * {
+            .g-aikit-mascot-error * {
                 animation: none;
             }
         }
     </style>
-    <g class="g-aikit-zk-error-et">
+    <g class="g-aikit-mascot-error-et">
         <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-error)" />
         <circle
             cx="30.298"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
         <circle
             cx="90.897"
             cy="29.794"
             r="15.1495"
             fill="#FFFFFF"
-            style="fill: var(--zk-eye, #ffffff)"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
         />
-        <g class="g-aikit-zk-error-eL">
+        <g class="g-aikit-mascot-error-eL">
             <circle
                 cx="30.298"
                 cy="29.794"
                 r="7.5752"
                 fill="#000000"
-                style="fill: var(--zk-pup, #000000)"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
             />
         </g>
-        <g class="g-aikit-zk-error-eR">
+        <g class="g-aikit-mascot-error-eR">
             <circle
                 cx="90.897"
                 cy="29.794"
                 r="7.5752"
                 fill="#000000"
-                style="fill: var(--zk-pup, #000000)"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
             />
         </g>
     </g>

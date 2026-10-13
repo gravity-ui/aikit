@@ -64,25 +64,25 @@ export const MascotColors: StoryObj<ChatContainerProps & MascotColorArgs> = {
     },
     argTypes: {
         bodyCenterColor: {
-            name: '--zk-b1',
+            name: '--g-aikit-mascot-body-center-color',
             control: 'color',
             description: 'Center color of the body gradient.',
             table: {category: 'Mascot colors'},
         },
         bodyEdgeColor: {
-            name: '--zk-b2',
+            name: '--g-aikit-mascot-body-edge-color',
             control: 'color',
             description: 'Edge color of the body gradient.',
             table: {category: 'Mascot colors'},
         },
         eyeColor: {
-            name: '--zk-eye',
+            name: '--g-aikit-mascot-eye-color',
             control: 'color',
             description: 'Eye color.',
             table: {category: 'Mascot colors'},
         },
         pupilColor: {
-            name: '--zk-pup',
+            name: '--g-aikit-mascot-pupil-color',
             control: 'color',
             description: 'Pupil and listening ring color.',
             table: {category: 'Mascot colors'},
@@ -92,10 +92,10 @@ export const MascotColors: StoryObj<ChatContainerProps & MascotColorArgs> = {
     render: ({bodyCenterColor, bodyEdgeColor, eyeColor, pupilColor, ...args}) => {
         const style = {
             height: '100%',
-            '--zk-b1': bodyCenterColor,
-            '--zk-b2': bodyEdgeColor,
-            '--zk-eye': eyeColor,
-            '--zk-pup': pupilColor,
+            '--g-aikit-mascot-body-center-color': bodyCenterColor,
+            '--g-aikit-mascot-body-edge-color': bodyEdgeColor,
+            '--g-aikit-mascot-eye-color': eyeColor,
+            '--g-aikit-mascot-pupil-color': pupilColor,
         } as CSSProperties;
         return (
             <div style={style}>

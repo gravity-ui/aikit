@@ -1073,21 +1073,21 @@ The built-in mascot is decorative and respects `prefers-reduced-motion`.
 Try **pages/ChatContainer → MascotColors** in Storybook: the four color controls
 update the CSS variables live. Send a message to see the same colors in chat.
 
-| Variable                     | Default   | Description                            |
-| ---------------------------- | --------- | -------------------------------------- |
-| `--zk-b1`                    | `#FFFF00` | Center color of the body gradient      |
-| `--zk-b2`                    | `#FF3377` | Edge color of the body gradient        |
-| `--zk-eye`                   | `#FFFFFF` | Eye color                              |
-| `--zk-pup`                   | `#000000` | Pupil and listening ring color         |
-| `--g-aikit-mascot-hero-size` | `8rem`    | Width and height of the welcome mascot |
-| `--g-aikit-mascot-chat-size` | `4rem`    | Width and height of the chat mascot    |
+| Variable                             | Default   | Description                            |
+| ------------------------------------ | --------- | -------------------------------------- |
+| `--g-aikit-mascot-body-center-color` | `#FFFF00` | Center color of the body gradient      |
+| `--g-aikit-mascot-body-edge-color`   | `#FF3377` | Edge color of the body gradient        |
+| `--g-aikit-mascot-eye-color`         | `#FFFFFF` | Eye color                              |
+| `--g-aikit-mascot-pupil-color`       | `#000000` | Pupil and listening ring color         |
+| `--g-aikit-mascot-hero-size`         | `8rem`    | Width and height of the welcome mascot |
+| `--g-aikit-mascot-chat-size`         | `4rem`    | Width and height of the chat mascot    |
 
 ```css
 .custom-chat {
-  --zk-b1: #b24dff;
-  --zk-b2: #4cb2ff;
-  --zk-eye: #ffffff;
-  --zk-pup: #171717;
+  --g-aikit-mascot-body-center-color: #b24dff;
+  --g-aikit-mascot-body-edge-color: #4cb2ff;
+  --g-aikit-mascot-eye-color: #ffffff;
+  --g-aikit-mascot-pupil-color: #171717;
   --g-aikit-mascot-hero-size: 144px;
   --g-aikit-mascot-chat-size: 72px;
 }
@@ -1103,10 +1103,10 @@ For dynamic colors, set the variables on a wrapper using React styles:
 import type {CSSProperties} from 'react';
 
 const mascotColors = {
-  '--zk-b1': '#b24dff',
-  '--zk-b2': '#4cb2ff',
-  '--zk-eye': '#ffffff',
-  '--zk-pup': '#171717',
+  '--g-aikit-mascot-body-center-color': '#b24dff',
+  '--g-aikit-mascot-body-edge-color': '#4cb2ff',
+  '--g-aikit-mascot-eye-color': '#ffffff',
+  '--g-aikit-mascot-pupil-color': '#171717',
 } as CSSProperties;
 
 <div style={mascotColors}>
@@ -1322,9 +1322,9 @@ prompt input and scrolls inside itself instead of pushing the input out of the c
 
 The built-in mascot source files live in `ChatContainer/assets/*.svg`. Run
 `npm run generate:mascot` after editing an SVG. SVGR generates React components in
-`assets/generated/`; those files are ignored by Git and must not be edited by hand.
-Generation also runs automatically during installation, type checking, linting,
-package builds, Storybook startup and Playwright runs. Published builds contain
+`assets/generated/`; commit those files together with their SVG sources and do not
+edit them by hand. `npm run generate:mascot:check` verifies that the generated files
+are current without rewriting them, and CI runs this check. Published builds contain
 the generated JavaScript, so consumers do not need an SVG loader.
 The renderer and SVG components are imported dynamically, allowing browser bundlers
 to keep them in a separate chunk. Disabled mascots and custom renderers do not load

@@ -5,14 +5,24 @@ const path = require('node:path');
 const {transform} = require('@svgr/core');
 const prettier = require('prettier');
 
-const assetsDir = path.resolve(__dirname, '../src/components/pages/ChatContainer/assets');
-const outputDir = path.join(assetsDir, 'generated');
+const defaultAssetsDir = path.resolve(__dirname, '../src/components/pages/ChatContainer/assets');
 
-async function generateMascotAssets() {
-    const prettierConfig = await prettier.resolveConfig(assetsDir);
-    await fs.mkdir(outputDir, {recursive: true});
+async function generateMascotAssets({assetsDir = defaultAssetsDir, check = false} = {}) {
+    const outputDir = path.join(assetsDir, 'generated');
+    const prettierConfig = await prettier.resolveConfig(__filename);
+    if (!check) {
+        await fs.mkdir(outputDir, {recursive: true});
+    }
 
     const files = (await fs.readdir(assetsDir)).filter((file) => file.endsWith('.svg')).sort();
+    const expectedFiles = new Set(files.map((file) => file.replace(/\.svg$/, '.tsx')));
+    const outputFiles = await fs.readdir(outputDir).catch((error) => {
+        if (error.code === 'ENOENT') {
+            return [];
+        }
+        throw error;
+    });
+    const mismatches = [];
     for (const file of files) {
         const filePath = path.join(assetsDir, file);
         const svg = await fs.readFile(filePath, 'utf8');
@@ -51,15 +61,38 @@ async function generateMascotAssets() {
             throw error;
         });
         // Avoid triggering Storybook rebuilds when the source assets have not changed.
-        if (previousSource !== source) {
+        if (check && previousSource !== source) {
+            mismatches.push(path.basename(outputPath));
+        } else if (previousSource !== source) {
             const temporaryPath = `${outputPath}.${process.pid}.tmp`;
             await fs.writeFile(temporaryPath, source);
             await fs.rename(temporaryPath, outputPath);
         }
     }
+
+    for (const file of outputFiles) {
+        if (file.endsWith('.tsx') && !expectedFiles.has(file)) {
+            if (check) {
+                mismatches.push(file);
+            } else {
+                await fs.unlink(path.join(outputDir, file));
+            }
+        }
+    }
+
+    if (mismatches.length > 0) {
+        throw new Error(
+            `Generated mascot assets are out of sync: ${mismatches.sort().join(', ')}. ` +
+                'Run npm run generate:mascot and commit the generated files.',
+        );
+    }
 }
 
-generateMascotAssets().catch((error) => {
-    process.stderr.write(`${error.stack}\n`);
-    process.exitCode = 1;
-});
+module.exports = {generateMascotAssets};
+
+if (require.main === module) {
+    generateMascotAssets({check: process.argv.includes('--check')}).catch((error) => {
+        process.stderr.write(`${error.stack}\n`);
+        process.exitCode = 1;
+    });
+}

@@ -700,7 +700,7 @@
   },
   "homepage": "https://github.com/gravity-ui/aikit#readme",
   "scripts": {
-    "prepare": "npm run generate:mascot && husky",
+    "prepare": "husky",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint 'src/**/*.scss'",
     "lint": "run-p lint:js lint:styles lint:prettier typecheck",
@@ -729,12 +729,8 @@
     "playwright:docker": "./playwright/run-docker-command.sh npm run playwright --",
     "playwright:docker:update": "./playwright/run-docker-command.sh npm run playwright:update --",
     "playwright:docker:clear-cache": "./playwright/run-docker-command.sh clear-cache",
-    "pretypecheck": "npm run generate:mascot",
-    "prelint:js": "npm run generate:mascot",
-    "prebuild": "npm run generate:mascot",
-    "prestart": "npm run generate:mascot",
-    "preplaywright": "npm run generate:mascot",
-    "generate:mascot": "node scripts/generate-mascot-assets.js"
+    "generate:mascot": "node scripts/generate-mascot-assets.js",
+    "generate:mascot:check": "node scripts/generate-mascot-assets.js --check"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.5",

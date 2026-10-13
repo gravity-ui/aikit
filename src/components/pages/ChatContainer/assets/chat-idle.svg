@@ -4,9 +4,7 @@
     viewBox="-10 -10 141 80"
     width="141"
     height="80"
-    role="img"
-    class="g-aikit-zk-chatIdle"
-    aria-label="Gravity mascot: chat idle"
+    class="g-aikit-mascot-chatIdle"
 >
     <defs>
         <radialGradient
@@ -20,18 +18,22 @@
             <stop
                 offset="0.0287184"
                 stop-color="#FFFF00"
-                style="stop-color: var(--zk-b1, #ffff00)"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
             ></stop>
-            <stop offset="1" stop-color="#FF3377" style="stop-color: var(--zk-b2, #ff3377)" />
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
         </radialGradient>
     </defs>
     <style>
-        .g-aikit-zk-chatIdle-bob {
+        .g-aikit-mascot-chatIdle-bob {
             transform-box: fill-box;
             transform-origin: 50% 70%;
-            animation: g-aikit-zk-chatIdle-bob 4.2s ease-in-out infinite;
+            animation: g-aikit-mascot-chatIdle-bob 4.2s ease-in-out infinite;
         }
-        @keyframes g-aikit-zk-chatIdle-bob {
+        @keyframes g-aikit-mascot-chatIdle-bob {
             0%,
             100% {
                 transform: translateY(0) rotate(-2.2deg);
@@ -40,13 +42,13 @@
                 transform: translateY(-6px) rotate(2.2deg);
             }
         }
-        .g-aikit-zk-chatIdle-zk-eyes-x {
-            animation: g-aikit-zk-chatIdle-zk-eyesX 8.5s infinite;
+        .g-aikit-mascot-chatIdle-zk-eyes-x {
+            animation: g-aikit-mascot-chatIdle-zk-eyesX 8.5s infinite;
         }
-        .g-aikit-zk-chatIdle-zk-eyes-y {
-            animation: g-aikit-zk-chatIdle-zk-eyesY 11.56s infinite;
+        .g-aikit-mascot-chatIdle-zk-eyes-y {
+            animation: g-aikit-mascot-chatIdle-zk-eyesY 11.56s infinite;
         }
-        @keyframes g-aikit-zk-chatIdle-zk-eyesX {
+        @keyframes g-aikit-mascot-chatIdle-zk-eyesX {
             0.0% {
                 transform: translateX(0px);
                 animation-timing-function: linear;
@@ -107,7 +109,7 @@
                 transform: translateX(0px);
             }
         }
-        @keyframes g-aikit-zk-chatIdle-zk-eyesY {
+        @keyframes g-aikit-mascot-chatIdle-zk-eyesY {
             0.0% {
                 transform: translateY(0px);
                 animation-timing-function: linear;
@@ -152,12 +154,12 @@
                 transform: translateY(0px);
             }
         }
-        .g-aikit-zk-chatIdle-blink {
+        .g-aikit-mascot-chatIdle-blink {
             transform-box: fill-box;
             transform-origin: 50% 50%;
-            animation: g-aikit-zk-chatIdle-blink 9s infinite;
+            animation: g-aikit-mascot-chatIdle-blink 9s infinite;
         }
-        @keyframes g-aikit-zk-chatIdle-blink {
+        @keyframes g-aikit-mascot-chatIdle-blink {
             0%,
             12% {
                 transform: scaleY(1);
@@ -200,22 +202,22 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-chatIdle-bob,
-            .g-aikit-zk-chatIdle-zk-eyes-x,
-            .g-aikit-zk-chatIdle-zk-eyes-y,
-            .g-aikit-zk-chatIdle-blink {
+            .g-aikit-mascot-chatIdle-bob,
+            .g-aikit-mascot-chatIdle-zk-eyes-x,
+            .g-aikit-mascot-chatIdle-zk-eyes-y,
+            .g-aikit-mascot-chatIdle-blink {
                 animation: none;
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .g-aikit-zk-chatIdle * {
+            .g-aikit-mascot-chatIdle * {
                 animation: none;
             }
         }
     </style>
-    <g class="g-aikit-zk-chatIdle-bob">
+    <g class="g-aikit-mascot-chatIdle-bob">
         <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-chatIdle)" />
-        <g class="g-aikit-zk-chatIdle-blink">
+        <g class="g-aikit-mascot-chatIdle-blink">
             <rect
                 x="75.748"
                 y="14.6445"
@@ -223,7 +225,7 @@
                 height="30.299"
                 rx="15.1495"
                 fill="#FFFFFF"
-                style="fill: var(--zk-eye, #ffffff)"
+                style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
             />
             <rect
                 x="15.1484"
@@ -232,10 +234,10 @@
                 height="30.299"
                 rx="15.1495"
                 fill="#FFFFFF"
-                style="fill: var(--zk-eye, #ffffff)"
+                style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
             />
-            <g class="g-aikit-zk-chatIdle-zk-eyes-x">
-                <g class="g-aikit-zk-chatIdle-zk-eyes-y">
+            <g class="g-aikit-mascot-chatIdle-zk-eyes-x">
+                <g class="g-aikit-mascot-chatIdle-zk-eyes-y">
                     <rect
                         x="22.7227"
                         y="22.2188"
@@ -243,7 +245,7 @@
                         height="15.1504"
                         rx="7.57519"
                         fill="#000000"
-                        style="fill: var(--zk-pup, #000000)"
+                        style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
                     />
                     <rect
                         x="83.3223"
@@ -252,7 +254,7 @@
                         height="15.1504"
                         rx="7.57519"
                         fill="#000000"
-                        style="fill: var(--zk-pup, #000000)"
+                        style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
                     />
                 </g>
             </g>

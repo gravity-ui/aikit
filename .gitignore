@@ -4,7 +4,6 @@
 
 # Dependencies
 node_modules/
-src/components/pages/ChatContainer/assets/generated/
 .pnp
 .pnp.js
 

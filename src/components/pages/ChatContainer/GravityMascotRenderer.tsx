@@ -43,7 +43,7 @@ export function GravityMascotRenderer({state, view, animated = true}: GravityMas
             className={b('default-mascot', {view, animation: animated ? 'on' : 'off'})}
             aria-hidden="true"
         >
-            <Asset key={`${view}-${state}`} id={`g-aikit-zk-${instanceId}`} />
+            <Asset key={`${view}-${state}`} id={`g-aikit-mascot-${instanceId}`} />
         </div>
     );
 }
