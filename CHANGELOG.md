@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.23.0](https://github.com/gravity-ui/aikit/compare/v2.22.1...v2.23.0) (2026-10-13)
+
+
+### Features
+
+* **chat-container:** add default Gravity mascot ([#272](https://github.com/gravity-ui/aikit/issues/272)) ([99c47d2](https://github.com/gravity-ui/aikit/commit/99c47d249dfb2f21b5b1ed5a9e8eb64e76054a6e))
+
+
+### Bug Fixes
+
+* **open-ai-adapter:** show assistant answer as one message ([#247](https://github.com/gravity-ui/aikit/issues/247)) ([0f53767](https://github.com/gravity-ui/aikit/commit/0f53767d9d3249f81638a5d705c903ffd96a144c))
+
 ## [2.22.1](https://github.com/gravity-ui/aikit/compare/v2.22.0...v2.22.1) (2026-09-29)
 
 
