@@ -1,0 +1,399 @@
+<!-- Gravity mascot artwork -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-12 -16 145 92"
+    width="145"
+    height="92"
+    class="g-aikit-mascot-error"
+>
+    <defs>
+        <radialGradient
+            id="zk-error"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
+            ></stop>
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-mascot-error-eL {
+            animation: g-aikit-mascot-error-errL 800ms cubic-bezier(0.15, 0.6, 0.3, 1) both;
+        }
+        .g-aikit-mascot-error-eR {
+            animation: g-aikit-mascot-error-errR 800ms cubic-bezier(0.15, 0.6, 0.3, 1) both;
+        }
+        @keyframes g-aikit-mascot-error-errL {
+            0.0% {
+                transform: translate(0px, 0px);
+            }
+            2.5% {
+                transform: translate(0.32px, 0.23px);
+            }
+            5.0% {
+                transform: translate(0.24px, 0.74px);
+            }
+            7.5% {
+                transform: translate(-0.36px, 1.11px);
+            }
+            10.0% {
+                transform: translate(-1.25px, 0.91px);
+            }
+            12.5% {
+                transform: translate(-1.91px, 0px);
+            }
+            15.0% {
+                transform: translate(-1.84px, -1.33px);
+            }
+            17.5% {
+                transform: translate(-0.81px, -2.48px);
+            }
+            20.0% {
+                transform: translate(0.91px, -2.8px);
+            }
+            22.5% {
+                transform: translate(2.63px, -1.91px);
+            }
+            25.0% {
+                transform: translate(3.54px, -0px);
+            }
+            27.5% {
+                transform: translate(3.08px, 2.23px);
+            }
+            30.0% {
+                transform: translate(1.25px, 3.85px);
+            }
+            32.5% {
+                transform: translate(-1.32px, 4.05px);
+            }
+            35.0% {
+                transform: translate(-3.6px, 2.62px);
+            }
+            37.5% {
+                transform: translate(-4.62px, 0px);
+            }
+            40.0% {
+                transform: translate(-3.85px, -2.8px);
+            }
+            42.5% {
+                transform: translate(-1.5px, -4.62px);
+            }
+            45.0% {
+                transform: translate(1.53px, -4.7px);
+            }
+            47.5% {
+                transform: translate(4.03px, -2.93px);
+            }
+            50.0% {
+                transform: translate(5px, -0px);
+            }
+            52.5% {
+                transform: translate(4.03px, 2.93px);
+            }
+            55.0% {
+                transform: translate(1.53px, 4.7px);
+            }
+            57.5% {
+                transform: translate(-1.5px, 4.62px);
+            }
+            60.0% {
+                transform: translate(-3.85px, 2.8px);
+            }
+            62.5% {
+                transform: translate(-4.62px, 0px);
+            }
+            65.0% {
+                transform: translate(-3.6px, -2.62px);
+            }
+            67.5% {
+                transform: translate(-1.32px, -4.05px);
+            }
+            70.0% {
+                transform: translate(1.25px, -3.85px);
+            }
+            72.5% {
+                transform: translate(3.08px, -2.23px);
+            }
+            75.0% {
+                transform: translate(3.54px, -0px);
+            }
+            77.5% {
+                transform: translate(2.63px, 1.91px);
+            }
+            80.0% {
+                transform: translate(0.91px, 2.8px);
+            }
+            82.5% {
+                transform: translate(-0.81px, 2.48px);
+            }
+            85.0% {
+                transform: translate(-1.84px, 1.33px);
+            }
+            87.5% {
+                transform: translate(-1.91px, 0px);
+            }
+            90.0% {
+                transform: translate(-1.25px, -0.91px);
+            }
+            92.5% {
+                transform: translate(-0.36px, -1.11px);
+            }
+            95.0% {
+                transform: translate(0.24px, -0.74px);
+            }
+            97.5% {
+                transform: translate(0.32px, -0.23px);
+            }
+            100.0% {
+                transform: translate(0px, -0px);
+            }
+        }
+        @keyframes g-aikit-mascot-error-errR {
+            0.0% {
+                transform: translate(0px, 0px);
+            }
+            1.9% {
+                transform: translate(0.24px, -0.17px);
+            }
+            3.7% {
+                transform: translate(0.18px, -0.55px);
+            }
+            5.6% {
+                transform: translate(-0.27px, -0.83px);
+            }
+            7.4% {
+                transform: translate(-0.93px, -0.68px);
+            }
+            9.3% {
+                transform: translate(-1.43px, -0px);
+            }
+            11.1% {
+                transform: translate(-1.38px, 1.01px);
+            }
+            13.0% {
+                transform: translate(-0.61px, 1.88px);
+            }
+            14.8% {
+                transform: translate(0.69px, 2.13px);
+            }
+            16.7% {
+                transform: translate(2.02px, 1.47px);
+            }
+            18.5% {
+                transform: translate(2.75px, 0px);
+            }
+            20.4% {
+                transform: translate(2.42px, -1.76px);
+            }
+            22.2% {
+                transform: translate(0.99px, -3.06px);
+            }
+            24.1% {
+                transform: translate(-1.06px, -3.26px);
+            }
+            25.9% {
+                transform: translate(-2.94px, -2.14px);
+            }
+            27.8% {
+                transform: translate(-3.83px, 0px);
+            }
+            29.6% {
+                transform: translate(-3.24px, 2.36px);
+            }
+            31.5% {
+                transform: translate(-1.29px, 3.97px);
+            }
+            33.3% {
+                transform: translate(1.34px, 4.12px);
+            }
+            35.2% {
+                transform: translate(3.61px, 2.63px);
+            }
+            37.0% {
+                transform: translate(4.59px, 0px);
+            }
+            38.9% {
+                transform: translate(3.8px, -2.76px);
+            }
+            40.7% {
+                transform: translate(1.48px, -4.56px);
+            }
+            42.6% {
+                transform: translate(-1.5px, -4.63px);
+            }
+            44.4% {
+                transform: translate(-3.98px, -2.89px);
+            }
+            46.3% {
+                transform: translate(-4.97px, -0px);
+            }
+            48.1% {
+                transform: translate(-4.04px, 2.93px);
+            }
+            50.0% {
+                transform: translate(-1.55px, 4.76px);
+            }
+            51.9% {
+                transform: translate(1.54px, 4.75px);
+            }
+            53.7% {
+                transform: translate(4.02px, 2.92px);
+            }
+            55.6% {
+                transform: translate(4.92px, -0px);
+            }
+            57.4% {
+                transform: translate(3.94px, -2.86px);
+            }
+            59.3% {
+                transform: translate(1.48px, -4.56px);
+            }
+            61.1% {
+                transform: translate(-1.45px, -4.47px);
+            }
+            63.0% {
+                transform: translate(-3.71px, -2.7px);
+            }
+            64.8% {
+                transform: translate(-4.47px, -0px);
+            }
+            66.7% {
+                transform: translate(-3.5px, 2.55px);
+            }
+            68.5% {
+                transform: translate(-1.29px, 3.97px);
+            }
+            70.4% {
+                transform: translate(1.24px, 3.81px);
+            }
+            72.2% {
+                transform: translate(3.1px, 2.25px);
+            }
+            74.1% {
+                transform: translate(3.64px, 0px);
+            }
+            75.9% {
+                transform: translate(2.78px, -2.02px);
+            }
+            77.8% {
+                transform: translate(0.99px, -3.06px);
+            }
+            79.6% {
+                transform: translate(-0.92px, -2.84px);
+            }
+            81.5% {
+                transform: translate(-2.22px, -1.61px);
+            }
+            83.3% {
+                transform: translate(-2.5px, 0px);
+            }
+            85.2% {
+                transform: translate(-1.82px, 1.32px);
+            }
+            87.0% {
+                transform: translate(-0.61px, 1.88px);
+            }
+            88.9% {
+                transform: translate(0.53px, 1.63px);
+            }
+            90.7% {
+                transform: translate(1.16px, 0.84px);
+            }
+            92.6% {
+                transform: translate(1.15px, 0px);
+            }
+            94.4% {
+                transform: translate(0.7px, -0.51px);
+            }
+            96.3% {
+                transform: translate(0.18px, -0.55px);
+            }
+            98.1% {
+                transform: translate(-0.09px, -0.28px);
+            }
+            100.0% {
+                transform: translate(-0px, -0px);
+            }
+        }
+        .g-aikit-mascot-error-et {
+            animation: g-aikit-mascot-error-errTr 800ms linear both;
+        }
+        @keyframes g-aikit-mascot-error-errTr {
+            0% {
+                transform: translate(0, 0);
+            }
+            8% {
+                transform: translate(5px, -4px);
+            }
+            20% {
+                transform: translate(-5px, 3px);
+            }
+            32% {
+                transform: translate(4px, 5px);
+            }
+            46% {
+                transform: translate(-3px, -5px);
+            }
+            62% {
+                transform: translate(2px, 2px);
+            }
+            80% {
+                transform: translate(-1px, 1px);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-error * {
+                animation: none;
+            }
+        }
+    </style>
+    <g class="g-aikit-mascot-error-et">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-error)" />
+        <circle
+            cx="30.298"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <circle
+            cx="90.897"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <g class="g-aikit-mascot-error-eL">
+            <circle
+                cx="30.298"
+                cy="29.794"
+                r="7.5752"
+                fill="#000000"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+            />
+        </g>
+        <g class="g-aikit-mascot-error-eR">
+            <circle
+                cx="90.897"
+                cy="29.794"
+                r="7.5752"
+                fill="#000000"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+            />
+        </g>
+    </g>
+</svg>

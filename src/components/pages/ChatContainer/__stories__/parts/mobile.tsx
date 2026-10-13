@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 
 import {ChatContainer} from '../..';
-import {TestMascot} from '../../../../../demo/TestMascot';
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../../../types';
 
 import {
@@ -133,14 +132,8 @@ export const MobilePlayground: Story = {
                         alignment: {title: 'center', description: 'center', image: 'center'},
                         suggestions: playgroundSuggestions,
                     }}
-                    mascotConfig={{
-                        mascots: {
-                            hero: {
-                                idle: <TestMascot state="idle" size="8rem" animated />,
-                                reading: <TestMascot state="reading" size="8rem" animated />,
-                            },
-                        },
-                    }}
+                    showMascot
+                    mascotConfig={{showInChat: false}}
                     contextItems={contextItems.map((item) => ({
                         ...item,
                         onRemove: () => handleRemoveContext(item.id),

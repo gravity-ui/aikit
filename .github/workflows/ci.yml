@@ -23,6 +23,8 @@ jobs:
           cache: 'npm'
       - name: Install Packages
         run: npm ci
+      - name: Check Generated Mascot Assets
+        run: npm run generate:mascot:check
       - name: Lint Files
         run: npm run lint
       - name: Typecheck

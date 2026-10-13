@@ -1,0 +1,163 @@
+<!-- Gravity mascot artwork -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-10 -10 141 80"
+    width="141"
+    height="80"
+    class="g-aikit-mascot-listening"
+>
+    <defs>
+        <radialGradient
+            id="zk-listening"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
+            ></stop>
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-mascot-listening-lv {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: g-aikit-mascot-listening-lvPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes g-aikit-mascot-listening-lvPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+            }
+        }
+        .g-aikit-mascot-listening-ci-ring {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: g-aikit-mascot-listening-ringShrink 2s linear infinite;
+        }
+        .g-aikit-mascot-listening-lv g .g-aikit-mascot-listening-ci-ring:nth-child(2) {
+            animation-delay: -0.67s;
+        }
+        .g-aikit-mascot-listening-lv g .g-aikit-mascot-listening-ci-ring:nth-child(3) {
+            animation-delay: -1.33s;
+        }
+        @keyframes g-aikit-mascot-listening-ringShrink {
+            0% {
+                transform: scale(1);
+                opacity: 0;
+            }
+            12% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.05);
+                opacity: 0;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-listening * {
+                animation: none;
+            }
+        }
+    </style>
+    <defs>
+        <clipPath id="elL"><circle cx="30.298" cy="29.794" r="15.1495" /></clipPath>
+        <clipPath id="elR"><circle cx="90.897" cy="29.794" r="15.1495" /></clipPath>
+    </defs>
+    <g class="g-aikit-mascot-listening-lv">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-listening)" />
+        <circle
+            cx="30.298"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <circle
+            cx="90.897"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <g clip-path="url(#elL)">
+            <circle
+                class="g-aikit-mascot-listening-ci-ring"
+                cx="30.298"
+                cy="29.794"
+                r="15.1495"
+                fill="none"
+                stroke="#000000"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
+                stroke-width="3.6"
+            />
+            <circle
+                class="g-aikit-mascot-listening-ci-ring"
+                cx="30.298"
+                cy="29.794"
+                r="15.1495"
+                fill="none"
+                stroke="#000000"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
+                stroke-width="3.6"
+            />
+            <circle
+                class="g-aikit-mascot-listening-ci-ring"
+                cx="30.298"
+                cy="29.794"
+                r="15.1495"
+                fill="none"
+                stroke="#000000"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
+                stroke-width="3.6"
+            />
+        </g>
+        <g clip-path="url(#elR)">
+            <circle
+                class="g-aikit-mascot-listening-ci-ring"
+                cx="90.897"
+                cy="29.794"
+                r="15.1495"
+                fill="none"
+                stroke="#000000"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
+                stroke-width="3.6"
+            />
+            <circle
+                class="g-aikit-mascot-listening-ci-ring"
+                cx="90.897"
+                cy="29.794"
+                r="15.1495"
+                fill="none"
+                stroke="#000000"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
+                stroke-width="3.6"
+            />
+            <circle
+                class="g-aikit-mascot-listening-ci-ring"
+                cx="90.897"
+                cy="29.794"
+                r="15.1495"
+                fill="none"
+                stroke="#000000"
+                style="stroke: var(--g-aikit-mascot-pupil-color, #000000)"
+                stroke-width="3.6"
+            />
+        </g>
+    </g>
+</svg>

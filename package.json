@@ -728,7 +728,9 @@
     "playwright:clear-cache": "rm -rf ./playwright/.cache",
     "playwright:docker": "./playwright/run-docker-command.sh npm run playwright --",
     "playwright:docker:update": "./playwright/run-docker-command.sh npm run playwright:update --",
-    "playwright:docker:clear-cache": "./playwright/run-docker-command.sh clear-cache"
+    "playwright:docker:clear-cache": "./playwright/run-docker-command.sh clear-cache",
+    "generate:mascot": "node scripts/generate-mascot-assets.js",
+    "generate:mascot:check": "node scripts/generate-mascot-assets.js --check"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.5",
@@ -753,6 +755,8 @@
     "@storybook/addon-webpack5-compiler-babel": "^3.0.6",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/react-webpack5": "^9.0.5",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

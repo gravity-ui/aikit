@@ -1,0 +1,111 @@
+<!-- Gravity mascot artwork -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-10 -12 141 84"
+    width="141"
+    height="84"
+    class="g-aikit-mascot-speaking"
+>
+    <defs>
+        <radialGradient
+            id="zk-speaking"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
+            ></stop>
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-mascot-speaking-sr {
+            animation: g-aikit-mascot-speaking-readScan 2.2s linear infinite;
+        }
+        @keyframes g-aikit-mascot-speaking-readScan {
+            0% {
+                transform: translate(-4.5px, -3px);
+            }
+            18% {
+                transform: translate(4.5px, -3px);
+            }
+            21% {
+                transform: translate(-4.5px, 0);
+            }
+            39% {
+                transform: translate(4.5px, 0);
+            }
+            42% {
+                transform: translate(-4.5px, 3px);
+            }
+            60% {
+                transform: translate(4.5px, 3px);
+            }
+            63% {
+                transform: translate(-4.5px, -3px);
+            }
+            100% {
+                transform: translate(-4.5px, -3px);
+            }
+        }
+        .g-aikit-mascot-speaking-sm {
+            animation: g-aikit-mascot-speaking-mutter 0.28s ease-in-out infinite;
+        }
+        @keyframes g-aikit-mascot-speaking-mutter {
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0);
+            }
+            50% {
+                transform: translate(0.64px, 1.6px) rotate(1.44deg);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-speaking * {
+                animation: none;
+            }
+        }
+    </style>
+    <g class="g-aikit-mascot-speaking-sm">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-speaking)" />
+        <circle
+            cx="30.298"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <circle
+            cx="90.897"
+            cy="29.794"
+            r="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <g class="g-aikit-mascot-speaking-sr">
+            <circle
+                cx="30.298"
+                cy="29.794"
+                r="7.5752"
+                fill="#000000"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+            />
+            <circle
+                cx="90.897"
+                cy="29.794"
+                r="7.5752"
+                fill="#000000"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+            />
+        </g>
+    </g>
+</svg>

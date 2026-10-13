@@ -1,0 +1,27 @@
+@use '../../../styles/variables';
+
+.#{variables.$ns}chat-container__default-mascot {
+    display: block;
+    max-width: 100%;
+
+    svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    &_view_hero {
+        width: var(--g-aikit-mascot-hero-size, 8rem);
+        height: var(--g-aikit-mascot-hero-size, 8rem);
+    }
+
+    &_view_chat {
+        width: var(--g-aikit-mascot-chat-size, 4rem);
+        height: var(--g-aikit-mascot-chat-size, 4rem);
+    }
+
+    // Override the animations embedded in SVG files for static story fixtures.
+    &#{&}_animation_off * {
+        animation: none;
+    }
+}

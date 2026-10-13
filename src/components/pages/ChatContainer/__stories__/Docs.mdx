@@ -12,3 +12,15 @@ For flat copy overrides, use the **`texts`** prop (`ChatContainerTexts`); see th
 
 <Canvas of={Stories.Playground} />
 <Controls of={Stories.Playground} />
+
+## Mascot colors
+
+Set `--g-aikit-mascot-body-center-color`, `--g-aikit-mascot-body-edge-color`, `--g-aikit-mascot-eye-color`, and `--g-aikit-mascot-pupil-color` on the chat container or an ancestor.
+The controls below update those variables live. Send a message to see the same palette
+on the chat mascot.
+
+<Canvas of={Stories.MascotColors} />
+<Controls
+    of={Stories.MascotColors}
+    include={['bodyCenterColor', 'bodyEdgeColor', 'eyeColor', 'pupilColor']}
+/>

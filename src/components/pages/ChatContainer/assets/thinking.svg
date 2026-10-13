@@ -1,0 +1,115 @@
+<!-- Gravity mascot artwork -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-7 -37.5 134.6 134.6"
+    width="135"
+    height="135"
+    class="g-aikit-mascot-thinking"
+>
+    <defs>
+        <radialGradient
+            id="zk-thinking"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
+            ></stop>
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-mascot-thinking-spin {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: g-aikit-mascot-thinking-spin 1.8s infinite;
+        }
+        @keyframes g-aikit-mascot-thinking-spin {
+            0% {
+                transform: rotate(0);
+                animation-timing-function: cubic-bezier(0.22, 0.7, 0.3, 1);
+            }
+            25% {
+                transform: rotate(196deg);
+                animation-timing-function: cubic-bezier(0.4, 0, 0.25, 1);
+            }
+            41% {
+                transform: rotate(180deg);
+                animation-timing-function: linear;
+            }
+            50% {
+                transform: rotate(180deg);
+                animation-timing-function: cubic-bezier(0.22, 0.7, 0.3, 1);
+            }
+            75% {
+                transform: rotate(376deg);
+                animation-timing-function: cubic-bezier(0.4, 0, 0.25, 1);
+            }
+            91% {
+                transform: rotate(360deg);
+                animation-timing-function: linear;
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-thinking-spin {
+                animation: none;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-thinking * {
+                animation: none;
+            }
+        }
+    </style>
+    <g class="g-aikit-mascot-thinking-spin">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-thinking)" />
+        <rect
+            x="75.748"
+            y="14.6445"
+            width="30.299"
+            height="30.299"
+            rx="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <rect
+            x="15.1484"
+            y="14.6445"
+            width="30.299"
+            height="30.299"
+            rx="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <rect
+            x="22.7227"
+            y="22.2188"
+            width="15.1504"
+            height="15.1504"
+            rx="7.57519"
+            fill="#000000"
+            style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+        />
+        <rect
+            x="83.3223"
+            y="22.2188"
+            width="15.1504"
+            height="15.1504"
+            rx="7.57519"
+            fill="#000000"
+            style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+        />
+    </g>
+</svg>

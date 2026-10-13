@@ -1,0 +1,196 @@
+<!-- Gravity mascot artwork -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-10 -10 141 80"
+    width="141"
+    height="80"
+    class="g-aikit-mascot-sleeping"
+>
+    <defs>
+        <radialGradient
+            id="zk-sleeping"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
+            ></stop>
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-mascot-sleeping-sd {
+            animation: g-aikit-mascot-sleeping-slpDrift 5.9s ease-in-out infinite;
+        }
+        @keyframes g-aikit-mascot-sleeping-slpDrift {
+            0%,
+            100% {
+                transform: translateX(-2.5px);
+            }
+            50% {
+                transform: translateX(2.5px);
+            }
+        }
+        .g-aikit-mascot-sleeping-sb {
+            transform-box: fill-box;
+            transform-origin: 50% 70%;
+            animation: g-aikit-mascot-sleeping-slpBob 4.6s ease-in-out infinite;
+        }
+        @keyframes g-aikit-mascot-sleeping-slpBob {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(2px);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-sleeping-sd,
+            .g-aikit-mascot-sleeping-sb {
+                animation: none;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-sleeping * {
+                animation: none;
+            }
+        }
+    </style>
+    <defs>
+        <clipPath id="sClipL">
+            <rect x="10.30" y="26.52" width="40" height="6.55" rx="6.5">
+                <animate
+                    attributeName="height"
+                    values="6.55;3.51;6.55"
+                    dur="4.2s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+                <animate
+                    attributeName="y"
+                    values="26.52;28.04;26.52"
+                    dur="4.2s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+            </rect>
+        </clipPath>
+        <clipPath id="sClipR">
+            <rect x="70.90" y="25.93" width="40" height="7.73" rx="6.5">
+                <animate
+                    attributeName="height"
+                    values="7.73;4.14;7.73"
+                    dur="5s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+                <animate
+                    attributeName="y"
+                    values="25.93;27.72;25.93"
+                    dur="5s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;0.5;1"
+                    keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+                />
+            </rect>
+        </clipPath>
+    </defs>
+    <g class="g-aikit-mascot-sleeping-sb">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-sleeping)" />
+        <rect
+            x="10.30"
+            y="26.52"
+            width="40"
+            height="6.55"
+            rx="6.5"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        >
+            <animate
+                attributeName="height"
+                values="6.55;3.51;6.55"
+                dur="4.2s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+            <animate
+                attributeName="y"
+                values="26.52;28.04;26.52"
+                dur="4.2s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+        </rect>
+        <rect
+            x="70.90"
+            y="25.93"
+            width="40"
+            height="7.73"
+            rx="6.5"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        >
+            <animate
+                attributeName="height"
+                values="7.73;4.14;7.73"
+                dur="5s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+            <animate
+                attributeName="y"
+                values="25.93;27.72;25.93"
+                dur="5s"
+                repeatCount="indefinite"
+                calcMode="spline"
+                keyTimes="0;0.5;1"
+                keySplines="0.42 0 0.58 1;0.42 0 0.58 1"
+            />
+        </rect>
+        <g clip-path="url(#sClipL)">
+            <g class="g-aikit-mascot-sleeping-sd">
+                <circle
+                    cx="30.298"
+                    cy="29.794"
+                    r="7.5752"
+                    fill="#000000"
+                    style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+                />
+            </g>
+        </g>
+        <g clip-path="url(#sClipR)">
+            <g class="g-aikit-mascot-sleeping-sd">
+                <circle
+                    cx="90.897"
+                    cy="29.794"
+                    r="7.5752"
+                    fill="#000000"
+                    style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+                />
+            </g>
+        </g>
+    </g>
+</svg>

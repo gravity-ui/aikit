@@ -1,0 +1,142 @@
+<!-- Gravity mascot artwork -->
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="-12 -26 145 100"
+    width="145"
+    height="100"
+    class="g-aikit-mascot-done"
+>
+    <defs>
+        <radialGradient
+            id="zk-done"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(26.726 5.134) rotate(33.6363) scale(86.555 72.625)"
+        >
+            <stop
+                offset="0.0287184"
+                stop-color="#FFFF00"
+                style="stop-color: var(--g-aikit-mascot-body-center-color, #ffff00)"
+            ></stop>
+            <stop
+                offset="1"
+                stop-color="#FF3377"
+                style="stop-color: var(--g-aikit-mascot-body-edge-color, #ff3377)"
+            />
+        </radialGradient>
+    </defs>
+    <style>
+        .g-aikit-mascot-done-pb {
+            transform-box: fill-box;
+            transform-origin: 50% 100%;
+            animation: g-aikit-mascot-done-popBody 600ms both;
+        }
+        .g-aikit-mascot-done-pe {
+            animation: g-aikit-mascot-done-popEyes 600ms cubic-bezier(0.35, 0.1, 0.25, 1) both;
+        }
+        @keyframes g-aikit-mascot-done-popBody {
+            0% {
+                transform: translateY(0) scale(1, 1);
+                animation-timing-function: cubic-bezier(0.3, 0.6, 0.2, 1);
+            }
+            18% {
+                transform: translateY(-16px) scale(0.98, 1.05);
+                animation-timing-function: cubic-bezier(0.4, 0, 0.5, 1);
+            }
+            40% {
+                transform: translateY(0) scale(1.07, 0.9);
+                animation-timing-function: cubic-bezier(0.3, 0.7, 0.3, 1);
+            }
+            58% {
+                transform: translateY(-5.1px) scale(0.99, 1.02);
+                animation-timing-function: cubic-bezier(0.4, 0, 0.4, 1);
+            }
+            76% {
+                transform: translateY(0) scale(1.02, 0.99);
+            }
+            100% {
+                transform: translateY(0) scale(1, 1);
+            }
+        }
+        @keyframes g-aikit-mascot-done-popEyes {
+            0% {
+                transform: translateY(0);
+            }
+            18% {
+                transform: translateY(5.72px);
+            }
+            40% {
+                transform: translateY(-4.4px);
+            }
+            55% {
+                transform: translateY(6.6px);
+            }
+            70% {
+                transform: translateY(-3.74px);
+            }
+            83% {
+                transform: translateY(1.98px);
+            }
+            92% {
+                transform: translateY(-0.77px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-done-pb,
+            .g-aikit-mascot-done-pe {
+                animation: none;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .g-aikit-mascot-done * {
+                animation: none;
+            }
+        }
+    </style>
+    <g class="g-aikit-mascot-done-pb">
+        <rect width="120.691" height="59.588" rx="29.794" fill="url(#zk-done)" />
+        <rect
+            x="75.748"
+            y="14.6445"
+            width="30.299"
+            height="30.299"
+            rx="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <rect
+            x="15.1484"
+            y="14.6445"
+            width="30.299"
+            height="30.299"
+            rx="15.1495"
+            fill="#FFFFFF"
+            style="fill: var(--g-aikit-mascot-eye-color, #ffffff)"
+        />
+        <g class="g-aikit-mascot-done-pe">
+            <rect
+                x="22.7227"
+                y="22.2188"
+                width="15.1504"
+                height="15.1504"
+                rx="7.57519"
+                fill="#000000"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+            />
+            <rect
+                x="83.3223"
+                y="22.2188"
+                width="15.1504"
+                height="15.1504"
+                rx="7.57519"
+                fill="#000000"
+                style="fill: var(--g-aikit-mascot-pupil-color, #000000)"
+            />
+        </g>
+    </g>
+</svg>
