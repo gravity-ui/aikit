@@ -30,6 +30,8 @@ $block: '.#{variables.$ns}markdown-renderer';
         > svg {
             display: block;
             height: auto;
+            // YFM's max-height: fit-content collapses inline diagrams in WebKit.
+            max-height: none;
         }
     }
 

@@ -33,12 +33,14 @@ inside `AssistantMessage` and `ChatContainer` messages:
 
 ````tsx
 const content = [
-  'Resource topology:',
+  'AIKit message rendering:',
   '',
   '```mermaid',
   'graph TD',
-  '    Folder[Project folder] --> Cluster[Production cluster]',
-  '    Cluster --> Zone[Zone B]',
+  '    ChatContainer --> ChatContent',
+  '    ChatContent --> MessageList',
+  '    MessageList --> AssistantMessage',
+  '    AssistantMessage --> MarkdownRenderer',
   '```',
 ].join('\n');
 
