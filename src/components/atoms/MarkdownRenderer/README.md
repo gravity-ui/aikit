@@ -59,7 +59,8 @@ A subsequent valid update renders normally. This also works with
 `shouldParseIncompleteMarkdown` enabled. Server rendering shows the source block.
 
 Diagrams use Mermaid's strict security mode. Diagram directives cannot override the
-host theme or security settings, and click handlers are not enabled.
+host theme or security settings. JavaScript click callbacks are disabled. Diagram links
+follow `openLinksInNewTab`, including its same-document anchor exceptions.
 
 ### MDX components
 

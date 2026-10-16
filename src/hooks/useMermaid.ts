@@ -2,10 +2,15 @@ import {type RefObject, useContext, useEffect, useRef} from 'react';
 
 import {ThemeContext, getThemeType} from '@gravity-ui/uikit';
 
+import {applyNewTabLinkAttributes} from '../utils/markdownLinks';
 import {MARKDOWN_MERMAID_CLASS} from '../utils/markdownMermaidPlugin';
 import {renderMermaid} from '../utils/renderMermaid';
 
-export function useMermaid(containerRef: RefObject<HTMLDivElement | null>, html: string) {
+export function useMermaid(
+    containerRef: RefObject<HTMLDivElement | null>,
+    html: string,
+    openLinksInNewTab = false,
+) {
     const themeContext = useContext(ThemeContext);
     const theme = getThemeType(themeContext?.themeValue ?? 'light');
     const cacheRef = useRef(new Map<string, string>());
@@ -36,6 +41,9 @@ export function useMermaid(containerRef: RefObject<HTMLDivElement | null>, html:
             const diagram = document.createElement('div');
             diagram.className = `${MARKDOWN_MERMAID_CLASS}-diagram`;
             diagram.innerHTML = svg;
+            if (openLinksInNewTab) {
+                applyNewTabLinkAttributes(diagram);
+            }
             const svgElement = diagram.querySelector('svg');
             const width = svgElement?.viewBox.baseVal.width;
             if (svgElement && width) {
@@ -88,5 +96,5 @@ export function useMermaid(containerRef: RefObject<HTMLDivElement | null>, html:
             window.clearTimeout(timeout);
             cleanups.forEach((cleanup) => cleanup());
         };
-    }, [containerRef, html, theme]);
+    }, [containerRef, html, theme, openLinksInNewTab]);
 }

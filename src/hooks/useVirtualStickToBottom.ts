@@ -3,6 +3,7 @@ import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {useListCallbackRef} from 'react-window';
 
 import type {ChatStatus} from '../types';
+import {observeScrollContent} from '../utils/observeScrollContent';
 
 const SCROLL_THRESHOLD = 10;
 // Number of animation frames over which a scroll correction is re-applied. react-window measures
@@ -197,21 +198,15 @@ export function useVirtualStickToBottom({
         return cancelPendingScroll;
     }, [listApi, pinToBottom, cancelPendingScroll]);
 
-    // Re-pin when the scroll viewport itself is resized - typically the on-screen keyboard opening
-    // on mobile and shrinking the chat. The browser keeps `scrollTop`, so the last row would
-    // otherwise end up below the fold.
+    // Re-pin after delayed row measurements (including diagrams) and viewport changes.
+    // pinToBottom preserves user scroll intent and the existing prepend guard.
     useEffect(() => {
         const element = listApi?.element;
         if (!element || typeof ResizeObserver === 'undefined') {
             return undefined;
         }
 
-        const observer = new ResizeObserver(() => pinToBottom());
-        observer.observe(element);
-
-        return () => {
-            observer.disconnect();
-        };
+        return observeScrollContent(element, pinToBottom);
     }, [listApi, pinToBottom]);
 
     // Preserve the viewport when older messages are prepended (load previous) so the list doesn't
