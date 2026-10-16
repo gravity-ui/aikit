@@ -2,6 +2,7 @@
  * Dark theme
  */
 
+.g-root_theme_dark,
 [data-theme='dark'] {
     --g-aikit-bg-secondary: #2a2a2a;
     --g-aikit-bg-message-user: #0066cc;
