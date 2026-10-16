@@ -11,6 +11,28 @@ $block: '.#{variables.$ns}markdown-renderer';
     max-width: 100%;
     min-width: 0;
 
+    &__mermaid {
+        max-width: 100%;
+        min-width: 0;
+        margin-block: 16px;
+        overflow-x: auto;
+        @include mixins.scroll-contain-x;
+
+        pre[hidden] {
+            display: none;
+        }
+    }
+
+    &__mermaid-diagram {
+        width: max-content;
+        min-width: 100%;
+
+        > svg {
+            display: block;
+            height: auto;
+        }
+    }
+
     /* Scroll container injected by markdownTableWrapPlugin; text outside stays fixed */
     &__table-wrap {
         width: 100%;

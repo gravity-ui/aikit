@@ -5,6 +5,7 @@ A MarkdownRenderer component for rendering Yandex Flavored Markdown (YFM) conten
 ## Features
 
 - **YFM Support**: Renders Yandex Flavored Markdown content
+- **Mermaid Diagrams**: Renders Mermaid code fences with theme support and readable source fallback
 - **HTML Output**: Converts markdown to HTML
 - **Transform Options**: Accepts custom options from the `@diplodoc/transform` package for advanced rendering control
 - **MDX Support**: Optionally renders embedded MDX/JSX components via `@diplodoc/mdx-extension` (see `mdxOptions`)
@@ -24,6 +25,39 @@ const transformOptions: OptionsType = {
 
 <MarkdownRenderer content="# Hello World" transformOptions={transformOptions} />;
 ```
+
+### Mermaid diagrams
+
+Code fences with the language `mermaid` render automatically as diagrams, including
+inside `AssistantMessage` and `ChatContainer` messages:
+
+````tsx
+const content = [
+  'Resource topology:',
+  '',
+  '```mermaid',
+  'graph TD',
+  '    Folder[Project folder] --> Cluster[Production cluster]',
+  '    Cluster --> Zone[Zone B]',
+  '```',
+].join('\n');
+
+<MarkdownRenderer content={content} />;
+````
+
+Mermaid loads lazily in the browser. Diagrams follow the nearest Gravity UI
+`ThemeProvider`, including theme changes; without a provider they use the light theme.
+Wide diagrams scroll horizontally inside the message to keep labels readable on narrow
+and mobile screens. Other message content does not scroll with them.
+
+During streaming, rapid updates are coalesced. Until rendering succeeds, the escaped
+Mermaid source remains visible. Incomplete or invalid syntax, unsupported diagram types,
+and loading failures leave that source block in place without affecting other content.
+A subsequent valid update renders normally. This also works with
+`shouldParseIncompleteMarkdown` enabled. Server rendering shows the source block.
+
+Diagrams use Mermaid's strict security mode. Diagram directives cannot override the
+host theme or security settings, and click handlers are not enabled.
 
 ### MDX components
 
@@ -135,11 +169,11 @@ instead of a static value. It is called with the concrete message and its return
 
 The component uses CSS variables for theming:
 
-| Variable                                           | Default | Description                                                                                                                                 |
-| -------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                                                                                                                  |
-| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps                                                                                             |
-| `--g-aikit-scroll-overscroll-behavior`             | `auto`  | Horizontal overscroll behavior of the table wrap; `contain` stops a scroll gesture from chaining to the page once the table reaches its end |
+| Variable                                           | Default | Description                                                                                                                                               |
+| -------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                                                                                                                                |
+| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps                                                                                                           |
+| `--g-aikit-scroll-overscroll-behavior`             | `auto`  | Horizontal overscroll behavior of table and diagram containers; `contain` stops a scroll gesture from chaining to the page once the table reaches its end |
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 

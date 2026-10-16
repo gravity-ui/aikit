@@ -9,6 +9,7 @@ import type {
 import type {MDXComponents} from 'mdx/types';
 
 import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
+import {useMermaid} from '../../../hooks/useMermaid';
 import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
@@ -136,6 +137,8 @@ function MarkdownRendererComponent({
         finalTransformOptions,
         enableMdx,
     );
+
+    useMermaid(containerRef, html);
 
     return (
         <Fragment>
