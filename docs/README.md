@@ -10,6 +10,7 @@ Start here if you're integrating AIKit into your application.
 - [**COMPONENTS.md**](./COMPONENTS.md) — catalog of all 49 components with one-line descriptions
 - [**HOOKS.md**](./HOOKS.md) — public hooks reference
 - [**THEMING.md**](./THEMING.md) — CSS variables, light/dark themes
+- [**THEMER.md**](./THEMER.md) — visual theme editor with a live chat preview and CSS/JSON import and export
 - [**I18N.md**](./I18N.md) — per-component localization (en, ru)
 - [**EXAMPLES.md**](./EXAMPLES.md) — streaming, file upload, custom message types, OpenAI integration
 - [**TROUBLESHOOTING.md**](./TROUBLESHOOTING.md) — peer-deps, theming, markdown rendering FAQs

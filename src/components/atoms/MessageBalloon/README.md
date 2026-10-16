@@ -29,8 +29,10 @@ import {MessageBalloon} from '@/components/atoms/MessageBalloon';
 
 The component uses CSS variables for theming:
 
-| Variable                    | Description                             |
-| --------------------------- | --------------------------------------- |
-| `--g-color-base-info-light` | Background color of the message balloon |
-| `--g-spacing-2`             | Vertical padding                        |
-| `--g-spacing-3`             | Horizontal padding and border radius    |
+| Variable                               | Description                                                    |
+| -------------------------------------- | -------------------------------------------------------------- |
+| `--g-aikit-message-balloon-background` | Background color; defaults to `var(--g-color-base-info-light)` |
+| `--g-aikit-message-balloon-color`      | Text color; defaults to `inherit`                              |
+| `--g-color-base-info-light`            | Default background color of the message balloon                |
+| `--g-spacing-2`                        | Vertical padding                                               |
+| `--g-spacing-3`                        | Horizontal padding and border radius                           |

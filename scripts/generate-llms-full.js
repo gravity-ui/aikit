@@ -22,6 +22,7 @@ const SOURCES = [
     'docs/ARCHITECTURE.md',
     'docs/COMPONENTS.md',
     'docs/THEMING.md',
+    'docs/THEMER.md',
     'docs/HOOKS.md',
     'docs/I18N.md',
     'docs/EXAMPLES.md',

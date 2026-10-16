@@ -1,0 +1,344 @@
+.aikit-themer {
+    min-height: 100vh;
+    background: var(--g-color-base-background);
+    color: var(--g-color-text-primary);
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 36px;
+        border-bottom: 1px solid var(--g-color-line-generic);
+    }
+
+    &__brand,
+    &__actions,
+    &__panel-heading,
+    &__preview-toolbar,
+    &__preview-controls,
+    &__dialog-heading,
+    &__dialog-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__brand {
+        gap: 10px;
+    }
+    &__logo {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: var(--g-color-base-brand);
+        color: var(--g-color-text-brand-contrast);
+    }
+    &__eyebrow {
+        font-size: 10px;
+        font-weight: 650;
+        letter-spacing: 1.5px;
+        color: var(--g-color-text-secondary);
+    }
+    &__intro {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 32px 36px 28px;
+    }
+    &__intro h1 {
+        font-size: 32px;
+        line-height: 1.2;
+        font-weight: 600;
+        letter-spacing: -1px;
+        margin: 10px 0;
+    }
+    &__intro p {
+        color: var(--g-color-text-secondary);
+        margin: 0;
+    }
+    &__workspace {
+        display: grid;
+        grid-template-columns: 360px minmax(0, 1fr);
+        margin: 0 36px 32px;
+        border: 1px solid var(--g-color-line-generic);
+        border-radius: 16px;
+        overflow: hidden;
+        min-height: 760px;
+    }
+    &__editor {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        border-inline-end: 1px solid var(--g-color-line-generic);
+    }
+    &__panel-heading {
+        justify-content: space-between;
+        padding: 20px;
+    }
+    &__tabs {
+        display: flex;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--g-color-line-generic);
+    }
+    &__tabs button {
+        flex: 1;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        color: var(--g-color-text-secondary);
+        background: none;
+        padding: 12px 4px;
+        cursor: pointer;
+        font: inherit;
+    }
+    &__tabs button[aria-pressed='true'] {
+        color: var(--g-color-text-primary);
+        border-color: var(--g-color-line-brand);
+        font-weight: 600;
+    }
+    &__settings {
+        padding: 24px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        max-height: 700px;
+        overflow-y: auto;
+    }
+    &__section-title {
+        font-size: 14px;
+        font-weight: 600;
+    }
+    &__presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    &__presets > button:not(.g-button) {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border: 1px solid var(--g-color-line-generic);
+        border-radius: 8px;
+        background: none;
+        color: inherit;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    &__presets span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    &__hint {
+        color: var(--g-color-text-secondary);
+        font-size: 12px;
+        line-height: 1.5;
+        margin: 0;
+    }
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 13px;
+        text-transform: none;
+    }
+    &__color-field {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    &__color-field > input {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        border: 1px solid var(--g-color-line-generic);
+        padding: 3px;
+        background: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    &__token-field > code {
+        font-size: 10px;
+        color: var(--g-color-text-secondary);
+        overflow-wrap: anywhere;
+        display: block;
+        margin-top: 5px;
+    }
+    &__type-style {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-top: 16px;
+        border-top: 1px solid var(--g-color-line-generic);
+    }
+    &__type-style > code {
+        color: var(--g-color-text-secondary);
+        font-size: 12px;
+    }
+    &__panel-footer {
+        padding: 16px 20px;
+        color: var(--g-color-text-secondary);
+        font-size: 11px;
+        margin-top: auto;
+        border-top: 1px solid var(--g-color-line-generic);
+    }
+    &__preview {
+        min-width: 0;
+        background: var(--g-color-base-generic-ultralight);
+        padding: 20px 24px;
+    }
+    &__preview-toolbar {
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    &__live {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    &__live > span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--g-color-text-positive);
+    }
+    &__preview-controls {
+        justify-content: space-between;
+        margin: 20px 0;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    &__stages {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+        max-width: 940px;
+        margin: 0 auto;
+    }
+    &__stages_both {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: none;
+    }
+    &__stage {
+        min-width: 0;
+    }
+    &__stages_mobile &__stage {
+        width: 375px;
+        max-width: 100%;
+        justify-self: center;
+    }
+    &__stage-label {
+        text-transform: uppercase;
+        color: var(--g-color-text-secondary);
+        letter-spacing: 1px;
+        font-size: 10px;
+        margin: 0 0 10px 4px;
+    }
+    &__stage > .aikit-themer-preview {
+        border-radius: 14px;
+        border: 1px solid var(--g-color-line-generic);
+        overflow: hidden;
+        box-shadow: 0 12px 40px var(--g-color-sfx-shadow);
+    }
+    &__chat-frame {
+        height: 610px;
+        position: relative;
+        overflow: hidden;
+        transform: translateZ(0);
+    }
+    &__chat-frame > .g-aikit-chat-container {
+        height: 100%;
+    }
+
+    &__notice {
+        margin: 0 36px 20px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: var(--g-color-base-info-light);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    &__dialog {
+        width: min(760px, calc(100vw - 48px));
+        box-sizing: border-box;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    &__dialog-heading {
+        justify-content: space-between;
+    }
+    &__dialog h2 {
+        margin: 0;
+        font-size: 24px;
+    }
+    &__dialog p {
+        margin: 0;
+        line-height: 1.5;
+    }
+    &__dialog textarea {
+        font-family: var(--g-font-family-monospace);
+        font-size: 12px;
+    }
+    &__dialog-actions {
+        justify-content: flex-end;
+    }
+    &__file {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    &__error {
+        color: var(--g-color-text-danger);
+    }
+
+    @media (max-width: 1100px) {
+        &__workspace {
+            grid-template-columns: 320px minmax(0, 1fr);
+            margin-inline: 20px;
+        }
+        &__stages_both {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (max-width: 760px) {
+        &__header {
+            padding: 16px;
+            flex-wrap: wrap;
+        }
+        &__intro {
+            padding: 24px 16px;
+        }
+        &__intro h1 {
+            font-size: 26px;
+        }
+        &__workspace {
+            grid-template-columns: minmax(0, 1fr);
+            margin: 0 12px 20px;
+        }
+        &__editor {
+            border-inline-end: 0;
+            border-bottom: 1px solid var(--g-color-line-generic);
+        }
+        &__settings {
+            max-height: 400px;
+        }
+        &__preview {
+            padding: 20px 12px;
+        }
+        &__notice {
+            margin-inline: 12px;
+        }
+    }
+}
