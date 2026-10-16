@@ -25,6 +25,7 @@ import {
     exportThemeCss,
     exportThemeJson,
     importTheme,
+    parseFontDraft,
     scopeThemeCss,
     updatePalette,
 } from './theme';
@@ -81,6 +82,37 @@ function ValueField({
                         ).test(next)
                     ) {
                         onChange(next);
+                    }
+                }}
+            />
+        </label>
+    );
+}
+
+function FontField({
+    label,
+    value,
+    onChange,
+}: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+}) {
+    const [draft, setDraft] = useState(value);
+    useEffect(() => setDraft(value), [value]);
+    return (
+        <label className="aikit-themer__field">
+            <span>{label}</span>
+            <TextInput
+                controlProps={{'aria-label': label}}
+                value={draft}
+                validationState={parseFontDraft(draft) === undefined ? 'invalid' : undefined}
+                errorMessage="Enter a font name with matching quotes and no embedded quotes or backslashes."
+                onUpdate={(next) => {
+                    setDraft(next);
+                    const font = parseFontDraft(next);
+                    if (font !== undefined) {
+                        onChange(font);
                     }
                 }}
             />
@@ -364,24 +396,16 @@ export function Themer() {
                                     Typography is shared by both modes. Use a font available in your
                                     application.
                                 </p>
-                                <label className="aikit-themer__field">
-                                    <span>Interface font</span>
-                                    <TextInput
-                                        controlProps={{'aria-label': 'Interface font'}}
-                                        value={theme.gravity.typography.fontFamilies.sans.mainFont}
-                                        onUpdate={(value) => updateTypography('sans', value)}
-                                    />
-                                </label>
-                                <label className="aikit-themer__field">
-                                    <span>Code font</span>
-                                    <TextInput
-                                        controlProps={{'aria-label': 'Code font'}}
-                                        value={
-                                            theme.gravity.typography.fontFamilies.monospace.mainFont
-                                        }
-                                        onUpdate={(value) => updateTypography('monospace', value)}
-                                    />
-                                </label>
+                                <FontField
+                                    label="Interface font"
+                                    value={theme.gravity.typography.fontFamilies.sans.mainFont}
+                                    onChange={(value) => updateTypography('sans', value)}
+                                />
+                                <FontField
+                                    label="Code font"
+                                    value={theme.gravity.typography.fontFamilies.monospace.mainFont}
+                                    onChange={(value) => updateTypography('monospace', value)}
+                                />
                                 <div className="aikit-themer__section-title">Text styles</div>
                                 {(
                                     ['body-1', 'body-2', 'header-1', 'header-2', 'code-1'] as const

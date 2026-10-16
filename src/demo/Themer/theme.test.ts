@@ -5,6 +5,7 @@ import {
     exportThemeCss,
     exportThemeJson,
     importTheme,
+    parseFontDraft,
     scopeThemeCss,
     updatePalette,
 } from './theme';
@@ -62,8 +63,90 @@ describe('AIKit and Gravity theme exchange', () => {
 
     it('accepts an unmodified Gravity export and re-exports default themes', () => {
         const original = createTheme();
-        expect(importTheme(exportThemeJson(original)).aikit).toEqual({light: {}, dark: {}});
+        const restored = importTheme(exportThemeJson(original));
+        expect(restored.aikit).toEqual({light: {}, dark: {}});
+        expect(exportThemeCss(restored)).toBe(exportThemeCss(original));
         expect(() => importTheme(exportThemeCss(original))).not.toThrow();
+    });
+
+    it('preserves typography references and subsequent family edits through JSON', () => {
+        const theme = createTheme();
+        theme.gravity.typography.fontFamilies.sans = {
+            mainFont: 'Georgia',
+            fallbackFonts: ['serif'],
+        };
+        theme.gravity.typography.fontFamilies['additional-font-1'] = {
+            mainFont: 'Open Sans',
+            fallbackFonts: ['sans-serif'],
+        };
+        theme.gravity.typography.groups.header['font-family'] = 'additional-font-1';
+        const restored = importTheme(exportThemeJson(theme));
+        expect(exportThemeCss(restored)).toBe(exportThemeCss(theme));
+        restored.gravity.typography.fontFamilies.sans.mainFont = 'Arial';
+        const css = exportThemeCss(restored);
+        expect(declaration(css, '.g-root', '--g-font-family-sans')).toBe("'Arial', serif");
+        expect(declaration(css, '.g-root', '--g-text-body-font-family')).toBe(
+            'var(--g-font-family-sans)',
+        );
+        expect(declaration(css, '.g-root', '--g-text-code-font-family')).toBe(
+            'var(--g-font-family-monospace)',
+        );
+        expect(declaration(css, '.g-root', '--g-text-header-font-family')).toBe(
+            'var(--g-font-family-additional-font-1)',
+        );
+        expect(importTheme(exportThemeJson(restored)).gravity.typography).toEqual(
+            restored.gravity.typography,
+        );
+    });
+
+    it.each(['--g-color-base-brand', '--g-font-family-missing'])(
+        'rejects unusable typography references: %s',
+        (ref) => {
+            expect(() =>
+                importTheme(JSON.stringify({'--g-text-body-font-family': {value: "'Arial'", ref}})),
+            ).toThrow('Invalid font reference');
+        },
+    );
+
+    it.each(['sans', 'monospace'] as const)(
+        'keeps the last valid %s font while a quoted name is incomplete',
+        (family) => {
+            const theme = createTheme();
+            const original = theme.gravity.typography.fontFamilies[family].mainFont;
+            const input = "'Open Sans'";
+            for (let length = 1; length <= input.length; length++) {
+                const font = parseFontDraft(input.slice(0, length));
+                if (font !== undefined) {
+                    theme.gravity.typography.fontFamilies[family].mainFont = font;
+                }
+                expect(theme.gravity.typography.fontFamilies[family].mainFont).toBe(
+                    length === input.length ? 'Open Sans' : original,
+                );
+                expect(() => scopeThemeCss(exportThemeCss(theme))).not.toThrow();
+            }
+            expect(
+                importTheme(exportThemeJson(theme)).gravity.typography.fontFamilies[family],
+            ).toEqual(theme.gravity.typography.fontFamilies[family]);
+        },
+    );
+
+    it('normalizes complete font names and rejects unsafe or incomplete drafts', () => {
+        for (const draft of ['Open Sans', "'Open Sans'", '"Open Sans"', '  Open Sans  ']) {
+            expect(parseFontDraft(draft)).toBe('Open Sans');
+        }
+        for (const draft of [
+            '',
+            ' ',
+            "'",
+            '"',
+            "'Open Sans",
+            'Open Sans"',
+            "Font's",
+            'Font\\',
+            'Font\nName',
+        ]) {
+            expect(parseFontDraft(draft)).toBeUndefined();
+        }
     });
 
     it('applies common AIKit variables and later mode overrides in CSS order', () => {

@@ -3,9 +3,11 @@ import {
     createInternalPrivateColorReference,
     generateCSS,
     generateJSON,
+    getKeyFromCssFontVariable,
     isFontCssVariable,
     parseCSS,
     parseJSON,
+    parseTextCssVariable,
     updateBaseColor,
     updateUtilityColor,
 } from '@gravity-ui/uikit-themer';
@@ -27,6 +29,18 @@ const defaultJson = generateJSON({theme: DEFAULT_THEME, libraries: ['illustratio
 
 export function createTheme(): EditorTheme {
     return {gravity: structuredClone(DEFAULT_THEME), aikit: {light: {}, dark: {}}};
+}
+
+export function parseFontDraft(value: string): string | undefined {
+    let font = value.trim();
+    if (
+        (font.startsWith("'") && font.endsWith("'")) ||
+        (font.startsWith('"') && font.endsWith('"'))
+    ) {
+        font = font.slice(1, -1).trim();
+    }
+    // The upstream generator wraps font names in single quotes without escaping them.
+    return font && !/['"\\\r\n]/.test(font) ? font : undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -139,6 +153,31 @@ function removeEmptyPrivateColors(theme: GravityTheme) {
     }
 }
 
+function restoreFontReferences(theme: GravityTheme, json: JsonTheme) {
+    const groups = {...theme.typography.groups};
+    for (const [variable, entry] of Object.entries(json)) {
+        const text = parseTextCssVariable(variable);
+        if (
+            text &&
+            !('variant' in text) &&
+            text.property === 'font-family' &&
+            'value' in entry &&
+            entry.ref !== undefined
+        ) {
+            const family = getKeyFromCssFontVariable(entry.ref);
+            if (
+                !isFontCssVariable(entry.ref) ||
+                !Object.prototype.hasOwnProperty.call(theme.typography.fontFamilies, family)
+            ) {
+                throw new Error(`Invalid font reference for ${variable}.`);
+            }
+            // parseJSON currently reads the expanded value instead of the exported reference.
+            groups[text.group] = {...groups[text.group], 'font-family': family};
+        }
+    }
+    return {...theme, typography: {...theme.typography, groups}};
+}
+
 function importJson(source: string): EditorTheme {
     const json: unknown = JSON.parse(source);
     if (!isRecord(json) || !Object.keys(json).length) {
@@ -179,7 +218,7 @@ function importJson(source: string): EditorTheme {
     ) {
         throw new Error('The source does not contain theme variables.');
     }
-    theme.gravity = parseJSON(gravity);
+    theme.gravity = restoreFontReferences(parseJSON(gravity), gravity);
     theme.gravity.typography.fontImports = imports;
     removeEmptyPrivateColors(theme.gravity);
     return theme;
