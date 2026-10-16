@@ -9,8 +9,10 @@ import type {
 import type {MDXComponents} from 'mdx/types';
 
 import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
+import {useMermaid} from '../../../hooks/useMermaid';
 import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
+import {getNewTabLinkAttributes} from '../../../utils/markdownLinks';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
 
 import {MdxPortals} from './MdxPortals';
@@ -45,31 +47,6 @@ export interface MarkdownRendererProps {
     extraProps?: HTMLAttributes<HTMLDivElement>;
 }
 
-const ABSOLUTE_HTTP_URL_RE = /^(https?:)?\/\//i;
-
-const isSameDocumentAnchor = (href: string) => {
-    if (href.startsWith('#')) {
-        return true;
-    }
-
-    if (ABSOLUTE_HTTP_URL_RE.test(href) || typeof window === 'undefined') {
-        return false;
-    }
-
-    try {
-        const url = new URL(href, window.location.href);
-
-        return (
-            Boolean(url.hash) &&
-            url.origin === window.location.origin &&
-            url.pathname === window.location.pathname &&
-            url.search === window.location.search
-        );
-    } catch {
-        return false;
-    }
-};
-
 const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => {
     const rendererRules = md.renderer.rules;
     const defaultRender =
@@ -80,9 +57,11 @@ const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => 
 
     rendererRules.link_open = function (tokens, idx, options, env, self) {
         const href = tokens[idx].attrGet('href');
-        if (!href || !isSameDocumentAnchor(href)) {
-            tokens[idx].attrSet('target', '_blank');
-            tokens[idx].attrSet('rel', 'noopener noreferrer');
+        const attributes = getNewTabLinkAttributes(href);
+        if (attributes) {
+            for (const [name, value] of Object.entries(attributes)) {
+                tokens[idx].attrSet(name, value);
+            }
         }
 
         return defaultRender(tokens, idx, options, env, self);
@@ -136,6 +115,8 @@ function MarkdownRendererComponent({
         finalTransformOptions,
         enableMdx,
     );
+
+    useMermaid(containerRef, html, openLinksInNewTab);
 
     return (
         <Fragment>
