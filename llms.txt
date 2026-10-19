@@ -93,6 +93,7 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 ## Theming & i18n
 
 - [Theming Guide](https://github.com/gravity-ui/aikit/blob/main/docs/THEMING.md): `--g-aikit-*` CSS variables, light/dark themes, fallback chain to `--g-color-*`
+- [AIKit Themer](https://github.com/gravity-ui/aikit/blob/main/docs/THEMER.md): Visual theme editor, live AIKit preview, CSS and JSON import and export.
 - [I18N](https://github.com/gravity-ui/aikit/blob/main/docs/I18N.md): per-component localization (en, ru) via `@gravity-ui/i18n`
 
 ## Troubleshooting

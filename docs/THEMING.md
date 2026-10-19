@@ -1,5 +1,7 @@
 # Theming
 
+Use the [AIKit Themer](./THEMER.md) in Storybook to edit shared Gravity tokens and AIKit settings with a live chat preview, then export CSS or JSON.
+
 AIKit uses CSS variables for theming, in the `--g-aikit-*` namespace. Values fall back to Gravity UI's `--g-color-*` system so AIKit picks up your existing uikit theme automatically.
 
 ## CSS Setup
@@ -11,7 +13,7 @@ import '@gravity-ui/aikit/themes/common';
 import '@gravity-ui/aikit/themes/light'; // or '/dark'
 ```
 
-Switching between themes is done via `@gravity-ui/uikit`'s `<ThemeProvider>`, which writes `data-theme="light"` or `data-theme="dark"` onto a root element:
+Switching between themes is done via `@gravity-ui/uikit`'s `<ThemeProvider>`, which applies `.g-root_theme_light` or `.g-root_theme_dark` to the theme root. AIKit recognizes these classes and also retains its `data-theme` selectors for compatibility:
 
 ```tsx
 import {ThemeProvider} from '@gravity-ui/uikit';
