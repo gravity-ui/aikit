@@ -5,6 +5,7 @@ A MarkdownRenderer component for rendering Yandex Flavored Markdown (YFM) conten
 ## Features
 
 - **YFM Support**: Renders Yandex Flavored Markdown content
+- **Mermaid Diagrams**: Renders Mermaid code fences with theme support and readable source fallback
 - **HTML Output**: Converts markdown to HTML
 - **Transform Options**: Accepts custom options from the `@diplodoc/transform` package for advanced rendering control
 - **MDX Support**: Optionally renders embedded MDX/JSX components via `@diplodoc/mdx-extension` (see `mdxOptions`)
@@ -24,6 +25,56 @@ const transformOptions: OptionsType = {
 
 <MarkdownRenderer content="# Hello World" transformOptions={transformOptions} />;
 ```
+
+### Mermaid diagrams
+
+Mermaid is an optional peer dependency. Without `mermaidOptions`, fences labeled
+`mermaid` remain ordinary code blocks and Mermaid is neither required nor loaded.
+To enable diagrams, install `mermaid@^11.17.2` in your application and provide a
+stable loader. The same option is available on `AssistantMessage`, `MessageList`,
+and `ChatContainer`:
+
+```bash
+npm install mermaid@^11.17.2
+```
+
+````tsx
+const mermaidOptions = {load: () => import('mermaid')};
+
+const content = [
+  'AIKit message rendering:',
+  '',
+  '```mermaid',
+  'graph TD',
+  '    ChatContainer --> ChatContent',
+  '    ChatContent --> MessageList',
+  '    MessageList --> AssistantMessage',
+  '    AssistantMessage --> MarkdownRenderer',
+  '```',
+].join('\n');
+
+<MarkdownRenderer content={content} mermaidOptions={mermaidOptions} />;
+<ChatContainer messages={messages} mermaidOptions={mermaidOptions} />;
+````
+
+The application owns the import, so builds that do not use diagrams do not need to
+resolve Mermaid. Keep the options outside the component or memoize them. Remove
+`mermaidOptions` to disable diagrams again.
+
+Mermaid loads lazily in the browser. Diagrams follow the nearest Gravity UI
+`ThemeProvider`, including theme changes; without a provider they use the light theme.
+Wide diagrams scroll horizontally inside the message to keep labels readable on narrow
+and mobile screens. Other message content does not scroll with them.
+
+During streaming, rapid updates are coalesced. Until rendering succeeds, the escaped
+Mermaid source remains visible. Incomplete or invalid syntax, unsupported diagram types,
+and loading failures leave that source block in place without affecting other content.
+A subsequent valid update renders normally. This also works with
+`shouldParseIncompleteMarkdown` enabled. Server rendering shows the source block.
+
+Diagrams use Mermaid's strict security mode. Diagram directives cannot override the
+host theme or security settings. JavaScript click callbacks are disabled. Diagram links
+follow `openLinksInNewTab`, including its same-document anchor exceptions.
 
 ### MDX components
 
@@ -118,6 +169,7 @@ instead of a static value. It is called with the concrete message and its return
 | `className`                     | `string`                     | -        | -       | Additional CSS class                                                                                                                                                                                                    |
 | `qa`                            | `string`                     | -        | -       | QA/test identifier                                                                                                                                                                                                      |
 | `transformOptions`              | `OptionsType`                | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                                              |
+| `mermaidOptions`                | `MermaidOptions`             | -        | -       | Opt-in Mermaid loader; requires the optional `mermaid` peer dependency                                                                                                                                                  |
 | `shouldParseIncompleteMarkdown` | `boolean`                    | -        | `false` | Fix up unterminated markdown blocks (e.g. during streaming) before rendering                                                                                                                                            |
 | `openLinksInNewTab`             | `boolean`                    | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and relative same-document anchors with matching path and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
 | `mdxOptions`                    | `MarkdownRendererMdxOptions` | -        | -       | Enables MDX rendering via [`@diplodoc/mdx-extension`](https://www.npmjs.com/package/@diplodoc/mdx-extension). When provided, embedded MDX/JSX tags are replaced with the supplied React components. See fields below.   |
@@ -135,11 +187,11 @@ instead of a static value. It is called with the concrete message and its return
 
 The component uses CSS variables for theming:
 
-| Variable                                           | Default | Description                                                                                                                                 |
-| -------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                                                                                                                  |
-| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps                                                                                             |
-| `--g-aikit-scroll-overscroll-behavior`             | `auto`  | Horizontal overscroll behavior of the table wrap; `contain` stops a scroll gesture from chaining to the page once the table reaches its end |
+| Variable                                           | Default | Description                                                                                                                                               |
+| -------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--g-color-text-primary`                           | —       | Text color (via YFM theme)                                                                                                                                |
+| `--g-aikit-markdown-renderer-table-cell-max-width` | `240px` | Max width of table body cells before text wraps                                                                                                           |
+| `--g-aikit-scroll-overscroll-behavior`             | `auto`  | Horizontal overscroll behavior of table and diagram containers; `contain` stops a scroll gesture from chaining to the page once the table reaches its end |
 
 The component also imports CSS from the [`@diplodoc/transform`](https://github.com/diplodoc-platform/transform) package. Additional CSS variables are provided by that package.
 

@@ -19,7 +19,7 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
-import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../atoms/MarkdownRenderer';
 import {type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 
 import {MessageItem} from './MessageItem';
@@ -86,6 +86,7 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    mermaidOptions?: MermaidOptions;
     openMarkdownLinksInNewTab?: boolean;
     /** Grouped MDX/markdown rendering props (`mdxOptions`, `getMarkdownExtraProps`, `getMdxContext`). */
     mdxProps?: MdxProps<TContent>;
@@ -133,6 +134,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     messageRendererRegistry,
     transformOptions,
     shouldParseIncompleteMarkdown,
+    mermaidOptions,
     openMarkdownLinksInNewTab,
     mdxProps,
     showActionsOnHover,
@@ -200,6 +202,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                         messageRendererRegistry={messageRendererRegistry}
                         transformOptions={transformOptions}
                         shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                        mermaidOptions={mermaidOptions}
                         openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
                         mdxOptions={mdxProps?.mdxOptions}
                         getMarkdownExtraProps={mdxProps?.getMarkdownExtraProps}

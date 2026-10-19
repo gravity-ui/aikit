@@ -15,6 +15,7 @@ import type {
 import type {SuggestionsItem} from '../../../types/common';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
+import type {MermaidOptions} from '../../atoms/MarkdownRenderer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {HeaderProps} from '../../organisms/Header';
 import type {PromptInputProps} from '../../organisms/PromptInput';
@@ -81,6 +82,7 @@ export type MessageListConfig = Omit<
     | 'showActionsOnHover'
     | 'transformOptions'
     | 'openMarkdownLinksInNewTab'
+    | 'mermaidOptions'
     | 'mdxProps'
 >;
 
@@ -265,6 +267,8 @@ export interface ChatContainerProps {
     transformOptions?: OptionsType;
     /** Should parse incomplete markdown (e.g., during streaming) */
     shouldParseIncompleteMarkdown?: boolean;
+    /** Enables Mermaid diagrams with an application-provided lazy loader. */
+    mermaidOptions?: MermaidOptions;
     /** Open all markdown links rendered by the default message renderers in a new tab */
     openMarkdownLinksInNewTab?: boolean;
     /**

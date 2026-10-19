@@ -19,7 +19,7 @@ import {
     resolveMessageActions,
 } from '../../../utils';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
-import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../atoms/MarkdownRenderer';
 import {AssistantMessage} from '../AssistantMessage';
 import {UserMessage} from '../UserMessage';
 
@@ -32,6 +32,7 @@ export type MessageItemConfig<TContent extends TMessageContent = never> = {
     messageRendererRegistry?: MessageRendererRegistry;
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    mermaidOptions?: MermaidOptions;
     openMarkdownLinksInNewTab?: boolean;
     mdxOptions?: MarkdownRendererMdxOptions;
     getMarkdownExtraProps?: (
@@ -73,6 +74,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     messageRendererRegistry,
     transformOptions,
     shouldParseIncompleteMarkdown,
+    mermaidOptions,
     openMarkdownLinksInNewTab,
     mdxOptions,
     getMarkdownExtraProps,
@@ -110,6 +112,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 fileAttachments={message.fileAttachments}
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                mermaidOptions={mermaidOptions}
                 openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
                 mdxOptions={mdxOptions}
                 mdxContext={mdxContext}
@@ -142,6 +145,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 messageRendererRegistry={messageRendererRegistry}
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                mermaidOptions={mermaidOptions}
                 openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
                 mdxOptions={mdxOptions}
                 mdxContext={mdxContext}

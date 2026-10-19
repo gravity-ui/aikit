@@ -203,6 +203,7 @@ export function ChatContainer(props: ChatContainerProps) {
         contextIndicatorProps,
         transformOptions,
         shouldParseIncompleteMarkdown,
+        mermaidOptions,
         openMarkdownLinksInNewTab,
         mdxProps,
         messageListConfig,
@@ -521,6 +522,7 @@ export function ChatContainer(props: ChatContainerProps) {
             showActionsOnHover,
             transformOptions,
             shouldParseIncompleteMarkdown,
+            mermaidOptions,
             openMarkdownLinksInNewTab,
             mdxProps,
             qa:
@@ -550,6 +552,7 @@ export function ChatContainer(props: ChatContainerProps) {
             showActionsOnHover,
             transformOptions,
             shouldParseIncompleteMarkdown,
+            mermaidOptions,
             openMarkdownLinksInNewTab,
             mdxProps,
             messageListConfig,

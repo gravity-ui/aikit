@@ -12,7 +12,11 @@ import {
     createMessageRendererRegistry,
     registerMessageRenderer,
 } from '../../../utils/messageTypeRegistry';
-import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import {
+    MarkdownRenderer,
+    type MarkdownRendererMdxOptions,
+    type MermaidOptions,
+} from '../../atoms/MarkdownRenderer';
 import {ThinkingMessage} from '../ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
 
@@ -23,6 +27,7 @@ export function createDefaultMessageRegistry(
     mdxOptions?: MarkdownRendererMdxOptions,
     mdxContext?: Record<string, unknown>,
     markdownExtraProps?: HTMLAttributes<HTMLDivElement>,
+    mermaidOptions?: MermaidOptions,
 ): MessageRendererRegistry {
     const registry = createMessageRendererRegistry();
 
@@ -35,6 +40,7 @@ export function createDefaultMessageRegistry(
                     content={part.data.text}
                     transformOptions={transformOptions}
                     shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                    mermaidOptions={mermaidOptions}
                     openLinksInNewTab={openMarkdownLinksInNewTab}
                     mdxOptions={mdxOptions}
                     mdxContext={mdxContext}
@@ -65,6 +71,7 @@ export function createDefaultMessageRegistry(
             component: ({part}) => (
                 <ThinkingMessage
                     {...part.data}
+                    mermaidOptions={mermaidOptions}
                     openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
                     mdxOptions={mdxOptions}
                     mdxContext={mdxContext}

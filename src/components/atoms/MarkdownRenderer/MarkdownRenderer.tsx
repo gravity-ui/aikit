@@ -9,9 +9,14 @@ import type {
 import type {MDXComponents} from 'mdx/types';
 
 import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
+import {useMermaid} from '../../../hooks/useMermaid';
 import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
+import {getNewTabLinkAttributes} from '../../../utils/markdownLinks';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
+import type {MermaidOptions} from '../../../utils/renderMermaid';
+
+export type {MermaidOptions} from '../../../utils/renderMermaid';
 
 import {MdxPortals} from './MdxPortals';
 
@@ -39,36 +44,13 @@ export interface MarkdownRendererProps {
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     openLinksInNewTab?: boolean;
+    /** Enables Mermaid diagrams using the supplied lazy loader. Disabled by default. */
+    mermaidOptions?: MermaidOptions;
     mdxOptions?: MarkdownRendererMdxOptions;
     mdxContext?: Record<string, unknown>;
     /** Extra props forwarded to the root container `div` element. */
     extraProps?: HTMLAttributes<HTMLDivElement>;
 }
-
-const ABSOLUTE_HTTP_URL_RE = /^(https?:)?\/\//i;
-
-const isSameDocumentAnchor = (href: string) => {
-    if (href.startsWith('#')) {
-        return true;
-    }
-
-    if (ABSOLUTE_HTTP_URL_RE.test(href) || typeof window === 'undefined') {
-        return false;
-    }
-
-    try {
-        const url = new URL(href, window.location.href);
-
-        return (
-            Boolean(url.hash) &&
-            url.origin === window.location.origin &&
-            url.pathname === window.location.pathname &&
-            url.search === window.location.search
-        );
-    } catch {
-        return false;
-    }
-};
 
 const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => {
     const rendererRules = md.renderer.rules;
@@ -80,9 +62,11 @@ const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => 
 
     rendererRules.link_open = function (tokens, idx, options, env, self) {
         const href = tokens[idx].attrGet('href');
-        if (!href || !isSameDocumentAnchor(href)) {
-            tokens[idx].attrSet('target', '_blank');
-            tokens[idx].attrSet('rel', 'noopener noreferrer');
+        const attributes = getNewTabLinkAttributes(href);
+        if (attributes) {
+            for (const [name, value] of Object.entries(attributes)) {
+                tokens[idx].attrSet(name, value);
+            }
         }
 
         return defaultRender(tokens, idx, options, env, self);
@@ -96,6 +80,7 @@ function MarkdownRendererComponent({
     transformOptions,
     shouldParseIncompleteMarkdown = false,
     openLinksInNewTab = false,
+    mermaidOptions,
     mdxOptions,
     mdxContext,
     extraProps,
@@ -135,7 +120,10 @@ function MarkdownRendererComponent({
         closedContent,
         finalTransformOptions,
         enableMdx,
+        Boolean(mermaidOptions),
     );
+
+    useMermaid(containerRef, html, openLinksInNewTab, mermaidOptions);
 
     return (
         <Fragment>
@@ -170,6 +158,10 @@ export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, next
     }
 
     if (prevProps.openLinksInNewTab !== nextProps.openLinksInNewTab) {
+        return false;
+    }
+
+    if (prevProps.mermaidOptions?.load !== nextProps.mermaidOptions?.load) {
         return false;
     }
 

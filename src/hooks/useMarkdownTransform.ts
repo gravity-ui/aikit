@@ -18,10 +18,12 @@ export function useMarkdownTransform(
     content: string,
     options?: OptionsType,
     enableMdx = false,
+    enableMermaid = false,
 ): MarkdownTransformResult {
     const cacheRef = useRef<Map<string, string>>(new Map());
     const prevOptionsRef = useRef<OptionsType | undefined>(options);
 
+    const prevEnableMermaidRef = useRef(enableMermaid);
     const lastMdxResultRef = useRef<MarkdownTransformResult | null>(null);
 
     return useMemo(() => {
@@ -30,13 +32,14 @@ export function useMarkdownTransform(
         }
 
         const optionsChanged = !areOptionsEqual(prevOptionsRef.current, options);
-        if (optionsChanged) {
+        if (optionsChanged || prevEnableMermaidRef.current !== enableMermaid) {
+            prevEnableMermaidRef.current = enableMermaid;
             cacheRef.current.clear();
             lastMdxResultRef.current = null;
             prevOptionsRef.current = options;
         }
 
-        const transformOptions = mergeMarkdownTransformOptions(options);
+        const transformOptions = mergeMarkdownTransformOptions(options, enableMermaid);
 
         // MDX components (and their collected artifacts) can span multiple markdown
         // blocks, so the block-level caching used for streaming would break artifact
@@ -89,5 +92,5 @@ export function useMarkdownTransform(
         } catch {
             return {html: ''};
         }
-    }, [content, options, enableMdx]);
+    }, [content, options, enableMdx, enableMermaid]);
 }

@@ -5,6 +5,7 @@ import type {
     MarkdownIt,
     OptionsType,
 } from '@diplodoc/transform/lib/typings';
+import {Button, ThemeProvider} from '@gravity-ui/uikit';
 import {Meta, StoryFn, StoryObj} from '@storybook/react-webpack5';
 
 import {MarkdownRenderer, MarkdownRendererProps, useMdxContext} from '..';
@@ -13,6 +14,7 @@ import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 import {block} from '../../../../utils/cn';
 import {BaseMessage} from '../../../molecules/BaseMessage';
+import {AssistantMessage} from '../../../organisms/AssistantMessage';
 import type {MarkdownRendererMdxOptions} from '../MarkdownRenderer';
 
 import MDXDocs from './Docs.mdx';
@@ -428,4 +430,112 @@ export const WithExtraProps: StoryObj<typeof MarkdownRenderer> = {
         );
     },
     decorators: defaultDecorators,
+};
+
+const mermaidOptions = {load: () => import('mermaid')};
+
+const MERMAID_CONTENT = [
+    'Here is how AIKit renders a message:',
+    '',
+    '```mermaid',
+    'graph TD',
+    '    ChatContainer --> Header',
+    '    ChatContainer --> ChatContent',
+    '    ChatContent --> MessageList',
+    '    MessageList --> AssistantMessage',
+    '    AssistantMessage --> MarkdownRenderer[MarkdownRenderer<br/>formatted content]',
+    '```',
+    '',
+    'The rest of the **message** remains readable.',
+].join('\n');
+
+export const MermaidDisabled: Story = {
+    args: {content: MERMAID_CONTENT},
+    decorators: defaultDecorators,
+};
+
+export const WithMermaid: Story = {
+    args: {content: MERMAID_CONTENT, mermaidOptions},
+    decorators: defaultDecorators,
+};
+
+export const MermaidThemes: Story = {
+    render: () => (
+        <div style={{display: 'flex', flexWrap: 'wrap', gap: 24}}>
+            {(['light', 'dark'] as const).map((theme) => (
+                <ThemeProvider key={theme} theme={theme} scoped>
+                    <div style={{width: 320, maxWidth: '100%', padding: 16}}>
+                        <MarkdownRenderer
+                            content={MERMAID_CONTENT}
+                            mermaidOptions={mermaidOptions}
+                        />
+                    </div>
+                </ThemeProvider>
+            ))}
+        </div>
+    ),
+};
+
+export const MermaidInNarrowMessage: Story = {
+    render: () => (
+        <div style={{width: 280, maxWidth: '100%'}}>
+            <AssistantMessage
+                id="mermaid-example"
+                content={MERMAID_CONTENT}
+                mermaidOptions={mermaidOptions}
+            />
+        </div>
+    ),
+};
+
+export const MermaidInvalidSyntax: Story = {
+    args: {
+        mermaidOptions,
+        content: [
+            'This diagram has invalid syntax:',
+            '',
+            '```mermaid',
+            'graph TD',
+            '    AssistantMessage[Unclosed label',
+            '```',
+            '',
+            'Other diagrams still render:',
+            '',
+            MERMAID_CONTENT,
+        ].join('\n'),
+    },
+    decorators: defaultDecorators,
+};
+
+function StreamingMermaid() {
+    const [content, setContent] = useState('');
+    const [run, setRun] = useState(0);
+    useEffect(() => {
+        setContent('');
+        let length = 0;
+        const interval = setInterval(() => {
+            length += 5;
+            setContent(MERMAID_CONTENT.slice(0, length));
+            if (length >= MERMAID_CONTENT.length) {
+                clearInterval(interval);
+            }
+        }, 80);
+        return () => clearInterval(interval);
+    }, [run]);
+
+    return (
+        <div style={{width: 320, maxWidth: '100%'}}>
+            <Button onClick={() => setRun((value) => value + 1)}>Replay streaming</Button>
+            <AssistantMessage
+                mermaidOptions={mermaidOptions}
+                id="streaming-mermaid"
+                content={content}
+                shouldParseIncompleteMarkdown
+            />
+        </div>
+    );
+}
+
+export const MermaidStreaming: Story = {
+    render: () => <StreamingMermaid />,
 };
