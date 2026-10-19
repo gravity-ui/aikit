@@ -77,6 +77,7 @@ Second thinking block
 | `showStatusIndicator`       | `boolean`                 | -        | `true`    | Whether to show loader when status is "thinking"                                                                       |
 | `format`                    | `'plain' \| 'markdown'`   | -        | `'plain'` | How thinking content strings are rendered                                                                              |
 | `transformOptions`          | `OptionsType`             | -        | -         | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform); Used when `format` is `'markdown'` |
+| `mermaidOptions`            | `MermaidOptions`          | -        | -         | Opt-in Mermaid loader; requires the optional `mermaid` peer dependency                                                 |
 | `openMarkdownLinksInNewTab` | `boolean`                 | -        | `false`   | Open markdown links in a new tab when `format` is `'markdown'`, except hash-only and relative same-document anchors    |
 | `onCopyClick`               | `() => void`              | -        | -         | Custom copy handler. Takes priority over `enabledCopy`                                                                 |
 | `enabledCopy`               | `boolean`                 | -        | `false`   | Enable default copy functionality. Content is copied as-is (string) or joined with `\n\n` (array)                      |

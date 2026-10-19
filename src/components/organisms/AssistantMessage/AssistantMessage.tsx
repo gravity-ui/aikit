@@ -16,7 +16,7 @@ import {
     mergeMessageRendererRegistries,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
-import type {MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../atoms/MarkdownRenderer';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
 import {createDefaultMessageRegistry} from './defaultMessageTypeRegistry';
@@ -37,6 +37,7 @@ export type AssistantMessageProps<TContent extends TMessageContent = never> = Ba
         messageRendererRegistry?: MessageRendererRegistry;
         transformOptions?: OptionsType;
         shouldParseIncompleteMarkdown?: boolean;
+        mermaidOptions?: MermaidOptions;
         openMarkdownLinksInNewTab?: boolean;
         mdxOptions?: MarkdownRendererMdxOptions;
         mdxContext?: Record<string, unknown>;
@@ -57,6 +58,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
     messageRendererRegistry,
     transformOptions,
     shouldParseIncompleteMarkdown,
+    mermaidOptions,
     openMarkdownLinksInNewTab,
     mdxOptions,
     mdxContext,
@@ -76,6 +78,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             mdxOptions,
             mdxContext,
             markdownExtraProps,
+            mermaidOptions,
         );
         if (messageRendererRegistry) {
             return mergeMessageRendererRegistries(defaultRegistry, messageRendererRegistry);
@@ -86,6 +89,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
         messageRendererRegistry,
         transformOptions,
         shouldParseIncompleteMarkdown,
+        mermaidOptions,
         openMarkdownLinksInNewTab,
         mdxOptions,
         mdxContext,

@@ -1,5 +1,22 @@
 import {v4 as uuidv4} from 'uuid';
 
+/** Minimal renderer contract keeps Mermaid types optional for consumers. */
+interface MermaidRenderer {
+    initialize: (config: {
+        startOnLoad: boolean;
+        securityLevel: 'strict';
+        suppressErrorRendering: boolean;
+        theme: 'dark' | 'default';
+        secure: string[];
+    }) => void;
+    render: (id: string, source: string, container: Element) => Promise<{svg: string}>;
+}
+
+export interface MermaidOptions {
+    /** Enables diagrams and loads the optional Mermaid peer dependency on demand. */
+    load: () => Promise<{default: MermaidRenderer}>;
+}
+
 // Mermaid has global configuration. Serialize initialization and rendering so
 // diagrams in differently themed providers cannot change each other's theme.
 let renderQueue: Promise<unknown> = Promise.resolve();
@@ -8,12 +25,13 @@ export function renderMermaid(
     source: string,
     theme: 'light' | 'dark',
     isActive: () => boolean,
+    load: MermaidOptions['load'],
 ): Promise<string | undefined> {
     const result = renderQueue.then(async () => {
         if (!isActive()) {
             return undefined;
         }
-        const {default: mermaid} = await import('mermaid');
+        const {default: mermaid} = await load();
         if (!isActive()) {
             return undefined;
         }

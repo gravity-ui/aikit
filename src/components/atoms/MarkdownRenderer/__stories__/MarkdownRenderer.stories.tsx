@@ -432,6 +432,8 @@ export const WithExtraProps: StoryObj<typeof MarkdownRenderer> = {
     decorators: defaultDecorators,
 };
 
+const mermaidOptions = {load: () => import('mermaid')};
+
 const MERMAID_CONTENT = [
     'Here is how AIKit renders a message:',
     '',
@@ -447,8 +449,13 @@ const MERMAID_CONTENT = [
     'The rest of the **message** remains readable.',
 ].join('\n');
 
-export const WithMermaid: Story = {
+export const MermaidDisabled: Story = {
     args: {content: MERMAID_CONTENT},
+    decorators: defaultDecorators,
+};
+
+export const WithMermaid: Story = {
+    args: {content: MERMAID_CONTENT, mermaidOptions},
     decorators: defaultDecorators,
 };
 
@@ -458,7 +465,10 @@ export const MermaidThemes: Story = {
             {(['light', 'dark'] as const).map((theme) => (
                 <ThemeProvider key={theme} theme={theme} scoped>
                     <div style={{width: 320, maxWidth: '100%', padding: 16}}>
-                        <MarkdownRenderer content={MERMAID_CONTENT} />
+                        <MarkdownRenderer
+                            content={MERMAID_CONTENT}
+                            mermaidOptions={mermaidOptions}
+                        />
                     </div>
                 </ThemeProvider>
             ))}
@@ -469,13 +479,18 @@ export const MermaidThemes: Story = {
 export const MermaidInNarrowMessage: Story = {
     render: () => (
         <div style={{width: 280, maxWidth: '100%'}}>
-            <AssistantMessage id="mermaid-example" content={MERMAID_CONTENT} />
+            <AssistantMessage
+                id="mermaid-example"
+                content={MERMAID_CONTENT}
+                mermaidOptions={mermaidOptions}
+            />
         </div>
     ),
 };
 
 export const MermaidInvalidSyntax: Story = {
     args: {
+        mermaidOptions,
         content: [
             'This diagram has invalid syntax:',
             '',
@@ -512,6 +527,7 @@ function StreamingMermaid() {
         <div style={{width: 320, maxWidth: '100%'}}>
             <Button onClick={() => setRun((value) => value + 1)}>Replay streaming</Button>
             <AssistantMessage
+                mermaidOptions={mermaidOptions}
                 id="streaming-mermaid"
                 content={content}
                 shouldParseIncompleteMarkdown

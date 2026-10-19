@@ -28,10 +28,19 @@ const transformOptions: OptionsType = {
 
 ### Mermaid diagrams
 
-Code fences with the language `mermaid` render automatically as diagrams, including
-inside `AssistantMessage` and `ChatContainer` messages:
+Mermaid is an optional peer dependency. Without `mermaidOptions`, fences labeled
+`mermaid` remain ordinary code blocks and Mermaid is neither required nor loaded.
+To enable diagrams, install `mermaid@^11.17.2` in your application and provide a
+stable loader. The same option is available on `AssistantMessage`, `MessageList`,
+and `ChatContainer`:
+
+```bash
+npm install mermaid@^11.17.2
+```
 
 ````tsx
+const mermaidOptions = {load: () => import('mermaid')};
+
 const content = [
   'AIKit message rendering:',
   '',
@@ -44,8 +53,13 @@ const content = [
   '```',
 ].join('\n');
 
-<MarkdownRenderer content={content} />;
+<MarkdownRenderer content={content} mermaidOptions={mermaidOptions} />;
+<ChatContainer messages={messages} mermaidOptions={mermaidOptions} />;
 ````
+
+The application owns the import, so builds that do not use diagrams do not need to
+resolve Mermaid. Keep the options outside the component or memoize them. Remove
+`mermaidOptions` to disable diagrams again.
 
 Mermaid loads lazily in the browser. Diagrams follow the nearest Gravity UI
 `ThemeProvider`, including theme changes; without a provider they use the light theme.
@@ -155,6 +169,7 @@ instead of a static value. It is called with the concrete message and its return
 | `className`                     | `string`                     | -        | -       | Additional CSS class                                                                                                                                                                                                    |
 | `qa`                            | `string`                     | -        | -       | QA/test identifier                                                                                                                                                                                                      |
 | `transformOptions`              | `OptionsType`                | -        | -       | Options from [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package                                                                                                                              |
+| `mermaidOptions`                | `MermaidOptions`             | -        | -       | Opt-in Mermaid loader; requires the optional `mermaid` peer dependency                                                                                                                                                  |
 | `shouldParseIncompleteMarkdown` | `boolean`                    | -        | `false` | Fix up unterminated markdown blocks (e.g. during streaming) before rendering                                                                                                                                            |
 | `openLinksInNewTab`             | `boolean`                    | -        | `false` | Open rendered markdown links in a new tab, except hash-only links (`#local`) and relative same-document anchors with matching path and query. Adds `target="_blank"` and `rel="noopener noreferrer"` to matching links. |
 | `mdxOptions`                    | `MarkdownRendererMdxOptions` | -        | -       | Enables MDX rendering via [`@diplodoc/mdx-extension`](https://www.npmjs.com/package/@diplodoc/mdx-extension). When provided, embedded MDX/JSX tags are replaced with the supplied React components. See fields below.   |

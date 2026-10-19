@@ -6,7 +6,11 @@ import {Avatar, useMobile} from '@gravity-ui/uikit';
 import type {BaseMessageProps, FileAttachment} from '../../../types/messages';
 import {block, modsClassName} from '../../../utils/cn';
 import {FileIcon} from '../../atoms/FileIcon';
-import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import {
+    MarkdownRenderer,
+    type MarkdownRendererMdxOptions,
+    type MermaidOptions,
+} from '../../atoms/MarkdownRenderer';
 import {MessageBalloon} from '../../atoms/MessageBalloon';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
@@ -28,6 +32,7 @@ export type UserMessageProps = Pick<
     fileAttachments?: FileAttachment[];
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
+    mermaidOptions?: MermaidOptions;
     openMarkdownLinksInNewTab?: boolean;
     mdxOptions?: MarkdownRendererMdxOptions;
     mdxContext?: Record<string, unknown>;
@@ -55,6 +60,7 @@ export const UserMessage = (props: UserMessageProps) => {
         format = 'plain',
         transformOptions,
         shouldParseIncompleteMarkdown,
+        mermaidOptions,
         openMarkdownLinksInNewTab,
         mdxOptions,
         mdxContext,
@@ -85,6 +91,7 @@ export const UserMessage = (props: UserMessageProps) => {
                             content={content as string}
                             transformOptions={transformOptions}
                             shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                            mermaidOptions={mermaidOptions}
                             openLinksInNewTab={openMarkdownLinksInNewTab}
                             mdxOptions={mdxOptions}
                             mdxContext={mdxContext}

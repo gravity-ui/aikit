@@ -25,10 +25,13 @@ export function areOptionsEqual(prev?: OptionsType, next?: OptionsType): boolean
 }
 
 /**
- * Adds AIKit table and Mermaid plugins and restores @diplodoc/transform defaults.
+ * Adds the AIKit table and optional Mermaid plugins and restores @diplodoc/transform defaults.
  * Explicit `plugins` in transform options replace defaults — user plugins are appended after.
  */
-export function mergeMarkdownTransformOptions(options?: OptionsType): OptionsType {
+export function mergeMarkdownTransformOptions(
+    options?: OptionsType,
+    enableMermaid = false,
+): OptionsType {
     const userPlugins = options?.plugins ?? [];
 
     return {
@@ -36,7 +39,7 @@ export function mergeMarkdownTransformOptions(options?: OptionsType): OptionsTyp
         plugins: [
             markdownTableWrapPlugin,
             ...defaultTransformPlugins,
-            markdownMermaidPlugin,
+            ...(enableMermaid ? [markdownMermaidPlugin] : []),
             ...userPlugins,
         ],
     };

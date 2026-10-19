@@ -64,6 +64,7 @@ import {UserMessage} from '@gravity-ui/aikit';
 | `showActionsOnHover`            | `boolean`               | -        | `false`   | Show action buttons only on hover instead of always                                                                 |
 | `actions`                       | `BaseMessageAction[]`   | -        | -         | Array of action button configs (copy, edit, custom, etc.)                                                           |
 | `transformOptions`              | `OptionsType`           | -        | -         | Options passed to [@diplodoc/transform](https://github.com/diplodoc-platform/transform) for markdown rendering      |
+| `mermaidOptions`                | `MermaidOptions`        | -        | -         | Opt-in Mermaid loader; requires the optional `mermaid` peer dependency                                              |
 | `shouldParseIncompleteMarkdown` | `boolean`               | -        | -         | Allow incomplete markdown to be parsed (useful during streaming)                                                    |
 | `openMarkdownLinksInNewTab`     | `boolean`               | -        | `false`   | Open markdown links in a new tab when `format` is `'markdown'`, except hash-only and relative same-document anchors |
 | `className`                     | `string`                | -        | -         | Additional CSS class                                                                                                |

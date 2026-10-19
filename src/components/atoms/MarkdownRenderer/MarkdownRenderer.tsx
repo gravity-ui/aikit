@@ -14,6 +14,9 @@ import {useRemend} from '../../../hooks/useRemend';
 import {block} from '../../../utils/cn';
 import {getNewTabLinkAttributes} from '../../../utils/markdownLinks';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
+import type {MermaidOptions} from '../../../utils/renderMermaid';
+
+export type {MermaidOptions} from '../../../utils/renderMermaid';
 
 import {MdxPortals} from './MdxPortals';
 
@@ -41,6 +44,8 @@ export interface MarkdownRendererProps {
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     openLinksInNewTab?: boolean;
+    /** Enables Mermaid diagrams using the supplied lazy loader. Disabled by default. */
+    mermaidOptions?: MermaidOptions;
     mdxOptions?: MarkdownRendererMdxOptions;
     mdxContext?: Record<string, unknown>;
     /** Extra props forwarded to the root container `div` element. */
@@ -75,6 +80,7 @@ function MarkdownRendererComponent({
     transformOptions,
     shouldParseIncompleteMarkdown = false,
     openLinksInNewTab = false,
+    mermaidOptions,
     mdxOptions,
     mdxContext,
     extraProps,
@@ -114,9 +120,10 @@ function MarkdownRendererComponent({
         closedContent,
         finalTransformOptions,
         enableMdx,
+        Boolean(mermaidOptions),
     );
 
-    useMermaid(containerRef, html, openLinksInNewTab);
+    useMermaid(containerRef, html, openLinksInNewTab, mermaidOptions);
 
     return (
         <Fragment>
@@ -151,6 +158,10 @@ export const MarkdownRenderer = memo(MarkdownRendererComponent, (prevProps, next
     }
 
     if (prevProps.openLinksInNewTab !== nextProps.openLinksInNewTab) {
+        return false;
+    }
+
+    if (prevProps.mermaidOptions?.load !== nextProps.mermaidOptions?.load) {
         return false;
     }
 

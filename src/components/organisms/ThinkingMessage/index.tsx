@@ -10,7 +10,11 @@ import type {ThinkingMessageContentData} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 import {Loader} from '../../atoms/Loader';
-import {MarkdownRenderer, type MarkdownRendererMdxOptions} from '../../atoms/MarkdownRenderer';
+import {
+    MarkdownRenderer,
+    type MarkdownRendererMdxOptions,
+    type MermaidOptions,
+} from '../../atoms/MarkdownRenderer';
 
 import {useThinkingMessage} from './useThinkingMessage';
 
@@ -35,6 +39,7 @@ export type ThinkingMessageProps = DOMProps &
          * Shallow-merged with the component defaults (`disableCommonAnchors: true`).
          */
         transformOptions?: OptionsType;
+        mermaidOptions?: MermaidOptions;
         openMarkdownLinksInNewTab?: boolean;
         mdxOptions?: MarkdownRendererMdxOptions;
         mdxContext?: Record<string, unknown>;
@@ -61,6 +66,7 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
         style,
         format = 'plain',
         transformOptions,
+        mermaidOptions,
         openMarkdownLinksInNewTab,
         mdxOptions,
         mdxContext,
@@ -109,6 +115,7 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
                                 key={index}
                                 content={item}
                                 transformOptions={markdownTransformOptions}
+                                mermaidOptions={mermaidOptions}
                                 openLinksInNewTab={openMarkdownLinksInNewTab}
                                 mdxOptions={mdxOptions}
                                 mdxContext={mdxContext}

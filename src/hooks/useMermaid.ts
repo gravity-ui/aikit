@@ -1,21 +1,26 @@
-import {type RefObject, useContext, useEffect, useRef} from 'react';
+import {type RefObject, useContext, useMemo} from 'react';
 
-import {ThemeContext, getThemeType} from '@gravity-ui/uikit';
+import {ThemeContext, getThemeType, useLayoutEffect} from '@gravity-ui/uikit';
 
 import {applyNewTabLinkAttributes} from '../utils/markdownLinks';
 import {MARKDOWN_MERMAID_CLASS} from '../utils/markdownMermaidPlugin';
-import {renderMermaid} from '../utils/renderMermaid';
+import {type MermaidOptions, renderMermaid} from '../utils/renderMermaid';
 
 export function useMermaid(
     containerRef: RefObject<HTMLDivElement | null>,
     html: string,
     openLinksInNewTab = false,
+    mermaidOptions?: MermaidOptions,
 ) {
     const themeContext = useContext(ThemeContext);
     const theme = getThemeType(themeContext?.themeValue ?? 'light');
-    const cacheRef = useRef(new Map<string, string>());
+    const load = mermaidOptions?.load;
+    const cache = useMemo(() => new Map<string, string>(), [load]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
+        if (!load) {
+            return undefined;
+        }
         const blocks = Array.from(
             containerRef.current?.querySelectorAll<HTMLElement>(`.${MARKDOWN_MERMAID_CLASS}`) ?? [],
         );
@@ -26,7 +31,6 @@ export function useMermaid(
             key: `${theme}:${index}:${block.querySelector('code')?.textContent ?? ''}`,
         }));
         const keys = new Set(entries.map(({key}) => key));
-        const cache = cacheRef.current;
         for (const key of cache.keys()) {
             if (!keys.has(key)) {
                 cache.delete(key);
@@ -80,7 +84,7 @@ export function useMermaid(
                     return;
                 }
                 try {
-                    const svg = await renderMermaid(source, theme, isActive);
+                    const svg = await renderMermaid(source, theme, isActive, load);
                     if (active && svg) {
                         cache.set(key, svg);
                         display(block, svg);
@@ -96,5 +100,5 @@ export function useMermaid(
             window.clearTimeout(timeout);
             cleanups.forEach((cleanup) => cleanup());
         };
-    }, [containerRef, html, theme, openLinksInNewTab]);
+    }, [containerRef, html, theme, openLinksInNewTab, load, cache]);
 }

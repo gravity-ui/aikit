@@ -775,6 +775,7 @@
     "husky": "^9.0.11",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.2.0",
+    "mermaid": "^11.17.2",
     "nano-staged": "^0.8.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
@@ -797,6 +798,7 @@
     "@gravity-ui/icons": "^2.16.0",
     "@gravity-ui/uikit": "^7.25.0",
     "highlight.js": "^11.11.1",
+    "mermaid": "^11.17.2",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
@@ -816,7 +818,6 @@
     "@diplodoc/mdx-extension": "^1.10.1",
     "dayjs": "^1.11.19",
     "marked": "^17.0.1",
-    "mermaid": "^11.17.2",
     "react-window": "^2.2.1",
     "remend": ">=1.0.1 <1.2.0",
     "uuid": "^13.0.0"
@@ -824,5 +825,10 @@
   "optionalDependencies": {
     "openai": "^6.22.0",
     "semver": "^7.7.4"
+  },
+  "peerDependenciesMeta": {
+    "mermaid": {
+      "optional": true
+    }
   }
 }
