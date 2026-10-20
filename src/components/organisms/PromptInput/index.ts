@@ -19,3 +19,10 @@ export {
     type UsePromptInputReturn,
 } from './usePromptInput';
 export {useDelayedUnmount} from './useDelayedUnmount';
+
+export type {
+    PromptCommandsConfig,
+    PromptCommandSource,
+    PromptCommandItem,
+    PromptSelection,
+} from '../../../types/promptCommands';

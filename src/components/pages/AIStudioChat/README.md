@@ -186,3 +186,41 @@ On every `onSendMessage` call the component:
 7. If `showHistory` is enabled and no active chat exists, a new chat is created automatically using the first message as its name.
 
 On **retry**, the original user message text and stored `images` are re-sent without requiring the user to re-attach files.
+
+## Application commands and context
+
+Configure command sources through `promptInputProps.commands`. See the
+[PromptInput command guide](../../organisms/PromptInput/README.md#commands-and-context).
+`onBeforeSend(data)` receives the complete `TSubmitData`, including `selections`.
+It can contribute request body fields or return `false`/`null` to cancel.
+Returning `undefined` contributes no extra fields and continues sending.
+
+`transformRequest(request, data)` runs after `extraRequestParams`, per-send
+parameters, file parameters and conversation continuity have been assembled.
+Return the final request body, synchronously or asynchronously, or `false` to
+cancel without clearing the draft. The application determines exactly where
+command instructions and context belong. Selection data is not automatically
+serialized into the request. UI message text remains the user's input even if
+the mapping adds instructions to the API messages.
+
+```tsx
+<AIStudioChat
+  apiUrl="/api/chat"
+  fileUpload={fileUpload}
+  promptInputProps={{commands: {sources}}}
+  transformRequest={(request, {selections = []}) => ({
+    ...request,
+    context: selections.map(({sourceId, id, data}) => ({sourceId, id, data})),
+  })}
+/>
+```
+
+Retry reuses the original serialized request body. Later draft selections and
+changed mapping callbacks do not alter the retried request. HTTP headers still
+come from the current `requestInit` configuration.
+
+Failed HTTP attempts are displayed separately from model history. Technical
+errors are shown through the chat error state and are never added as assistant
+messages. Sending the retained draft again uses the accepted history and the
+current draft exactly once, even when the draft has been edited. Retry reuses
+the failed attempt's original request snapshot.

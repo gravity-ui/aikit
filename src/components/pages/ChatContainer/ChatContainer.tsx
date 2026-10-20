@@ -94,6 +94,7 @@ function buildFinalPromptInputProps(args: {
     contextIndicatorProps: ChatContainerProps['contextIndicatorProps'];
     texts: ChatContainerTexts;
     promptInputKey: number;
+    commandsResetKey: string | number;
     qaMap: NormalizedChatContainerQa;
     onValueChange?: (value: string) => void;
 }) {
@@ -107,6 +108,7 @@ function buildFinalPromptInputProps(args: {
         contextIndicatorProps,
         texts: textsArg,
         promptInputKey,
+        commandsResetKey,
         qaMap,
         onValueChange,
     } = args;
@@ -126,6 +128,7 @@ function buildFinalPromptInputProps(args: {
 
     return {
         ...promptInputProps,
+        commandsResetKey,
         onValueChange:
             onValueChange || promptInputProps?.onValueChange
                 ? (value: string) => {
@@ -576,6 +579,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 contextIndicatorProps,
                 texts,
                 promptInputKey: hookState.promptInputKey,
+                commandsResetKey: hookState.commandsResetKey,
                 qaMap,
                 onValueChange: mascotConfig ? mascotState.handleValueChange : undefined,
             }),
@@ -588,6 +592,7 @@ export function ChatContainer(props: ChatContainerProps) {
             contextIndicatorProps,
             promptInputProps,
             hookState.promptInputKey,
+            hookState.commandsResetKey,
             qaMap,
             texts.promptPlaceholder,
             texts.promptSuggestTitle,

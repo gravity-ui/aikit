@@ -11,6 +11,7 @@ import type {TSubmitData} from '../../../../types/messages';
 import {ActionButton} from '../../../atoms/ActionButton';
 import {PromptInput} from '../PromptInput';
 
+import {CommandsAndContextExample} from './CommandsAndContextExample';
 import MDXDocs from './Docs.mdx';
 
 export default {
@@ -450,6 +451,38 @@ export const ComplexExample: Story = {
                 }}
             />
         );
+    },
+    decorators: defaultDecorators,
+};
+
+/** Complete application integration with request inspection and failure controls. */
+export const CommandsAndContext: Story = {
+    render: () => <CommandsAndContextExample />,
+    parameters: {layout: 'fullscreen'},
+};
+
+export const CommandsSimple: Story = {
+    args: {
+        view: 'simple',
+        onSend: handleSend,
+        commands: {
+            sources: [
+                {
+                    id: 'commands',
+                    title: 'Commands',
+                    trigger: '/',
+                    buttonLabel: 'Commands',
+                    items: [
+                        {
+                            id: 'explain',
+                            title: 'Explain',
+                            description: 'Add instructions to the request',
+                            data: {mode: 'explain'},
+                        },
+                    ],
+                },
+            ],
+        },
     },
     decorators: defaultDecorators,
 };

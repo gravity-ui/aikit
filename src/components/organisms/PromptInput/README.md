@@ -4,6 +4,8 @@ A flexible input component for chat interfaces with support for simple and full 
 
 ## Features
 
+- **Application Commands**: Trigger-based and button-based selection with async search and per-message data
+
 - **Two View Modes**: Simple view with minimal UI, Full view with header and footer
 - **Expandable Panels**: Top and bottom panels with smooth animation for additional content
 - **Context Indicator**: Show usage context with percentage or number display
@@ -116,6 +118,7 @@ import {PromptInput} from '@gravity-ui/aikit';
 | Prop               | Type                                   | Required | Default    | Description                                                                                     |
 | ------------------ | -------------------------------------- | -------- | ---------- | ----------------------------------------------------------------------------------------------- |
 | `view`             | `'full' \| 'simple'`                   | -        | `'simple'` | View variant                                                                                    |
+| `commands`         | `PromptCommandsConfig`                 | -        | -          | Application command and context sources                                                         |
 | `onSend`           | `(data: TSubmitData) => Promise<void>` | ✓        | -          | Callback when message is sent                                                                   |
 | `onCancel`         | `() => Promise<void>`                  | -        | -          | Callback when sending is cancelled                                                              |
 | `disabled`         | `boolean`                              | -        | `false`    | Disabled state                                                                                  |
@@ -351,3 +354,139 @@ function MyComponent({isOpen}) {
 - `shouldRender` (boolean): Whether the element should be rendered in DOM
 
 The hook is particularly useful when you have CSS transitions that need to complete before removing elements from DOM.
+
+## Commands and context
+
+Pass `commands` directly to `PromptInput`, or through `promptInputProps` on
+`ChatContainer` and `AIStudioChat`. Sources are owned by the application and are
+scoped to this input. Use unique source IDs and at most one source per trigger.
+Item IDs must be unique within a source.
+
+```tsx
+import {PromptInput, type PromptCommandSource} from '@gravity-ui/aikit';
+
+const sources: PromptCommandSource[] = [
+  {
+    id: 'commands',
+    title: 'Commands',
+    trigger: '/',
+    items: [
+      {id: 'review', title: '/review', data: {mode: 'review'}},
+      {
+        id: 'summary',
+        title: '/summary',
+        insertText: 'Summarize this document.',
+        keepSelected: false,
+      },
+    ],
+  },
+  {
+    id: 'documents',
+    title: 'Document context',
+    trigger: '@',
+    buttonLabel: 'Add context',
+    getItems: async (query, {signal}) => {
+      const response = await fetch(`/api/documents?q=${encodeURIComponent(query)}`, {signal});
+      if (!response.ok) throw new Error('Could not search documents');
+      return response.json();
+    },
+  },
+];
+
+<PromptInput
+  commands={{sources}}
+  onSend={async ({content, selections}) => {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: content, context: selections}),
+    });
+    if (!response.ok) throw new Error('Could not send message');
+  }}
+/>;
+```
+
+### Configuration
+
+| Field                | Type                                 | Default        | Description                                    |
+| -------------------- | ------------------------------------ | -------------- | ---------------------------------------------- |
+| `sources`            | `readonly PromptCommandSource[]`     | Required       | Available command and context sources          |
+| `selections`         | `readonly PromptSelection[]`         | Internal state | Controlled draft selections                    |
+| `onSelectionsChange` | `(items: PromptSelection[]) => void` | —              | Selection, removal and successful-send updates |
+
+Each source accepts `id`, `title`, optional `/` or `@` `trigger`, optional
+`buttonLabel`, `items`, `getItems(query, {signal})`, and synchronous
+`onSelect(item, {query, origin})`. `getItems` takes precedence over `items` and
+owns filtering; static items are filtered by title, description and keywords.
+Keep source objects stable while searching. The search signal is aborted when
+the query/source changes or the picker closes. Stale results are ignored even
+when the application does not honor cancellation.
+
+Items accept `id`, `title`, `description`, `icon`, `keywords`, `disabled`, `data`,
+`insertText` and `keepSelected`. By default, a selection is shown as a removable
+chip and passed to `onSend` as `{sourceId, id, title, data}`. Selecting the same
+source/item replaces its previous selection. Different items may coexist.
+`data` should contain serializable application data, not UI nodes or credentials.
+
+`insertText` replaces the active token, preserving surrounding text. With
+`keepSelected: false`, the item only inserts text and/or invokes `onSelect`.
+Choosing context via a button preserves the input text. Throwing from `onSelect`
+keeps the picker open; asynchronous preparation belongs in `getItems` or the
+send handler. Trigger characters inside URLs and email addresses do not open
+the picker. The first matching source owns a trigger.
+
+### Sending and lifecycle
+
+`onSend` receives a snapshot of the current selection array. Return `false` to
+cancel or reject to report an error and preserve the draft. A resolved send
+clears submitted selections; newer selections are retained. Treat selection
+objects and their data as immutable. Text is required to submit, including when
+only a command or context has been selected.
+
+`ChatContainer` resets uncontrolled selections and closes pending searches on
+conversation changes, independently of autofocus settings. Active-conversation
+deletion also resets the command state. `AIStudioChat` preserves the draft when
+it automatically creates a conversation for the first send.
+
+Applications using controlled `selections` must reset or restore them with their
+own conversation state. A standalone `PromptInput` accepts `commandsResetKey`
+(`string | number`): changing it clears only uncontrolled command state without
+moving focus. `ChatContainer` derives this key from conversation identity and
+explicit new/select actions unless the application supplies its own key.
+
+In `AIStudioChat`, `onBeforeSend` receives all submit data, including selections.
+Use `transformRequest(request, data)` to map them into any field of the final
+request body after file processing. Return a new request object, or `false` to
+cancel. No command data is sent automatically. Retries reuse the serialized
+request from the original send, without rerunning the mapping callbacks.
+
+```tsx
+const transformRequest = (request, {selections = []}) => ({
+  ...request,
+  metadata: {
+    commands: selections.filter((item) => item.sourceId === 'commands'),
+  },
+  retrieval: {
+    documents: selections.filter((item) => item.sourceId === 'documents'),
+  },
+});
+```
+
+See **Commands And Context** in Storybook for a complete `ChatContainer`
+integration with request inspection, controlled selections, simulated failures
+and both input layouts.
+
+### Picker keyboard support
+
+Arrow keys navigate available options; Enter selects without sending the
+message. Escape dismisses suggestions until the text changes. Tab closes the
+picker and moves focus normally. Shift+Enter remains a newline. IME composition
+never submits or selects a command.
+
+### Command picker styling
+
+The picker uses `--g-spacing-1`, `--g-spacing-2`, `--g-spacing-3`,
+`--g-border-radius-m`, `--g-color-base-simple-hover`, `--g-color-text-secondary`
+and `--g-text-body-1-font-size` for spacing, corner radius, active background,
+description color and description typography respectively. Its width is limited
+to the viewport and long result lists scroll.

@@ -75,3 +75,43 @@ $block: '.#{variables.$ns}prompt-input';
         padding-bottom: var(--g-spacing-2);
     }
 }
+
+#{$block} {
+    &__command-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--g-spacing-1);
+    }
+    &__commands {
+        width: min(400px, calc(100vw - 32px));
+        padding: var(--g-spacing-3);
+        box-sizing: border-box;
+    }
+    &__commands-title {
+        font-weight: 600;
+        margin-bottom: var(--g-spacing-2);
+    }
+    &__command-list {
+        max-height: 240px;
+        overflow-y: auto;
+    }
+    &__command {
+        display: flex;
+        gap: var(--g-spacing-2);
+        padding: var(--g-spacing-2);
+        border-radius: var(--g-border-radius-m);
+        cursor: pointer;
+        &_active,
+        &:hover {
+            background: var(--g-color-base-simple-hover);
+        }
+        &_disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+    }
+    &__command-description {
+        color: var(--g-color-text-secondary);
+        font-size: var(--g-text-body-1-font-size);
+    }
+}
