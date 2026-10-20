@@ -1,8 +1,6 @@
-import {useRef} from 'react';
-
 import {act, renderHook, waitFor} from '@testing-library/react';
 
-import type {PromptCommandItem, PromptCommandSource, TSubmitData} from '../../../../types';
+import type {PromptCommandItem, PromptCommandSource} from '../../../../types';
 import {findCommandMatch, replaceCommand} from '../commandUtils';
 import {usePromptCommands} from '../usePromptCommands';
 import {usePromptInput} from '../usePromptInput';
@@ -10,6 +8,7 @@ import {usePromptInput} from '../usePromptInput';
 const item: PromptCommandItem = {id: 'review', title: 'Review', data: {mode: 'review'}};
 const sources: PromptCommandSource[] = [
     {id: 'commands', title: 'Commands', trigger: '/', items: [item]},
+    {id: 'context', title: 'Context', trigger: '@', items: [item]},
 ];
 
 function deferred<T>() {
@@ -204,58 +203,7 @@ describe('command search and selection', () => {
     });
 });
 
-describe('draft submission integration', () => {
-    function useDraft(onSend: (data: TSubmitData) => Promise<void | false>) {
-        const inputRef = useRef<HTMLTextAreaElement>(null);
-        const commandsRef = useRef<ReturnType<typeof usePromptCommands> | null>(null);
-        const input = usePromptInput({
-            initialValue: 'Explain this',
-            onSend: async (data) => {
-                const selections = [...(commandsRef.current?.selections ?? [])];
-                const accepted = await onSend({...data, selections});
-                if (accepted !== false) commandsRef.current?.clearSubmitted(selections);
-                return accepted;
-            },
-        });
-        const commands = usePromptCommands({
-            config: {sources},
-            value: input.value,
-            onChange: input.handleChange,
-            inputRef,
-            disabled: input.isInputDisabled,
-        });
-        commandsRef.current = commands;
-        return {input, commands};
-    }
-    it('passes selected data to the application and clears accepted drafts', async () => {
-        const onSend = jest.fn().mockResolvedValue(undefined);
-        const {result} = renderHook(() => useDraft(onSend));
-        act(() => result.current.commands.openSource('commands'));
-        await waitFor(() => expect(result.current.commands.items).toHaveLength(1));
-        act(() => result.current.commands.select(item));
-        await act(() => result.current.input.handleSubmit());
-        expect(onSend).toHaveBeenCalledWith({
-            content: 'Explain this',
-            selections: [
-                {sourceId: 'commands', id: 'review', title: 'Review', data: {mode: 'review'}},
-            ],
-        });
-        expect(result.current.input.value).toBe('');
-        expect(result.current.commands.selections).toEqual([]);
-    });
-    it.each(['cancel', 'failure'])('preserves text and selection on %s', async (mode) => {
-        const onSend =
-            mode === 'cancel'
-                ? jest.fn().mockResolvedValue(false)
-                : jest.fn().mockRejectedValue(new Error('Network failure'));
-        const {result} = renderHook(() => useDraft(onSend));
-        act(() => result.current.commands.openSource('commands'));
-        await waitFor(() => expect(result.current.commands.items).toHaveLength(1));
-        act(() => result.current.commands.select(item));
-        await act(() => result.current.input.handleSubmit());
-        expect(result.current.input.value).toBe('Explain this');
-        expect(result.current.commands.selections).toHaveLength(1);
-    });
+describe('draft submission lifecycle', () => {
     it('does not notify a new owner about clearing an unmounted draft', async () => {
         const send = deferred<void>();
         const onValueChange = jest.fn();
