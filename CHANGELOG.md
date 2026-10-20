@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.24.0](https://github.com/gravity-ui/aikit/compare/v2.23.0...v2.24.0) (2026-10-19)
+
+
+### Features
+
+* render Mermaid diagrams in markdown messages ([#273](https://github.com/gravity-ui/aikit/issues/273)) ([e01f079](https://github.com/gravity-ui/aikit/commit/e01f079260423867c2b2376bbe5a240dcf1f73b4))
+* **storybook:** add AIKit theme editor ([#275](https://github.com/gravity-ui/aikit/issues/275)) ([6b687eb](https://github.com/gravity-ui/aikit/commit/6b687eb23d8b2b2e0d3d7aba38430b43c5988bb7))
+
 ## [2.23.0](https://github.com/gravity-ui/aikit/compare/v2.22.1...v2.23.0) (2026-10-13)
 
 
