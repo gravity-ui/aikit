@@ -1,4 +1,4 @@
-export {PromptInput, type PromptInputProps} from './PromptInput';
+export {PromptInput, type PromptInputProps, type PromptInputHandle} from './PromptInput';
 export {PromptInputFull, type PromptInputFullProps} from './PromptInputFull';
 export {PromptInputSimple, type PromptInputSimpleProps} from './PromptInputSimple';
 export {PromptInputWithPanels, type PromptInputWithPanelsProps} from './PromptInputWithPanels';

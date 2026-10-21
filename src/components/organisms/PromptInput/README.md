@@ -435,11 +435,23 @@ keeps the picker open; asynchronous preparation belongs in `getItems` or the
 send handler. Trigger characters inside URLs and email addresses do not open
 the picker. The first matching source owns a trigger.
 
+### Programmatic submission
+
+Pass an `apiRef` to access `PromptInputHandle`. `submit(data?)` uses the same
+submission lifecycle as the send button and includes current attachments and
+command selections. With no argument it submits the current text. `ChatContainer`
+uses this method for welcome suggestions, preserving suggestion metadata.
+`clearFailedDraft()` clears an unchanged restored draft after a successful external
+retry and returns whether it was cleared. `AIStudioChat` uses it to reconcile Retry
+without erasing a newer draft.
+
 ### Sending and lifecycle
 
 `onSend` receives a snapshot of the current selection array. Return `false` to
-cancel or reject to report an error and preserve the draft. A resolved send
-clears submitted selections; newer selections are retained. Treat selection
+cancel or reject to report an error. Text, attachments and selections clear immediately,
+including when the send callback awaits a complete stream. A failed or cancelled
+send restores the snapshot only if the draft and conversation have not changed.
+New typing and selections are never overwritten by a late result. Treat selection
 objects and their data as immutable. Text is required to submit, including when
 only a command or context has been selected.
 

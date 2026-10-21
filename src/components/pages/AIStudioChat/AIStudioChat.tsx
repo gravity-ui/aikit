@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
+import {useForkRef} from '@gravity-ui/uikit';
 import {v4 as uuidv4} from 'uuid';
 
 import {fetchResponseToStreamEvents, useOpenAIStreamAdapter} from '../../../adapters/openai';
@@ -23,6 +24,7 @@ import {
     registerMessageRenderer,
 } from '../../../utils/messageTypeRegistry';
 import {InputContextProvider, useInputContext} from '../../molecules/InputContext';
+import type {PromptInputHandle} from '../../organisms/PromptInput';
 import type {MessageListConfig} from '../ChatContainer';
 import {ChatContainer} from '../ChatContainer';
 
@@ -146,6 +148,15 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
     } = props;
 
     const {prepareFilesForSend, reset, contextItems, attachmentContent} = useInputContext();
+    const promptApiRef = useRef<PromptInputHandle>(null);
+    const mergedPromptApiRef = useForkRef(
+        promptApiRef,
+        chatContainerProps.promptInputProps?.apiRef,
+    );
+    const fileDraftKey = JSON.stringify(contextItems.map((item) => item.id));
+    const latestFileDraftKey = useRef(fileDraftKey);
+    latestFileDraftKey.current = fileDraftKey;
+    const failedFileDraftKey = useRef<string>();
 
     // Keep the exact mapped request for retry, independently of later draft selections.
     const sentRequests = useRef(new Map<string, string>());
@@ -410,11 +421,15 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                 },
             });
 
-            if (!accepted || epoch !== sendEpoch.current) return false;
+            if (epoch !== sendEpoch.current) return false;
+            if (!accepted) {
+                failedFileDraftKey.current = fileDraftKey;
+                return false;
+            }
             reset();
             return undefined;
         },
-        [messages, onBeforeSend, performSend, prepareFilesForSend, reset],
+        [messages, onBeforeSend, performSend, prepareFilesForSend, reset, fileDraftKey],
     );
 
     const handleCancel = useCallback(async () => {
@@ -427,7 +442,16 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
 
     const handleRetry = useCallback(async () => {
         if (failedAttempt) {
-            await performSend(failedAttempt.request);
+            const epoch = sendEpoch.current;
+            const accepted = await performSend(failedAttempt.request);
+            if (
+                accepted &&
+                epoch === sendEpoch.current &&
+                latestFileDraftKey.current === failedFileDraftKey.current &&
+                promptApiRef.current?.clearFailedDraft()
+            ) {
+                reset();
+            }
             return;
         }
         const lastUserMsg = [...messages]
@@ -446,7 +470,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             // Reuse images stored on the original message — no FileReader needed
             base64Images: lastUserMsg.images ?? [],
         });
-    }, [messages, performSend, failedAttempt]);
+    }, [messages, performSend, failedAttempt, reset]);
 
     const handleCreateChat = useCallback(() => {
         setCommandsResetKey((key) => key + 1);
@@ -616,6 +640,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             showNewChat={showNewChat}
             promptInputProps={{
                 ...chatContainerProps.promptInputProps,
+                apiRef: mergedPromptApiRef,
                 commandsResetKey,
                 view: 'full',
                 headerProps: chatContainerProps.promptInputProps?.headerProps?.topContent

@@ -214,6 +214,7 @@ describe('draft submission lifecycle', () => {
         act(() => {
             pending = result.current.handleSubmit();
         });
+        onValueChange.mockClear();
         unmount();
         await act(async () => {
             send.resolve();

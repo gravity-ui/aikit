@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {type Ref, useImperativeHandle, useRef} from 'react';
 
 import {useForkRef} from '@gravity-ui/uikit';
 
@@ -25,7 +25,14 @@ import './PromptInput.scss';
 /**
  * Props for the PromptInput component
  */
+export type PromptInputHandle = {
+    submit: (data?: TSubmitData) => Promise<void>;
+    clearFailedDraft: () => boolean;
+};
+
 export type PromptInputProps = {
+    /** Programmatic submission uses the same draft lifecycle as the send button. */
+    apiRef?: Ref<PromptInputHandle>;
     /** Application-defined commands and context sources. */
     commands?: PromptCommandsConfig;
     /** Resets uncontrolled command selections and search without changing focus. */
@@ -73,6 +80,7 @@ export type PromptInputProps = {
  */
 export function PromptInput(props: PromptInputProps) {
     const {
+        apiRef,
         commands: commandsConfig,
         commandsResetKey,
         view = 'simple',
@@ -96,16 +104,21 @@ export function PromptInput(props: PromptInputProps) {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const mergedInputRef = useForkRef(inputRef, bodyProps?.inputRef);
     const commandsRef = useRef<ReturnType<typeof usePromptCommands> | null>(null);
+    const submittedSelections = useRef<ReturnType<typeof usePromptCommands>['selections']>([]);
     const hookState = usePromptInput({
-        onSend: async (data) => {
-            const submitted = [...(commandsRef.current?.selections ?? [])];
-            const result = await onSend({
-                ...data,
-                ...(submitted.length && {selections: submitted}),
-            });
-            if (result !== false) commandsRef.current?.clearSubmitted(submitted);
-            return result;
+        resetKey: commandsResetKey,
+        captureSubmission: () => {
+            const snapshot = commandsRef.current?.captureSubmission();
+            submittedSelections.current = snapshot?.selections ?? [];
+            return snapshot ?? {restore: () => {}, clear: () => {}, hasChanged: () => false};
         },
+        onSend: (data) =>
+            onSend({
+                ...data,
+                ...(submittedSelections.current.length && {
+                    selections: [...submittedSelections.current],
+                }),
+            }),
         onCancel,
         initialValue,
         disabled,
@@ -113,6 +126,11 @@ export function PromptInput(props: PromptInputProps) {
         maxLength,
         onValueChange,
     });
+
+    useImperativeHandle(apiRef, () => ({
+        submit: hookState.submit,
+        clearFailedDraft: hookState.clearFailedDraft,
+    }));
 
     const commandsDisabled =
         disabled || hookState.isInputDisabled || Boolean(bodyProps?.disabledInput);

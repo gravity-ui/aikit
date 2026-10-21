@@ -42,10 +42,12 @@ export function usePromptCommands({
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectionError, setSelectionError] = useState(false);
     const suppressed = useRef<string>();
+    const selectionRevision = useRef(0);
     const previousResetKey = useRef(resetKey);
     useEffect(() => {
         if (previousResetKey.current === resetKey) return;
         previousResetKey.current = resetKey;
+        selectionRevision.current++;
         setInternalSelections([]);
         setSession(undefined);
         setResult(undefined);
@@ -69,10 +71,18 @@ export function usePromptCommands({
         };
     }, []);
     const latest = useRef({selections, config});
+    if (
+        latest.current.selections.length !== selections.length ||
+        latest.current.selections.some((item, index) => item !== selections[index])
+    ) {
+        selectionRevision.current++;
+    }
     latest.current = {selections, config};
 
     const updateSelections = (next: PromptSelection[]) => {
         if (!mounted.current) return;
+        selectionRevision.current++;
+        latest.current.selections = next;
         setInternalSelections(next);
         latest.current.config?.onSelectionsChange?.(next);
     };
@@ -204,6 +214,20 @@ export function usePromptCommands({
     return {
         selections,
         clearSubmitted,
+        captureSubmission: () => {
+            const submitted = [...latest.current.selections];
+            clearSubmitted(submitted);
+            let expectedRevision = selectionRevision.current;
+            return {
+                selections: submitted,
+                hasChanged: () => selectionRevision.current !== expectedRevision,
+                restore: () => {
+                    updateSelections(submitted);
+                    expectedRevision = selectionRevision.current;
+                },
+                clear: () => clearSubmitted(submitted),
+            };
+        },
         open,
         source,
         session,

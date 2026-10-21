@@ -1,4 +1,4 @@
-import type {ReactNode} from 'react';
+import {type ReactNode, useImperativeHandle} from 'react';
 
 import {act, render} from '@testing-library/react';
 
@@ -9,6 +9,7 @@ import type {AIStudioChatProps} from '../types';
 let mockChatProps: ChatContainerProps;
 let mockId = 0;
 const mockReset = jest.fn();
+const mockClearFailedDraft = jest.fn().mockReturnValue(true);
 
 jest.mock('../McpToolRenderer', () => ({McpToolRenderer: () => null}));
 
@@ -16,6 +17,10 @@ jest.mock('uuid', () => ({v4: () => `id-${++mockId}`}));
 jest.mock('../../ChatContainer', () => ({
     ChatContainer: (props: ChatContainerProps) => {
         mockChatProps = props;
+        useImperativeHandle(props.promptInputProps?.apiRef, () => ({
+            submit: async () => {},
+            clearFailedDraft: mockClearFailedDraft,
+        }));
         return null;
     },
 }));
@@ -61,6 +66,7 @@ const send = async (content: string) => {
 afterEach(() => {
     global.fetch = originalFetch;
     jest.clearAllMocks();
+    mockClearFailedDraft.mockReturnValue(true);
 });
 
 describe('AIStudioChat failed-send integration', () => {
@@ -117,6 +123,8 @@ describe('AIStudioChat failed-send integration', () => {
         });
         expect(fetchMock.mock.calls[1][1].body).toBe(fetchMock.mock.calls[0][1].body);
         expect(transformRequest).toHaveBeenCalledTimes(1);
+        expect(mockClearFailedDraft).toHaveBeenCalledTimes(1);
+        expect(mockReset).toHaveBeenCalledTimes(1);
         expect(mockChatProps.error).toBeNull();
     });
     it('resets command scope on explicit new/select/delete, but not implicit first-chat creation', async () => {
@@ -148,4 +156,29 @@ describe('AIStudioChat failed-send integration', () => {
         expect(mockChatProps.promptInputProps?.commandsResetKey).not.toBe(selectedKey);
         expect(mockChatProps.error).toBeNull();
     });
+});
+
+it('does not clear files belonging to a changed draft after Retry', async () => {
+    global.fetch = jest
+        .fn()
+        .mockResolvedValueOnce(failedResponse)
+        .mockResolvedValueOnce({ok: true});
+    start();
+    await send('hello');
+    mockClearFailedDraft.mockReturnValue(false);
+    await act(async () => {
+        await mockChatProps.onRetry?.();
+    });
+    expect(mockReset).not.toHaveBeenCalled();
+});
+
+it('keeps the draft when Retry fails again', async () => {
+    global.fetch = jest.fn().mockResolvedValue(failedResponse);
+    start();
+    await send('hello');
+    await act(async () => {
+        await mockChatProps.onRetry?.();
+    });
+    expect(mockClearFailedDraft).not.toHaveBeenCalled();
+    expect(mockReset).not.toHaveBeenCalled();
 });
