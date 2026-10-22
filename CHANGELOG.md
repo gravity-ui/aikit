@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.25.0](https://github.com/gravity-ui/aikit/compare/v2.24.0...v2.25.0) (2026-10-22)
+
+
+### Features
+
+* **PromptInput:** add application commands and context selections ([#277](https://github.com/gravity-ui/aikit/issues/277)) ([dc840b4](https://github.com/gravity-ui/aikit/commit/dc840b4744863ed2ca41d6c2eb1d5c32dff5e399))
+
 ## [2.24.0](https://github.com/gravity-ui/aikit/compare/v2.23.0...v2.24.0) (2026-10-19)
 
 
