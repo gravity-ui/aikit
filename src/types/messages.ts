@@ -3,6 +3,7 @@ import type React from 'react';
 import type {ButtonView, PopupPlacement} from '@gravity-ui/uikit';
 
 import {ActionConfig} from './common';
+import type {PromptSelection} from './promptCommands';
 import {ToolMessageProps} from './tool';
 
 /**
@@ -110,6 +111,8 @@ export type TSuggestionContext = {
 };
 
 export type TSubmitData = {
+    /** Snapshot of commands and context selected for this message. */
+    selections?: PromptSelection[];
     content: string;
     attachments?: File[];
     metadata?: TMessageMetadata;

@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
+import {useForkRef} from '@gravity-ui/uikit';
 import {v4 as uuidv4} from 'uuid';
 
 import {fetchResponseToStreamEvents, useOpenAIStreamAdapter} from '../../../adapters/openai';
@@ -23,10 +24,12 @@ import {
     registerMessageRenderer,
 } from '../../../utils/messageTypeRegistry';
 import {InputContextProvider, useInputContext} from '../../molecules/InputContext';
+import type {PromptInputHandle} from '../../organisms/PromptInput';
 import type {MessageListConfig} from '../ChatContainer';
 import {ChatContainer} from '../ChatContainer';
 
 import {McpToolRenderer} from './McpToolRenderer';
+import {serializeChatRequest} from './request';
 import {normalizeMcpCallIds, omitMcpListToolsEvents} from './transforms';
 import type {AIStudioChatProps} from './types';
 
@@ -52,6 +55,15 @@ type ApiMessageContentPart =
 type ApiMessage = {
     role: 'user' | 'assistant' | 'system';
     content: string | ApiMessageContentPart[];
+};
+
+type SendRequest = {
+    previousMessages: TChatMessage[];
+    content: string;
+    base64Images?: string[];
+    perSendParams?: Record<string, unknown>;
+    submitData?: TSubmitData;
+    retryRequest?: string;
 };
 
 type StreamOptions = {
@@ -131,10 +143,30 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         extraRequestParams,
         trackTokenUsage = true,
         onBeforeSend,
+        transformRequest,
         ...chatContainerProps
     } = props;
 
     const {prepareFilesForSend, reset, contextItems, attachmentContent} = useInputContext();
+    const promptApiRef = useRef<PromptInputHandle>(null);
+    const mergedPromptApiRef = useForkRef(
+        promptApiRef,
+        chatContainerProps.promptInputProps?.apiRef,
+    );
+    const fileDraftKey = JSON.stringify(contextItems.map((item) => item.id));
+    const latestFileDraftKey = useRef(fileDraftKey);
+    latestFileDraftKey.current = fileDraftKey;
+    const failedFileDraftKey = useRef<string>();
+
+    // Keep the exact mapped request for retry, independently of later draft selections.
+    const sentRequests = useRef(new Map<string, string>());
+    const sendEpoch = useRef(0);
+    const [commandsResetKey, setCommandsResetKey] = useState(0);
+    const [sendError, setSendError] = useState<Error | null>(null);
+    const [failedAttempt, setFailedAttempt] = useState<{
+        message: TUserMessage;
+        request: SendRequest;
+    } | null>(null);
 
     // Current chat messages
     const [messages, setMessages] = useState<TChatMessage[]>(initialMessages);
@@ -201,17 +233,19 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
 
     const hasSource = Boolean(streamSource);
 
+    const pendingMessages = failedAttempt ? [...messages, failedAttempt.message] : messages;
     const displayMessages =
-        hasSource && streamResult.messages.length > 0 ? streamResult.messages : messages;
+        hasSource && streamResult.messages.length > 0 ? streamResult.messages : pendingMessages;
 
     const status = useMemo((): ChatStatus => {
         if (!hasSource) {
-            return isFetching ? 'submitted' : 'ready';
+            if (isFetching) return 'submitted';
+            return sendError ? 'error' : 'ready';
         }
         if (streamResult.status === 'streaming') return 'streaming';
         if (streamResult.status === 'error') return 'error';
         return 'ready';
-    }, [hasSource, isFetching, streamResult.status]);
+    }, [hasSource, isFetching, streamResult.status, sendError]);
 
     /**
      * Core send function. Takes an already-resolved set of previous messages and
@@ -224,33 +258,18 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             content,
             base64Images = [],
             perSendParams = {},
-        }: {
-            previousMessages: TChatMessage[];
-            content: string;
-            base64Images?: string[];
-            perSendParams?: Record<string, unknown>;
-        }) => {
-            // Auto-create a chat when history is enabled and no chat is active yet
-            if (showHistory && !activeChatRef.current) {
-                const newChat: ChatType = {
-                    id: uuidv4(),
-                    name: deriveChatName(content),
-                    createTime: new Date().toISOString(),
-                };
-                chatMessagesRef.current[newChat.id] = [];
-                activeChatRef.current = newChat;
-                setActiveChat(newChat);
-                setChats((prev) => [newChat, ...prev]);
-            }
-
+            submitData,
+            retryRequest,
+        }: SendRequest) => {
             const rawFileIds = Array.isArray(perSendParams.fileIds)
                 ? (perSendParams.fileIds as string[])
                 : undefined;
             const rawFileAttachments = Array.isArray(perSendParams.fileAttachments)
                 ? (perSendParams.fileAttachments as unknown[]).filter(isFileAttachment)
                 : undefined;
+            const userMessageId = uuidv4();
             const userMessage: TUserMessage = {
-                id: uuidv4(),
+                id: userMessageId,
                 role: 'user',
                 content,
                 images: base64Images.length > 0 ? base64Images : undefined,
@@ -259,8 +278,10 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             const messagesWithUser: TChatMessage[] = [...previousMessages, userMessage];
             const assistantMessageId = uuidv4();
 
-            setMessages(messagesWithUser);
+            const epoch = sendEpoch.current;
             setIsFetching(true);
+            setSendError(null);
+            setFailedAttempt(null);
 
             const abortController = new AbortController();
             setController(abortController);
@@ -291,6 +312,35 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                     {role: 'user' as const, content: lastUserContent},
                 ];
 
+                const baseRequest = {
+                    messages: apiMessages,
+                    ...extraRequestParams,
+                    ...perSendParams,
+                    ...(responseIdRef.current ? {previousResponseId: responseIdRef.current} : {}),
+                };
+                const body = await serializeChatRequest(
+                    baseRequest,
+                    submitData ?? {content},
+                    transformRequest,
+                    retryRequest,
+                );
+                if (body === false || epoch !== sendEpoch.current) return false;
+                sentRequests.current.set(userMessageId, body);
+                // Auto-create a chat when history is enabled and no chat is active yet
+                if (showHistory && !activeChatRef.current) {
+                    const newChat: ChatType = {
+                        id: uuidv4(),
+                        name: deriveChatName(content),
+                        createTime: new Date().toISOString(),
+                    };
+                    chatMessagesRef.current[newChat.id] = [];
+                    activeChatRef.current = newChat;
+                    setActiveChat(newChat);
+                    setChats((prev) => [newChat, ...prev]);
+                }
+
+                setMessages(messagesWithUser);
+
                 const response = await fetch(apiUrl, {
                     ...requestInit,
                     method: 'POST',
@@ -299,17 +349,11 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                         Accept: 'text/event-stream',
                         ...requestInit?.headers,
                     },
-                    body: JSON.stringify({
-                        messages: apiMessages,
-                        ...extraRequestParams,
-                        ...perSendParams,
-                        ...(responseIdRef.current
-                            ? {previousResponseId: responseIdRef.current}
-                            : {}),
-                    }),
+                    body,
                     signal: abortController.signal,
                 });
 
+                if (epoch !== sendEpoch.current) return false;
                 if (!response.ok) {
                     throw new Error(`API error: ${response.status} ${response.statusText}`);
                 }
@@ -320,43 +364,54 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                     ),
                 );
                 setStreamOptions({initialMessages: messagesWithUser, assistantMessageId});
+                return true;
             } catch (error) {
+                if (epoch !== sendEpoch.current) return false;
+                // Roll back the optimistic attempt; errors and failed messages are UI state only.
+                setMessages(previousMessages);
                 if ((error as Error).name !== 'AbortError') {
-                    const errorMessage: TAssistantMessage = {
-                        id: uuidv4(),
-                        role: 'assistant',
-                        content: (error as Error).message,
-                    };
-                    setMessages((prev) => {
-                        const filtered = prev.filter(
-                            (msg) => msg.role !== 'assistant' || getMessageTextContent(msg) !== '',
-                        );
-                        return [...filtered, errorMessage];
+                    setSendError(error instanceof Error ? error : new Error(String(error)));
+                    setFailedAttempt({
+                        message: userMessage,
+                        request: {
+                            previousMessages,
+                            content,
+                            base64Images,
+                            perSendParams,
+                            submitData,
+                            retryRequest: sentRequests.current.get(userMessageId),
+                        },
                     });
                 }
                 setStreamSource(null);
                 setStreamOptions(null);
+                return false;
             } finally {
-                setIsFetching(false);
-                setController(null);
+                if (epoch === sendEpoch.current) {
+                    setIsFetching(false);
+                    setController(null);
+                }
             }
         },
-        [showHistory, systemPrompt, requestInit, apiUrl, extraRequestParams],
+        [showHistory, systemPrompt, requestInit, apiUrl, extraRequestParams, transformRequest],
     );
 
     const handleSendMessage = useCallback(
-        async (data: TSubmitData) => {
+        async (data: TSubmitData): Promise<void | false> => {
+            const epoch = sendEpoch.current;
             // Call onBeforeSend hook — allows caller to inject per-request params or cancel send
             let perSendParams: Record<string, unknown> = {};
             if (onBeforeSend) {
-                const result = await onBeforeSend({content: data.content});
-                if (result === false || result === null) return;
+                const result = await onBeforeSend(data);
+                if (result === false || result === null) return false;
                 if (result) perSendParams = result;
             }
 
             const {base64Images, perSendFileParams} = await prepareFilesForSend(data.attachments);
 
-            await performSend({
+            if (epoch !== sendEpoch.current) return false;
+            const accepted = await performSend({
+                submitData: data,
                 previousMessages: messages,
                 content: data.content,
                 base64Images,
@@ -366,18 +421,39 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                 },
             });
 
+            if (epoch !== sendEpoch.current) return false;
+            if (!accepted) {
+                failedFileDraftKey.current = fileDraftKey;
+                return false;
+            }
             reset();
+            return undefined;
         },
-        [messages, onBeforeSend, performSend, prepareFilesForSend, reset],
+        [messages, onBeforeSend, performSend, prepareFilesForSend, reset, fileDraftKey],
     );
 
     const handleCancel = useCallback(async () => {
+        sendEpoch.current++;
+        setIsFetching(false);
         controller?.abort();
         setStreamSource(null);
         setStreamOptions(null);
     }, [controller]);
 
     const handleRetry = useCallback(async () => {
+        if (failedAttempt) {
+            const epoch = sendEpoch.current;
+            const accepted = await performSend(failedAttempt.request);
+            if (
+                accepted &&
+                epoch === sendEpoch.current &&
+                latestFileDraftKey.current === failedFileDraftKey.current &&
+                promptApiRef.current?.clearFailedDraft()
+            ) {
+                reset();
+            }
+            return;
+        }
         const lastUserMsg = [...messages]
             .reverse()
             .find((m): m is TUserMessage => m.role === 'user');
@@ -388,13 +464,23 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
 
         await performSend({
             previousMessages: trimmedMessages,
+            retryRequest: lastUserMsg.id ? sentRequests.current.get(lastUserMsg.id) : undefined,
             content: lastUserMsg.content,
+            perSendParams: {fileAttachments: lastUserMsg.fileAttachments},
             // Reuse images stored on the original message — no FileReader needed
             base64Images: lastUserMsg.images ?? [],
         });
-    }, [messages, performSend]);
+    }, [messages, performSend, failedAttempt, reset]);
 
     const handleCreateChat = useCallback(() => {
+        setCommandsResetKey((key) => key + 1);
+        setFailedAttempt(null);
+        setSendError(null);
+        sendEpoch.current++;
+        controller?.abort();
+        setIsFetching(false);
+        setStreamSource(null);
+        setStreamOptions(null);
         const current = activeChatRef.current;
         if (current) {
             chatMessagesRef.current[current.id] = messages;
@@ -412,10 +498,18 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         setActiveChat(newChat);
         setMessages([]);
         reset();
-    }, [messages, reset]);
+    }, [messages, reset, controller]);
 
     const handleSelectChat = useCallback(
         (chat: ChatType) => {
+            setCommandsResetKey((key) => key + 1);
+            setFailedAttempt(null);
+            setSendError(null);
+            sendEpoch.current++;
+            controller?.abort();
+            setIsFetching(false);
+            setStreamSource(null);
+            setStreamOptions(null);
             const current = activeChatRef.current;
             if (current) {
                 chatMessagesRef.current[current.id] = messages;
@@ -426,7 +520,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             setMessages(chatMessagesRef.current[chat.id] ?? []);
             reset();
         },
-        [messages, reset],
+        [messages, reset, controller],
     );
 
     const handleDeleteChat = useCallback(
@@ -435,13 +529,21 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             setChats((prev) => prev.filter((c) => c.id !== chat.id));
 
             if (activeChatRef.current?.id === chat.id) {
+                setCommandsResetKey((key) => key + 1);
+                setFailedAttempt(null);
+                setSendError(null);
+                sendEpoch.current++;
+                controller?.abort();
+                setIsFetching(false);
+                setStreamSource(null);
+                setStreamOptions(null);
                 responseIdRef.current = null;
                 setActiveChat(null);
                 setMessages([]);
                 reset();
             }
         },
-        [reset],
+        [reset, controller],
     );
 
     /**
@@ -525,7 +627,7 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             messageListConfig={messageListConfig}
             messages={displayMessages}
             status={status}
-            error={streamResult.error}
+            error={sendError ?? streamResult.error}
             onSendMessage={handleSendMessage}
             onCancel={handleCancel}
             onRetry={handleRetry}
@@ -538,6 +640,8 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             showNewChat={showNewChat}
             promptInputProps={{
                 ...chatContainerProps.promptInputProps,
+                apiRef: mergedPromptApiRef,
+                commandsResetKey,
                 view: 'full',
                 headerProps: chatContainerProps.promptInputProps?.headerProps?.topContent
                     ? chatContainerProps.promptInputProps.headerProps

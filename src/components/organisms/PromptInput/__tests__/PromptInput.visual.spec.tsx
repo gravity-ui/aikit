@@ -200,3 +200,21 @@ test.describe('PromptInput', {tag: '@PromptInput'}, () => {
         });
     }
 });
+
+test.describe('PromptInput commands', {tag: '@PromptInputCommands'}, () => {
+    test('should render commands and context', async ({mount, page, expectScreenshot}) => {
+        await mount(<PromptInputStories.CommandsAndContext />);
+        await expect(page.getByRole('button', {name: 'Add context', exact: true})).toBeVisible();
+        await expectScreenshot();
+        await page.getByRole('button', {name: 'Commands', exact: true}).click();
+        await expect(page.getByRole('option').first()).toBeVisible();
+        await expectScreenshot({component: page, fullPage: true, nameSuffix: 'picker'});
+    });
+    test('should render simple commands', async ({mount, page, expectScreenshot}) => {
+        await mount(<PromptInputStories.CommandsSimple />);
+        await expectScreenshot();
+        await page.getByRole('button', {name: 'Commands', exact: true}).click();
+        await expect(page.getByRole('option', {name: /Explain/})).toBeVisible();
+        await expectScreenshot({component: page, fullPage: true, nameSuffix: 'picker'});
+    });
+});

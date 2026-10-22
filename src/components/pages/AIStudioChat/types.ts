@@ -1,5 +1,5 @@
 import type {UseFileUploadStoreOptions} from '../../../hooks/useFileUploadStore';
-import type {TChatMessage} from '../../../types';
+import type {TChatMessage, TSubmitData} from '../../../types';
 import type {InputContextMeta} from '../../molecules/InputContext';
 import type {ChatContainerProps} from '../ChatContainer';
 
@@ -60,11 +60,15 @@ export interface AIStudioChatProps extends Omit<ChatContainerProps, ManagedChatC
     /**
      * Called before each API request is made.
      * Return an object to merge into the request body for this specific send.
-     * Return false/null/undefined to cancel the send entirely.
+     * Return false/null to cancel the send entirely.
      */
-    onBeforeSend?: (params: {
-        content: string;
-    }) => Promise<Record<string, unknown> | false | null | void>;
+    onBeforeSend?: (params: TSubmitData) => Promise<Record<string, unknown> | false | null | void>;
+
+    /** Final request mapping, after file parameters. Return false to keep the draft. */
+    transformRequest?: (
+        request: Record<string, unknown>,
+        data: TSubmitData,
+    ) => Record<string, unknown> | false | Promise<Record<string, unknown> | false>;
 
     /**
      * File upload options for prompt `InputContext` (`useFileUploadStore`).

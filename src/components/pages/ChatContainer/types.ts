@@ -196,7 +196,7 @@ export interface ChatContainerProps {
 
     // Main callbacks
     /** Callback when user sends a message */
-    onSendMessage: (data: TSubmitData) => Promise<void>;
+    onSendMessage: (data: TSubmitData) => Promise<void | false>;
     /** Callback when user selects a chat from history */
     onSelectChat?: (chat: ChatType) => void;
     /** Callback when user creates a new chat */

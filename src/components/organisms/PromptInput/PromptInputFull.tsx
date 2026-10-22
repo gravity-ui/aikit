@@ -1,3 +1,5 @@
+import type {ReactNode} from 'react';
+
 import {block} from '../../../utils/cn';
 import {PromptInputBody} from '../../molecules/PromptInputBody';
 import {PromptInputFooter} from '../../molecules/PromptInputFooter';
@@ -12,6 +14,7 @@ const b = block('prompt-input');
  * Props for the PromptInputFull component
  */
 export type PromptInputFullProps = {
+    commandsContent?: ReactNode;
     /** Hook return value with state and handlers */
     hookState: UsePromptInputReturn;
     /** Header-related props */
@@ -33,7 +36,15 @@ export type PromptInputFullProps = {
  * @returns React component
  */
 export function PromptInputFull(props: PromptInputFullProps) {
-    const {hookState, headerProps = {}, bodyProps = {}, footerProps = {}, className, qa} = props;
+    const {
+        commandsContent,
+        hookState,
+        headerProps = {},
+        bodyProps = {},
+        footerProps = {},
+        className,
+        qa,
+    } = props;
 
     const {
         topContent,
@@ -51,6 +62,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
         autoFocus = false,
         disabledInput = false,
         inputRef,
+        controlProps,
         qa: bodyQa,
     } = bodyProps;
 
@@ -81,6 +93,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
 
     return (
         <div className={b({view: 'full'}, className)} data-qa={qa}>
+            {commandsContent}
             {shouldShowHeader &&
                 (topContent ? (
                     <PromptInputHeader qa={headerQa}>{topContent}</PromptInputHeader>
@@ -102,6 +115,7 @@ export function PromptInputFull(props: PromptInputFullProps) {
                 autoFocus={autoFocus}
                 disabledInput={isInputDisabled || disabledInput}
                 ref={inputRef}
+                controlProps={controlProps}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 inputClassName={b('textarea')}

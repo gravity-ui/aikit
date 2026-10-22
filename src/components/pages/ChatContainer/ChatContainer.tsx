@@ -1,6 +1,6 @@
 import {type CSSProperties, Fragment, type ReactNode, useCallback, useMemo, useRef} from 'react';
 
-import {MobileProvider, useMobile} from '@gravity-ui/uikit';
+import {MobileProvider, useForkRef, useMobile} from '@gravity-ui/uikit';
 
 import {getMascotAnimationType, useKeyboardViewportFit} from '../../../hooks';
 import type {TSuggestionContext} from '../../../types/messages';
@@ -8,7 +8,11 @@ import {block} from '../../../utils/cn';
 import {getMascotNode, resolveMascotAssets, resolveMascotCollection} from '../../../utils/mascot';
 import {Disclaimer} from '../../atoms/Disclaimer';
 import {Header, HeaderAction, type HeaderProps} from '../../organisms/Header';
-import {PromptInput, type PromptInputProps} from '../../organisms/PromptInput';
+import {
+    PromptInput,
+    type PromptInputHandle,
+    type PromptInputProps,
+} from '../../organisms/PromptInput';
 import {ChatContent} from '../../templates/ChatContent';
 import {History} from '../../templates/History';
 
@@ -94,6 +98,7 @@ function buildFinalPromptInputProps(args: {
     contextIndicatorProps: ChatContainerProps['contextIndicatorProps'];
     texts: ChatContainerTexts;
     promptInputKey: number;
+    commandsResetKey: string | number;
     qaMap: NormalizedChatContainerQa;
     onValueChange?: (value: string) => void;
 }) {
@@ -107,6 +112,7 @@ function buildFinalPromptInputProps(args: {
         contextIndicatorProps,
         texts: textsArg,
         promptInputKey,
+        commandsResetKey,
         qaMap,
         onValueChange,
     } = args;
@@ -126,6 +132,7 @@ function buildFinalPromptInputProps(args: {
 
     return {
         ...promptInputProps,
+        commandsResetKey,
         onValueChange:
             onValueChange || promptInputProps?.onValueChange
                 ? (value: string) => {
@@ -262,6 +269,9 @@ export function ChatContainer(props: ChatContainerProps) {
         activeChatId: hookState.activeChat?.id,
         promptInputKey: hookState.promptInputKey,
     });
+
+    const promptApiRef = useRef<PromptInputHandle>(null);
+    const mergedPromptApiRef = useForkRef(promptApiRef, promptInputProps?.apiRef);
 
     const wrappedOnSendMessage = useCallback(
         async (...args: Parameters<typeof onSendMessage>) => {
@@ -490,7 +500,7 @@ export function ChatContainer(props: ChatContainerProps) {
             ) => {
                 const suggestion = toSuggestionContext(suggestionId, suggestionData);
 
-                await wrappedOnSendMessage({
+                await promptApiRef.current?.submit({
                     content,
                     ...(suggestion && {suggestion}),
                 });
@@ -567,7 +577,7 @@ export function ChatContainer(props: ChatContainerProps) {
     const finalPromptInputProps = useMemo(
         () =>
             buildFinalPromptInputProps({
-                promptInputProps,
+                promptInputProps: {...promptInputProps, apiRef: mergedPromptApiRef},
                 onSendMessage: wrappedOnSendMessage,
                 onCancel: wrappedOnCancel,
                 status,
@@ -576,6 +586,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 contextIndicatorProps,
                 texts,
                 promptInputKey: hookState.promptInputKey,
+                commandsResetKey: hookState.commandsResetKey,
                 qaMap,
                 onValueChange: mascotConfig ? mascotState.handleValueChange : undefined,
             }),
@@ -587,7 +598,9 @@ export function ChatContainer(props: ChatContainerProps) {
             showContextIndicator,
             contextIndicatorProps,
             promptInputProps,
+            mergedPromptApiRef,
             hookState.promptInputKey,
+            hookState.commandsResetKey,
             qaMap,
             texts.promptPlaceholder,
             texts.promptSuggestTitle,

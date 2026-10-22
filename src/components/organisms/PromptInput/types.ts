@@ -52,6 +52,7 @@ export type PromptInputHeaderConfig = {
  * Props for the body/textarea section of PromptInput
  */
 export type PromptInputBodyConfig = {
+    controlProps?: TextAreaProps['controlProps'];
     /** QA/test identifier for body wrapper */
     qa?: string;
     /** Ref to the textarea input */

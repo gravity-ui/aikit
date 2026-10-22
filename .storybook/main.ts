@@ -21,6 +21,8 @@ const config: StorybookConfig = {
                                 loader: 'sass-loader',
                                 options: {
                                     sassOptions: {
+                                        // A BOM in injected CSS becomes part of the first selector.
+                                        charset: false,
                                         functions: sassFunctions,
                                     },
                                 },

@@ -1,0 +1,8 @@
+{
+  "loading": "Loading…",
+  "empty": "No matches",
+  "error": "Could not select or load items. Try again.",
+  "retry": "Retry",
+  "search": "Search",
+  "send-error": "Could not send the message. Your draft has been kept."
+}

@@ -43,6 +43,7 @@ export type PromptInputBodyProps = {
     autoFocus?: boolean;
     /** Disabled state for input */
     disabledInput?: boolean;
+    controlProps?: TextAreaProps['controlProps'];
     /** Change handler */
     onChange?: (value: string) => void;
     /** Key down handler */
@@ -67,6 +68,7 @@ export type PromptInputBodyProps = {
 export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyProps>(
     (props, ref) => {
         const {
+            controlProps,
             value,
             placeholder,
             maxLength,
@@ -154,6 +156,7 @@ export const PromptInputBody = forwardRef<HTMLTextAreaElement, PromptInputBodyPr
                     view="clear"
                     className={b('textarea')}
                     controlProps={{
+                        ...controlProps,
                         className: b('textarea-control', inputClassName),
                         maxLength,
                         onPointerDown: handlePointerDown,

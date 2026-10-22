@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {ChatStatus, TSubmitData} from '../../../types';
 
@@ -7,7 +7,9 @@ import {ChatStatus, TSubmitData} from '../../../types';
  */
 export type UsePromptInputProps = {
     /** Callback when message is sent */
-    onSend: (data: TSubmitData) => Promise<void>;
+    onSend: (data: TSubmitData) => Promise<void | false>;
+    resetKey?: string | number;
+    captureSubmission?: () => {restore: () => void; hasChanged: () => boolean; clear: () => void};
     /** Callback when sending is cancelled */
     onCancel?: () => Promise<void>;
     /** Initial value */
@@ -26,6 +28,7 @@ export type UsePromptInputProps = {
  * Hook return type for PromptInput state management
  */
 export type UsePromptInputReturn = {
+    sendError?: boolean;
     /** Current input value */
     value: string;
     /** Can submit the form */
@@ -40,6 +43,8 @@ export type UsePromptInputReturn = {
     handleKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
     /** Handle submit */
     handleSubmit: () => Promise<void>;
+    submit: (data?: TSubmitData) => Promise<void>;
+    clearFailedDraft: () => boolean;
     /** Attachments */
     attachments: File[];
     /** Set attachments */
@@ -61,19 +66,43 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
         disabled = false,
         status = 'ready',
         onValueChange,
+        resetKey,
+        captureSubmission,
     } = props;
 
     const [value, setValue] = useState(initialValue);
-    const [attachments, setAttachments] = useState<File[]>([]);
+    const [sending, setSending] = useState(false);
+    const [sendError, setSendError] = useState(false);
+    const mounted = useRef(true);
+    useEffect(() => {
+        mounted.current = true;
+        return () => {
+            mounted.current = false;
+        };
+    }, []);
+    const revision = useRef(0);
+    const inFlight = useRef(false);
+    const [attachments, updateAttachments] = useState<File[]>([]);
+    const setAttachments = useCallback((files: File[]) => {
+        revision.current++;
+        updateAttachments(files);
+    }, []);
+    const failedDraft = useRef<(() => boolean) | null>(null);
+    useEffect(() => {
+        revision.current++;
+        failedDraft.current = null;
+    }, [resetKey]);
 
     const updateValue = useCallback(
         (nextValue: string) => {
+            revision.current++;
+            setSendError(false);
             setValue(nextValue);
             onValueChange?.(nextValue);
         },
         [onValueChange],
     );
-    const isSubmitted = status === 'submitted';
+    const isSubmitted = status === 'submitted' || sending;
 
     const trimmedValue = value.trim();
     const canSubmit = !disabled && !isSubmitted && trimmedValue.length > 0;
@@ -110,6 +139,7 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     }
 
     // Input is disabled when loading
+    if (sending && submitButtonState !== 'cancelable') submitButtonState = 'loading';
     const isInputDisabled = submitButtonState === 'loading';
 
     const handleChange = useCallback(
@@ -122,28 +152,88 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
         [maxLength, updateValue],
     );
 
+    const submit = useCallback(
+        async (override?: TSubmitData) => {
+            const content = override?.content.trim() ?? trimmedValue;
+            if (disabled || isSubmitted || inFlight.current || !content) return;
+            const draftValue = value;
+            const submitData: TSubmitData = {
+                ...override,
+                content,
+                ...(attachments.length > 0 && {attachments}),
+            };
+            inFlight.current = true;
+            setSending(true);
+            setSendError(false);
+            failedDraft.current = null;
+            const selectionSnapshot = captureSubmission?.();
+            updateValue('');
+            updateAttachments([]);
+            const clearedRevision = revision.current;
+            const restore = () => {
+                if (
+                    !mounted.current ||
+                    revision.current !== clearedRevision ||
+                    selectionSnapshot?.hasChanged()
+                )
+                    return;
+                updateValue(draftValue);
+                updateAttachments(attachments);
+                selectionSnapshot?.restore();
+                const restoredRevision = revision.current;
+                failedDraft.current = () => {
+                    if (
+                        !mounted.current ||
+                        revision.current !== restoredRevision ||
+                        selectionSnapshot?.hasChanged()
+                    )
+                        return false;
+                    updateValue('');
+                    updateAttachments([]);
+                    selectionSnapshot?.clear();
+                    return true;
+                };
+                return true;
+            };
+            try {
+                const result = await onSend(submitData);
+                if (result === false) restore();
+            } catch {
+                if (restore()) setSendError(true);
+            } finally {
+                inFlight.current = false;
+                if (mounted.current) setSending(false);
+            }
+        },
+        [
+            disabled,
+            isSubmitted,
+            trimmedValue,
+            value,
+            attachments,
+            onSend,
+            updateValue,
+            captureSubmission,
+        ],
+    );
+
+    const clearFailedDraft = useCallback(() => {
+        const clear = failedDraft.current;
+        failedDraft.current = null;
+        return clear?.() ?? false;
+    }, []);
+
     const handleSubmit = useCallback(async () => {
         if (submitButtonState === 'cancelable' && onCancel) {
             await onCancel();
             return;
         }
-
-        if (!canSubmit) {
-            return;
-        }
-
-        const submitData: TSubmitData = {
-            content: trimmedValue,
-            ...(attachments.length > 0 && {attachments}),
-        };
-
-        onSend(submitData);
-        updateValue('');
-        setAttachments([]);
-    }, [submitButtonState, canSubmit, trimmedValue, attachments, onSend, onCancel, updateValue]);
+        await submit();
+    }, [submitButtonState, onCancel, submit]);
 
     const handleKeyDown = useCallback(
         (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if (event.nativeEvent.isComposing || event.defaultPrevented) return;
             const isEnter = event.code === 'Enter' || event.code === 'NumpadEnter';
 
             // Insert new line on Ctrl/Cmd + Enter
@@ -170,12 +260,15 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
 
     return {
         value,
+        sendError,
         canSubmit,
         submitButtonState,
         isInputDisabled,
         handleChange,
         handleKeyDown,
         handleSubmit,
+        submit,
+        clearFailedDraft,
         attachments,
         setAttachments,
     };

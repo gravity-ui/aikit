@@ -1,3 +1,5 @@
+import type {ReactNode} from 'react';
+
 import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
 import {PromptInputBody} from '../../molecules/PromptInputBody';
@@ -12,6 +14,7 @@ const b = block('prompt-input');
  * Props for the PromptInputSimple component
  */
 export type PromptInputSimpleProps = {
+    commandsContent?: ReactNode;
     /** Hook return value with state and handlers */
     hookState: UsePromptInputReturn;
     /** Body/textarea-related props */
@@ -31,7 +34,7 @@ export type PromptInputSimpleProps = {
  * @returns React component
  */
 export function PromptInputSimple(props: PromptInputSimpleProps) {
-    const {hookState, bodyProps = {}, footerProps = {}, className, qa} = props;
+    const {commandsContent, hookState, bodyProps = {}, footerProps = {}, className, qa} = props;
 
     const {
         placeholder = 'Plan, code, build and test anything',
@@ -41,6 +44,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
         autoFocus = false,
         disabledInput = false,
         inputRef,
+        controlProps,
         qa: bodyQa,
     } = bodyProps;
 
@@ -68,6 +72,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
 
     return (
         <div className={b({view: 'simple'}, className)} data-qa={qa}>
+            {commandsContent}
             <div className={b('content')}>
                 <PromptInputBody
                     value={value}
@@ -78,6 +83,7 @@ export function PromptInputSimple(props: PromptInputSimpleProps) {
                     autoFocus={autoFocus}
                     disabledInput={isInputDisabled || disabledInput}
                     ref={inputRef}
+                    controlProps={controlProps}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     qa={bodyQa}
