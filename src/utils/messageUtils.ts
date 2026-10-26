@@ -9,6 +9,7 @@ import type {
     TMessageContentUnion,
     TMessageMetadata,
     TUserMessage,
+    TextMessageContent,
 } from '../types';
 
 export function isUserMessage<
@@ -35,6 +36,10 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
     }
 
     if (typeof content === 'string') {
+        if (!content.trim()) {
+            return [];
+        }
+
         return [
             {
                 type: 'text',
@@ -45,11 +50,10 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
         ];
     }
 
-    if (Array.isArray(content)) {
-        return content;
-    }
-
-    return [content];
+    const parts = Array.isArray(content) ? content : [content];
+    return parts.filter(
+        (part) => part.type !== 'text' || Boolean((part as TextMessageContent).data.text.trim()),
+    );
 }
 
 /**
