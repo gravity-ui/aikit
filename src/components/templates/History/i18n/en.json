@@ -5,5 +5,8 @@
   "empty-filtered-state": "No chats match your search",
   "tooltip-history": "Chat history",
   "sheet-title": "Chat history",
-  "tooltip-delete": "Delete"
+  "tooltip-delete": "Delete",
+  "pinned": "Pinned chat",
+  "action-pin": "Pin chat",
+  "action-unpin": "Unpin chat"
 }

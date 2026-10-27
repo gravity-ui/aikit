@@ -7,3 +7,4 @@ export * from './clipboardUtils';
 export * from './aiAgentContext';
 export * from './toolset';
 export * from './mascot';
+export * from './pinnedChatsStore';

@@ -5,5 +5,8 @@
   "empty-filtered-state": "Ничего не найдено по вашему запросу",
   "tooltip-history": "История чатов",
   "sheet-title": "История чатов",
-  "tooltip-delete": "Удалить"
+  "tooltip-delete": "Удалить",
+  "pinned": "Закреплённый чат",
+  "action-pin": "Закрепить чат",
+  "action-unpin": "Открепить чат"
 }
