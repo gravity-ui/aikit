@@ -50,7 +50,7 @@ aikit/
 │   │   ├── organisms/       # 9 organisms
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
-│   │   │   ├── PromptInput/        ThinkingMessage/
+│   │   │   ├── PromptInput/        ThinkingMessage/  ThinkingMessageGroup/
 │   │   │   ├── ToolMessage/        UserMessage/
 │   │   │
 │   │   ├── templates/       # 3 templates

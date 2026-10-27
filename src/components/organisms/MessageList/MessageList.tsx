@@ -84,6 +84,7 @@ export type MessageListProps<TContent extends TMessageContent = never> = {
     withLoaderShimmer?: boolean;
     onRetry?: () => void;
     messageRendererRegistry?: MessageRendererRegistry;
+    thinkingMessageView?: 'default' | 'grouped';
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     mermaidOptions?: MermaidOptions;
@@ -132,6 +133,7 @@ export function MessageList<TContent extends TMessageContent = never>(
 function PlainMessageList<TContent extends TMessageContent = never>({
     messages,
     messageRendererRegistry,
+    thinkingMessageView,
     transformOptions,
     shouldParseIncompleteMarkdown,
     mermaidOptions,
@@ -200,6 +202,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                             !isActionPopupOpenForMessage(popupState, message.id)
                         }
                         messageRendererRegistry={messageRendererRegistry}
+                        thinkingMessageView={thinkingMessageView}
                         transformOptions={transformOptions}
                         shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                         mermaidOptions={mermaidOptions}

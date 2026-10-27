@@ -1,0 +1,9 @@
+{
+  "completed-steps": "{{count}} completed",
+  "status-thinking": "In progress",
+  "status-thought": "Completed",
+  "status-error": "Failed",
+  "status-cancelled": "Stopped",
+  "status-paused": "Waiting",
+  "copy": "Copy reasoning"
+}

@@ -424,3 +424,10 @@ assistant-message column.
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--g-aikit-message-list-footer-content-padding` | Padding of the footer content row (default: `var(--g-spacing-4) 0 var(--g-spacing-2)`)                                                                     |
 | `--g-aikit-scroll-overscroll-behavior`          | Overscroll behavior of the message list scroll (default: `auto`); `contain` stops a scroll gesture from chaining to the page once the list reaches its end |
+
+## Compact thinking history
+
+Set `thinkingMessageView="grouped"` to display adjacent legacy thinking parts inside each assistant
+message with [ThinkingMessageGroup](../ThinkingMessageGroup/README.md). The default remains
+`"default"`. Existing custom thinking renderers take precedence. Separate messages are not
+automatically grouped across run boundaries.
