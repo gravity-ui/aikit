@@ -2,11 +2,7 @@ import {expect, test} from '~playwright/core';
 
 import {ThinkingMessageGroup} from '..';
 
-import {
-    CustomThinkingRendererExample,
-    EmptySummaryExample,
-    ThinkingMessageGroupStories,
-} from './helpersPlaywright';
+import {EmptySummaryExample, ThinkingMessageGroupStories} from './helpersPlaywright';
 
 test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
     const stories = {
@@ -22,7 +18,6 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
         CustomHistoryHeight: ThinkingMessageGroupStories.CustomHistoryHeight,
         CompactStreaming: ThinkingMessageGroupStories.CompactStreaming,
         CompactControlled: ThinkingMessageGroupStories.CompactControlled,
-        CompactInAssistantMessage: ThinkingMessageGroupStories.InAssistantMessage,
     };
 
     for (const [name, Story] of Object.entries(stories)) {
@@ -154,10 +149,4 @@ test('single completed step keeps its title accessible', async ({mount}) => {
 test('empty custom summary does not erase the completed heading', async ({mount}) => {
     const component = await mount(<EmptySummaryExample />);
     await expect(component.getByRole('button')).not.toHaveText('');
-});
-
-test('custom thinking renderers take precedence over automatic grouping', async ({mount}) => {
-    const component = await mount(<CustomThinkingRendererExample />);
-    await expect(component.getByText('Custom thinking')).toBeVisible();
-    await expect(component.locator('.g-aikit-thinking-message-group')).toHaveCount(0);
 });

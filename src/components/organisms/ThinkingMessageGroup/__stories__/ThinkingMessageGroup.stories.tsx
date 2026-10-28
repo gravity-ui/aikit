@@ -13,8 +13,6 @@ import {
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
 import {Showcase} from '../../../../demo/Showcase';
 import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
-import {AssistantMessage} from '../../AssistantMessage';
-import {UserMessage} from '../../UserMessage';
 
 import MDXDocs from './Docs.mdx';
 
@@ -336,36 +334,6 @@ export const CompactStreaming: Story = {
 export const CompactControlled: Story = {
     name: 'Controlled Expansion',
     render: () => <ProgressUpdatesExample controlled />,
-};
-
-export const InAssistantMessage: Story = {
-    name: 'Grouped Assistant Message',
-    parameters: {frameWidth: 640},
-    render: () => (
-        <>
-            <UserMessage content="How should we display the assistant's progress?" />
-            <AssistantMessage
-                id="response"
-                thinkingMessageView="grouped"
-                content={[
-                    {
-                        id: 'reasoning-1',
-                        type: 'thinking',
-                        data: {content: 'Analyzing the request.', status: 'thought'},
-                    },
-                    {
-                        id: 'reasoning-2',
-                        type: 'thinking',
-                        data: {
-                            title: 'Checking documentation',
-                            content: '**Relevant sources** are being checked.',
-                            status: 'thinking',
-                        },
-                    },
-                ]}
-            />
-        </>
-    ),
 };
 
 export const Completed: Story = {
