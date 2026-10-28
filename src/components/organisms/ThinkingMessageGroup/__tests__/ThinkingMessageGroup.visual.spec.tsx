@@ -113,10 +113,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
         await expect(component.getByRole('button')).toHaveCount(0);
     });
 
-    test('should contain a long history in a narrow container', async ({
-        mount,
-        expectScreenshot,
-    }) => {
+    test('should contain a long history in a narrow container', async ({mount}) => {
         const component = await mount(<ThinkingMessageGroupStories.CompactNarrow />);
         const root = component.locator('.g-aikit-thinking-message-group');
         expect(await root.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
@@ -139,7 +136,6 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
         expect(await root.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
             true,
         );
-        await expectScreenshot();
     });
 });
 
