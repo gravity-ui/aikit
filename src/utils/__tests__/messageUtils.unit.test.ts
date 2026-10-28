@@ -1,10 +1,27 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react';
 
-import type {TChatMessage, TextMessageContent, ThinkingMessageContent} from '../../types/messages';
+import type {
+    TChatMessage,
+    TMessageContent,
+    TextMessageContent,
+    ThinkingMessageContent,
+} from '../../types/messages';
 import {hasOnlyThinkingContent, normalizeContent, resolveMessageActions} from '../messageUtils';
 
 describe('normalizeContent', () => {
+    it.each([{html: '<b>Hello</b>'}, null, {text: 42}, 'custom text'])(
+        'should preserve custom text payload %j',
+        (data) => {
+            const part: TMessageContent<'text', typeof data> = {type: 'text', data};
+            const blank: TextMessageContent = {type: 'text', data: {text: ' \t\n'}};
+
+            expect(normalizeContent(part)).toEqual([part]);
+            expect(normalizeContent(part)[0]).toBe(part);
+            expect(normalizeContent([blank, part])).toEqual([part]);
+        },
+    );
+
     it.each(['', ' ', '\t', '\n', '\r\n', ' \t\n\r ', '\u00a0\u2003\u2028'])(
         'should omit blank text %j in every supported content shape',
         (text) => {

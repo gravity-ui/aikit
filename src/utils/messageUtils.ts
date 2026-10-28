@@ -9,7 +9,6 @@ import type {
     TMessageContentUnion,
     TMessageMetadata,
     TUserMessage,
-    TextMessageContent,
 } from '../types';
 
 export function isUserMessage<
@@ -51,9 +50,21 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
     }
 
     const parts = Array.isArray(content) ? content : [content];
-    return parts.filter(
-        (part) => part.type !== 'text' || Boolean((part as TextMessageContent).data.text.trim()),
-    );
+    return parts.filter((part) => {
+        const data = part.data;
+
+        if (
+            part.type !== 'text' ||
+            typeof data !== 'object' ||
+            data === null ||
+            !('text' in data) ||
+            typeof data.text !== 'string'
+        ) {
+            return true;
+        }
+
+        return data.text.trim().length > 0;
+    });
 }
 
 /**
