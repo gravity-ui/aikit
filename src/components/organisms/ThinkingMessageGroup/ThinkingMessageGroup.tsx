@@ -132,21 +132,6 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                     >
                                         {step.title || i18n(`status-${step.status}`)}
                                     </Text>
-                                    {step.status !== 'thinking' &&
-                                        (step.enabledCopy || step.onCopyClick) && (
-                                            <ActionButton
-                                                size="xs"
-                                                aria-label={i18n('copy')}
-                                                tooltipTitle={i18n('copy')}
-                                                className={b('copy')}
-                                                onClick={() => {
-                                                    if (step.onCopyClick) step.onCopyClick();
-                                                    else copyToClipboard(step.content ?? '');
-                                                }}
-                                            >
-                                                <Icon data={Copy} size={14} />
-                                            </ActionButton>
-                                        )}
                                     {(type?.label ||
                                         (step.status !== 'thinking' &&
                                             step.status !== 'thought')) && (
@@ -203,6 +188,21 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                                   );
                                               })}
                                     </div>
+                                    {step.status !== 'thinking' &&
+                                        (step.enabledCopy || step.onCopyClick) && (
+                                            <ActionButton
+                                                size="xs"
+                                                aria-label={i18n('copy')}
+                                                tooltipTitle={i18n('copy')}
+                                                className={b('copy')}
+                                                onClick={() => {
+                                                    if (step.onCopyClick) step.onCopyClick();
+                                                    else copyToClipboard(step.content ?? '');
+                                                }}
+                                            >
+                                                <Icon data={Copy} size={14} />
+                                            </ActionButton>
+                                        )}
                                 </div>
                             </li>
                         );
