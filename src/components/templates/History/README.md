@@ -89,8 +89,9 @@ import ruLocale from 'dayjs/locale/ru.js';
 Pinning is opt-in. Pass `pinnedChatIds` and `onPinnedChange` to `History` or
 `HistoryList`. Omit both to retain the existing behavior. Passing only identifiers
 shows read-only pin indicators. `showActions={false}` hides actions, not indicators.
-Pin actions use native buttons with accessible names and are always visible on
-both desktop and mobile. Activating a pin does not select the chat or close history.
+Pin and delete actions appear on hover or keyboard focus on desktop and stay visible
+on mobile. Their space is reserved to avoid shifting the row content. Pending pin
+actions remain focusable and use `aria-disabled` to prevent repeat submissions. Activating a pin does not select the chat or close history.
 
 With pinning enabled, pinned chats precede other chats, preserving the application's
 input order within both groups. Pinned rows have no date headers; regular rows keep

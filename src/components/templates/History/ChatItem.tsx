@@ -12,6 +12,12 @@ import {i18n} from './i18n';
 
 const b = block('history');
 
+function handleActionKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    if (event.key === ' ' || event.key === 'Enter') {
+        event.stopPropagation();
+    }
+}
+
 /**
  * Props for ChatItem component
  */
@@ -115,7 +121,9 @@ export function ChatItem({
                     color="secondary"
                     loading={isDeleteProccesing}
                     className={b('delete-button')}
+                    aria-label={i18n('tooltip-delete')}
                     onClick={handleDeleteChat}
+                    onKeyDown={handleActionKeyDown}
                     tooltipTitle={i18n('tooltip-delete')}
                 >
                     <Icon className={b('icon-button')} data={TrashBin} size={deleteIconSize} />
@@ -125,17 +133,16 @@ export function ChatItem({
                 <ActionButton
                     view="flat"
                     size={deleteButtonSize}
-                    disabled={pinningDisabled || isDeleteProccesing}
+                    aria-disabled={Boolean(pinningDisabled || isDeleteProccesing)}
+                    className={b('pin-button')}
                     aria-label={i18n(pinned ? 'action-unpin' : 'action-pin')}
                     tooltipTitle={i18n(pinned ? 'action-unpin' : 'action-pin')}
-                    onKeyDown={(event) => {
-                        if (event.key === ' ' || event.key === 'Enter') {
-                            event.stopPropagation();
-                        }
-                    }}
+                    onKeyDown={handleActionKeyDown}
                     onClick={(event) => {
                         event.stopPropagation();
-                        onPinnedChange(chat.id, !pinned);
+                        if (!pinningDisabled && !isDeleteProccesing) {
+                            onPinnedChange(chat.id, !pinned);
+                        }
                     }}
                 >
                     <Icon data={pinned ? PinSlash : Pin} size={deleteIconSize} />
