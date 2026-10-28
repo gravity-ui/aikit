@@ -2,7 +2,7 @@
 
 import {type ReactNode, useId, useState} from 'react';
 
-import {Check, ChevronRight, Copy} from '@gravity-ui/icons';
+import {Ban, ChevronRight, CircleXmark, Copy, Pause} from '@gravity-ui/icons';
 import {Button, Icon, Text} from '@gravity-ui/uikit';
 
 import {copyToClipboard} from '../../../utils/clipboardUtils';
@@ -11,11 +11,31 @@ import {ActionButton} from '../../atoms/ActionButton';
 import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 
 import {i18n} from './i18n';
-import type {ThinkingMessageGroupProps, ThinkingStep} from './types';
+import type {ThinkingMessageGroupProps, ThinkingStep, ThinkingStepStatus} from './types';
 
 import './ThinkingMessageGroup.scss';
 
 const b = block('thinking-message-group');
+
+const statusIcons = {
+    error: CircleXmark,
+    cancelled: Ban,
+    paused: Pause,
+};
+
+function StepIcon({
+    status,
+    operationIcon,
+}: {
+    status: ThinkingStepStatus;
+    operationIcon?: ReactNode;
+}) {
+    if (status === 'thinking' || status === 'thought') {
+        return operationIcon || <span className={b('step-dot')} />;
+    }
+
+    return <Icon data={statusIcons[status]} size={16} />;
+}
 
 export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
     const {
@@ -25,6 +45,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
         activeStepId,
         expanded,
         defaultExpanded = false,
+        maxHistoryHeight = 480,
         onExpandedChange,
         renderSummary,
         renderStepContent,
@@ -41,6 +62,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
     } = props;
     const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
     const detailsId = useId();
+    const headingId = `${detailsId}-heading`;
     const isExpanded = expanded ?? internalExpanded;
     const activeStep =
         activeStepId === undefined
@@ -90,6 +112,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
         <div className={b(null, className)} data-qa={qa} style={style}>
             {hasDetails ? (
                 <Button
+                    id={headingId}
                     className={b('compact-toggle')}
                     view="flat-secondary"
                     width="auto"
@@ -103,7 +126,13 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                 <div className={b('compact-header')}>{heading}</div>
             )}
             {hasDetails && isExpanded && (
-                <ol className={b('steps')} id={detailsId}>
+                <ol
+                    className={b('steps')}
+                    id={detailsId}
+                    aria-labelledby={headingId}
+                    tabIndex={0}
+                    style={{maxHeight: maxHistoryHeight}}
+                >
                     {steps.map((step) => {
                         const type = stepTypes?.[step.type];
                         const content = Array.isArray(step.content) ? step.content : [step.content];
@@ -114,12 +143,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                     role="img"
                                     aria-label={i18n(`status-${step.status}`)}
                                 >
-                                    {type?.icon ||
-                                        (step.status === 'thought' ? (
-                                            <Icon data={Check} size={14} />
-                                        ) : (
-                                            <span className={b('step-dot')} />
-                                        ))}
+                                    <StepIcon status={step.status} operationIcon={type?.icon} />
                                 </span>
                                 <div className={b('step-body')}>
                                     <Text
@@ -235,19 +259,23 @@ function CompactHeading({
         summary !== null && summary !== undefined && summary !== false && summary !== '';
     const showCompletedSummary = status === 'thought' && hasSummary;
     const label = (showActiveStep && activeStep?.title) || i18n(`status-${status}`);
-    const headerIcon = showActiveStep && activeStep ? stepTypes?.[activeStep.type]?.icon : null;
+    const operationIcon = showActiveStep && activeStep ? stepTypes?.[activeStep.type]?.icon : null;
     const showSecondarySummary = !showCompletedSummary && hasSummary;
     return (
         <span className={b('compact-heading')}>
             <span className={b('compact-current')}>
-                {headerIcon && (
-                    <span className={b('step-icon')} aria-hidden="true">
-                        {headerIcon}
+                {status !== 'thought' && (
+                    <span
+                        className={b('step-icon', {error: status === 'error'})}
+                        aria-hidden="true"
+                    >
+                        <StepIcon status={status} operationIcon={operationIcon} />
                     </span>
                 )}
                 <span
                     className={b('compact-label', {
                         active: isThinking && activeStep?.status === 'thinking',
+                        error: status === 'error',
                     })}
                     title={showCompletedSummary ? undefined : label}
                 >
@@ -260,9 +288,7 @@ function CompactHeading({
                 )}
             </span>
             {showSecondarySummary && (
-                <span className={b('compact-summary', {indented: Boolean(headerIcon)})}>
-                    {summary}
-                </span>
+                <span className={b('compact-summary', {indented: true})}>{summary}</span>
             )}
         </span>
     );

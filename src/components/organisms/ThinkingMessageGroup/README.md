@@ -64,25 +64,27 @@ import {ThinkingMessageGroup} from '@gravity-ui/aikit/ThinkingMessageGroup';
 />;
 ```
 
-Types have no fixed enum. Unknown types use a static dot/check fallback. Category labels appear
+Types have no fixed enum. Running and completed steps keep their category icon, or a static dot
+when none is supplied. Error, paused and cancelled steps use their status icon instead. Category labels appear
 only in the expanded history. Applications choose icons; the component does not map backend event
 names to icons. Details can be omitted when the backend does not supply them.
 
 ## Props
 
-| Prop                       | Type                                            | Required | Default            | Description                                             |
-| -------------------------- | ----------------------------------------------- | -------- | ------------------ | ------------------------------------------------------- |
-| `steps`                    | `readonly ThinkingStep[]`                       | Yes      | —                  | Accumulated, ordered steps with stable unique IDs       |
-| `stepTypes`                | `Record<string, ThinkingStepType>`              | No       | —                  | Category icons and labels                               |
-| `status`                   | `ThinkingStepStatus`                            | No       | Last step status   | Overall run status, independent of stored step statuses |
-| `activeStepId`             | `string`                                        | No       | Last thinking step | Select the active step explicitly                       |
-| `expanded`                 | `boolean`                                       | No       | —                  | Controlled expansion                                    |
-| `defaultExpanded`          | `boolean`                                       | No       | `false`            | Initial uncontrolled expansion                          |
-| `onExpandedChange`         | `(expanded: boolean) => void`                   | No       | —                  | Disclosure change callback                              |
-| `renderSummary`            | `(completedSteps: ThinkingStep[]) => ReactNode` | No       | Completed count    | Optional summary; null, false and empty string hide it  |
-| `renderStepContent`        | `(step: ThinkingStep) => ReactNode`             | No       | Content renderer   | Custom details                                          |
-| `format`                   | `'plain' \| 'markdown'`                         | No       | `'plain'`          | Content format                                          |
-| `className`, `style`, `qa` | Standard DOM/QA props                           | No       | —                  | Root customization                                      |
+| Prop                       | Type                                            | Required | Default            | Description                                                        |
+| -------------------------- | ----------------------------------------------- | -------- | ------------------ | ------------------------------------------------------------------ |
+| `steps`                    | `readonly ThinkingStep[]`                       | Yes      | —                  | Accumulated, ordered steps with stable unique IDs                  |
+| `stepTypes`                | `Record<string, ThinkingStepType>`              | No       | —                  | Category icons and labels                                          |
+| `status`                   | `ThinkingStepStatus`                            | No       | Last step status   | Overall run status, independent of stored step statuses            |
+| `activeStepId`             | `string`                                        | No       | Last thinking step | Select the active step explicitly                                  |
+| `expanded`                 | `boolean`                                       | No       | —                  | Controlled expansion                                               |
+| `defaultExpanded`          | `boolean`                                       | No       | `false`            | Initial uncontrolled expansion                                     |
+| `maxHistoryHeight`         | `CSSProperties['maxHeight']`                    | No       | `480`              | Maximum expanded history height; use `"none"` to disable the limit |
+| `onExpandedChange`         | `(expanded: boolean) => void`                   | No       | —                  | Disclosure change callback                                         |
+| `renderSummary`            | `(completedSteps: ThinkingStep[]) => ReactNode` | No       | Completed count    | Optional summary; null, false and empty string hide it             |
+| `renderStepContent`        | `(step: ThinkingStep) => ReactNode`             | No       | Content renderer   | Custom details                                                     |
+| `format`                   | `'plain' \| 'markdown'`                         | No       | `'plain'`          | Content format                                                     |
+| `className`, `style`, `qa` | Standard DOM/QA props                           | No       | —                  | Root customization                                                 |
 
 Markdown options match `ThinkingMessage`: `transformOptions`, `mermaidOptions`,
 `openMarkdownLinksInNewTab`, `mdxOptions`, `mdxContext`, `markdownExtraProps`.

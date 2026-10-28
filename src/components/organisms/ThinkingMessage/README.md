@@ -1,8 +1,8 @@
 # ThinkingMessage
 
-> Deprecated: use [ThinkingMessageGroup](../ThinkingMessageGroup/README.md). Removal is planned for the next major release. Existing props and data types remain supported in this major.
-
 A message component that displays AI thinking process with collapsible content and a status indicator.
+
+> Deprecated: use [ThinkingMessageGroup](../ThinkingMessageGroup/README.md). Removal is planned for the next major release. Existing props and data types remain supported in this major.
 
 ## Features
 

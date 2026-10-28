@@ -1,14 +1,16 @@
 import {expect, test} from '~playwright/core';
 
 import {ThinkingMessageGroup} from '..';
-import {AssistantMessage} from '../../AssistantMessage';
 
-import {ThinkingMessageGroupStories} from './helpersPlaywright';
+import {
+    CustomThinkingRendererExample,
+    EmptySummaryExample,
+    ThinkingMessageGroupStories,
+} from './helpersPlaywright';
 
 test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
     const stories = {
         Legacy: ThinkingMessageGroupStories.Legacy,
-        SingleCompleted: ThinkingMessageGroupStories.SingleCompleted,
         Compact: ThinkingMessageGroupStories.Playground,
         CompactCompleted: ThinkingMessageGroupStories.Completed,
         CompactExpanded: ThinkingMessageGroupStories.CompactExpanded,
@@ -17,6 +19,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
         CompactTerminalStates: ThinkingMessageGroupStories.CompactTerminalStates,
         CompactNarrow: ThinkingMessageGroupStories.CompactNarrow,
         CompactDark: ThinkingMessageGroupStories.CompactDark,
+        CustomHistoryHeight: ThinkingMessageGroupStories.CustomHistoryHeight,
         CompactStreaming: ThinkingMessageGroupStories.CompactStreaming,
         CompactControlled: ThinkingMessageGroupStories.CompactControlled,
         CompactInAssistantMessage: ThinkingMessageGroupStories.InAssistantMessage,
@@ -30,7 +33,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
     }
 
     test('should render nothing for an empty history', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroupStories.Empty />);
+        const component = await mount(<ThinkingMessageGroup steps={[]} />);
         await expect(component.locator('.g-aikit-thinking-message-group')).toHaveCount(0);
     });
 
@@ -54,11 +57,12 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
                 ? ThinkingMessageGroupStories.CompactControlled
                 : ThinkingMessageGroupStories.CompactStreaming;
             const component = await mount(<Story />);
-            const toggle = component.getByRole('button', {expanded: false});
-            await toggle.click();
-            await component.getByRole('button', {name: 'Append details'}).click();
-            await expect(component.getByText('Updated streaming details')).toBeVisible();
-            await component.getByRole('button', {name: 'Complete', exact: true}).click();
+            await expect(component.getByRole('button', {expanded: true})).toBeVisible();
+            await component.getByRole('button', {name: 'Add text fragment', exact: true}).click();
+            await expect(
+                component.getByText(/Detail 1: Checked another configuration option/),
+            ).toBeVisible();
+            await component.getByRole('button', {name: 'Complete response', exact: true}).click();
             await expect(component.getByRole('button', {expanded: true})).toBeVisible();
             await expect(
                 component.locator('.g-aikit-thinking-message-group__compact-label_active'),
@@ -118,8 +122,20 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
         expect(await root.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
             true,
         );
-        await component.getByRole('button').click();
+        await expect(component.getByRole('button', {expanded: true})).toBeVisible();
         await expect(component.getByRole('listitem')).toHaveCount(50);
+        const history = component.getByRole('list');
+        await expect(history).toHaveCSS('max-height', '480px');
+        expect(
+            await history.evaluate((element) => element.scrollHeight > element.clientHeight),
+        ).toBe(true);
+        await history.focus();
+        await history.press('End');
+        await expect
+            .poll(() => history.evaluate((element) => element.scrollTop))
+            .toBeGreaterThan(0);
+        await history.press('Home');
+        await expect.poll(() => history.evaluate((element) => element.scrollTop)).toBe(0);
         expect(await root.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
             true,
         );
@@ -128,29 +144,24 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
 });
 
 test('single completed step keeps its title accessible', async ({mount}) => {
-    const component = await mount(<ThinkingMessageGroupStories.SingleCompleted />);
+    const component = await mount(
+        <ThinkingMessageGroup
+            steps={[
+                {id: 'one', type: 'custom', title: 'Checked the documentation', status: 'thought'},
+            ]}
+        />,
+    );
     await component.getByRole('button', {expanded: false}).click();
     await expect(component.getByText('Checked the documentation')).toBeVisible();
 });
 
 test('empty custom summary does not erase the completed heading', async ({mount}) => {
-    const component = await mount(
-        <ThinkingMessageGroup
-            steps={[{id: 'one', type: 'reasoning', status: 'thought'}]}
-            renderSummary={() => false}
-        />,
-    );
+    const component = await mount(<EmptySummaryExample />);
     await expect(component.getByRole('button')).not.toHaveText('');
 });
 
 test('custom thinking renderers take precedence over automatic grouping', async ({mount}) => {
-    const component = await mount(
-        <AssistantMessage
-            thinkingMessageView="grouped"
-            messageRendererRegistry={{thinking: {component: () => <div>Custom thinking</div>}}}
-            content={[{type: 'thinking', data: {content: 'reasoning', status: 'thinking'}}]}
-        />,
-    );
+    const component = await mount(<CustomThinkingRendererExample />);
     await expect(component.getByText('Custom thinking')).toBeVisible();
     await expect(component.locator('.g-aikit-thinking-message-group')).toHaveCount(0);
 });
