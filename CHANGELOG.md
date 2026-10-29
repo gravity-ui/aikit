@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.27.0](https://github.com/gravity-ui/aikit/compare/v2.26.0...v2.27.0) (2026-10-29)
+
+
+### Features
+
+* add grouped thinking history with legacy migration ([#281](https://github.com/gravity-ui/aikit/issues/281)) ([18bbe53](https://github.com/gravity-ui/aikit/commit/18bbe536acd507da827c4336c61ace62f54d8395))
+
 ## [2.26.0](https://github.com/gravity-ui/aikit/compare/v2.25.0...v2.26.0) (2026-10-29)
 
 
