@@ -35,6 +35,10 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
     }
 
     if (typeof content === 'string') {
+        if (!content.trim()) {
+            return [];
+        }
+
         return [
             {
                 type: 'text',
@@ -45,11 +49,22 @@ export function normalizeContent<TCustomMessageContent extends TMessageContent =
         ];
     }
 
-    if (Array.isArray(content)) {
-        return content;
-    }
+    const parts = Array.isArray(content) ? content : [content];
+    return parts.filter((part) => {
+        const data = part.data;
 
-    return [content];
+        if (
+            part.type !== 'text' ||
+            typeof data !== 'object' ||
+            data === null ||
+            !('text' in data) ||
+            typeof data.text !== 'string'
+        ) {
+            return true;
+        }
+
+        return data.text.trim().length > 0;
+    });
 }
 
 /**

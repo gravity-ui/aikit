@@ -1,8 +1,68 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react';
 
-import type {TChatMessage} from '../../types/messages';
-import {resolveMessageActions} from '../messageUtils';
+import type {
+    TChatMessage,
+    TMessageContent,
+    TextMessageContent,
+    ThinkingMessageContent,
+} from '../../types/messages';
+import {hasOnlyThinkingContent, normalizeContent, resolveMessageActions} from '../messageUtils';
+
+describe('normalizeContent', () => {
+    it.each([{html: '<b>Hello</b>'}, null, {text: 42}, 'custom text'])(
+        'should preserve custom text payload %j',
+        (data) => {
+            const part: TMessageContent<'text', typeof data> = {type: 'text', data};
+            const blank: TextMessageContent = {type: 'text', data: {text: ' \t\n'}};
+
+            expect(normalizeContent(part)).toEqual([part]);
+            expect(normalizeContent(part)[0]).toBe(part);
+            expect(normalizeContent([blank, part])).toEqual([part]);
+        },
+    );
+
+    it.each(['', ' ', '\t', '\n', '\r\n', ' \t\n\r ', '\u00a0\u2003\u2028'])(
+        'should omit blank text %j in every supported content shape',
+        (text) => {
+            const part: TextMessageContent = {type: 'text', data: {text}};
+
+            expect(normalizeContent(text)).toEqual([]);
+            expect(normalizeContent(part)).toEqual([]);
+            expect(normalizeContent([part, part])).toEqual([]);
+        },
+    );
+
+    it('should preserve meaningful text and its surrounding whitespace', () => {
+        const text = ' \tHello\n ';
+        const part: TextMessageContent = {type: 'text', data: {text}};
+
+        expect(normalizeContent(text)).toEqual([part]);
+        expect(normalizeContent(part)[0]).toBe(part);
+    });
+
+    it('should omit empty text parts without mutating mixed content', () => {
+        const empty: TextMessageContent = {type: 'text', data: {text: '\t\n'}};
+        const text: TextMessageContent = {type: 'text', data: {text: 'Hello'}};
+        const custom = {type: 'custom', data: {value: 0}};
+        const parts = [empty, custom, text, empty];
+
+        expect(normalizeContent(parts)).toEqual([custom, text]);
+        expect(parts).toEqual([empty, custom, text, empty]);
+    });
+
+    it('should preserve thinking indicators and ignore blank text when detecting thinking-only content', () => {
+        const thinking: ThinkingMessageContent = {
+            type: 'thinking',
+            data: {content: '', status: 'thinking'},
+        };
+        const parts = [thinking, {type: 'text' as const, data: {text: ' \n'}}];
+
+        expect(normalizeContent(parts)).toEqual([thinking]);
+        expect(hasOnlyThinkingContent(parts)).toBe(true);
+        expect(hasOnlyThinkingContent(' \n')).toBe(false);
+    });
+});
 
 const makeAssistantMessage = (overrides?: object): TChatMessage => ({
     id: 'msg-1',
