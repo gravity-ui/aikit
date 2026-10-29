@@ -29,6 +29,7 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 - [FileIcon](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/FileIcon/README.md): icon for a file based on MIME or extension
 - [IntersectionContainer](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/IntersectionContainer/README.md): Intersection Observer wrapper for infinite scroll
 - [Loader](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/Loader/README.md): loading-state indicator
+- [InlineCitation](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/InlineCitation/README.md): Inline source badge with an interactive preview and source navigation.
 - [MarkdownRenderer](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/MarkdownRenderer/README.md): Yandex Flavored Markdown → HTML renderer
 - [MessageBalloon](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/MessageBalloon/README.md): visual wrapper for a user message
 - [Shimmer](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/Shimmer/README.md): shimmer animation overlay
