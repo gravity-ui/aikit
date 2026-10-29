@@ -56,11 +56,15 @@ $block: '.#{variables.$ns}history';
         flex: 1;
         min-width: 0;
 
+        &:hover,
+        &:focus-within,
         &_active,
         &_is-delete-processing,
         &_mobile {
-            #{$block}__delete-button {
-                display: block;
+            #{$block}__delete-button,
+            #{$block}__pin-button {
+                opacity: 1;
+                pointer-events: auto;
             }
         }
 
@@ -89,9 +93,20 @@ $block: '.#{variables.$ns}history';
         color: var(--g-color-text-secondary);
     }
 
+    &__delete-button,
+    &__pin-button {
+        opacity: 0;
+        pointer-events: none;
+        flex-shrink: 0;
+    }
+
+    &__pin-button[aria-disabled='true'] {
+        color: var(--g-color-text-hint);
+        cursor: default;
+    }
+
     &__delete-button {
         margin-left: spacing(2);
-        display: none;
     }
 
     &__empty {

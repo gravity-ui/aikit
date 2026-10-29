@@ -18,6 +18,8 @@ import './History.scss';
 
 const b = block('history');
 
+type HistoryListItem = ListItemData<ListItemChatData> & {rowKey: string};
+
 /** Result of lazy load more callback - either array of new chats or object with chats and hasMore flag */
 export type LoadMoreLazyResult = ChatType[] | {chats: ChatType[]; hasMore?: boolean};
 
@@ -33,6 +35,12 @@ export type HistoryLoadMode = 'full' | 'lazy';
 export interface HistoryListProps extends QAProps, DOMProps {
     /** Array of chat items */
     chats: ChatType[];
+    /** Controlled pinned identifiers. Omit to disable pinning. */
+    pinnedChatIds?: readonly string[];
+    /** Requests a pin state change; the application updates pinnedChatIds. */
+    onPinnedChange?: (chatId: string, pinned: boolean) => void;
+    /** Disable pin actions while persistence is pending. */
+    pinningDisabled?: boolean;
     /** Currently selected chat */
     selectedChat?: ChatType | null;
     /** Callback when a chat is selected */
@@ -92,6 +100,9 @@ export function HistoryList(props: HistoryListProps) {
     const {
         chats,
         selectedChat,
+        pinnedChatIds,
+        onPinnedChange,
+        pinningDisabled,
         onSelectChat,
         onDeleteChat,
         onLoadMore,
@@ -154,8 +165,34 @@ export function HistoryList(props: HistoryListProps) {
         return groupChatsByDate(displayChats);
     }, [displayChats, groupBy]);
 
-    const listItems: ListItemData<ListItemChatData>[] = useMemo(() => {
-        const items: ListItemData<ListItemChatData>[] = [];
+    const listItems = useMemo(() => {
+        const items: HistoryListItem[] = [];
+
+        if (pinnedChatIds !== undefined) {
+            const pinned = new Set(pinnedChatIds);
+            const ordered = [
+                ...displayChats.filter((chat) => pinned.has(chat.id)),
+                ...displayChats.filter((chat) => !pinned.has(chat.id)),
+            ];
+            let previousDate: string | undefined;
+            ordered.forEach((chat) => {
+                const date =
+                    !pinned.has(chat.id) && chat.createTime
+                        ? new Date(chat.createTime).toDateString()
+                        : undefined;
+                if (groupBy === 'date' && date && date !== previousDate) {
+                    items.push({
+                        type: 'date-header',
+                        disabled: true,
+                        date,
+                        rowKey: `date:${date}:${chat.id}`,
+                    });
+                }
+                previousDate = date;
+                items.push({...chat, type: 'chat', rowKey: `chat:${chat.id}`});
+            });
+            return items;
+        }
 
         const sortedGroups = Array.from(groupedChats.entries()).sort(([dateA], [dateB]) => {
             if (dateA === 'all') return 0;
@@ -172,6 +209,7 @@ export function HistoryList(props: HistoryListProps) {
                     type: 'date-header',
                     disabled: true,
                     date: dateKey,
+                    rowKey: `date:${dateKey}`,
                 });
             }
 
@@ -179,12 +217,13 @@ export function HistoryList(props: HistoryListProps) {
                 items.push({
                     type: 'chat',
                     ...chat,
+                    rowKey: `chat:${chat.id}`,
                 });
             });
         });
 
         return items;
-    }, [groupedChats, groupBy]);
+    }, [groupedChats, groupBy, displayChats, pinnedChatIds]);
 
     const selectedItemIndex = useMemo(() => {
         return listItems.findIndex((item) => item.type === 'chat' && item.id === selectedChat?.id);
@@ -277,6 +316,9 @@ export function HistoryList(props: HistoryListProps) {
                 key={item.id}
                 chat={item}
                 showActions={showActions}
+                pinned={pinnedChatIds?.includes(item.id)}
+                onPinnedChange={pinnedChatIds === undefined ? undefined : onPinnedChange}
+                pinningDisabled={pinningDisabled}
                 onDeleteClick={onDeleteChat ? handleDeleteClick : undefined}
                 isActive={isActive}
                 size={sizeProp}
@@ -304,9 +346,10 @@ export function HistoryList(props: HistoryListProps) {
                     </div>
                 ) : (
                     <React.Fragment>
-                        <List
+                        <List<HistoryListItem>
                             size={size}
                             items={listItems}
+                            itemKey={(item) => item.rowKey}
                             renderItem={renderItem}
                             virtualized={false}
                             filterable={searchable}

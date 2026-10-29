@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 
-import {TrashBin} from '@gravity-ui/icons';
+import {Pin, PinSlash, TrashBin} from '@gravity-ui/icons';
 import {Icon, InputControlSize, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
 
 import {getControlIconSize, resolveMobileControlSize} from '../../../hooks/useMobileControlSize';
@@ -12,12 +12,21 @@ import {i18n} from './i18n';
 
 const b = block('history');
 
+function handleActionKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    if (event.key === ' ' || event.key === 'Enter') {
+        event.stopPropagation();
+    }
+}
+
 /**
  * Props for ChatItem component
  */
 export interface ChatItemProps {
     chat: ChatType;
     showActions: boolean;
+    pinned?: boolean;
+    onPinnedChange?: (chatId: string, pinned: boolean) => void;
+    pinningDisabled?: boolean;
     isActive?: boolean;
     onDeleteClick?: (e: React.MouseEvent, chat: ChatType) => Promise<void>;
     /** Size of the row actions (default: `s`, `xl` in mobile mode) */
@@ -30,7 +39,16 @@ export interface ChatItemProps {
  *
  * @returns React element
  */
-export function ChatItem({chat, showActions, isActive, onDeleteClick, size}: ChatItemProps) {
+export function ChatItem({
+    chat,
+    showActions,
+    isActive,
+    onDeleteClick,
+    size,
+    pinned,
+    onPinnedChange,
+    pinningDisabled,
+}: ChatItemProps) {
     const [isDeleteProccesing, setIsDeleteProcessing] = useState(false);
     const [hasOverflow, setHasOverflow] = useState(false);
     const labelRef = useRef<HTMLDivElement>(null);
@@ -47,7 +65,7 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick, size}: Cha
     useEffect(() => {
         const label = labelRef.current;
         setHasOverflow(Boolean(label && label.scrollWidth > label.clientWidth));
-    }, [chatLabel]);
+    }, [chatLabel, pinned, showActions, onPinnedChange]);
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (isDeleteProccesing) {
@@ -83,6 +101,11 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick, size}: Cha
             })}
             onClick={handleClick}
         >
+            {pinned && (
+                <span role="img" aria-label={i18n('pinned')}>
+                    <Icon data={Pin} size={16} />
+                </span>
+            )}
             {hasOverflow ? (
                 <Tooltip content={chatLabel} openDelay={300}>
                     {label}
@@ -98,12 +121,33 @@ export function ChatItem({chat, showActions, isActive, onDeleteClick, size}: Cha
                     color="secondary"
                     loading={isDeleteProccesing}
                     className={b('delete-button')}
+                    aria-label={i18n('tooltip-delete')}
                     onClick={handleDeleteChat}
+                    onKeyDown={handleActionKeyDown}
                     tooltipTitle={i18n('tooltip-delete')}
                 >
                     <Icon className={b('icon-button')} data={TrashBin} size={deleteIconSize} />
                 </ActionButton>
             ) : null}
+            {showActions && onPinnedChange && (
+                <ActionButton
+                    view="flat"
+                    size={deleteButtonSize}
+                    aria-disabled={Boolean(pinningDisabled || isDeleteProccesing)}
+                    className={b('pin-button')}
+                    aria-label={i18n(pinned ? 'action-unpin' : 'action-pin')}
+                    tooltipTitle={i18n(pinned ? 'action-unpin' : 'action-pin')}
+                    onKeyDown={handleActionKeyDown}
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        if (!pinningDisabled && !isDeleteProccesing) {
+                            onPinnedChange(chat.id, !pinned);
+                        }
+                    }}
+                >
+                    <Icon data={pinned ? PinSlash : Pin} size={deleteIconSize} />
+                </ActionButton>
+            )}
         </div>
     );
 }

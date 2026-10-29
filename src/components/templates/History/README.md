@@ -84,37 +84,117 @@ import ruLocale from 'dayjs/locale/ru.js';
 />
 ```
 
+## Pinned chats
+
+Pinning is opt-in. Pass `pinnedChatIds` and `onPinnedChange` to `History` or
+`HistoryList`. Omit both to retain the existing behavior. Passing only identifiers
+shows read-only pin indicators. `showActions={false}` hides actions, not indicators.
+Pin and delete actions appear on hover or keyboard focus on desktop and stay visible
+on mobile. Their space is reserved to avoid shifting the row content. Pending pin
+actions remain focusable and use `aria-disabled` to prevent repeat submissions. Activating a pin does not select the chat or close history.
+
+With pinning enabled, pinned chats precede other chats, preserving the application's
+input order within both groups. Pinned rows have no date headers; regular rows keep
+date headers in input order (a date can repeat). Search applies to both groups.
+Only supplied or lazily loaded chats can be displayed: the application must include
+pinned chats in its data even when they are outside the current page. Missing IDs
+are retained in storage. Deleting a chat does not implicitly delete its pin.
+
+### Local persistence
+
+```tsx
+import {useState} from 'react';
+import {
+  HistoryList,
+  createLocalStoragePinnedChatsStore,
+  usePinnedChatsStore,
+} from '@gravity-ui/aikit';
+
+function AccountHistory({chats}) {
+  const [store] = useState(() =>
+    createLocalStoragePinnedChatsStore('my-app:user-123:pinned-chats'),
+  );
+  const {pinnedChatIds, setPinned, isLoading, error, load} = usePinnedChatsStore(store);
+  return (
+    <>
+      {Boolean(error) && <button onClick={() => void load()}>Retry loading pins</button>}
+      <HistoryList
+        chats={chats}
+        pinnedChatIds={pinnedChatIds}
+        onPinnedChange={setPinned}
+        pinningDisabled={isLoading}
+      />
+    </>
+  );
+}
+```
+
+`localStorage` suits a small array of IDs and survives page reloads. Use an
+application/account-specific key and recreate the store on account changes (for
+example, remount the account history using React's `key`). Storage is accessed
+only when loading or saving, so store creation is safe during server rendering.
+Unavailable storage, invalid JSON, and quota errors are exposed through `error`;
+existing data is not silently overwritten. Separate tabs do not synchronize live.
+
+### Server persistence
+
+```tsx
+import {createPinnedChatsStore} from '@gravity-ui/aikit';
+
+const store = createPinnedChatsStore({
+  load: () => appApi.loadPinnedChatIds(),
+  save: (ids) => appApi.savePinnedChatIds([...ids]),
+});
+```
+
+Use this store with `usePinnedChatsStore` in the same way as local persistence.
+The application owns authentication, API requests, account scoping, error UI, and
+loading chat records. Create a stable store per account, never a shared server-side
+singleton. The factories are also exported from `@gravity-ui/aikit/utils`; the hook
+is exported from `@gravity-ui/aikit/hooks`.
+
+The store loads before the first mutation and serializes writes to avoid lost
+updates. It updates confirmed IDs only after a successful save. Failed operations
+resolve and expose `error`; retry a failed save by repeating the pin action.
+`load()` initializes once, or retries an unsuccessful initial load; it does not
+refresh already loaded data. `isLoading` covers queued loading and saving. Duplicate
+IDs are removed; identifiers absent from the visible page remain stored. Stores
+are independent, so results from an old account cannot update the new store.
+
 ## Props
 
-| Prop                       | Type                             | Required | Default             | Description                                         |
-| -------------------------- | -------------------------------- | -------- | ------------------- | --------------------------------------------------- |
-| `chats`                    | `ChatType[]`                     | ✓        | -                   | Array of chat items                                 |
-| `anchorElement`            | `HTMLElement \| null`            | ✓        | -                   | Anchor element for the popup                        |
-| `open`                     | `boolean`                        | -        | `false`             | Control popup open state                            |
-| `onOpenChange`             | `(open: boolean) => void`        | -        | -                   | Callback when popup state changes                   |
-| `selectedChat`             | `ChatType \| null`               | -        | -                   | Currently selected chat                             |
-| `onSelectChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is selected                    |
-| `onDeleteChat`             | `(chat) => void`                 | -        | -                   | Callback when a chat is deleted                     |
-| `onLoadMore`               | `() => void` or `OnLoadMoreLazy` | -        | -                   | Callback to load more chats (see Load modes)        |
-| `hasMore`                  | `boolean`                        | -        | `false`             | Whether there are more chats to load                |
-| `loadMode`                 | `'full' \| 'lazy'`               | -        | `'full'`            | Load mode: button (full) or scroll (lazy)           |
-| `searchable`               | `boolean`                        | -        | `true`              | Enable search functionality                         |
-| `groupBy`                  | `'date' \| 'none'`               | -        | `'date'`            | Group chats by date or show flat list               |
-| `dateFormat`               | `string`                         | -        | `YYYY.MM.DD`        | Dayjs format for non-relative date headers          |
-| `dateLocale`               | `string`                         | -        | Browser             | Locale for non-relative date headers                |
-| `dateLocaleConfig`         | `DateLocaleConfig`               | -        | -                   | Dayjs locale configuration for date headers         |
-| `showActions`              | `boolean`                        | -        | `true`              | Show action buttons (delete)                        |
-| `emptyPlaceholder`         | `React.ReactNode`                | -        | -                   | Custom empty state placeholder                      |
-| `emptyFilteredPlaceholder` | `React.ReactNode`                | -        | -                   | Placeholder shown when search returns no results    |
-| `loading`                  | `boolean`                        | -        | `false`             | Show loading state                                  |
-| `className`                | `string`                         | -        | -                   | Additional CSS class                                |
-| `qa`                       | `string`                         | -        | -                   | QA/test identifier                                  |
-| `style`                    | `CSSProperties`                  | -        | -                   | Inline styles                                       |
-| `filterFunction`           | `ChatFilterFunction`             | -        | `defaultChatFilter` | Custom filter function for search                   |
-| `size`                     | `'s' \| 'm' \| 'l' \| 'xl'`      | -        | `m`, `xl` on mobile | Size of the list and of the row delete button       |
-| `showSheetTitle`           | `boolean`                        | -        | `true`              | Show the mobile sheet title (stays in `aria-label`) |
-| `modal`                    | `boolean`                        | -        | `true`              | Keep the keyboard focus inside the desktop popup    |
-| `initialFocus`             | `PopupProps['initialFocus']`     | -        | -                   | Element to focus when the desktop popup opens       |
+| Prop                       | Type                                        | Required | Default             | Description                                         |
+| -------------------------- | ------------------------------------------- | -------- | ------------------- | --------------------------------------------------- |
+| `pinnedChatIds`            | `readonly string[]`                         | -        | -                   | Controlled pin state; omission disables pinning.    |
+| `onPinnedChange`           | `(chatId: string, pinned: boolean) => void` | -        | -                   | Requests a pin state change.                        |
+| `pinningDisabled`          | `boolean`                                   | -        | `false`             | Disables pin actions during persistence.            |
+| `chats`                    | `ChatType[]`                                | ✓        | -                   | Array of chat items                                 |
+| `anchorElement`            | `HTMLElement \| null`                       | ✓        | -                   | Anchor element for the popup                        |
+| `open`                     | `boolean`                                   | -        | `false`             | Control popup open state                            |
+| `onOpenChange`             | `(open: boolean) => void`                   | -        | -                   | Callback when popup state changes                   |
+| `selectedChat`             | `ChatType \| null`                          | -        | -                   | Currently selected chat                             |
+| `onSelectChat`             | `(chat) => void`                            | -        | -                   | Callback when a chat is selected                    |
+| `onDeleteChat`             | `(chat) => void`                            | -        | -                   | Callback when a chat is deleted                     |
+| `onLoadMore`               | `() => void` or `OnLoadMoreLazy`            | -        | -                   | Callback to load more chats (see Load modes)        |
+| `hasMore`                  | `boolean`                                   | -        | `false`             | Whether there are more chats to load                |
+| `loadMode`                 | `'full' \| 'lazy'`                          | -        | `'full'`            | Load mode: button (full) or scroll (lazy)           |
+| `searchable`               | `boolean`                                   | -        | `true`              | Enable search functionality                         |
+| `groupBy`                  | `'date' \| 'none'`                          | -        | `'date'`            | Group chats by date or show flat list               |
+| `dateFormat`               | `string`                                    | -        | `YYYY.MM.DD`        | Dayjs format for non-relative date headers          |
+| `dateLocale`               | `string`                                    | -        | Browser             | Locale for non-relative date headers                |
+| `dateLocaleConfig`         | `DateLocaleConfig`                          | -        | -                   | Dayjs locale configuration for date headers         |
+| `showActions`              | `boolean`                                   | -        | `true`              | Show action buttons (delete)                        |
+| `emptyPlaceholder`         | `React.ReactNode`                           | -        | -                   | Custom empty state placeholder                      |
+| `emptyFilteredPlaceholder` | `React.ReactNode`                           | -        | -                   | Placeholder shown when search returns no results    |
+| `loading`                  | `boolean`                                   | -        | `false`             | Show loading state                                  |
+| `className`                | `string`                                    | -        | -                   | Additional CSS class                                |
+| `qa`                       | `string`                                    | -        | -                   | QA/test identifier                                  |
+| `style`                    | `CSSProperties`                             | -        | -                   | Inline styles                                       |
+| `filterFunction`           | `ChatFilterFunction`                        | -        | `defaultChatFilter` | Custom filter function for search                   |
+| `size`                     | `'s' \| 'm' \| 'l' \| 'xl'`                 | -        | `m`, `xl` on mobile | Size of the list and of the row delete button       |
+| `showSheetTitle`           | `boolean`                                   | -        | `true`              | Show the mobile sheet title (stays in `aria-label`) |
+| `modal`                    | `boolean`                                   | -        | `true`              | Keep the keyboard focus inside the desktop popup    |
+| `initialFocus`             | `PopupProps['initialFocus']`                | -        | -                   | Element to focus when the desktop popup opens       |
 
 Without an explicit `size` the list is `m` on desktop and `xl` in mobile mode, and the row delete
 button follows it: `s` on desktop, `xl` with a `20px` icon on mobile, so a row keeps a comfortable

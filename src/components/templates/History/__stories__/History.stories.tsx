@@ -6,7 +6,9 @@ import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {History, HistoryProps} from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
+import {usePinnedChatsStore} from '../../../../hooks';
 import {ChatType} from '../../../../types';
+import {createLocalStoragePinnedChatsStore, createPinnedChatsStore} from '../../../../utils';
 import {ActionButton} from '../../../atoms/ActionButton';
 
 import MDXDocs from './Docs.mdx';
@@ -490,5 +492,80 @@ export const DeleteChat: Story = {
         },
     },
     render: (args) => <HistoryWithTrigger initialOpen={false} {...args} />,
+    decorators: defaultDecorators,
+};
+
+export const PinnedChats: Story = {
+    args: {chats: mockChats},
+    render: (args) => {
+        const [pinnedChatIds, setPinnedChatIds] = useState<readonly string[]>(['chat-4', 'chat-8']);
+        return (
+            <HistoryWithTrigger
+                {...args}
+                onDeleteChat={async (chat) => {
+                    setPinnedChatIds((ids) => ids.filter((id) => id !== chat.id));
+                }}
+                pinnedChatIds={pinnedChatIds}
+                onPinnedChange={(id, pinned) =>
+                    setPinnedChatIds((ids) =>
+                        pinned ? [...ids, id] : ids.filter((item) => item !== id),
+                    )
+                }
+            />
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const PinnedChatsMobile: Story = {
+    ...PinnedChats,
+    decorators: mobileDecorators,
+};
+
+export const LocalPinnedChats: Story = {
+    args: {chats: mockChats},
+    render: (args) => {
+        const [store] = useState(() =>
+            createLocalStoragePinnedChatsStore('aikit-storybook:pinned-chats'),
+        );
+        const {pinnedChatIds, setPinned, isLoading, error} = usePinnedChatsStore(store);
+        return (
+            <>
+                {Boolean(error) && <div role="alert">Could not persist pinned chats.</div>}
+                <HistoryWithTrigger
+                    {...args}
+                    pinnedChatIds={pinnedChatIds}
+                    onPinnedChange={setPinned}
+                    pinningDisabled={isLoading}
+                />
+            </>
+        );
+    },
+    decorators: defaultDecorators,
+};
+
+export const ServerPinnedChats: Story = {
+    args: {chats: mockChats},
+    render: (args) => {
+        const [store] = useState(() =>
+            createPinnedChatsStore({
+                load: async () => ['chat-4', 'chat-8'],
+                // Simulate the latency of an application-provided save callback.
+                save: () => new Promise<void>((resolve) => setTimeout(resolve, 600)),
+            }),
+        );
+        const {pinnedChatIds, setPinned, isLoading, error} = usePinnedChatsStore(store);
+        return (
+            <>
+                {Boolean(error) && <div role="alert">Could not persist pinned chats.</div>}
+                <HistoryWithTrigger
+                    {...args}
+                    pinnedChatIds={pinnedChatIds}
+                    onPinnedChange={setPinned}
+                    pinningDisabled={isLoading}
+                />
+            </>
+        );
+    },
     decorators: defaultDecorators,
 };
