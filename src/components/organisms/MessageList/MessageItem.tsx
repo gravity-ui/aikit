@@ -30,6 +30,7 @@ import {UserMessage} from '../UserMessage';
  */
 export type MessageItemConfig<TContent extends TMessageContent = never> = {
     messageRendererRegistry?: MessageRendererRegistry;
+    thinkingMessageView?: 'default' | 'grouped';
     transformOptions?: OptionsType;
     shouldParseIncompleteMarkdown?: boolean;
     mermaidOptions?: MermaidOptions;
@@ -72,6 +73,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     message,
     suppressActions,
     messageRendererRegistry,
+    thinkingMessageView,
     transformOptions,
     shouldParseIncompleteMarkdown,
     mermaidOptions,
@@ -143,6 +145,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
                 timestamp={message.timestamp}
                 id={message.id}
                 messageRendererRegistry={messageRendererRegistry}
+                thinkingMessageView={thinkingMessageView}
                 transformOptions={transformOptions}
                 shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
                 mermaidOptions={mermaidOptions}

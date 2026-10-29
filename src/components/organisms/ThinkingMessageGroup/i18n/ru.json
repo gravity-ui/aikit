@@ -1,0 +1,9 @@
+{
+  "completed-steps": "Завершено: {{count}}",
+  "status-thinking": "Выполняется",
+  "status-thought": "Завершено",
+  "status-error": "Ошибка",
+  "status-cancelled": "Остановлено",
+  "status-paused": "Ожидание",
+  "copy": "Скопировать размышления"
+}

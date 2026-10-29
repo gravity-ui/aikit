@@ -1,0 +1,14 @@
+import {Meta, Canvas, Controls, Markdown} from '@storybook/addon-docs';
+import * as Stories from './ThinkingMessageGroup.stories';
+import Readme from '../README.md?raw';
+
+<Meta of={Stories} />
+
+<Markdown>{Readme}</Markdown>
+
+## Playground
+
+<Canvas of={Stories.Playground} />
+<Controls of={Stories.Playground} />
+
+<Canvas of={Stories.Legacy} />

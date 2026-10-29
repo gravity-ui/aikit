@@ -8,6 +8,7 @@ import type {
     TMessageContent,
     TMessageContentUnion,
     TMessageMetadata,
+    ThinkingMessageContent,
 } from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {
@@ -18,6 +19,11 @@ import {
 import {normalizeContent} from '../../../utils/messageUtils';
 import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../atoms/MarkdownRenderer';
 import {BaseMessage} from '../../molecules/BaseMessage';
+import {
+    ThinkingMessageGroup,
+    groupThinkingMessages,
+    thinkingMessageToStep,
+} from '../ThinkingMessageGroup';
 
 import {createDefaultMessageRegistry} from './defaultMessageTypeRegistry';
 
@@ -35,6 +41,8 @@ type AssistantMessagePick<TContent extends TMessageContent> = Pick<
 export type AssistantMessageProps<TContent extends TMessageContent = never> = BaseMessagePick &
     AssistantMessagePick<TContent> & {
         messageRendererRegistry?: MessageRendererRegistry;
+        /** Opt in to grouping adjacent legacy thinking parts. Custom thinking renderers take precedence. */
+        thinkingMessageView?: 'default' | 'grouped';
         transformOptions?: OptionsType;
         shouldParseIncompleteMarkdown?: boolean;
         mermaidOptions?: MermaidOptions;
@@ -56,6 +64,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
     timestamp,
     id,
     messageRendererRegistry,
+    thinkingMessageView,
     transformOptions,
     shouldParseIncompleteMarkdown,
     mermaidOptions,
@@ -98,6 +107,20 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
 
     const parts = useMemo(() => normalizeContent<TContent>(content), [content]);
 
+    const groupedParts =
+        thinkingMessageView === 'grouped' && !messageRendererRegistry?.thinking
+            ? groupThinkingMessages(parts, {
+                  getStep: (part, index) =>
+                      part.type === 'thinking'
+                          ? thinkingMessageToStep(
+                                part.id ?? `${id ?? 'message'}-part-${index}`,
+                                (part as ThinkingMessageContent).data,
+                            )
+                          : undefined,
+                  getGroupKey: () => id ?? 'message',
+              })
+            : undefined;
+
     if (parts.length === 0) {
         return null;
     }
@@ -128,7 +151,25 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             onActionPopup={onActionPopup}
         >
             <div className={b('content')}>
-                {parts.map((part, index) => renderPart(part, index))}
+                {groupedParts
+                    ? groupedParts.map((entry) =>
+                          entry.type === 'item' ? (
+                              renderPart(entry.item, entry.index)
+                          ) : (
+                              <ThinkingMessageGroup
+                                  key={entry.id}
+                                  steps={entry.steps}
+                                  format="markdown"
+                                  transformOptions={transformOptions}
+                                  mermaidOptions={mermaidOptions}
+                                  openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                                  mdxOptions={mdxOptions}
+                                  mdxContext={mdxContext}
+                                  markdownExtraProps={markdownExtraProps}
+                              />
+                          ),
+                      )
+                    : parts.map((part, index) => renderPart(part, index))}
             </div>
         </BaseMessage>
     );

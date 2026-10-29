@@ -65,6 +65,7 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 - [MessageList](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/MessageList/README.md): message list with custom renderer registry support
 - [PromptInput](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/PromptInput/README.md): flexible chat input — simple/full views, panels, suggestions, attachments
 - [ThinkingMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/ThinkingMessage/README.md): AI thinking process — collapsible content with status
+- [ThinkingMessageGroup](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/ThinkingMessageGroup/README.md): Compact progress, step history and safe legacy grouping
 - [ToolMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/ToolMessage/README.md): tool message — auto expand/collapse based on status
 - [UserMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/UserMessage/README.md): user message renderer
 

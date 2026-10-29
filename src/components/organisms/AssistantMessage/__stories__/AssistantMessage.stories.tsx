@@ -234,6 +234,70 @@ export const WithThinkingContent: StoryObj<AssistantMessageProps> = {
     ],
 };
 
+export const WithGroupedThinking: StoryObj<AssistantMessageProps> = {
+    name: 'Grouped Thinking',
+    args: {
+        id: 'grouped-response',
+        thinkingMessageView: 'grouped',
+        content: [
+            {
+                id: 'analyze',
+                type: 'thinking',
+                data: {
+                    title: 'Analyzed the request',
+                    content: 'Identified the required **configuration options**.',
+                    status: 'thought',
+                },
+            },
+            {
+                id: 'search',
+                type: 'thinking',
+                data: {
+                    title: 'Checked the documentation',
+                    content: 'Compared the available settings with the documentation.',
+                    status: 'thought',
+                },
+            },
+            {
+                id: 'progress',
+                type: 'text',
+                data: {
+                    text: 'The documentation supports this configuration. Checking the limits next.',
+                },
+            },
+            {
+                id: 'verify',
+                type: 'thinking',
+                data: {
+                    title: 'Verified the limits',
+                    content: 'The requested values are within the supported limits.',
+                    status: 'thought',
+                },
+            },
+            {
+                id: 'answer',
+                type: 'text',
+                data: {
+                    text: 'Use the recommended configuration. All requested values are supported.',
+                },
+            },
+        ],
+    },
+    render: (args) => (
+        <Showcase>
+            <ShowcaseItem title="Grouped Thinking" width="100%">
+                <p>
+                    Adjacent thinking parts share one expandable history. Text stays visible and
+                    separates the groups; the final answer remains outside the history.
+                </p>
+                <ContentWrapper width="640px" maxWidth="100%" boxSizing="border-box">
+                    <AssistantMessage {...args} />
+                </ContentWrapper>
+            </ShowcaseItem>
+        </Showcase>
+    ),
+};
+
 interface CustomMessageData {
     title: string;
     description: string;

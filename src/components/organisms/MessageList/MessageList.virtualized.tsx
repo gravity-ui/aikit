@@ -97,6 +97,7 @@ function MessageRow({
 export function VirtualizedMessageList<TContent extends TMessageContent = never>({
     messages,
     messageRendererRegistry,
+    thinkingMessageView,
     transformOptions,
     shouldParseIncompleteMarkdown,
     mermaidOptions,
@@ -141,6 +142,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     const config = useMemo<MessageItemConfig<TContent>>(
         () => ({
             messageRendererRegistry,
+            thinkingMessageView,
             transformOptions,
             shouldParseIncompleteMarkdown,
             mermaidOptions,
@@ -159,6 +161,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
         }),
         [
             messageRendererRegistry,
+            thinkingMessageView,
             transformOptions,
             shouldParseIncompleteMarkdown,
             mermaidOptions,

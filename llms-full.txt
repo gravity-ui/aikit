@@ -811,19 +811,20 @@ Each component also has a dedicated subpath export for tree-shaking — `import 
 | [ToolHeader](../src/components/molecules/ToolHeader/README.md)               | Tool-message header with icon, name, actions, indicators.   |
 | [ToolStatus](../src/components/molecules/ToolStatus/README.md)               | Tool-status indicator with localized text.                  |
 
-## Organisms (9)
+## Organisms (10)
 
-| Component                                                                  | Description                                                                |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md) | Assistant message with multi-part content and custom renderers.            |
-| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md) | Paperclip button that opens the file upload dialog.                        |
-| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md) | Dialog with drag-and-drop and queued/uploaded files list.                  |
-| [Header](../src/components/organisms/Header/README.md)                     | Chat header with navigation and actions.                                   |
-| [MessageList](../src/components/organisms/MessageList/README.md)           | Message list with custom renderer registry support.                        |
-| [PromptInput](../src/components/organisms/PromptInput/README.md)           | Flexible chat input — simple/full views, panels, suggestions, attachments. |
-| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md)   | AI thinking process with collapsible content and status.                   |
-| [ToolMessage](../src/components/organisms/ToolMessage/README.md)           | Tool message with automatic expand/collapse and status behavior.           |
-| [UserMessage](../src/components/organisms/UserMessage/README.md)           | User message renderer.                                                     |
+| Component                                                                          | Description                                                                 |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md)         | Assistant message with multi-part content and custom renderers.             |
+| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md)         | Paperclip button that opens the file upload dialog.                         |
+| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md)         | Dialog with drag-and-drop and queued/uploaded files list.                   |
+| [Header](../src/components/organisms/Header/README.md)                             | Chat header with navigation and actions.                                    |
+| [MessageList](../src/components/organisms/MessageList/README.md)                   | Message list with custom renderer registry support.                         |
+| [PromptInput](../src/components/organisms/PromptInput/README.md)                   | Flexible chat input — simple/full views, panels, suggestions, attachments.  |
+| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md)           | AI thinking process with collapsible content and status.                    |
+| [ThinkingMessageGroup](../src/components/organisms/ThinkingMessageGroup/README.md) | Compact progress and expandable step history with legacy migration helpers. |
+| [ToolMessage](../src/components/organisms/ToolMessage/README.md)                   | Tool message with automatic expand/collapse and status behavior.            |
+| [UserMessage](../src/components/organisms/UserMessage/README.md)                   | User message renderer.                                                      |
 
 ## Templates (3)
 
@@ -2033,7 +2034,7 @@ aikit/
 │   │   ├── organisms/       # 9 organisms
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
-│   │   │   ├── PromptInput/        ThinkingMessage/
+│   │   │   ├── PromptInput/        ThinkingMessage/  ThinkingMessageGroup/
 │   │   │   ├── ToolMessage/        UserMessage/
 │   │   │
 │   │   ├── templates/       # 3 templates

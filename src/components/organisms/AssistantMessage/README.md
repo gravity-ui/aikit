@@ -187,3 +187,10 @@ The component uses CSS variables for theming:
 | Variable        | Description                          |
 | --------------- | ------------------------------------ |
 | `--g-spacing-3` | Gap between message content sections |
+
+## Compact thinking history
+
+Set `thinkingMessageView="grouped"` to display adjacent legacy thinking parts inside each assistant
+message with [ThinkingMessageGroup](../ThinkingMessageGroup/README.md). The default remains
+`"default"`. Existing custom thinking renderers take precedence. Separate messages are not
+automatically grouped across run boundaries.

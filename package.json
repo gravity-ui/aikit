@@ -588,6 +588,16 @@
         "default": "./build/cjs/components/organisms/ThinkingMessage/index.js"
       }
     },
+    "./ThinkingMessageGroup": {
+      "import": {
+        "types": "./build/esm/components/organisms/ThinkingMessageGroup/index.d.ts",
+        "default": "./build/esm/components/organisms/ThinkingMessageGroup/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/ThinkingMessageGroup/index.d.ts",
+        "default": "./build/cjs/components/organisms/ThinkingMessageGroup/index.js"
+      }
+    },
     "./ToolMessage": {
       "import": {
         "types": "./build/esm/components/organisms/ToolMessage/index.d.ts",

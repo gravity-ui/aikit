@@ -1369,3 +1369,11 @@ The footer section contains:
 
 - **PromptInput**: User input area with send/cancel functionality
 - **Disclaimer**: Optional legal or informational text
+
+## Compact thinking history
+
+Set `messageListConfig={{thinkingMessageView: 'grouped'}}` to opt in to compact thinking history
+without changing existing message data. Merge this property with your existing config.
+Adjacent thinking parts inside one assistant message are grouped; custom thinking renderers
+take precedence. See [ThinkingMessageGroup](../../organisms/ThinkingMessageGroup/README.md)
+for migration and explicit cross-message grouping.

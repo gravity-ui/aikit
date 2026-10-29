@@ -56,6 +56,7 @@ const defaultTransformOptions: OptionsType = {
  * Shows a collapsible block with thinking content and a copy button.
  * Displays a loader when the thinking process is still in progress.
  *
+ * @deprecated Use ThinkingMessageGroup. Planned for removal in the next major release.
  * @param props - Component props
  * @returns Rendered thinking message component
  */
