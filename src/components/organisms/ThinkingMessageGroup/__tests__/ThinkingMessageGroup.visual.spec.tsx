@@ -44,25 +44,102 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
         await expect(component.getByRole('list')).toHaveCount(0);
     });
 
+    test('should synchronize controlled expansion with the application', async ({mount}) => {
+        const component = await mount(
+            <ThinkingMessageGroupStories.CompactControlled expanded={false} defaultExpanded />,
+        );
+        const group = component.locator('.g-aikit-thinking-message-group');
+        const toggle = group.getByRole('button');
+        const applicationState = component.getByText(/application expanded =/);
+
+        // The controlled value takes precedence over defaultExpanded.
+        await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        await expect(group.getByRole('list')).toHaveCount(0);
+        await expect(applicationState).toContainText('application expanded = false');
+
+        await component.getByRole('button', {name: 'Expand history externally'}).click();
+        await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+        await expect(group.getByRole('list')).toBeVisible();
+        await expect(applicationState).toContainText('application expanded = true');
+
+        await component.getByRole('button', {name: 'Collapse history externally'}).click();
+        await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        await expect(group.getByRole('list')).toHaveCount(0);
+        await expect(applicationState).toContainText('application expanded = false');
+
+        await toggle.click();
+        await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+        await expect(group.getByRole('list')).toBeVisible();
+        await expect(applicationState).toContainText('application expanded = true');
+
+        await toggle.click();
+        await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        await expect(group.getByRole('list')).toHaveCount(0);
+        await expect(applicationState).toContainText('application expanded = false');
+    });
+
     for (const controlled of [false, true]) {
-        test(`should preserve expansion during updates (controlled: ${controlled})`, async ({
-            mount,
-        }) => {
-            const Story = controlled
-                ? ThinkingMessageGroupStories.CompactControlled
-                : ThinkingMessageGroupStories.CompactStreaming;
-            const component = await mount(<Story />);
-            await expect(component.getByRole('button', {expanded: true})).toBeVisible();
-            await component.getByRole('button', {name: 'Add text fragment', exact: true}).click();
-            await expect(
-                component.getByText(/Detail 1: Checked another configuration option/),
-            ).toBeVisible();
-            await component.getByRole('button', {name: 'Complete response', exact: true}).click();
-            await expect(component.getByRole('button', {expanded: true})).toBeVisible();
-            await expect(
-                component.locator('.g-aikit-thinking-message-group__compact-label_active'),
-            ).toHaveCount(0);
-        });
+        for (const defaultExpanded of [false, true]) {
+            test(`should preserve user-selected expansion during updates (controlled: ${controlled}, initially expanded: ${defaultExpanded})`, async ({
+                mount,
+            }) => {
+                const Story = controlled
+                    ? ThinkingMessageGroupStories.CompactControlled
+                    : ThinkingMessageGroupStories.CompactStreaming;
+                const component = await mount(<Story defaultExpanded={defaultExpanded} />);
+                const group = component.locator('.g-aikit-thinking-message-group');
+                const toggle = group.getByRole('button');
+                await expect(toggle).toHaveAttribute('aria-expanded', String(defaultExpanded));
+                await toggle.click();
+                const chosenExpanded = !defaultExpanded;
+                const expectChosenExpansion = async () => {
+                    await expect(toggle).toHaveAttribute('aria-expanded', String(chosenExpanded));
+                    if (chosenExpanded) {
+                        await expect(group.getByRole('list')).toBeVisible();
+                    } else {
+                        await expect(group.getByRole('list')).toHaveCount(0);
+                    }
+                    if (controlled) {
+                        await expect(component.getByText(/application expanded =/)).toContainText(
+                            `application expanded = ${chosenExpanded}`,
+                        );
+                    }
+                };
+                await expectChosenExpansion();
+                await component
+                    .getByRole('button', {name: 'Add text fragment', exact: true})
+                    .click();
+                await expectChosenExpansion();
+                if (chosenExpanded) {
+                    await expect(
+                        group.getByText(/Detail 1: Checked another configuration option/),
+                    ).toBeVisible();
+                }
+                await component.getByRole('button', {name: 'Add next step', exact: true}).click();
+                await expect(component.getByText(/Response status:/)).toContainText(
+                    'running · 3 steps',
+                );
+                await expectChosenExpansion();
+                await component
+                    .getByRole('button', {name: 'Complete response', exact: true})
+                    .click();
+                await expect(component.getByText(/Response status:/)).toContainText(
+                    'completed · 3 steps',
+                );
+                await expectChosenExpansion();
+                await expect(
+                    group.locator('.g-aikit-thinking-message-group__compact-label_active'),
+                ).toHaveCount(0);
+                if (!chosenExpanded) {
+                    await toggle.click();
+                }
+                await expect(group.getByRole('listitem')).toHaveCount(3);
+                await expect(
+                    group.getByText(/Detail 1: Checked another configuration option/),
+                ).toBeVisible();
+                await expect(group.getByText('Checking source 2', {exact: true})).toBeVisible();
+            });
+        }
     }
 
     test('should toggle details with the keyboard', async ({mount}) => {
@@ -75,15 +152,35 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
         await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     });
 
-    test('should keep icons static and animate only the active text', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroupStories.Playground />);
-        await expect(
-            component.locator('.g-aikit-thinking-message-group__compact-label_active'),
-        ).toHaveCount(1);
-        for (const animationName of await component
-            .locator('svg')
-            .evaluateAll((icons) => icons.map((icon) => getComputedStyle(icon).animationName))) {
-            expect(animationName).toBe('none');
+    test('should keep icons static and animate only the active text', async ({mount, page}) => {
+        await page.emulateMedia({reducedMotion: 'no-preference'});
+        const component = await mount(<ThinkingMessageGroupStories.Playground defaultExpanded />);
+        const activeLabel = component.locator(
+            '.g-aikit-thinking-message-group__compact-label_active',
+        );
+        await expect(activeLabel).toHaveCount(1);
+        await expect(activeLabel).toHaveCSS('animation-name', 'thinking-message-group-pulse');
+        await expect
+            .poll(async () =>
+                activeLabel.evaluate((element) =>
+                    parseFloat(getComputedStyle(element).animationDuration),
+                ),
+            )
+            .toBeGreaterThan(0);
+
+        const iconsAndWrappers = component.locator(
+            [
+                'svg',
+                '.g-aikit-thinking-message-group__step-icon',
+                '.g-aikit-thinking-message-group__step-marker',
+                '.g-aikit-thinking-message-group__step-dot',
+                '.g-aikit-thinking-message-group__disclosure',
+                '.g-aikit-thinking-message-group__compact-current',
+                '.g-aikit-thinking-message-group__compact-heading',
+            ].join(', '),
+        );
+        for (const element of await iconsAndWrappers.all()) {
+            await expect(element).toHaveCSS('animation-name', 'none');
         }
     });
 

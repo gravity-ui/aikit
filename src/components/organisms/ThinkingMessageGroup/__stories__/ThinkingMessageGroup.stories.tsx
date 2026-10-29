@@ -39,7 +39,7 @@ const frameDecorator: Decorator = (Story, context) => {
     );
     return context.parameters.dark ? (
         <ThemeProvider theme="dark" scoped>
-            {showcase}
+            <div style={{padding: 'var(--g-spacing-5)'}}>{showcase}</div>
         </ThemeProvider>
     ) : (
         showcase
@@ -212,10 +212,18 @@ export const CustomHistoryHeight: Story = {
     },
 };
 
-function ProgressUpdatesExample({controlled = false}: {controlled?: boolean}) {
+function ProgressUpdatesExample({
+    controlled = false,
+    defaultExpanded = true,
+    initialExpanded = defaultExpanded,
+}: {
+    controlled?: boolean;
+    defaultExpanded?: boolean;
+    initialExpanded?: boolean;
+}) {
     const [steps, setSteps] = useState(compactSteps);
     const [status, setStatus] = useState<ThinkingStepStatus>('thinking');
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(initialExpanded);
     const [fragmentCount, setFragmentCount] = useState(0);
     const [demoVersion, setDemoVersion] = useState(0);
     const isRunning = status === 'thinking';
@@ -290,12 +298,12 @@ function ProgressUpdatesExample({controlled = false}: {controlled?: boolean}) {
                         Complete response
                     </Button>
                     <Button
-                        title="Restore the initial two steps and expanded history"
+                        title="Restore the initial two steps and expansion state"
                         onClick={() => {
                             setSteps(compactSteps);
                             setStatus('thinking');
                             setFragmentCount(0);
-                            setExpanded(true);
+                            setExpanded(initialExpanded);
                             setDemoVersion((current) => current + 1);
                         }}
                     >
@@ -318,7 +326,7 @@ function ProgressUpdatesExample({controlled = false}: {controlled?: boolean}) {
                 stepTypes={compactData.stepTypes}
                 steps={steps}
                 status={status}
-                defaultExpanded
+                defaultExpanded={defaultExpanded}
                 expanded={controlled ? expanded : undefined}
                 onExpandedChange={setExpanded}
             />
@@ -328,12 +336,18 @@ function ProgressUpdatesExample({controlled = false}: {controlled?: boolean}) {
 
 export const CompactStreaming: Story = {
     name: 'Progress Updates',
-    render: () => <ProgressUpdatesExample />,
+    render: (args) => <ProgressUpdatesExample defaultExpanded={args.defaultExpanded} />,
 };
 
 export const CompactControlled: Story = {
     name: 'Controlled Expansion',
-    render: () => <ProgressUpdatesExample controlled />,
+    render: (args) => (
+        <ProgressUpdatesExample
+            controlled
+            defaultExpanded={args.defaultExpanded}
+            initialExpanded={args.expanded}
+        />
+    ),
 };
 
 export const Completed: Story = {
