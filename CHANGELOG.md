@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.26.0](https://github.com/gravity-ui/aikit/compare/v2.25.0...v2.26.0) (2026-10-29)
+
+
+### Features
+
+* **history:** add chat pinning with pluggable persistence ([#280](https://github.com/gravity-ui/aikit/issues/280)) ([cd93358](https://github.com/gravity-ui/aikit/commit/cd933589fb8c9f26f2e01d40eb762ffb2d3e4c6f))
+
+
+### Bug Fixes
+
+* hide empty assistant messages and their actions ([#279](https://github.com/gravity-ui/aikit/issues/279)) ([c66ae24](https://github.com/gravity-ui/aikit/commit/c66ae244f01124fe3905f97aae2529db02d1d5f7))
+
 ## [2.25.0](https://github.com/gravity-ui/aikit/compare/v2.24.0...v2.25.0) (2026-10-22)
 
 
