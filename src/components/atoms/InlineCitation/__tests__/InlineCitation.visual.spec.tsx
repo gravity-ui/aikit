@@ -6,7 +6,7 @@ import {CitationStories} from './helpersPlaywright';
 
 test.describe('InlineCitation', {tag: '@InlineCitation'}, () => {
     test('should render the playground badge', async ({mount, expectScreenshot}) => {
-        await mount(<CitationStories.Playground />);
+        await mount(<CitationStories.Playground />, {width: 640});
 
         await expectScreenshot();
     });
@@ -66,22 +66,52 @@ test.describe('InlineCitation', {tag: '@InlineCitation'}, () => {
     });
 
     test('should render a custom badge label', async ({mount, page, expectScreenshot}) => {
-        await mount(<CitationStories.CustomLabel />);
+        await mount(<CitationStories.CustomLabel />, {width: 640});
         await expect(page.getByRole('button')).toHaveText('Documentation+2');
 
         await expectScreenshot();
     });
 
-    test('should render no citation for an empty source list', async ({
-        mount,
-        page,
-        expectScreenshot,
-    }) => {
+    test('should render no citation for an empty source list', async ({mount, page}) => {
         await mount(<CitationStories.Empty />);
         await expect(page.getByRole('button')).toHaveCount(0);
         await expect(page.getByRole('dialog')).toHaveCount(0);
+    });
 
-        await expectScreenshot();
+    test('should retain focus at both navigation boundaries after opening with Tab', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<CitationStories.Playground />);
+        const trigger = page.getByRole('button', {name: 'Show sources (3)', exact: true});
+        await page.keyboard.press('Tab');
+        await expect(trigger).toBeFocused();
+        const dialog = page.getByRole('dialog');
+        await expect(dialog).toBeVisible();
+        await page.keyboard.press('Tab');
+        const next = page.getByRole('button', {name: 'Next source', exact: true});
+        await expect(next).toBeFocused();
+        await page.keyboard.press('Enter');
+        await expect(dialog).toContainText('2 / 3');
+        await page.keyboard.press('Enter');
+        await expect(next).toBeDisabled();
+        await expect(dialog).toBeFocused();
+        await expect(dialog).toContainText('3 / 3');
+        // The hover/focus close timer must not dismiss the final source.
+        await page.waitForTimeout(300);
+        await expect(dialog).toBeVisible();
+
+        await page.keyboard.press('Tab');
+        const previous = page.getByRole('button', {name: 'Previous source', exact: true});
+        await expect(previous).toBeFocused();
+        await page.keyboard.press('Enter');
+        await expect(dialog).toContainText('2 / 3');
+        await page.keyboard.press('Enter');
+        await expect(previous).toBeDisabled();
+        await expect(dialog).toBeFocused();
+        await expect(dialog).toContainText('1 / 3');
+        await page.waitForTimeout(300);
+        await expect(dialog).toBeVisible();
     });
 
     test('should display an invalid URL without a navigation link', async ({
@@ -135,6 +165,9 @@ test.describe('InlineCitation', {tag: '@InlineCitation'}, () => {
         await expect(page.getByRole('button', {name: 'Next source'})).toBeDisabled();
 
         await page.getByRole('button', {name: 'Remove last source', exact: true}).click();
+        await expect(page.getByRole('dialog')).not.toBeVisible();
+        await page.getByRole('button', {name: 'Show sources (2)', exact: true}).click();
+        await expect(page.getByRole('dialog')).toBeVisible();
         await expect(page.getByRole('dialog')).toContainText('1 / 2');
         await expectScreenshot({component: page, fullPage: true});
     });

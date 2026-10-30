@@ -150,6 +150,17 @@ export function InlineCitation({
         }
     };
 
+    const navigateSource = (nextIndex: number, event: React.MouseEvent<HTMLButtonElement>) => {
+        if (
+            (nextIndex === 0 || nextIndex === sources.length - 1) &&
+            document.activeElement === event.currentTarget
+        ) {
+            // Keep focus in the preview before the active navigation button becomes disabled.
+            cardRef.current?.focus();
+        }
+        setSelectedId(sources[nextIndex].id);
+    };
+
     if (!source) {
         return null;
     }
@@ -205,6 +216,7 @@ export function InlineCitation({
                 <div
                     ref={cardRef}
                     role="dialog"
+                    tabIndex={-1}
                     id={cardId}
                     aria-labelledby={titleId}
                     className={b('card')}
@@ -225,7 +237,7 @@ export function InlineCitation({
                                     size="s"
                                     disabled={selectedIndex === 0}
                                     aria-label={i18n('previous')}
-                                    onClick={() => setSelectedId(sources[selectedIndex - 1].id)}
+                                    onClick={(event) => navigateSource(selectedIndex - 1, event)}
                                 >
                                     <Icon data={ChevronLeft} size={16} />
                                 </Button>
@@ -237,7 +249,7 @@ export function InlineCitation({
                                     size="s"
                                     disabled={selectedIndex === sources.length - 1}
                                     aria-label={i18n('next')}
-                                    onClick={() => setSelectedId(sources[selectedIndex + 1].id)}
+                                    onClick={(event) => navigateSource(selectedIndex + 1, event)}
                                 >
                                     <Icon data={ChevronRight} size={16} />
                                 </Button>
