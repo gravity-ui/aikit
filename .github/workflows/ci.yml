@@ -62,3 +62,14 @@ jobs:
           npm run build
       - name: Unit Tests
         run: npm run test:unit
+
+  tests_result:
+    name: Tests
+    needs: tests
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify test matrix
+        env:
+          TEST_RESULT: ${{ needs.tests.result }}
+        run: test "$TEST_RESULT" = success
