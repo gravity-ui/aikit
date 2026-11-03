@@ -28,7 +28,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 ## Development and documentation
 
 - Align the UIKit development and peer requirements at `^8.0.0`; regenerate the lockfile with normal npm peer validation.
-- Prepare package.json and lockfile for AIKit 3.0.0.
+- Leave the package.json and lockfile version bump to the automatically generated 3.0.0 release PR.
 - Use Provider in Storybook and the Playwright application root; keep nested ThemeProvider scopes for theme-only previews. Pass language through Provider in Storybook.
 - Update affected stories to the UIKit 8 dialog and layout APIs.
 - Teach Jest to transform the ESM-only `colors-named` and `colors-named-hex` dependencies loaded by UIKit's stable ColorPicker, without replacing UIKit with a mock.
@@ -57,4 +57,4 @@ BREAKING CHANGE: AIKit 3 requires @gravity-ui/uikit ^8.0.0. Replace the xxs cont
 Release-As: 3.0.0
 ```
 
-The breaking-change marker selects a major release, and `Release-As` explicitly selects 3.0.0. After that commit reaches main, the existing workflow prepares the release PR and generates its changelog from commits since the previous release tag. Review that PR for version **3.0.0** in both manifests, a single new changelog section, and the migration link. Merging the release PR is the existing publication step. Setting package.json to 3.0.0 in this implementation does not itself publish a package or replace the required release commit metadata.
+The breaking-change marker selects a major release, and `Release-As` explicitly selects 3.0.0. After that commit reaches main, the existing workflow prepares the release PR and generates its changelog from commits since the previous release tag. Review that PR for version **3.0.0** in both manifests, a single new changelog section, and the migration link. Merging the release PR is the existing publication step. This implementation keeps the last released version in package.json and the lockfile; the generated release PR updates both to 3.0.0 together with CHANGELOG.md.
