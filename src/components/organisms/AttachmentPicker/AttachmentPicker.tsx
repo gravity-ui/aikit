@@ -43,10 +43,13 @@ export const AttachmentPicker = ({
     fileDialogProps,
     onSelectFromStorage,
     buttonSize: buttonSizeProp,
-    uploadLabel = i18n('upload-label'),
-    selectFromStorageLabel = i18n('select-from-storage-label'),
+    uploadLabel: uploadLabelProp,
+    selectFromStorageLabel: selectFromStorageLabelProp,
     className,
 }: AttachmentPickerProps) => {
+    const {t} = i18n.useTranslation();
+    const uploadLabel = uploadLabelProp ?? t('upload-label');
+    const selectFromStorageLabel = selectFromStorageLabelProp ?? t('select-from-storage-label');
     const buttonSize = useMobileControlSize(buttonSizeProp, 'm', 'xl');
     const iconSize = getControlIconSize(buttonSize);
     const [dialogOpen, setDialogOpen] = useState(false);

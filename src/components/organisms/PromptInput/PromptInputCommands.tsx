@@ -23,6 +23,7 @@ export function PromptInputCommands({
     inputRef: RefObject<HTMLTextAreaElement>;
     disabled: boolean;
 }) {
+    const {t} = i18n.useTranslation();
     const listRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         listRef.current
@@ -75,7 +76,7 @@ export function PromptInputCommands({
                             autoFocus
                             value={commands.session.query}
                             onUpdate={commands.search}
-                            placeholder={i18n('search')}
+                            placeholder={t('search')}
                             onKeyDown={commands.handleKeyDown}
                             controlProps={{
                                 role: 'combobox',
@@ -89,17 +90,17 @@ export function PromptInputCommands({
                             }}
                         />
                     )}
-                    {commands.loading && <div role="status">{i18n('loading')}</div>}
+                    {commands.loading && <div role="status">{t('loading')}</div>}
                     {commands.error && (
                         <div role="alert">
-                            {i18n('error')}{' '}
+                            {t('error')}{' '}
                             <Button size="s" onClick={commands.retry}>
-                                {i18n('retry')}
+                                {t('retry')}
                             </Button>
                         </div>
                     )}
                     {!commands.loading && !commands.error && commands.items.length === 0 && (
-                        <div role="status">{i18n('empty')}</div>
+                        <div role="status">{t('empty')}</div>
                     )}
                     <div
                         ref={listRef}

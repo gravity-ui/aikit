@@ -27,12 +27,13 @@ export function CompactHeading({
     hasDetails,
     isExpanded,
 }: CompactHeadingProps) {
+    const {t} = i18n.useTranslation();
     const isThinking = status === 'thinking';
     const showActiveStep = Boolean(activeStep && isThinking);
     const hasSummary =
         summary !== null && summary !== undefined && summary !== false && summary !== '';
     const showCompletedSummary = status === 'thought' && hasSummary;
-    const label = (showActiveStep && activeStep?.title) || i18n(`status-${status}`);
+    const label = (showActiveStep && activeStep?.title) || t(`status-${status}`);
     const operationIcon = showActiveStep && activeStep ? stepTypes?.[activeStep.type]?.icon : null;
     const showSecondarySummary = !showCompletedSummary && hasSummary;
     return (

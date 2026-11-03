@@ -151,6 +151,7 @@ test.describe('History', {tag: '@History'}, () => {
         const trigger = page.getByRole('button').first();
         await trigger.click();
         await expect(page.getByRole('dialog')).toBeVisible();
+        await expect(page.getByRole('dialog')).toBeFocused();
 
         await page.keyboard.press('Escape');
 

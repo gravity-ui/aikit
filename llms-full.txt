@@ -544,6 +544,8 @@ import '@gravity-ui/aikit/styles';
 
 The existing AIKit theme subpaths (`/themes/common`, `/themes/light`, `/themes/dark`, and `/themes/variables`) remain available. Use the stylesheet setup appropriate to your existing application.
 
+AIKit translations now follow the nearest UIKit language provider through `i18n.useTranslation()`. Update `Provider.lang` to switch languages, or use `LangProvider` for an independent subtree. A global `configure({lang})` call is no longer needed when a language provider is present. See [Internationalization](I18N.md).
+
 ## ContextItem and control sizes
 
 UIKit renames its smallest label size from `xxs` to `2xs`. `ContextItem.size` inherits UIKit's `LabelProps['size']`, and AIKit's exported `ControlSize` helper type follows the same rename:
@@ -637,6 +639,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 
 ## Components and behavior
 
+- **Localization:** use provider-aware translation hooks throughout AIKit, including memoized labels, so dynamic and independently scoped languages work without changing global configuration.
 - **History / HistoryList:** migrate to the stable UIKit List with stable row identifiers and a named grid for interactive rows. Preserve date grouping, controlled selection, pinned chat ordering, pin/delete actions, search/custom filtering, full/lazy loading, and empty/loading states. Connect the search input to list keyboard navigation through `useListFocusOwner`.
 - **Header:** migrate desktop dropdowns and the inline mobile menu to Menu/MenuItem. Preserve labels, icons, disabled items, callbacks, QA identifiers, placement of action groups, and the mobile sheet title option. Use controlled `Sheet.open`/`onOpenChange`.
 - **AttachmentPicker:** migrate the upload/storage dropdown to Menu/MenuItem with an accessible trigger. Preserve direct upload mode and the existing upload/storage callbacks.
@@ -1644,7 +1647,7 @@ interface KeyboardViewportMetrics {
 
 # Internationalization (i18n)
 
-AIKit localizes user-facing strings on a **per-component** basis using `@gravity-ui/i18n`. There is no global i18n provider — each component bundles its own keyset.
+AIKit localizes user-facing strings on a **per-component** basis using `@gravity-ui/i18n`. Each component bundles its own keyset and reads the language of the nearest UIKit `Provider` or `LangProvider`.
 
 Out-of-the-box languages: **English (`en`)** and **Russian (`ru`)**.
 
@@ -1660,17 +1663,24 @@ ComponentName/
 │   └── ru.json
 ```
 
-The keyset is registered under a namespace derived from the component's name. At runtime, `@gravity-ui/i18n` resolves strings against the active language (set via `configure({lang})`).
+The keyset is registered under a namespace derived from the component's name. Components and hooks call the keyset's `useTranslation()` hook. Its translator follows the nearest UIKit language context and updates when that context changes, including strings cached with `useMemo` or `useCallback`.
 
 ## Setting the Language
 
-```typescript
-import {configure} from '@gravity-ui/i18n';
+```tsx
+import {LangProvider, Provider} from '@gravity-ui/uikit';
 
-configure({lang: 'ru'}); // or 'en'
+<Provider lang="ru">
+  <ChatContainer onSendMessage={handleSendMessage} />
+  <LangProvider lang="en">
+    <HistoryList chats={chats} />
+  </LangProvider>
+</Provider>;
 ```
 
-Call this once at application bootstrap, before rendering AIKit components.
+Pass your language state to `Provider.lang` to update the application without a global configuration mutation. `LangProvider` overrides only the language of a subtree, so independent chats can display different languages at the same time.
+
+For an application-wide default without an explicit language prop, UIKit's `configure({lang: 'ru'})` remains available at bootstrap. Import it from `@gravity-ui/uikit`.
 
 ## Overriding Strings
 
@@ -1684,19 +1694,19 @@ Every component that has user-visible text also exposes a `texts` prop (or per-f
 
 Re-register the bundled keysets with your translations:
 
-```typescript
-import {addKeysets} from '@gravity-ui/i18n';
-import esTabs from './my-translations/Tabs.es.json';
+```tsx
+import {Provider} from '@gravity-ui/uikit';
+import {addComponentKeysets} from '@gravity-ui/uikit/i18n';
+import esHistory from './my-translations/History.es.json';
 
-addKeysets('es', {
-  'aikit.Tabs': esTabs,
-  // …repeat for each component you localize
-});
+addComponentKeysets({es: esHistory}, 'g-aikit-History');
 
-configure({lang: 'es'});
+<Provider lang="es" fallbackLang="en">
+  <App />
+</Provider>;
 ```
 
-Namespace prefixes match the component name (e.g. `aikit.Header`, `aikit.MessageList`). Inspect `src/components/.../i18n/index.ts` for the exact key.
+Namespace prefixes match the component name (e.g. `g-aikit-Header`, `g-aikit-MessageList`). Inspect `src/components/.../i18n/index.ts` for the exact key.
 
 ## Localized Components
 

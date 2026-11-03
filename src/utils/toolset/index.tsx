@@ -215,7 +215,8 @@ export function createToolsetRenderer(
     };
 
     const toolRenderer: MessageRenderer<ToolPartContent> = {
-        component: ({part}) => {
+        component: function ToolsetMessage({part}) {
+            const {t} = i18n.useTranslation();
             const toolPart = part.data;
             const toolDef = toolset[toolPart.toolName];
 
@@ -226,7 +227,7 @@ export function createToolsetRenderer(
                         status="error"
                         expandable
                         initialExpanded
-                        bodyContent={i18n('fallback-unknown-tool', {
+                        bodyContent={t('fallback-unknown-tool', {
                             toolName: toolPart.toolName,
                         })}
                     />

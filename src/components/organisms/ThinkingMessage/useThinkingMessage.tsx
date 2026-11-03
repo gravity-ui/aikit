@@ -6,6 +6,7 @@ import {copyToClipboard} from '../../../utils';
 import {i18n} from './i18n';
 
 export function useThinkingMessage(options: ThinkingMessageContentData) {
+    const {t} = i18n.useTranslation();
     const {
         defaultExpanded = true,
         showStatusIndicator = true,
@@ -18,8 +19,8 @@ export function useThinkingMessage(options: ThinkingMessageContentData) {
     const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
     const buttonTitle = useMemo(() => {
-        return i18n(`title-${status}`);
-    }, [status]);
+        return t(`title-${status}`);
+    }, [status, t]);
 
     const contentArray = useMemo(() => {
         return Array.isArray(content) ? content : [content];

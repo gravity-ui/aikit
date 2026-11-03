@@ -15,6 +15,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 
 ## Components and behavior
 
+- **Localization:** use provider-aware translation hooks throughout AIKit, including memoized labels, so dynamic and independently scoped languages work without changing global configuration.
 - **History / HistoryList:** migrate to the stable UIKit List with stable row identifiers and a named grid for interactive rows. Preserve date grouping, controlled selection, pinned chat ordering, pin/delete actions, search/custom filtering, full/lazy loading, and empty/loading states. Connect the search input to list keyboard navigation through `useListFocusOwner`.
 - **Header:** migrate desktop dropdowns and the inline mobile menu to Menu/MenuItem. Preserve labels, icons, disabled items, callbacks, QA identifiers, placement of action groups, and the mobile sheet title option. Use controlled `Sheet.open`/`onOpenChange`.
 - **AttachmentPicker:** migrate the upload/storage dropdown to Menu/MenuItem with an accessible trigger. Preserve direct upload mode and the existing upload/storage callbacks.

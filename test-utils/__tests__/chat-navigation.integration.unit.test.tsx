@@ -4,7 +4,10 @@ import {Provider} from '@gravity-ui/uikit';
 import {fireEvent, render, screen, waitFor, within} from '@testing-library/react';
 
 import {Header} from '../../src/components/organisms/Header';
-import {HistoryList} from '../../src/components/templates/History/HistoryList';
+import {
+    HistoryList,
+    type HistoryListProps,
+} from '../../src/components/templates/History/HistoryList';
 import type {ChatType} from '../../src/types';
 
 jest.mock('uuid', () => ({v4: () => 'navigation-test'}));
@@ -14,12 +17,22 @@ const chats: ChatType[] = [
     {id: 'beta', name: 'Beta chat', createTime: '2026-10-31'},
 ];
 
-function ChatNavigation({mobile = false}: {mobile?: boolean}) {
+function ChatNavigation({
+    mobile = false,
+    lang = 'en',
+    searchable = true,
+    filterFunction,
+}: {
+    mobile?: boolean;
+    lang?: 'en' | 'ru';
+    searchable?: boolean;
+    filterFunction?: HistoryListProps['filterFunction'];
+}) {
     const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
     const [pinned, setPinned] = useState<string[]>([]);
     const [notice, setNotice] = useState('');
     return (
-        <Provider lang="en" mobile={mobile}>
+        <Provider lang={lang} mobile={mobile}>
             <Header
                 isMobile={mobile}
                 title={selectedChat?.name ?? 'Choose a chat'}
@@ -36,6 +49,8 @@ function ChatNavigation({mobile = false}: {mobile?: boolean}) {
             />
             <HistoryList
                 chats={chats}
+                searchable={searchable}
+                filterFunction={filterFunction}
                 selectedChat={selectedChat}
                 onSelectChat={setSelectedChat}
                 pinnedChatIds={pinned}
@@ -107,6 +122,67 @@ describe('chat navigation with UIKit 8', () => {
         await waitFor(() => expect(screen.queryByRole('row', {name: /Beta chat/})).toBeNull());
         expect(screen.getByLabelText('Action result').textContent).toBe('Deleted Beta chat');
         expect(screen.getByText('Choose a chat')).toBeTruthy();
+    });
+
+    it('updates translations when the Provider language changes', () => {
+        const view = render(<ChatNavigation />);
+        expect(screen.getByRole('combobox', {name: 'Search your chats'})).toBeTruthy();
+        view.rerender(<ChatNavigation lang="ru" />);
+        expect(screen.queryByRole('combobox', {name: 'Search your chats'})).toBeNull();
+        expect(screen.getByRole('combobox', {name: 'Поиск по чатам'})).toBeTruthy();
+        expect(screen.getAllByRole('button', {name: 'Удалить', exact: true})).toHaveLength(2);
+        view.rerender(<ChatNavigation />);
+        expect(screen.getByRole('combobox', {name: 'Search your chats'})).toBeTruthy();
+    });
+
+    it('keeps simultaneous Provider language scopes independent', () => {
+        render(
+            <>
+                <ChatNavigation />
+                <ChatNavigation lang="ru" />
+            </>,
+        );
+        const english = screen.getByRole('grid', {name: 'Chat history'});
+        const russian = screen.getByRole('grid', {name: 'История чатов'});
+        expect(within(english).getAllByRole('button', {name: 'Delete', exact: true})).toHaveLength(
+            2,
+        );
+        expect(within(russian).getAllByRole('button', {name: 'Удалить', exact: true})).toHaveLength(
+            2,
+        );
+    });
+
+    it.each([false, true])(
+        'bypasses custom filtering before typing when searchable=%s',
+        (searchable) => {
+            const filterFunction = jest.fn(
+                (query: string) => (item: {type: string; name?: string}) =>
+                    item.type === 'chat' && item.name === query,
+            );
+            render(<ChatNavigation searchable={searchable} filterFunction={filterFunction} />);
+            expect(screen.getByRole('row', {name: /Alpha chat/})).toBeTruthy();
+            expect(screen.getByRole('row', {name: /Beta chat/})).toBeTruthy();
+            expect(filterFunction).not.toHaveBeenCalled();
+            if (searchable) {
+                const search = screen.getByRole('combobox', {name: 'Search your chats'});
+                fireEvent.change(search, {target: {value: 'Beta chat'}});
+                expect(screen.queryByRole('row', {name: /Alpha chat/})).toBeNull();
+                expect(screen.getByRole('row', {name: /Beta chat/})).toBeTruthy();
+                filterFunction.mockClear();
+                fireEvent.change(search, {target: {value: ''}});
+                expect(screen.getByRole('row', {name: /Alpha chat/})).toBeTruthy();
+                expect(filterFunction).not.toHaveBeenCalled();
+            }
+        },
+    );
+
+    it.each([false, true])('sets the row action Tab order for searchable=%s', (searchable) => {
+        render(<ChatNavigation searchable={searchable} />);
+        const row = screen.getByRole('row', {name: /Alpha chat/});
+        const remove = within(row).getByRole('button', {name: 'Delete', exact: true});
+        const pin = within(row).getByRole('button', {name: 'Pin chat', exact: true});
+        expect(remove.tabIndex).toBe(searchable ? 0 : -1);
+        expect(pin.tabIndex).toBe(searchable ? 0 : -1);
     });
 
     it.each([false, true])('opens and dismisses the header menu when mobile=%s', async (mobile) => {

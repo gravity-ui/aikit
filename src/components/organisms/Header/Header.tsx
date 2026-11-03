@@ -63,6 +63,7 @@ function getNormalizedMenuItem(
  * @returns Header component
  */
 export function Header(props: HeaderProps) {
+    const {t} = i18n.useTranslation();
     const {
         title,
         preview,
@@ -136,7 +137,7 @@ export function Header(props: HeaderProps) {
                 <ActionButton
                     key={action.id}
                     ref={buttonRef as React.Ref<HTMLButtonElement>}
-                    tooltipTitle={tooltipOverride ?? i18n(tooltipKey as Parameters<typeof i18n>[0])}
+                    tooltipTitle={tooltipOverride ?? t(tooltipKey as Parameters<typeof i18n>[0])}
                     size={actionSize}
                     view="flat"
                     onClick={action.onClick}
@@ -147,7 +148,7 @@ export function Header(props: HeaderProps) {
                 </ActionButton>
             );
         },
-        [actionIcons, actionQa, actionSize, actionTooltipTexts, iconSize],
+        [actionIcons, actionQa, actionSize, actionTooltipTexts, iconSize, t],
     );
 
     // Render additional action
@@ -184,7 +185,7 @@ export function Header(props: HeaderProps) {
         }
 
         const switcherContent = menuButtonIcon ?? <Icon data={Ellipsis} size={iconSize} />;
-        const switcherTooltip = menuButtonTooltip ?? i18n('action-tooltip-menu');
+        const switcherTooltip = menuButtonTooltip ?? t('action-tooltip-menu');
         const switcherQa = menuButtonQa ?? 'header-menu-button';
 
         if (isMobile) {
@@ -203,7 +204,7 @@ export function Header(props: HeaderProps) {
                     </ActionButton>
                     <Sheet
                         id={menuSheetId}
-                        title={i18n('menu-sheet-title')}
+                        title={t('menu-sheet-title')}
                         open={isMenuSheetVisible}
                         onOpenChange={setIsMenuSheetVisible}
                         contentClassName={b('menu-sheet-content', {
@@ -215,7 +216,7 @@ export function Header(props: HeaderProps) {
                             inline
                             size="xl"
                             qa="header-menu-sheet"
-                            aria-label={i18n('menu-sheet-title')}
+                            aria-label={t('menu-sheet-title')}
                         >
                             {normalizedMenuItems.map((item) => (
                                 <MenuItem
@@ -244,7 +245,7 @@ export function Header(props: HeaderProps) {
 
         return (
             <Menu
-                aria-label={i18n('menu-sheet-title')}
+                aria-label={t('menu-sheet-title')}
                 trigger={
                     <ActionButton
                         tooltipTitle={switcherTooltip}
@@ -282,6 +283,7 @@ export function Header(props: HeaderProps) {
         menuButtonQa,
         menuButtonTooltip,
         showSheetTitle,
+        t,
     ]);
 
     const [leftBaseActions, rightBaseActions] = useMemo(() => {

@@ -20,6 +20,7 @@ import './ThinkingMessageGroup.scss';
 const b = block('thinking-message-group');
 
 export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
+    const {t} = i18n.useTranslation();
     const {
         steps,
         stepTypes,
@@ -77,7 +78,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
     };
 
     const defaultSummary =
-        completedSteps.length > 0 ? i18n('completed-steps', {count: completedSteps.length}) : null;
+        completedSteps.length > 0 ? t('completed-steps', {count: completedSteps.length}) : null;
     const summary = renderSummary ? renderSummary(completedSteps) : defaultSummary;
     const heading = (
         <CompactHeading
@@ -123,7 +124,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                 <span
                                     className={b('step-marker', {status: step.status})}
                                     role="img"
-                                    aria-label={i18n(`status-${step.status}`)}
+                                    aria-label={t(`status-${step.status}`)}
                                 >
                                     <StepIcon status={step.status} operationIcon={type?.icon} />
                                 </span>
@@ -136,7 +137,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                                 isThinking,
                                         })}
                                     >
-                                        {step.title || i18n(`status-${step.status}`)}
+                                        {step.title || t(`status-${step.status}`)}
                                     </Text>
                                     {(type?.label ||
                                         (step.status !== 'thinking' &&
@@ -150,7 +151,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                                             error: step.status === 'error',
                                                         })}
                                                     >
-                                                        {i18n(`status-${step.status}`)}
+                                                        {t(`status-${step.status}`)}
                                                     </span>
                                                 )}
                                         </span>
@@ -198,8 +199,8 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                         (step.enabledCopy || step.onCopyClick) && (
                                             <ActionButton
                                                 size="xs"
-                                                aria-label={i18n('copy')}
-                                                tooltipTitle={i18n('copy')}
+                                                aria-label={t('copy')}
+                                                tooltipTitle={t('copy')}
                                                 className={b('copy')}
                                                 onClick={() => {
                                                     if (step.onCopyClick) step.onCopyClick();

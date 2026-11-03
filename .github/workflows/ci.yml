@@ -50,7 +50,9 @@ jobs:
         run: npm ci
       - name: Install minimum supported UIKit
         if: matrix.uikit != 'locked'
-        run: npm install --no-save --package-lock=false --ignore-scripts @gravity-ui/uikit@${{ matrix.uikit }}
+        run: npm install --no-save --ignore-scripts @gravity-ui/uikit@${{ matrix.uikit }}
+      - name: Verify dependency manifests are unchanged
+        run: git diff --exit-code -- package.json package-lock.json
       - name: Verify UIKit dependency tree
         run: npm ls @gravity-ui/uikit
       - name: Check minimum UIKit types and build

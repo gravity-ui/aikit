@@ -70,6 +70,8 @@ import '@gravity-ui/aikit/styles';
 
 The existing AIKit theme subpaths (`/themes/common`, `/themes/light`, `/themes/dark`, and `/themes/variables`) remain available. Use the stylesheet setup appropriate to your existing application.
 
+AIKit translations now follow the nearest UIKit language provider through `i18n.useTranslation()`. Update `Provider.lang` to switch languages, or use `LangProvider` for an independent subtree. A global `configure({lang})` call is no longer needed when a language provider is present. See [Internationalization](I18N.md).
+
 ## ContextItem and control sizes
 
 UIKit renames its smallest label size from `xxs` to `2xs`. `ContextItem.size` inherits UIKit's `LabelProps['size']`, and AIKit's exported `ControlSize` helper type follows the same rename:

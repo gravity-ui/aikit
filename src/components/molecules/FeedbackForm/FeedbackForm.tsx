@@ -61,6 +61,7 @@ export function FeedbackForm({
     className,
     qa,
 }: FeedbackFormProps) {
+    const {t} = i18n.useTranslation();
     const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
     const [comment, setComment] = useState('');
 
@@ -82,8 +83,8 @@ export function FeedbackForm({
     const isSubmitDisabled =
         disabled || (selectedReasons.length === 0 && (!showComment || comment.trim() === ''));
 
-    const displayCommentPlaceholder = commentPlaceholder || i18n('comment-placeholder');
-    const displaySubmitLabel = submitLabel || i18n('submit');
+    const displayCommentPlaceholder = commentPlaceholder || t('comment-placeholder');
+    const displaySubmitLabel = submitLabel || t('submit');
 
     return (
         <div className={b(null, className)} data-qa={qa}>

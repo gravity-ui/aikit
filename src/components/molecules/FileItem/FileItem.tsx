@@ -43,6 +43,7 @@ export const FileItem = ({
     onRemove,
     className,
 }: FileItemProps) => {
+    const {t} = i18n.useTranslation();
     return (
         <div className={b({status, disabled}, className)}>
             <div className={b('icon')}>
@@ -81,7 +82,7 @@ export const FileItem = ({
                     className={b('remove')}
                     onClick={onRemove}
                     disabled={disabled}
-                    aria-label={i18n('remove-button-label')}
+                    aria-label={t('remove-button-label')}
                 >
                     <Icon data={Xmark} size={12} />
                 </button>

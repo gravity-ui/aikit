@@ -106,6 +106,7 @@ export interface HistoryListProps extends QAProps, DOMProps {
  * @returns Rendered history list (search, grouping, lazy/full load, chat rows).
  */
 export function HistoryList(props: HistoryListProps) {
+    const {t} = i18n.useTranslation();
     const {
         chats,
         selectedChat,
@@ -141,7 +142,7 @@ export function HistoryList(props: HistoryListProps) {
     const [activeItemId, setActiveItemId] = useState<string | null>(null);
     const focusOwner = useListFocusOwner();
     const {onKeyDown, ...inputProps} = focusOwner.getInputProps({
-        'aria-label': searchPlaceholder ?? i18n('search-placeholder'),
+        'aria-label': searchPlaceholder ?? t('search-placeholder'),
     });
     const [loadedChats, setLoadedChats] = useState<ChatType[]>([]);
     const [lazyHasMore, setLazyHasMore] = useState(hasMore);
@@ -296,6 +297,9 @@ export function HistoryList(props: HistoryListProps) {
     };
 
     const filterItems = (query: string) => {
+        if (!searchable || !query) {
+            return listItems;
+        }
         const userFilter = filterFunction(query);
         return listItems.filter((item) => {
             if (query && item.type === 'date-header') {
@@ -329,15 +333,16 @@ export function HistoryList(props: HistoryListProps) {
                 pinningDisabled={pinningDisabled}
                 onDeleteClick={onDeleteChat ? handleDeleteClick : undefined}
                 isActive={isActive}
+                actionTabIndex={searchable ? 0 : -1}
                 size={sizeProp}
             />
         );
     };
 
-    const emptyState = emptyPlaceholder || <div className={b('empty')}>{i18n('empty-state')}</div>;
+    const emptyState = emptyPlaceholder || <div className={b('empty')}>{t('empty-state')}</div>;
 
     const emptyFilteredState = emptyFilteredPlaceholder || (
-        <div className={b('empty')}>{i18n('empty-filtered-state')}</div>
+        <div className={b('empty')}>{t('empty-filtered-state')}</div>
     );
 
     const finalEmptyPlaceholder = !searchable || !filter ? emptyState : emptyFilteredState;
@@ -357,7 +362,7 @@ export function HistoryList(props: HistoryListProps) {
                                     size={size}
                                     value={filter}
                                     hasClear
-                                    placeholder={searchPlaceholder ?? i18n('search-placeholder')}
+                                    placeholder={searchPlaceholder ?? t('search-placeholder')}
                                     controlProps={inputProps}
                                     onKeyDown={onKeyDown}
                                     onUpdate={(query) => {
@@ -375,7 +380,7 @@ export function HistoryList(props: HistoryListProps) {
                         ) : (
                             <List<HistoryListItem>
                                 role="grid"
-                                aria-label={i18n('sheet-title')}
+                                aria-label={t('sheet-title')}
                                 size={size}
                                 items={filteredItems}
                                 getItemId={(item) => item.rowKey}
@@ -395,10 +400,7 @@ export function HistoryList(props: HistoryListProps) {
                                         {...helpers.getItemViewProps()}
                                     >
                                         <div {...helpers.getCellProps()}>
-                                            {renderItem(
-                                                item,
-                                                state.active || Boolean(state.selected),
-                                            )}
+                                            {renderItem(item, state.active)}
                                         </div>
                                     </ListItemView>
                                 )}
@@ -420,7 +422,7 @@ export function HistoryList(props: HistoryListProps) {
 
             {loadMode === 'full' && hasMore && onLoadMore && (
                 <Button view="flat-action" size="m" width="max" onClick={handleLoadMore}>
-                    {i18n('action-load-more')}
+                    {t('action-load-more')}
                 </Button>
             )}
         </div>

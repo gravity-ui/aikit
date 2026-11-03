@@ -1,3 +1,4 @@
+import {Provider} from '@gravity-ui/uikit';
 import {act, renderHook} from '@testing-library/react';
 
 import type {ToolMessageProps} from '../types/tool';
@@ -8,6 +9,31 @@ describe('useToolMessage', () => {
     const defaultProps: ToolMessageProps = {
         toolName: 'Test Tool',
     };
+
+    it('updates memoized action labels when the provider language changes', () => {
+        let lang: 'en' | 'ru' = 'en';
+        const {result, rerender} = renderHook(
+            () =>
+                useToolMessage({
+                    ...defaultProps,
+                    status: 'waitingConfirmation',
+                    bodyContent: 'Details',
+                }),
+            {wrapper: ({children}) => <Provider lang={lang}>{children}</Provider>},
+        );
+        expect(result.current.footerActions).toContainEqual(
+            expect.objectContaining({label: 'Reject'}),
+        );
+        lang = 'ru';
+        rerender();
+        expect(result.current.footerActions).toContainEqual(
+            expect.objectContaining({label: 'Отклонить'}),
+        );
+        expect(result.current.headerActions).toContainEqual(
+            expect.objectContaining({label: 'Свернуть'}),
+        );
+        expect(result.current.footerContent).toBe('Ожидание подтверждения');
+    });
 
     it('should toggle expanded state', () => {
         const {result} = renderHook(() =>

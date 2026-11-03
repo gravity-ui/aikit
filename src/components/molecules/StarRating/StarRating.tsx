@@ -75,6 +75,7 @@ export function StarRating({
     className,
     qa,
 }: StarRatingProps) {
+    const {t} = i18n.useTranslation();
     const [hoverValue, setHoverValue] = useState<number | null>(null);
 
     const handleClick = useCallback(
@@ -107,7 +108,7 @@ export function StarRating({
         <div
             className={b({size, disabled}, className)}
             role="radiogroup"
-            aria-label={ariaLabel || i18n('aria-label-group')}
+            aria-label={ariaLabel || t('aria-label-group')}
             data-qa={qa}
             onMouseLeave={handleMouseLeave}
         >
@@ -129,7 +130,7 @@ export function StarRating({
                             aria-label={
                                 ariaLabelStar
                                     ? ariaLabelStar(rating)
-                                    : i18n('aria-label-star', {rating})
+                                    : t('aria-label-star', {rating})
                             }
                             className={b('star', {filled: isFilled})}
                             qa={`star-rating-button-${rating}`}

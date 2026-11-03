@@ -43,6 +43,7 @@ export interface HistoryProps extends Omit<HistoryListProps, 'onChatClick'> {
  * @returns React component
  */
 export function History(props: HistoryProps) {
+    const {t} = i18n.useTranslation();
     const {
         open = false,
         onOpenChange,
@@ -58,9 +59,12 @@ export function History(props: HistoryProps) {
 
     // `Popup` runs its props through uikit's `filterDOMProps` without the `labelable` option, so an
     // `aria-label` passed to it never reaches the floating element. Set it on the element instead.
-    const labelPopup = React.useCallback((node: HTMLDivElement | null) => {
-        node?.setAttribute('aria-label', i18n('sheet-title'));
-    }, []);
+    const labelPopup = React.useCallback(
+        (node: HTMLDivElement | null) => {
+            node?.setAttribute('aria-label', t('sheet-title'));
+        },
+        [t],
+    );
 
     const handleChatClick = () => {
         onOpenChange?.(false);
@@ -72,7 +76,7 @@ export function History(props: HistoryProps) {
         return (
             <Sheet
                 id={sheetId}
-                title={i18n('sheet-title')}
+                title={t('sheet-title')}
                 open={open}
                 onOpenChange={onOpenChange}
                 className={b('sheet')}

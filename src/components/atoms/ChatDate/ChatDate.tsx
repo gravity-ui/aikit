@@ -34,6 +34,7 @@ export type ChatDateProps = QAProps &
  * @returns React component
  */
 export function ChatDate(props: ChatDateProps) {
+    const {t} = i18n.useTranslation();
     const {
         date,
         showTime = false,
@@ -57,7 +58,7 @@ export function ChatDate(props: ChatDateProps) {
         });
 
     if (!isValid || !dateObject) {
-        return i18n('invalid-date');
+        return t('invalid-date');
     }
 
     return (
@@ -69,7 +70,7 @@ export function ChatDate(props: ChatDateProps) {
             style={style}
         >
             {relative && typeof diffDays === 'number' ? (
-                <span>{i18n('ago', {count: diffDays})}</span>
+                <span>{t('ago', {count: diffDays})}</span>
             ) : (
                 <Fragment>
                     <span>{formattedDate}</span>

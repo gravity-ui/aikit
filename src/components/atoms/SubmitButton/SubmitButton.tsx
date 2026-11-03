@@ -76,6 +76,7 @@ export function SubmitButton({
     cancelableText,
     qa,
 }: SubmitButtonProps) {
+    const {t} = i18n.useTranslation();
     const size = useMobileControlSize(sizeProp, 'm', 'xl');
     const iconSize = getControlIconSize(size);
     const isCancelable = state === 'cancelable';
@@ -97,9 +98,9 @@ export function SubmitButton({
 
         switch (state) {
             case 'enabled':
-                return tooltipSend || i18n('tooltip-send');
+                return tooltipSend || t('tooltip-send');
             case 'cancelable':
-                return tooltipCancel || i18n('tooltip-cancel');
+                return tooltipCancel || t('tooltip-cancel');
             case 'disabled':
             case 'loading':
                 return undefined;

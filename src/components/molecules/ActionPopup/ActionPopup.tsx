@@ -55,6 +55,7 @@ export function ActionPopup({
     className,
     qa,
 }: ActionPopupProps) {
+    const {t} = i18n.useTranslation();
     const hasHeader = title || subtitle;
 
     const handleClose = () => {
@@ -88,7 +89,7 @@ export function ActionPopup({
                             onClick={handleClose}
                             className={b('close-button')}
                             qa={qa ? `${qa}-close` : undefined}
-                            aria-label={i18n('close')}
+                            aria-label={t('close')}
                         >
                             <Icon data={Xmark} size={16} />
                         </Button>

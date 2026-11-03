@@ -70,6 +70,8 @@ import '@gravity-ui/aikit/styles';
 
 Точки входа `/themes/common`, `/themes/light`, `/themes/dark` и `/themes/variables` также доступны. Сохраните подходящий вашему приложению вариант подключения стилей.
 
+Переводы AIKit теперь читают язык ближайшего UIKit-провайдера через `i18n.useTranslation()`. Меняйте `Provider.lang` для переключения языка или используйте `LangProvider` для отдельного поддерева. При наличии языкового провайдера глобальный вызов `configure({lang})` не нужен. См. [Internationalization](I18N.md).
+
 ## ContextItem и размеры контролов
 
 Самый маленький размер Label переименован из `xxs` в `2xs`. `ContextItem.size` наследует `LabelProps['size']`, а экспортируемый AIKit тип `ControlSize` использует новое имя:

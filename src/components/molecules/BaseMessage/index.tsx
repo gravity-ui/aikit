@@ -27,6 +27,7 @@ import './BaseMessage.scss';
 const b = block('base-message');
 
 const BaseMessageComponent = (props: BaseMessageProps) => {
+    const {t} = i18n.useTranslation();
     const {
         className,
         qa,
@@ -48,7 +49,7 @@ const BaseMessageComponent = (props: BaseMessageProps) => {
             return '';
         }
         try {
-            return i18n(`action-tooltip-${actionType}` as Parameters<typeof i18n>[0]);
+            return t(`action-tooltip-${actionType}` as Parameters<typeof i18n>[0]);
         } catch {
             return '';
         }

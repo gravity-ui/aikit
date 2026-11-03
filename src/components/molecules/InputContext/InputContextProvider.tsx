@@ -36,6 +36,7 @@ export function InputContextProvider({
     fileUpload,
     fileDialogTitle,
 }: InputContextProviderProps) {
+    const {t} = i18n.useTranslation();
     const {entries, addFiles, removeFile, reset, uploadedMetas} =
         useFileUploadStore<InputContextMeta>(fileUpload);
 
@@ -78,7 +79,7 @@ export function InputContextProvider({
             <AttachmentPicker
                 uploadOnly
                 fileDialogProps={{
-                    title: fileDialogTitle ?? i18n('dialog-title'),
+                    title: fileDialogTitle ?? t('dialog-title'),
                     multiple: true,
                     onCancel: reset,
                     onAdd: addFiles,
@@ -98,7 +99,7 @@ export function InputContextProvider({
                 }}
             />
         ),
-        [addFiles, entries, fileDialogTitle, removeFile, reset],
+        [addFiles, entries, fileDialogTitle, removeFile, reset, t],
     );
 
     const contextItems = useMemo(
