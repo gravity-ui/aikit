@@ -40,6 +40,12 @@ export interface ThinkingMessageGroupProps
     > {
     /** Ordered, accumulated steps supplied by the application. */
     steps: readonly ThinkingStep[];
+    /** Subtle presentation uses body-1 text and omits redundant status headings. */
+    variant?: 'default' | 'subtle';
+    /** Defaults to type icons, or status icons in the subtle variant. */
+    iconMode?: 'type' | 'status' | 'none';
+    /** Plain-text running heading supplied by the application; overrides the active step title. */
+    activeStepLabel?: string;
     stepTypes?: Readonly<Record<string, ThinkingStepType>>;
     /** Defaults to the last step's status. Explicit run status takes precedence. */
     status?: ThinkingStepStatus;

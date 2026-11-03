@@ -216,6 +216,81 @@ $block: '.#{variables.$ns}thinking-message-group';
     }
 }
 
+#{$block}_without-icons {
+    #{$block}__step {
+        grid-template-columns: minmax(0, 1fr);
+
+        &::before {
+            display: none;
+        }
+    }
+
+    #{$block}__step-marker_hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+    }
+}
+
+#{$block}#{$block}_variant_subtle {
+    font-size: var(--g-text-body-1-font-size);
+    line-height: var(--g-text-body-1-line-height);
+    color: var(--g-color-text-secondary);
+
+    #{$block}__compact-toggle {
+        --g-button-font-size: var(--g-text-body-1-font-size);
+        --g-button-text-color: var(--g-color-text-secondary);
+    }
+
+    #{$block}__compact-heading,
+    #{$block}__step-title {
+        color: var(--g-color-text-secondary);
+        font-size: var(--g-text-body-1-font-size);
+        line-height: var(--g-text-body-1-line-height);
+    }
+
+    #{$block}__step-marker {
+        height: var(--g-text-body-1-line-height);
+    }
+
+    // Scope YFM tokens to reasoning so mobile chat typography cannot enlarge its details.
+    #{$block}__step-content {
+        --yfm-font-size: var(--g-text-body-1-font-size);
+        --yfm-font-line-height: var(--g-text-body-1-line-height);
+        --yfm-color-text: var(--g-color-text-secondary);
+        --yfm-font-size-h4: var(--g-text-body-1-font-size);
+        --yfm-font-line-height-h4: var(--g-text-body-1-line-height);
+        --yfm-font-size-h5: var(--g-text-body-1-font-size);
+        --yfm-font-line-height-h5: var(--g-text-body-1-line-height);
+        --yfm-font-size-h6: var(--g-text-body-1-font-size);
+        --yfm-font-line-height-h6: var(--g-text-body-1-line-height);
+
+        color: var(--g-color-text-secondary);
+        font-size: var(--g-text-body-1-font-size);
+        line-height: var(--g-text-body-1-line-height);
+    }
+
+    #{$block}__compact-label_active,
+    #{$block}__step-title_active,
+    #{$block}__step-body_active #{$block}__step-content {
+        --yfm-color-text: var(--g-color-text-primary);
+
+        color: var(--g-color-text-primary);
+    }
+
+    #{$block}__step-title_error,
+    #{$block}__compact-label_error,
+    #{$block}__step-status_error {
+        color: var(--g-color-text-danger);
+    }
+}
+
 @keyframes thinking-message-group-pulse {
     0%,
     100% {
