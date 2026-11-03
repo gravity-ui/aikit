@@ -53,7 +53,7 @@ src/
 npm install @gravity-ui/aikit
 ```
 
-AIKit 3 requires `@gravity-ui/uikit@^8.0.0`, React/React DOM 18 or 19, and Node.js 20+. Wrap the application in UIKit's `Provider` as shown in [Getting started](./docs/GETTING_STARTED.md).
+AIKit 3 requires `@gravity-ui/uikit@^8.0.0`, React/React DOM 18 or 19, and Node.js 20.19+ within v20 or 22.12+. Wrap the application in UIKit's `Provider` as shown in [Getting started](./docs/GETTING_STARTED.md).
 
 Upgrading from v2? Read the [migration guide](./docs/migration-to-v3.md) ([Русский](./docs/migration-to-v3-ru.md)) and [v3 release notes](./docs/changelog-v3.md).
 

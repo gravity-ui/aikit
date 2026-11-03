@@ -96,6 +96,8 @@ describe('chat navigation with UIKit 8', () => {
     it('filters history and selects the visible chat from the keyboard', async () => {
         render(<ChatNavigation />);
         const search = screen.getByRole('combobox', {name: 'Search your chats'});
+        expect(search.getAttribute('aria-autocomplete')).toBe('list');
+        expect(search.getAttribute('aria-haspopup')).toBe('grid');
         fireEvent.change(search, {target: {value: 'Beta'}});
         expect(screen.queryByRole('row', {name: /Alpha chat/})).toBeNull();
         fireEvent.keyDown(search, {key: 'Enter', code: 'Enter'});
@@ -110,6 +112,28 @@ describe('chat navigation with UIKit 8', () => {
         expect(screen.getByText('No chats match your search')).toBeTruthy();
         fireEvent.change(search, {target: {value: ''}});
         expect(screen.getByRole('row', {name: /Alpha chat/})).toBeTruthy();
+    });
+
+    it('reuses filtered history while moving the active row and selects after query changes', () => {
+        const matches = jest.fn((item: {type: string; name?: string}) => item.type === 'chat');
+        const filterFunction = jest.fn(() => matches);
+        render(<ChatNavigation filterFunction={filterFunction} />);
+        const search = screen.getByRole('combobox', {name: 'Search your chats'});
+        fireEvent.change(search, {target: {value: 'chat'}});
+        expect(filterFunction).toHaveBeenCalledTimes(1);
+        expect(matches).toHaveBeenCalledTimes(2);
+        const firstActive = search.getAttribute('aria-activedescendant');
+        expect(firstActive).toBeTruthy();
+        fireEvent.keyDown(search, {key: 'ArrowDown', code: 'ArrowDown'});
+        expect(search.getAttribute('aria-activedescendant')).not.toBe(firstActive);
+        expect(filterFunction).toHaveBeenCalledTimes(1);
+        expect(matches).toHaveBeenCalledTimes(2);
+        fireEvent.change(search, {target: {value: 'another query'}});
+        expect(filterFunction).toHaveBeenCalledTimes(2);
+        expect(matches).toHaveBeenCalledTimes(4);
+        expect(search.getAttribute('aria-activedescendant')).toBe(firstActive);
+        fireEvent.keyDown(search, {key: 'Enter', code: 'Enter'});
+        expect(screen.getAllByText('Alpha chat')).toHaveLength(2);
     });
 
     it('pins and deletes a chat without selecting it', async () => {

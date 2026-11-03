@@ -4,18 +4,24 @@
 
 ## Overview
 
-AIKit 3 upgrades `@gravity-ui/uikit` from v7 to v8. Upgrade both libraries together: AIKit 3 requires UIKit **8.0.0 or later within v8**, and no longer supports UIKit 7. React and React DOM **18 or 19** remain supported; Node.js **20 or later** remains required.
+AIKit 3 upgrades `@gravity-ui/uikit` from v7 to v8. Upgrade both libraries together: AIKit 3 requires UIKit **8.0.0 or later within v8**, and no longer supports UIKit 7. React and React DOM **18 or 19** remain supported; Node.js now requires **20.19+ within v20, or 22.12+** (`^20.19.0 || >=22.12.0`).
 
 This guide describes the changes from AIKit 2.28.0. See the [v3 release notes](changelog-v3.md) for the complete list. If upgrading from an earlier v2 release, also read the intervening entries in [CHANGELOG.md](../CHANGELOG.md).
 
 ## Quick checklist
 
-1. Update AIKit and UIKit together, then check that your other Gravity packages support UIKit 8.
+1. Update Node.js to a supported version and AIKit and UIKit together, then check that your other Gravity packages support UIKit 8.
 2. Use UIKit's `Provider` at the application root; keep nested `ThemeProvider` instances for theme overrides.
 3. Replace the `xxs` size with `2xs` in context chips and control-size helpers.
 4. Review custom history/menu styles and selectors against the new markup.
 5. Regenerate custom UIKit themes with Themer v2 and check both light and dark modes.
 6. Check history search, keyboard navigation, pinning/deletion, desktop menus, mobile sheets, file dialogs, prompt commands, and Mermaid streaming.
+
+## Node.js runtime
+
+Update development, CI, and SSR runtimes to Node.js **20.19+ within v20, or 22.12+**. Earlier Node 20/22 releases and Node 21 are no longer supported.
+
+UIKit 8 eagerly exports ColorPicker, which loads ESM-only color dependencies even when a CommonJS consumer imports another component such as `@gravity-ui/aikit/Header`. Native `require(esm)` is enabled by default starting with [Node 20.19](https://nodejs.org/en/blog/release/v20.19.0) and [Node 22.12](https://nodejs.org/en/blog/release/v22.12.0). CSS handling remains the application's responsibility for SSR imports.
 
 ## Install compatible versions
 

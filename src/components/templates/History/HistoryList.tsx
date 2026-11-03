@@ -143,6 +143,8 @@ export function HistoryList(props: HistoryListProps) {
     const focusOwner = useListFocusOwner();
     const {onKeyDown, ...inputProps} = focusOwner.getInputProps({
         'aria-label': searchPlaceholder ?? t('search-placeholder'),
+        'aria-autocomplete': 'list',
+        'aria-haspopup': 'grid',
     });
     const [loadedChats, setLoadedChats] = useState<ChatType[]>([]);
     const [lazyHasMore, setLazyHasMore] = useState(hasMore);
@@ -296,19 +298,18 @@ export function HistoryList(props: HistoryListProps) {
         }
     };
 
-    const filterItems = (query: string) => {
-        if (!searchable || !query) {
+    const filteredItems = useMemo(() => {
+        if (!searchable || !filter) {
             return listItems;
         }
-        const userFilter = filterFunction(query);
-        return listItems.filter((item) => {
-            if (query && item.type === 'date-header') {
-                return false;
-            }
-            return userFilter(item);
-        });
-    };
-    const filteredItems = filterItems(searchable ? filter : '');
+        const userFilter = filterFunction(filter);
+        return listItems.filter((item) => item.type !== 'date-header' && userFilter(item));
+    }, [listItems, searchable, filter, filterFunction]);
+    const effectiveActiveItemId =
+        activeItemId ??
+        (searchable && filter
+            ? (filteredItems.find((item) => item.type === 'chat')?.rowKey ?? null)
+            : null);
 
     const renderItem = (item: ListItemChatData, isActive: boolean) => {
         if (item.type === 'date-header') {
@@ -367,10 +368,7 @@ export function HistoryList(props: HistoryListProps) {
                                     onKeyDown={onKeyDown}
                                     onUpdate={(query) => {
                                         setFilter(query);
-                                        setActiveItemId(
-                                            filterItems(query).find((item) => item.type === 'chat')
-                                                ?.rowKey ?? null,
-                                        );
+                                        setActiveItemId(null);
                                     }}
                                 />
                             </div>
@@ -388,7 +386,7 @@ export function HistoryList(props: HistoryListProps) {
                                     item.type === 'chat' ? item.lastMessage || item.name : item.date
                                 }
                                 focusOwner={searchable ? focusOwner : undefined}
-                                activeItemId={activeItemId}
+                                activeItemId={effectiveActiveItemId}
                                 onActiveItemUpdate={setActiveItemId}
                                 selectionMode="single"
                                 selectedIds={selectedChat ? [`chat:${selectedChat.id}`] : []}

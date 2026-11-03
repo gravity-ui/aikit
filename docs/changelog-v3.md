@@ -6,6 +6,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 
 | Area                                | AIKit 2.28.0                           | AIKit 3.0.0                                     | Consumer action                                                                            |
 | ----------------------------------- | -------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Node.js runtime                     | `>=20`                                 | Node 20.19+ within v20 or 22.12+                | Upgrade development, CI, and SSR runtimes for native CommonJS loading of ESM dependencies. |
 | UIKit peer                          | `^7.25.0`                              | `^8.0.0`                                        | Upgrade UIKit and other packages that depend on it together.                               |
 | Smallest context label/control size | `xxs`                                  | `2xs`                                           | Update explicit `ContextItem.size` and control-size helper arguments.                      |
 | Custom history filters              | UIKit `ListItemData<ListItemChatData>` | AIKit `ListItemChatData`                        | Remove explicit legacy UIKit type wrappers; ordinary filter callbacks keep working.        |
@@ -16,7 +17,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 ## Components and behavior
 
 - **Localization:** use provider-aware translation hooks throughout AIKit, including memoized labels, so dynamic and independently scoped languages work without changing global configuration.
-- **History / HistoryList:** migrate to the stable UIKit List with stable row identifiers and a named grid for interactive rows. Preserve date grouping, controlled selection, pinned chat ordering, pin/delete actions, search/custom filtering, full/lazy loading, and empty/loading states. Connect the search input to list keyboard navigation through `useListFocusOwner`.
+- **History / HistoryList:** migrate to the stable UIKit List with stable row identifiers and a named grid for interactive rows. Preserve date grouping, controlled selection, pinned chat ordering, pin/delete actions, search/custom filtering, full/lazy loading, and empty/loading states. Connect the search input to list keyboard navigation through `useListFocusOwner`, with grid popup and list autocomplete semantics. Memoize filtering across active-row changes and reuse the result to activate the first match after a query change.
 - **Header:** migrate desktop dropdowns and the inline mobile menu to Menu/MenuItem. Preserve labels, icons, disabled items, callbacks, QA identifiers, placement of action groups, and the mobile sheet title option. Use controlled `Sheet.open`/`onOpenChange`.
 - **AttachmentPicker:** migrate the upload/storage dropdown to Menu/MenuItem with an accessible trigger. Preserve direct upload mode and the existing upload/storage callbacks.
 - **FileUploadDialog:** handle dismissal through UIKit's `onOpenChange` while retaining AIKit's `onClose` API. Apply/Cancel callbacks and upload-state checks remain in place.
@@ -38,7 +39,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 
 ## Requirements that stay the same
 
-React and React DOM 18/19, Node.js 20+, all other peer ranges, the optional Mermaid loader contract, AIKit entry points, and AIKit CSS-variable names retain their existing contracts. The release does not require the UIKit `/legacy` entry point or its optional peers.
+React and React DOM 18/19, all other peer ranges, the optional Mermaid loader contract, AIKit entry points, and AIKit CSS-variable names retain their existing contracts. The release does not require the UIKit `/legacy` entry point or its optional peers.
 
 ## Automatic release and changelog
 
@@ -53,7 +54,7 @@ feat!: migrate AIKit to UIKit 8
 Include this footer in the resulting commit body (ensure the merge dialog retains it):
 
 ```text
-BREAKING CHANGE: AIKit 3 requires @gravity-ui/uikit ^8.0.0. Replace the xxs context label/control size with 2xs and migrate custom history/menu selectors. See docs/migration-to-v3.md and docs/changelog-v3.md for complete upgrade instructions and release notes.
+BREAKING CHANGE: AIKit 3 requires @gravity-ui/uikit ^8.0.0 and Node.js ^20.19.0 || >=22.12.0. Replace the xxs context label/control size with 2xs and migrate custom history/menu selectors. See docs/migration-to-v3.md and docs/changelog-v3.md for complete upgrade instructions and release notes.
 
 Release-As: 3.0.0
 ```

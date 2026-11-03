@@ -2,7 +2,7 @@
 
 This guide walks you through installing `@gravity-ui/aikit` and rendering your first chat.
 
-AIKit 3 requires UIKit 8.0.0+ within v8, React/React DOM 18 or 19, and Node.js 20+. Upgrading an existing application? Follow the [v3 migration guide](./migration-to-v3.md).
+AIKit 3 requires UIKit 8.0.0+ within v8, React/React DOM 18 or 19, and Node.js 20.19+ within v20 or 22.12+. Upgrading an existing application? Follow the [v3 migration guide](./migration-to-v3.md).
 
 ## Installation
 

@@ -62,7 +62,7 @@ src/
 npm install @gravity-ui/aikit
 ```
 
-AIKit 3 requires `@gravity-ui/uikit@^8.0.0`, React/React DOM 18 or 19, and Node.js 20+. Wrap the application in UIKit's `Provider` as shown in [Getting started](./docs/GETTING_STARTED.md).
+AIKit 3 requires `@gravity-ui/uikit@^8.0.0`, React/React DOM 18 or 19, and Node.js 20.19+ within v20 or 22.12+. Wrap the application in UIKit's `Provider` as shown in [Getting started](./docs/GETTING_STARTED.md).
 
 Upgrading from v2? Read the [migration guide](./docs/migration-to-v3.md) ([Русский](./docs/migration-to-v3-ru.md)) and [v3 release notes](./docs/changelog-v3.md).
 
@@ -250,7 +250,7 @@ Agent-readable documentation for the installed version is located in `node_modul
 
 This guide walks you through installing `@gravity-ui/aikit` and rendering your first chat.
 
-AIKit 3 requires UIKit 8.0.0+ within v8, React/React DOM 18 or 19, and Node.js 20+. Upgrading an existing application? Follow the [v3 migration guide](./migration-to-v3.md).
+AIKit 3 requires UIKit 8.0.0+ within v8, React/React DOM 18 or 19, and Node.js 20.19+ within v20 or 22.12+. Upgrading an existing application? Follow the [v3 migration guide](./migration-to-v3.md).
 
 ## Installation
 
@@ -478,18 +478,24 @@ stream.abort(); // cancel
 
 ## Overview
 
-AIKit 3 upgrades `@gravity-ui/uikit` from v7 to v8. Upgrade both libraries together: AIKit 3 requires UIKit **8.0.0 or later within v8**, and no longer supports UIKit 7. React and React DOM **18 or 19** remain supported; Node.js **20 or later** remains required.
+AIKit 3 upgrades `@gravity-ui/uikit` from v7 to v8. Upgrade both libraries together: AIKit 3 requires UIKit **8.0.0 or later within v8**, and no longer supports UIKit 7. React and React DOM **18 or 19** remain supported; Node.js now requires **20.19+ within v20, or 22.12+** (`^20.19.0 || >=22.12.0`).
 
 This guide describes the changes from AIKit 2.28.0. See the [v3 release notes](changelog-v3.md) for the complete list. If upgrading from an earlier v2 release, also read the intervening entries in [CHANGELOG.md](../CHANGELOG.md).
 
 ## Quick checklist
 
-1. Update AIKit and UIKit together, then check that your other Gravity packages support UIKit 8.
+1. Update Node.js to a supported version and AIKit and UIKit together, then check that your other Gravity packages support UIKit 8.
 2. Use UIKit's `Provider` at the application root; keep nested `ThemeProvider` instances for theme overrides.
 3. Replace the `xxs` size with `2xs` in context chips and control-size helpers.
 4. Review custom history/menu styles and selectors against the new markup.
 5. Regenerate custom UIKit themes with Themer v2 and check both light and dark modes.
 6. Check history search, keyboard navigation, pinning/deletion, desktop menus, mobile sheets, file dialogs, prompt commands, and Mermaid streaming.
+
+## Node.js runtime
+
+Update development, CI, and SSR runtimes to Node.js **20.19+ within v20, or 22.12+**. Earlier Node 20/22 releases and Node 21 are no longer supported.
+
+UIKit 8 eagerly exports ColorPicker, which loads ESM-only color dependencies even when a CommonJS consumer imports another component such as `@gravity-ui/aikit/Header`. Native `require(esm)` is enabled by default starting with [Node 20.19](https://nodejs.org/en/blog/release/v20.19.0) and [Node 22.12](https://nodejs.org/en/blog/release/v22.12.0). CSS handling remains the application's responsibility for SSR imports.
 
 ## Install compatible versions
 
@@ -630,6 +636,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 
 | Area                                | AIKit 2.28.0                           | AIKit 3.0.0                                     | Consumer action                                                                            |
 | ----------------------------------- | -------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Node.js runtime                     | `>=20`                                 | Node 20.19+ within v20 or 22.12+                | Upgrade development, CI, and SSR runtimes for native CommonJS loading of ESM dependencies. |
 | UIKit peer                          | `^7.25.0`                              | `^8.0.0`                                        | Upgrade UIKit and other packages that depend on it together.                               |
 | Smallest context label/control size | `xxs`                                  | `2xs`                                           | Update explicit `ContextItem.size` and control-size helper arguments.                      |
 | Custom history filters              | UIKit `ListItemData<ListItemChatData>` | AIKit `ListItemChatData`                        | Remove explicit legacy UIKit type wrappers; ordinary filter callbacks keep working.        |
@@ -640,7 +647,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 ## Components and behavior
 
 - **Localization:** use provider-aware translation hooks throughout AIKit, including memoized labels, so dynamic and independently scoped languages work without changing global configuration.
-- **History / HistoryList:** migrate to the stable UIKit List with stable row identifiers and a named grid for interactive rows. Preserve date grouping, controlled selection, pinned chat ordering, pin/delete actions, search/custom filtering, full/lazy loading, and empty/loading states. Connect the search input to list keyboard navigation through `useListFocusOwner`.
+- **History / HistoryList:** migrate to the stable UIKit List with stable row identifiers and a named grid for interactive rows. Preserve date grouping, controlled selection, pinned chat ordering, pin/delete actions, search/custom filtering, full/lazy loading, and empty/loading states. Connect the search input to list keyboard navigation through `useListFocusOwner`, with grid popup and list autocomplete semantics. Memoize filtering across active-row changes and reuse the result to activate the first match after a query change.
 - **Header:** migrate desktop dropdowns and the inline mobile menu to Menu/MenuItem. Preserve labels, icons, disabled items, callbacks, QA identifiers, placement of action groups, and the mobile sheet title option. Use controlled `Sheet.open`/`onOpenChange`.
 - **AttachmentPicker:** migrate the upload/storage dropdown to Menu/MenuItem with an accessible trigger. Preserve direct upload mode and the existing upload/storage callbacks.
 - **FileUploadDialog:** handle dismissal through UIKit's `onOpenChange` while retaining AIKit's `onClose` API. Apply/Cancel callbacks and upload-state checks remain in place.
@@ -662,7 +669,7 @@ These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases,
 
 ## Requirements that stay the same
 
-React and React DOM 18/19, Node.js 20+, all other peer ranges, the optional Mermaid loader contract, AIKit entry points, and AIKit CSS-variable names retain their existing contracts. The release does not require the UIKit `/legacy` entry point or its optional peers.
+React and React DOM 18/19, all other peer ranges, the optional Mermaid loader contract, AIKit entry points, and AIKit CSS-variable names retain their existing contracts. The release does not require the UIKit `/legacy` entry point or its optional peers.
 
 ## Automatic release and changelog
 
@@ -677,7 +684,7 @@ feat!: migrate AIKit to UIKit 8
 Include this footer in the resulting commit body (ensure the merge dialog retains it):
 
 ```text
-BREAKING CHANGE: AIKit 3 requires @gravity-ui/uikit ^8.0.0. Replace the xxs context label/control size with 2xs and migrate custom history/menu selectors. See docs/migration-to-v3.md and docs/changelog-v3.md for complete upgrade instructions and release notes.
+BREAKING CHANGE: AIKit 3 requires @gravity-ui/uikit ^8.0.0 and Node.js ^20.19.0 || >=22.12.0. Replace the xxs context label/control size with 2xs and migrate custom history/menu selectors. See docs/migration-to-v3.md and docs/changelog-v3.md for complete upgrade instructions and release notes.
 
 Release-As: 3.0.0
 ```
