@@ -69,22 +69,61 @@ when none is supplied. Error, paused and cancelled steps use their status icon i
 only in the expanded history. Applications choose icons; the component does not map backend event
 names to icons. Details can be omitted when the backend does not supply them.
 
+### Opt into subtle presentation
+
+```tsx
+<ThinkingMessageGroup
+  steps={steps}
+  variant="subtle"
+  iconMode="status"
+  activeStepLabel="Checking database clusters"
+  format="markdown"
+/>
+```
+
+`variant="subtle"` uses `body-1` typography and secondary text for history, including Markdown
+inside a mobile chat. The current step uses primary text; only the running heading pulses.
+Error indicators use the danger color. Completed steps stay neutral, not green.
+
+In expanded history, a supplied `title` is displayed above the details. Without a title, details
+are displayed directly, without a repeated "In progress" or "Completed" heading. A step with
+neither a title nor details still displays its localized status. No title is generated from content.
+
+`iconMode="status"` uses a static clock while running and a check after completion.
+`iconMode="type"` uses application-provided category icons for running/completed steps,
+falling back to a dot. Error, paused and cancelled states keep their dedicated status icons.
+`iconMode="none"` removes icons and the timeline gutter; accessible statuses remain, and
+exceptional states retain a visible status label. Custom icons can supply their own colors.
+The completed group heading does not add another checkmark above the step icons.
+
+Use `activeStepLabel` for an application-supplied plain-text heading while running. It takes
+precedence over the active step title, is truncated visually and is available in full on hover.
+When omitted, the active title or localized run status is used. It does not replace stored content
+or affect the completed summary (`renderSummary`).
+
+The default variant retains the existing presentation. To configure this variant inside a chat,
+render `ThinkingMessageGroup` through the existing custom thinking renderer, as in the example above.
+`thinkingMessageView="grouped"` alone continues to use the default presentation.
+
 ## Props
 
-| Prop                       | Type                                            | Required | Default            | Description                                                        |
-| -------------------------- | ----------------------------------------------- | -------- | ------------------ | ------------------------------------------------------------------ |
-| `steps`                    | `readonly ThinkingStep[]`                       | Yes      | —                  | Accumulated, ordered steps with stable unique IDs                  |
-| `stepTypes`                | `Record<string, ThinkingStepType>`              | No       | —                  | Category icons and labels                                          |
-| `status`                   | `ThinkingStepStatus`                            | No       | Last step status   | Overall run status, independent of stored step statuses            |
-| `activeStepId`             | `string`                                        | No       | Last thinking step | Select the active step explicitly                                  |
-| `expanded`                 | `boolean`                                       | No       | —                  | Controlled expansion                                               |
-| `defaultExpanded`          | `boolean`                                       | No       | `false`            | Initial uncontrolled expansion                                     |
-| `maxHistoryHeight`         | `CSSProperties['maxHeight']`                    | No       | `480`              | Maximum expanded history height; use `"none"` to disable the limit |
-| `onExpandedChange`         | `(expanded: boolean) => void`                   | No       | —                  | Disclosure change callback                                         |
-| `renderSummary`            | `(completedSteps: ThinkingStep[]) => ReactNode` | No       | Completed count    | Optional summary; null, false and empty string hide it             |
-| `renderStepContent`        | `(step: ThinkingStep) => ReactNode`             | No       | Content renderer   | Custom details                                                     |
-| `format`                   | `'plain' \| 'markdown'`                         | No       | `'plain'`          | Content format                                                     |
-| `className`, `style`, `qa` | Standard DOM/QA props                           | No       | —                  | Root customization                                                 |
+| Prop                       | Type                                            | Required | Default                                  | Description                                                            |
+| -------------------------- | ----------------------------------------------- | -------- | ---------------------------------------- | ---------------------------------------------------------------------- |
+| `steps`                    | `readonly ThinkingStep[]`                       | Yes      | —                                        | Accumulated, ordered steps with stable unique IDs                      |
+| `variant`                  | `'default' \| 'subtle'`                         | No       | `'default'`                              | Presentation; subtle removes redundant status headings and uses body-1 |
+| `iconMode`                 | `'type' \| 'status' \| 'none'`                  | No       | `'status'` in subtle, otherwise `'type'` | Category icons, execution-state icons, or no icons/timeline            |
+| `activeStepLabel`          | `string`                                        | No       | Active title or localized status         | Plain-text override of the running heading                             |
+| `stepTypes`                | `Record<string, ThinkingStepType>`              | No       | —                                        | Category icons and labels                                              |
+| `status`                   | `ThinkingStepStatus`                            | No       | Last step status                         | Overall run status, independent of stored step statuses                |
+| `activeStepId`             | `string`                                        | No       | Last thinking step                       | Select the active step explicitly                                      |
+| `expanded`                 | `boolean`                                       | No       | —                                        | Controlled expansion                                                   |
+| `defaultExpanded`          | `boolean`                                       | No       | `false`                                  | Initial uncontrolled expansion                                         |
+| `maxHistoryHeight`         | `CSSProperties['maxHeight']`                    | No       | `480`                                    | Maximum expanded history height; use `"none"` to disable the limit     |
+| `onExpandedChange`         | `(expanded: boolean) => void`                   | No       | —                                        | Disclosure change callback                                             |
+| `renderSummary`            | `(completedSteps: ThinkingStep[]) => ReactNode` | No       | Completed count                          | Optional summary; null, false and empty string hide it                 |
+| `renderStepContent`        | `(step: ThinkingStep) => ReactNode`             | No       | Content renderer                         | Custom details                                                         |
+| `format`                   | `'plain' \| 'markdown'`                         | No       | `'plain'`                                | Content format                                                         |
+| `className`, `style`, `qa` | Standard DOM/QA props                           | No       | —                                        | Root customization                                                     |
 
 Markdown options match `ThinkingMessage`: `transformOptions`, `mermaidOptions`,
 `openMarkdownLinksInNewTab`, `mdxOptions`, `mdxContext`, `markdownExtraProps`.

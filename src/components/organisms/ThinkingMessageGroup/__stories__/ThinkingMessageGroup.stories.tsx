@@ -6,6 +6,7 @@ import type {Decorator, Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {
     ThinkingMessageGroup,
+    type ThinkingMessageGroupProps,
     type ThinkingStep,
     type ThinkingStepStatus,
     thinkingMessageToStep,
@@ -59,6 +60,9 @@ export default {
             options: ['thinking', 'thought', 'error', 'cancelled', 'paused'],
         },
         format: {control: 'select', options: ['plain', 'markdown']},
+        variant: {control: 'select', options: ['default', 'subtle']},
+        iconMode: {control: 'select', options: ['type', 'status', 'none']},
+        activeStepLabel: {control: 'text'},
         maxHistoryHeight: {
             control: 'text',
             description: 'Maximum expanded history height (default: 480px). Use none for no limit.',
@@ -98,12 +102,12 @@ const compactData = {
 };
 
 export const Playground: Story = {
-    args: {...compactData, format: 'markdown', maxHistoryHeight: '480px'},
+    args: {...compactData, variant: 'subtle', format: 'markdown', maxHistoryHeight: '480px'},
 };
 
 export const CompactExpanded: Story = {
     name: 'Expanded History',
-    args: {...compactData, defaultExpanded: true, format: 'markdown'},
+    args: {...compactData, variant: 'subtle', defaultExpanded: true, format: 'markdown'},
 };
 
 export const CompactWithoutDetails: Story = {
@@ -189,7 +193,7 @@ export const CompactNarrow: Story = {
 export const CompactDark: Story = {
     name: 'Dark Theme',
     parameters: {dark: true},
-    args: {...compactData, defaultExpanded: true, format: 'markdown'},
+    args: {...compactData, variant: 'subtle', defaultExpanded: true, format: 'markdown'},
 };
 
 export const CustomHistoryHeight: Story = {
@@ -213,6 +217,9 @@ export const CustomHistoryHeight: Story = {
 };
 
 function ProgressUpdatesExample({
+    variant,
+    iconMode,
+    activeStepLabel,
     controlled = false,
     defaultExpanded = true,
     initialExpanded = defaultExpanded,
@@ -220,7 +227,7 @@ function ProgressUpdatesExample({
     controlled?: boolean;
     defaultExpanded?: boolean;
     initialExpanded?: boolean;
-}) {
+} & Pick<ThinkingMessageGroupProps, 'variant' | 'iconMode' | 'activeStepLabel'>) {
     const [steps, setSteps] = useState(compactSteps);
     const [status, setStatus] = useState<ThinkingStepStatus>('thinking');
     const [expanded, setExpanded] = useState(initialExpanded);
@@ -322,6 +329,9 @@ function ProgressUpdatesExample({
             </div>
             <ThinkingMessageGroup
                 key={demoVersion}
+                variant={variant}
+                iconMode={iconMode}
+                activeStepLabel={activeStepLabel}
                 format="markdown"
                 stepTypes={compactData.stepTypes}
                 steps={steps}
@@ -336,13 +346,16 @@ function ProgressUpdatesExample({
 
 export const CompactStreaming: Story = {
     name: 'Progress Updates',
-    render: (args) => <ProgressUpdatesExample defaultExpanded={args.defaultExpanded} />,
+    args: {variant: 'subtle'},
+    render: (args) => <ProgressUpdatesExample {...args} />,
 };
 
 export const CompactControlled: Story = {
     name: 'Controlled Expansion',
+    args: {variant: 'subtle'},
     render: (args) => (
         <ProgressUpdatesExample
+            {...args}
             controlled
             defaultExpanded={args.defaultExpanded}
             initialExpanded={args.expanded}
@@ -393,12 +406,67 @@ export const Legacy: Story = {
     args: {
         defaultExpanded: true,
         format: 'markdown',
+        variant: 'subtle',
         steps: [
             thinkingMessageToStep('legacy', {
-                content: ['**First paragraph**', 'Second paragraph'],
+                content: [
+                    'Selecting tools to inspect **database clusters**.',
+                    'Checking which database engines are available.',
+                ],
                 status: 'thought',
-                enabledCopy: true,
             }),
         ],
     },
+};
+
+export const Presentation: Story = {
+    name: 'Presentation Options',
+    parameters: {
+        description:
+            'Compare the existing view with the subtle presentation. The first step has no title; the second has an application-provided title. Switch status in Controls to inspect completion, errors and pauses.',
+    },
+    args: {
+        status: 'thinking',
+        activeStepLabel: 'Checking database clusters',
+        format: 'markdown',
+    },
+    render: (args) => (
+        <Showcase direction="column">
+            {(
+                [
+                    {title: 'Existing presentation', variant: 'default', iconMode: 'type'},
+                    {title: 'Subtle · status icons', variant: 'subtle', iconMode: 'status'},
+                    {title: 'Subtle · operation icons', variant: 'subtle', iconMode: 'type'},
+                    {title: 'Subtle · without icons', variant: 'subtle', iconMode: 'none'},
+                ] as const
+            ).map(({title, variant, iconMode}) => (
+                <ShowcaseItem key={title} title={title} width="100%">
+                    <ThinkingMessageGroup
+                        {...args}
+                        variant={variant}
+                        iconMode={iconMode}
+                        defaultExpanded
+                        stepTypes={{search: {icon: <Icon data={Magnifier} size={16} />}}}
+                        steps={[
+                            {
+                                id: 'tools',
+                                type: 'search',
+                                status: 'thought',
+                                content:
+                                    'Selecting tools to inspect **PostgreSQL, MySQL and ClickHouse** clusters.',
+                            },
+                            {
+                                id: 'clusters',
+                                type: 'search',
+                                title: 'Checking database clusters',
+                                status: args.status ?? 'thinking',
+                                content:
+                                    'Checking which database engines are available in the folder.',
+                            },
+                        ]}
+                    />
+                </ShowcaseItem>
+            ))}
+        </Showcase>
+    ),
 };
