@@ -9,7 +9,7 @@ $block: '.#{variables.$ns}history';
         display: flex;
         flex-direction: column;
         width: var(--g-aikit-history-width);
-        background: var(--g-color-base-background);
+        background: var(--g-color-base-float);
     }
 
     &__list-wrapper {
@@ -31,7 +31,7 @@ $block: '.#{variables.$ns}history';
         position: sticky;
         top: 0;
         z-index: 1;
-        background: var(--g-color-base-background);
+        background: var(--g-color-base-float);
         padding: spacing(2);
         border-bottom: 1px solid var(--g-color-line-generic);
         margin-bottom: 0;
