@@ -87,3 +87,5 @@ export {WithAttachmentInput} from './parts/attachments';
 export {WithCustomMessageTypes, WithLazyCustomMessageType} from './parts/customMessageTypes';
 
 export {WithMascot, MascotColors} from './parts/mascot';
+
+export {WithInlineCitations} from './parts/citations';

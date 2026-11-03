@@ -779,7 +779,7 @@ Each component also has a dedicated subpath export for tree-shaking — `import 
 | [DiffStat](../src/components/atoms/DiffStat/README.md)                           | Diff statistics — added/deleted line counts.                               |
 | [Disclaimer](../src/components/atoms/Disclaimer/README.md)                       | Informational or warning message block.                                    |
 | [FileIcon](../src/components/atoms/FileIcon/README.md)                           | Icon for a file based on MIME type or extension.                           |
-| InlineCitation                                                                   | Citation link rendered inline in markdown.                                 |
+| [InlineCitation](../src/components/atoms/InlineCitation/README.md)               | Inline source badge with an interactive preview and source navigation.     |
 | [IntersectionContainer](../src/components/atoms/IntersectionContainer/README.md) | Intersection Observer wrapper (used by `MessageList` for infinite scroll). |
 | [Loader](../src/components/atoms/Loader/README.md)                               | Loading-state indicator.                                                   |
 | [MarkdownRenderer](../src/components/atoms/MarkdownRenderer/README.md)           | Yandex Flavored Markdown (YFM) → HTML renderer.                            |

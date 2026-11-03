@@ -13,6 +13,14 @@ For flat copy overrides, use the **`texts`** prop (`ChatContainerTexts`); see th
 <Canvas of={Stories.Playground} />
 <Controls of={Stories.Playground} />
 
+## Inline citations
+
+Register a portal-backed citation component in `mdxProps.mdxOptions` and resolve its
+sources per message with `mdxProps.getMdxContext`. The same marker can refer to different
+sources in different messages. Open the badges to browse sources and quoted excerpts.
+
+<Canvas of={Stories.WithInlineCitations} />
+
 ## Mascot colors
 
 Set `--g-aikit-mascot-body-center-color`, `--g-aikit-mascot-body-edge-color`, `--g-aikit-mascot-eye-color`, and `--g-aikit-mascot-pupil-color` on the chat container or an ancestor.

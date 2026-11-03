@@ -9,6 +9,9 @@ import * as runtime from 'react/jsx-runtime';
 import {MdxDataContext} from './MdxContext';
 import {asyncExecuteCode, resolveCspNonce} from './asyncExecuteCode';
 
+// Keep the MDX mounting effect stable when a child creates a React portal.
+const contextList = [MdxDataContext];
+
 interface MdxLoaderState extends IdMdxComponentLoader {
     idMdx?: Record<string, string>;
     nonce?: string;
@@ -98,7 +101,7 @@ export function MdxPortals({
         html,
         components,
         mdxArtifacts,
-        contextList: [MdxDataContext],
+        contextList,
         idMdxComponentLoader,
     });
 
