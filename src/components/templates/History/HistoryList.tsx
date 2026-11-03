@@ -376,7 +376,7 @@ export function HistoryList(props: HistoryListProps) {
                             </div>
                         )}
                         {filteredItems.length === 0 ? (
-                            finalEmptyPlaceholder
+                            <div className={b('empty-placeholder')}>{finalEmptyPlaceholder}</div>
                         ) : (
                             <List<HistoryListItem>
                                 role="grid"
