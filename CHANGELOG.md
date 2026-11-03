@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/gravity-ui/aikit/compare/v2.28.0...v3.0.0) (2026-11-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* AIKit 3 requires Node.js ^20.19.0 || >=22.12.0 for CommonJS SSR.
+
+### Features
+
+* migrate AIKit to UIKit 8 ([#287](https://github.com/gravity-ui/aikit/issues/287)) ([a2fdf2c](https://github.com/gravity-ui/aikit/commit/a2fdf2cb67a5702849f33750dc3d8399aaec0545))
+
 ## [2.28.0](https://github.com/gravity-ui/aikit/compare/v2.27.0...v2.28.0) (2026-11-03)
 
 
