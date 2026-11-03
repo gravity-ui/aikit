@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.28.0](https://github.com/gravity-ui/aikit/compare/v2.27.0...v2.28.0) (2026-11-03)
+
+
+### Features
+
+* add inline citations with source previews ([#283](https://github.com/gravity-ui/aikit/issues/283)) ([eb12993](https://github.com/gravity-ui/aikit/commit/eb129938677af5f7fb44617e31f0098e9be76e14))
+
+
+### Bug Fixes
+
+* **History:** use floating background for chat history ([#285](https://github.com/gravity-ui/aikit/issues/285)) ([52f43ee](https://github.com/gravity-ui/aikit/commit/52f43eedb81fe947c62dd6c1e74a2948e1b6dd38))
+
 ## [2.27.0](https://github.com/gravity-ui/aikit/compare/v2.26.0...v2.27.0) (2026-10-29)
 
 
