@@ -9,7 +9,7 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {DropdownMenu, Icon, Menu, Sheet, Text, useUniqId} from '@gravity-ui/uikit';
+import {Icon, Menu, MenuItem, Sheet, Text, useUniqId} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
@@ -178,18 +178,6 @@ export function Header(props: HeaderProps) {
         [menuItems, menuItemQa],
     );
 
-    const dropdownMenuItems = useMemo(
-        () =>
-            normalizedMenuItems.map((item) => ({
-                text: item.label,
-                action: item.onClick,
-                disabled: item.disabled,
-                qa: item.qa,
-                ...(item.icon ? {iconStart: item.icon} : {}),
-            })),
-        [normalizedMenuItems],
-    );
-
     const headerMenu = useMemo(() => {
         if (normalizedMenuItems.length === 0) {
             return null;
@@ -204,6 +192,7 @@ export function Header(props: HeaderProps) {
                 <React.Fragment>
                     <ActionButton
                         tooltipTitle={switcherTooltip}
+                        aria-label={switcherTooltip}
                         size={actionSize}
                         view="flat"
                         className={b('action-button')}
@@ -215,16 +204,21 @@ export function Header(props: HeaderProps) {
                     <Sheet
                         id={menuSheetId}
                         title={i18n('menu-sheet-title')}
-                        visible={isMenuSheetVisible}
-                        onClose={() => setIsMenuSheetVisible(false)}
+                        open={isMenuSheetVisible}
+                        onOpenChange={setIsMenuSheetVisible}
                         contentClassName={b('menu-sheet-content', {
                             'without-title': !showSheetTitle,
                         })}
                         qa="header-menu-sheet-container"
                     >
-                        <Menu size="xl" qa="header-menu-sheet">
+                        <Menu
+                            inline
+                            size="xl"
+                            qa="header-menu-sheet"
+                            aria-label={i18n('menu-sheet-title')}
+                        >
                             {normalizedMenuItems.map((item) => (
-                                <Menu.Item
+                                <MenuItem
                                     key={item.id}
                                     className={b('menu-item')}
                                     disabled={item.disabled}
@@ -240,7 +234,7 @@ export function Header(props: HeaderProps) {
                                         ) : null}
                                         {item.label}
                                     </span>
-                                </Menu.Item>
+                                </MenuItem>
                             ))}
                         </Menu>
                     </Sheet>
@@ -249,12 +243,12 @@ export function Header(props: HeaderProps) {
         }
 
         return (
-            <DropdownMenu
-                items={dropdownMenuItems}
-                renderSwitcher={(switcherProps) => (
+            <Menu
+                aria-label={i18n('menu-sheet-title')}
+                trigger={
                     <ActionButton
-                        {...switcherProps}
                         tooltipTitle={switcherTooltip}
+                        aria-label={switcherTooltip}
                         size={actionSize}
                         view="flat"
                         className={b('action-button')}
@@ -262,8 +256,20 @@ export function Header(props: HeaderProps) {
                     >
                         {switcherContent}
                     </ActionButton>
-                )}
-            />
+                }
+            >
+                {normalizedMenuItems.map((item) => (
+                    <MenuItem
+                        key={item.id}
+                        disabled={item.disabled}
+                        qa={item.qa}
+                        onClick={item.onClick}
+                        icon={item.icon ? <span>{item.icon}</span> : undefined}
+                    >
+                        {item.label}
+                    </MenuItem>
+                ))}
+            </Menu>
         );
     }, [
         actionSize,
@@ -271,7 +277,6 @@ export function Header(props: HeaderProps) {
         isMobile,
         isMenuSheetVisible,
         menuSheetId,
-        dropdownMenuItems,
         normalizedMenuItems,
         menuButtonIcon,
         menuButtonQa,

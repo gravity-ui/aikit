@@ -52,7 +52,15 @@ export const FileUploadDialog = ({
     disabled,
 }: FileUploadDialogProps) => {
     return (
-        <Dialog open={open} onClose={onClose} className={b()}>
+        <Dialog
+            open={open}
+            onOpenChange={(nextOpen) => {
+                if (!nextOpen) {
+                    onClose();
+                }
+            }}
+            className={b()}
+        >
             <Dialog.Header caption={title} />
             <Dialog.Body className={b('body')}>
                 <FileDropZone

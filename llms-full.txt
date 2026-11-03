@@ -62,6 +62,10 @@ src/
 npm install @gravity-ui/aikit
 ```
 
+AIKit 3 requires `@gravity-ui/uikit@^8.0.0`, React/React DOM 18 or 19, and Node.js 20+. Wrap the application in UIKit's `Provider` as shown in [Getting started](./docs/GETTING_STARTED.md).
+
+Upgrading from v2? Read the [migration guide](./docs/migration-to-v3.md) ([Русский](./docs/migration-to-v3-ru.md)) and [v3 release notes](./docs/changelog-v3.md).
+
 ## Quick Start
 
 ```typescript
@@ -246,6 +250,8 @@ Agent-readable documentation for the installed version is located in `node_modul
 
 This guide walks you through installing `@gravity-ui/aikit` and rendering your first chat.
 
+AIKit 3 requires UIKit 8.0.0+ within v8, React/React DOM 18 or 19, and Node.js 20+. Upgrading an existing application? Follow the [v3 migration guide](./migration-to-v3.md).
+
 ## Installation
 
 ```bash
@@ -255,7 +261,7 @@ npm install @gravity-ui/aikit
 You also need to install the peer dependencies (most likely already in your app if you use Gravity UI):
 
 ```bash
-npm install @gravity-ui/uikit @gravity-ui/icons @gravity-ui/i18n @diplodoc/transform highlight.js react react-dom
+npm install @gravity-ui/uikit@^8.0.0 @gravity-ui/icons @gravity-ui/i18n @diplodoc/transform highlight.js react react-dom
 ```
 
 See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) if `Module not found` errors appear after install.
@@ -269,7 +275,7 @@ import '@gravity-ui/aikit/themes/common';
 import '@gravity-ui/aikit/themes/light'; // or '/dark'
 ```
 
-The component tree must be rendered inside Gravity UI's `<ThemeProvider>` (from `@gravity-ui/uikit`) so that `data-theme="light"` / `data-theme="dark"` is set on the root.
+The component tree must be rendered inside Gravity UI's `<Provider>` (from `@gravity-ui/uikit`) to configure theme, language, layout, and mobile mode. UIKit applies `.g-root_theme_light` / `.g-root_theme_dark` to the theme root.
 
 ## 1. Simple Chat Out of the Box
 
@@ -399,7 +405,7 @@ See [src/components/organisms/MessageList/README.md](../src/components/organisms
 
 ## Theming
 
-Theme switching is done via Gravity UI's `<ThemeProvider>` (sets `data-theme` on the root). AIKit ships per-theme CSS files; import them at the application root.
+Theme switching is done via Gravity UI's `<Provider>` (applies `.g-root_theme_light` / `.g-root_theme_dark` to the theme root). AIKit ships per-theme CSS files; import them at the application root.
 
 CSS variables follow the `--g-aikit-*` convention and are documented in [THEMING.md](./THEMING.md).
 
@@ -462,6 +468,218 @@ stream.abort(); // cancel
 - Real-world examples: [EXAMPLES.md](./EXAMPLES.md)
 - Architecture deep dive: [ARCHITECTURE.md](./ARCHITECTURE.md)
 - AI agent integration in your project: [AI_AGENTS.md](./AI_AGENTS.md)
+
+
+--- file: docs/migration-to-v3.md ---
+
+# Migration to AIKit v3
+
+[English](migration-to-v3.md) | [Русский](migration-to-v3-ru.md)
+
+## Overview
+
+AIKit 3 upgrades `@gravity-ui/uikit` from v7 to v8. Upgrade both libraries together: AIKit 3 requires UIKit **8.0.0 or later within v8**, and no longer supports UIKit 7. React and React DOM **18 or 19** remain supported; Node.js **20 or later** remains required.
+
+This guide describes the changes from AIKit 2.28.0. See the [v3 release notes](changelog-v3.md) for the complete list. If upgrading from an earlier v2 release, also read the intervening entries in [CHANGELOG.md](../CHANGELOG.md).
+
+## Quick checklist
+
+1. Update AIKit and UIKit together, then check that your other Gravity packages support UIKit 8.
+2. Use UIKit's `Provider` at the application root; keep nested `ThemeProvider` instances for theme overrides.
+3. Replace the `xxs` size with `2xs` in context chips and control-size helpers.
+4. Review custom history/menu styles and selectors against the new markup.
+5. Regenerate custom UIKit themes with Themer v2 and check both light and dark modes.
+6. Check history search, keyboard navigation, pinning/deletion, desktop menus, mobile sheets, file dialogs, prompt commands, and Mermaid streaming.
+
+## Install compatible versions
+
+```sh
+npm install @gravity-ui/aikit@^3.0.0 @gravity-ui/uikit@^8.0.0
+npm ls @gravity-ui/aikit @gravity-ui/uikit
+```
+
+The peer requirement and development dependency both start at `^8.0.0`. Use one compatible UIKit installation throughout the application so providers and consumers share their contexts. Upgrade other packages that require UIKit 7 before proceeding; do not mask incompatible peers with `--force` or `--legacy-peer-deps`.
+
+Other required peers keep their existing ranges: `@gravity-ui/icons`, `@gravity-ui/i18n`, `@diplodoc/transform`, `highlight.js`, React, and React DOM. Mermaid remains an optional peer and is only loaded through the loader supplied by your application.
+
+## Application provider
+
+UIKit 8 separates theme overrides from application configuration. Move the root to `Provider`, including language, layout, default component props, and any mobile settings:
+
+```diff
+-import {ThemeProvider, MobileProvider} from '@gravity-ui/uikit';
++import {Provider} from '@gravity-ui/uikit';
+
+-<ThemeProvider theme="light" lang="en">
+-  <MobileProvider mobile={isMobile}>
+-    <App />
+-  </MobileProvider>
+-</ThemeProvider>
++<Provider theme="light" lang="en" mobile={isMobile}>
++  <App />
++</Provider>
+```
+
+Keep nested theme overrides as `ThemeProvider`:
+
+```tsx
+import {Provider, ThemeProvider} from '@gravity-ui/uikit';
+
+<Provider theme="light" lang="en">
+  <App />
+  <ThemeProvider theme="dark">
+    <ChatPanel />
+  </ThemeProvider>
+</Provider>;
+```
+
+AIKit does not install a root provider for you. `ChatContainer.isMobile` still overrides its internal mobile context. When mobile mode is enabled, UIKit 8 also uses mobile rendering for dialogs and modals. Check the file upload dialog inside a mobile chat.
+
+Continue importing styles at the application root:
+
+```tsx
+import '@gravity-ui/uikit/styles/styles.css';
+import '@gravity-ui/aikit/styles';
+```
+
+The existing AIKit theme subpaths (`/themes/common`, `/themes/light`, `/themes/dark`, and `/themes/variables`) remain available. Use the stylesheet setup appropriate to your existing application.
+
+## ContextItem and control sizes
+
+UIKit renames its smallest label size from `xxs` to `2xs`. `ContextItem.size` inherits UIKit's `LabelProps['size']`, and AIKit's exported `ControlSize` helper type follows the same rename:
+
+```diff
+-<ContextItem content="Source" size="xxs" />
++<ContextItem content="Source" size="2xs" />
+```
+
+Replace `xxs` in calls to `useMobileControlSize`, `resolveMobileControlSize`, and `getControlIconSize` too. Other sizes and the desktop/mobile defaults are unchanged.
+
+## Chat history
+
+`History` and `HistoryList` now use the stable UIKit 8 `List`, with a separate search input and a `grid` role to support the row's pin/delete buttons. Search is still a `combobox`; arrow keys and Enter work from it. Chat ids, pinning callbacks, grouping, custom filters, lazy loading, selected chats, and empty placeholders keep their AIKit APIs.
+
+The list has an accessible name, `Chat history`. If your tests inspect rows, use its `grid`/`row`/`gridcell` roles or AIKit classes instead of legacy `.g-list__*` markup. The `.g-aikit-history__*` classes remain available; UIKit's row view now uses `.g-list-item-view`. Check custom row backgrounds, padding, selected states, and action-button focus.
+
+`ChatFilterFunction` and `defaultChatFilter` now accept AIKit's `ListItemChatData` directly, instead of wrapping it in UIKit's legacy `ListItemData`. Typical callbacks need no changes. For explicit annotations:
+
+```diff
+-import type {ListItemData} from '@gravity-ui/uikit';
+ import type {ListItemChatData} from '@gravity-ui/aikit';
+
+-const matches = (item: ListItemData<ListItemChatData>) => /* ... */;
++const matches = (item: ListItemChatData) => /* ... */;
+```
+
+The data is still a union of a chat (`type: 'chat'`) and a date header (`type: 'date-header'`); narrow by `type` before reading chat fields.
+
+History's mobile sheet uses UIKit's `open`/`onOpenChange` API internally. Applications continue to use `History.open` and `History.onOpenChange` as before.
+
+## Header and attachment menus
+
+`Header` and `AttachmentPicker` use the stable UIKit 8 `Menu` and `MenuItem`. The AIKit props remain the same: keep passing `Header.menuItems`, menu QA identifiers, labels, callbacks, disabled states, and attachment actions.
+
+The mobile header menu is an inline menu inside a sheet. Desktop items use button-based `menuitem` markup. Replace selectors that expect `.g-dropdown-menu__*`, the old `.g-menu__*`, or `li > div[role="menuitem"]`. Prefer your existing `qa` identifiers or `getByRole('menuitem', {name: ...})`.
+
+AIKit imports no components from `@gravity-ui/uikit/legacy`. Consumers do not need its drag-and-drop or legacy virtualization peers for AIKit.
+
+## Dialogs and prompt popups
+
+AIKit's `FileUploadDialog` keeps its `open`, `onClose`, `onApply`, and `onCancel` API. Internally it handles UIKit's `onOpenChange` and calls `onClose` when the dialog is dismissed. No callback rename is needed in AIKit consumers. Check the smaller UIKit 8 dialog spacing and mobile dialog layout.
+
+Prompt command popups use `anchorElement` and `onOpenChange`. AIKit's command source configuration and imperative prompt API keep their existing signatures. Verify typed commands, context selection, the button-triggered search, and dismissal by Escape/outside click.
+
+## Mermaid and server rendering
+
+AIKit now imports the SSR-safe `useLayoutEffect` from UIKit, removing the temporary local React-hook adapter. Applications keep the same opt-in loader:
+
+```tsx
+<MarkdownRenderer content={content} mermaidOptions={{load: () => import('mermaid')}} />
+```
+
+Server rendering does not call the loader. On the client, cached SVG is restored in a layout effect before paint, including when streamed message HTML changes. No new provider or eager Mermaid import is needed.
+
+## Themes, layout, and virtualized messages
+
+AIKit's `--g-aikit-*` variables keep their names. UIKit 8's default palette changes can affect inherited colors. Regenerate custom UIKit themes with `@gravity-ui/uikit-themer` v2; the AIKit Themer already uses v2. Review both themes and any overrides of UIKit's removed tokens. Follow the [UIKit 8 migration guide](https://github.com/gravity-ui/uikit/blob/main/docs/migration-to-v8.md) for changes in your application's own UIKit components, layout, Selects, and CSS.
+
+AIKit's loader and examples use `gap="spacing-2"` to retain the previous 8px spacing. In application code, migrate numeric UIKit Flex spacing to spacing tokens as described in that guide.
+
+Virtualized `MessageList` continues using react-window v2. AIKit installs it as the npm alias `react-window-v2`, avoiding a conflict with UIKit's optional legacy peer `react-window@1`. Consumers need no new import or dependency; keep using AIKit's `virtualized` prop. If your application itself uses react-window v2 under its original package name, its own UIKit peer conflict must also be resolved.
+
+## Verification after upgrading
+
+- Run your type check, lint, production build, and integration tests with UIKit 8.0.0, the minimum supported version.
+- Check at 375px, around 1000px, and 1400px in both themes. UIKit's `l` breakpoint now starts at 980px; configure 1080px explicitly in your application's layout if you need the previous threshold.
+- Open history and menus with keyboard and pointer; search for a chat, select it, pin/unpin it, and delete it. Ensure action buttons do not select the row.
+- Check full/lazy loading, no-results, empty history, and the mobile sheet with the keyboard open.
+- Check file dialog Apply/Cancel/Escape, and prompt command selection/dismissal.
+- Render with and without Mermaid enabled on the server; stream a message with a diagram and verify cached SVG does not flash as source code.
+- Review screenshot differences before updating baselines: palette and menu changes are expected, overflow or missing content requires investigation.
+
+
+--- file: docs/changelog-v3.md ---
+
+# AIKit 3.0.0 release notes
+
+These notes describe the changes from **2.28.0 to 3.0.0**. For earlier releases, see the generated [CHANGELOG.md](../CHANGELOG.md). The [migration guide](migration-to-v3.md) ([Русский](migration-to-v3-ru.md)) provides the upgrade steps and before/after examples.
+
+## Breaking changes
+
+| Area                                | AIKit 2.28.0                           | AIKit 3.0.0                                     | Consumer action                                                                            |
+| ----------------------------------- | -------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| UIKit peer                          | `^7.25.0`                              | `^8.0.0`                                        | Upgrade UIKit and other packages that depend on it together.                               |
+| Smallest context label/control size | `xxs`                                  | `2xs`                                           | Update explicit `ContextItem.size` and control-size helper arguments.                      |
+| Custom history filters              | UIKit `ListItemData<ListItemChatData>` | AIKit `ListItemChatData`                        | Remove explicit legacy UIKit type wrappers; ordinary filter callbacks keep working.        |
+| History markup                      | Legacy list with built-in search       | Stable List, separate combobox, grid rows/cells | Review custom row CSS, accessibility assertions, and selectors.                            |
+| Header/attachment menus             | Legacy Menu/DropdownMenu               | Stable Menu/MenuItem                            | Review selectors and menu appearance; AIKit's menu configuration API stays the same.       |
+| Inherited UIKit behavior            | UIKit 7 providers, colors, dialogs     | UIKit 8 providers, colors, dialogs              | Migrate the application root to Provider, regenerate custom themes, review mobile dialogs. |
+
+## Components and behavior
+
+- **History / HistoryList:** migrate to the stable UIKit List with stable row identifiers and a named grid for interactive rows. Preserve date grouping, controlled selection, pinned chat ordering, pin/delete actions, search/custom filtering, full/lazy loading, and empty/loading states. Connect the search input to list keyboard navigation through `useListFocusOwner`.
+- **Header:** migrate desktop dropdowns and the inline mobile menu to Menu/MenuItem. Preserve labels, icons, disabled items, callbacks, QA identifiers, placement of action groups, and the mobile sheet title option. Use controlled `Sheet.open`/`onOpenChange`.
+- **AttachmentPicker:** migrate the upload/storage dropdown to Menu/MenuItem with an accessible trigger. Preserve direct upload mode and the existing upload/storage callbacks.
+- **FileUploadDialog:** handle dismissal through UIKit's `onOpenChange` while retaining AIKit's `onClose` API. Apply/Cancel callbacks and upload-state checks remain in place.
+- **PromptInput:** migrate command popup anchoring and dismissal to `anchorElement`/`onOpenChange`; command configuration remains compatible.
+- **ContextItem:** support UIKit 8's `2xs` label size through the shared mobile control-size helpers.
+- **Loader:** migrate Flex spacing to a spacing token, preserving the existing gap.
+- **MarkdownRenderer / Mermaid:** replace the temporary SSR hook adapter with UIKit's `useLayoutEffect`; keep lazy loading, server safety, cached SVG restoration before paint, theme handling, and streaming cleanup.
+- **MessageList:** preserve react-window v2 virtualization through a dependency alias compatible with UIKit 8's optional react-window v1 peer.
+
+## Development and documentation
+
+- Align the UIKit development and peer requirements at `^8.0.0`; regenerate the lockfile with normal npm peer validation.
+- Prepare package.json and lockfile for AIKit 3.0.0.
+- Use Provider in Storybook and the Playwright application root; keep nested ThemeProvider scopes for theme-only previews. Pass language through Provider in Storybook.
+- Update affected stories to the UIKit 8 dialog and layout APIs.
+- Teach Jest to transform the ESM-only `colors-named` and `colors-named-hex` dependencies loaded by UIKit's stable ColorPicker, without replacing UIKit with a mock.
+- Add integration coverage for keyboard search/selection, pin/delete actions, and desktop/mobile header menus; run CI against both the lockfile and minimum UIKit 8.0.0.
+- Update setup/theming documentation and include the v3 guide in the LLM documentation bundle.
+
+## Requirements that stay the same
+
+React and React DOM 18/19, Node.js 20+, all other peer ranges, the optional Mermaid loader contract, AIKit entry points, and AIKit CSS-variable names retain their existing contracts. The release does not require the UIKit `/legacy` entry point or its optional peers.
+
+## Automatic release and changelog
+
+`CHANGELOG.md` is owned by `gravity-ui/release-action` and release-please. These detailed notes are maintained separately so a generated release entry does not duplicate a manually written 3.0.0 heading.
+
+Use this Conventional Commit title for the squash merge:
+
+```text
+feat!: migrate AIKit to UIKit 8
+```
+
+Include this footer in the resulting commit body (ensure the merge dialog retains it):
+
+```text
+BREAKING CHANGE: AIKit 3 requires @gravity-ui/uikit ^8.0.0. Replace the xxs context label/control size with 2xs and migrate custom history/menu selectors. See docs/migration-to-v3.md and docs/changelog-v3.md for complete upgrade instructions and release notes.
+
+Release-As: 3.0.0
+```
+
+The breaking-change marker selects a major release, and `Release-As` explicitly selects 3.0.0. After that commit reaches main, the existing workflow prepares the release PR and generates its changelog from commits since the previous release tag. Review that PR for version **3.0.0** in both manifests, a single new changelog section, and the migration link. Merging the release PR is the existing publication step. Setting package.json to 3.0.0 in this implementation does not itself publish a package or replace the required release commit metadata.
 
 
 --- file: docs/ARCHITECTURE.md ---
@@ -714,16 +932,16 @@ All styles are controlled through CSS variables in the `--g-aikit-*` namespace, 
 
 ### Applying a Theme
 
-Wrap the application in Gravity UI's `<ThemeProvider>` and import the matching theme CSS:
+Wrap the application in Gravity UI's `<Provider>` and import the matching theme CSS:
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 import '@gravity-ui/aikit/themes/common';
 import '@gravity-ui/aikit/themes/dark';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
     <ChatContainer …/>
-</ThemeProvider>;
+</Provider>;
 ```
 
 Full CSS variable reference: [THEMING.md](./THEMING.md).
@@ -859,14 +1077,14 @@ import '@gravity-ui/aikit/themes/common';
 import '@gravity-ui/aikit/themes/light'; // or '/dark'
 ```
 
-Switching between themes is done via `@gravity-ui/uikit`'s `<ThemeProvider>`, which applies `.g-root_theme_light` or `.g-root_theme_dark` to the theme root. AIKit recognizes these classes and also retains its `data-theme` selectors for compatibility:
+Switching between themes is done via `@gravity-ui/uikit`'s `<Provider>`, which applies `.g-root_theme_light` or `.g-root_theme_dark` to the theme root. AIKit recognizes these classes and also retains its `data-theme` selectors for compatibility:
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
     <ChatContainer …/>
-</ThemeProvider>;
+</Provider>;
 ```
 
 `variables.css` is **deprecated** — keep importing `common.css` only.
@@ -1101,6 +1319,8 @@ Each `--g-aikit-color-*` variable falls back to a `--g-aikit-*` "raw" variable, 
 
 This means: if you already set `--g-color-base-float` via `@gravity-ui/uikit`'s theming, AIKit picks it up automatically.
 
+Use a nested `ThemeProvider` for a local theme override inside the application `Provider`. See the [v3 migration guide](./migration-to-v3.md).
+
 
 --- file: docs/THEMER.md ---
 
@@ -1144,15 +1364,15 @@ import '@gravity-ui/aikit/styles';
 import './aikit-theme.css';
 ```
 
-Continue using UIKit's `ThemeProvider` to switch modes:
+Continue using UIKit's `Provider` to switch modes:
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 import {ChatContainer} from '@gravity-ui/aikit';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
   <ChatContainer onSendMessage={handleSendMessage} />
-</ThemeProvider>;
+</Provider>;
 ```
 
 AIKit's theme styles recognize UIKit's light/dark classes and retain the existing `data-theme` selectors for compatibility. A nested scoped provider can use a different mode from the surrounding application.
@@ -1167,6 +1387,8 @@ npm run build
 ```
 
 The theme exchange checks exercise the real Gravity generator and parser with independent mode overrides, palette-to-semantic references, radii, malformed imports, preview scoping, and CSS/JSON round trips. They do not render UI components.
+
+Use a nested `ThemeProvider` for a local theme override inside the application `Provider`. See the [v3 migration guide](./migration-to-v3.md).
 
 
 --- file: docs/HOOKS.md ---
@@ -1800,7 +2022,7 @@ AIKit declares the following peer dependencies. Your app must install them:
 
 ```bash
 npm install \
-  @gravity-ui/uikit@^7.25 \
+  @gravity-ui/uikit@^8.0.0 \
   @gravity-ui/icons@^2.16 \
   @gravity-ui/i18n@^1.8 \
   @diplodoc/transform@^4.63 \
@@ -1819,15 +2041,15 @@ Three things must all be in place:
    import '@gravity-ui/aikit/themes/common';
    import '@gravity-ui/aikit/themes/dark';
    ```
-2. **`<ThemeProvider>` wrapping AIKit components** (from `@gravity-ui/uikit`). It writes `data-theme="dark"` onto the root element.
-3. **`.g-root` class on a parent**, which is added automatically by `<ThemeProvider>`. If you bypass `<ThemeProvider>`, you must set `class="g-root"` manually.
+2. **`<Provider>` wrapping AIKit components** (from `@gravity-ui/uikit`). It applies the `.g-root_theme_dark` class to the theme root.
+3. **`.g-root` class on a parent**, which is added automatically by `<Provider>`. If you bypass `<Provider>`, you must set `class="g-root"` manually.
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
     <ChatContainer …/>
-</ThemeProvider>;
+</Provider>;
 ```
 
 ## Markdown Not Rendering
@@ -1931,7 +2153,7 @@ Reference:
 Conventions when using @gravity-ui/aikit:
 - Prefer the page-level `ChatContainer` for quick integration; drop to organisms (`PromptInput`, `MessageList`, `Header`) for custom layouts.
 - Custom assistant content parts go through `MessageRendererRegistry` via `createMessageRendererRegistry` + `registerMessageRenderer<T>`. There is no `messageTypeRegistry` prop.
-- Theme CSS must be imported at the app root: `@gravity-ui/aikit/themes/common` + one of `/light` or `/dark`. Render inside `<ThemeProvider>` from `@gravity-ui/uikit`.
+- Theme CSS must be imported at the app root: `@gravity-ui/aikit/themes/common` + one of `/light` or `/dark`. Render inside `<Provider>` from `@gravity-ui/uikit`.
 - Subpath imports (`@gravity-ui/aikit/Header`, etc.) are tree-shakable and preferred over the barrel entry for production code.
 - Peer deps required: @gravity-ui/uikit, @gravity-ui/icons, @gravity-ui/i18n, @diplodoc/transform, highlight.js, react>=18.
 ```
@@ -1954,7 +2176,7 @@ Key conventions:
 
 - `ChatContainer` is the quickest integration; drop to organisms (`PromptInput`, `MessageList`, `Header`) for custom layouts.
 - Custom message content parts: `createMessageRendererRegistry` + `registerMessageRenderer<T>(reg, 'type', {render: …})`; pass via `messageRendererRegistry` prop on `MessageList`.
-- Theme CSS at app root: `@gravity-ui/aikit/themes/common` plus `/light` or `/dark`. Wrap tree in `<ThemeProvider>` from `@gravity-ui/uikit`.
+- Theme CSS at app root: `@gravity-ui/aikit/themes/common` plus `/light` or `/dark`. Wrap tree in `<Provider>` from `@gravity-ui/uikit`.
 - Subpath imports (`@gravity-ui/aikit/Header`, etc.) for tree-shaking.
 - Peer deps required: @gravity-ui/uikit, @gravity-ui/icons, @gravity-ui/i18n, @diplodoc/transform, highlight.js, react>=18.
 ```

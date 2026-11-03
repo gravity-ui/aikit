@@ -60,9 +60,13 @@ export function PromptInputCommands({
             )}
             <Popup
                 open={commands.open}
-                anchorRef={inputRef}
+                anchorElement={inputRef.current}
                 placement={['top-start', 'bottom-start']}
-                onClose={commands.close}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        commands.close();
+                    }
+                }}
             >
                 <div className={b('commands')}>
                     <div className={b('commands-title')}>{commands.source?.title}</div>

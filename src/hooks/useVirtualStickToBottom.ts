@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
-import {useListCallbackRef} from 'react-window';
+import {useListCallbackRef} from 'react-window-v2';
 
 import type {ChatStatus} from '../types';
 import {observeScrollContent} from '../utils/observeScrollContent';

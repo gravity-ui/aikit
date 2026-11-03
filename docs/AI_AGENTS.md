@@ -29,7 +29,7 @@ Reference:
 Conventions when using @gravity-ui/aikit:
 - Prefer the page-level `ChatContainer` for quick integration; drop to organisms (`PromptInput`, `MessageList`, `Header`) for custom layouts.
 - Custom assistant content parts go through `MessageRendererRegistry` via `createMessageRendererRegistry` + `registerMessageRenderer<T>`. There is no `messageTypeRegistry` prop.
-- Theme CSS must be imported at the app root: `@gravity-ui/aikit/themes/common` + one of `/light` or `/dark`. Render inside `<ThemeProvider>` from `@gravity-ui/uikit`.
+- Theme CSS must be imported at the app root: `@gravity-ui/aikit/themes/common` + one of `/light` or `/dark`. Render inside `<Provider>` from `@gravity-ui/uikit`.
 - Subpath imports (`@gravity-ui/aikit/Header`, etc.) are tree-shakable and preferred over the barrel entry for production code.
 - Peer deps required: @gravity-ui/uikit, @gravity-ui/icons, @gravity-ui/i18n, @diplodoc/transform, highlight.js, react>=18.
 ```
@@ -52,7 +52,7 @@ Key conventions:
 
 - `ChatContainer` is the quickest integration; drop to organisms (`PromptInput`, `MessageList`, `Header`) for custom layouts.
 - Custom message content parts: `createMessageRendererRegistry` + `registerMessageRenderer<T>(reg, 'type', {render: …})`; pass via `messageRendererRegistry` prop on `MessageList`.
-- Theme CSS at app root: `@gravity-ui/aikit/themes/common` plus `/light` or `/dark`. Wrap tree in `<ThemeProvider>` from `@gravity-ui/uikit`.
+- Theme CSS at app root: `@gravity-ui/aikit/themes/common` plus `/light` or `/dark`. Wrap tree in `<Provider>` from `@gravity-ui/uikit`.
 - Subpath imports (`@gravity-ui/aikit/Header`, etc.) for tree-shaking.
 - Peer deps required: @gravity-ui/uikit, @gravity-ui/icons, @gravity-ui/i18n, @diplodoc/transform, highlight.js, react>=18.
 ```

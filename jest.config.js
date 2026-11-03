@@ -5,6 +5,14 @@ module.exports = {
     rootDir: '.',
     testMatch: ['**/*.unit.test.ts', '**/*.unit.test.tsx'],
     transform: {
+        '^.+\\.jsx?$': [
+            'babel-jest',
+            {
+                babelrc: false,
+                configFile: false,
+                presets: [['@babel/preset-env', {targets: {node: 'current'}}]],
+            },
+        ],
         '^.+\\.tsx?$': [
             'ts-jest',
             {
@@ -17,7 +25,7 @@ module.exports = {
             },
         ],
     },
-    transformIgnorePatterns: ['node_modules/(?!(@gravity-ui)/)'],
+    transformIgnorePatterns: ['node_modules/(?!(@gravity-ui|colors-named|colors-named-hex)/)'],
     moduleNameMapper: {
         '\\.(css|scss|sass)$': '<rootDir>/test-utils/__mocks__/styleMock.js',
     },

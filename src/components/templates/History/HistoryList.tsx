@@ -1,6 +1,15 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
-import {Button, DOMProps, InputControlSize, List, ListItemData, QAProps} from '@gravity-ui/uikit';
+import {
+    Button,
+    DOMProps,
+    InputControlSize,
+    List,
+    ListItemView,
+    QAProps,
+    TextInput,
+    useListFocusOwner,
+} from '@gravity-ui/uikit';
 
 import {DateLocaleConfig} from '../../../hooks';
 import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
@@ -18,7 +27,7 @@ import './History.scss';
 
 const b = block('history');
 
-type HistoryListItem = ListItemData<ListItemChatData> & {rowKey: string};
+type HistoryListItem = ListItemChatData & {rowKey: string; disabled?: boolean};
 
 /** Result of lazy load more callback - either array of new chats or object with chats and hasMore flag */
 export type LoadMoreLazyResult = ChatType[] | {chats: ChatType[]; hasMore?: boolean};
@@ -128,7 +137,12 @@ export function HistoryList(props: HistoryListProps) {
 
     const size = useMobileControlSize(sizeProp, 'm', 'xl');
 
-    const [filteredItemCount, setFilteredItemCount] = useState<number | null>(null);
+    const [filter, setFilter] = useState('');
+    const [activeItemId, setActiveItemId] = useState<string | null>(null);
+    const focusOwner = useListFocusOwner();
+    const {onKeyDown, ...inputProps} = focusOwner.getInputProps({
+        'aria-label': searchPlaceholder ?? i18n('search-placeholder'),
+    });
     const [loadedChats, setLoadedChats] = useState<ChatType[]>([]);
     const [lazyHasMore, setLazyHasMore] = useState(hasMore);
     const [deletedChats, setDeletedChats] = useState<Set<string>>(new Set());
@@ -225,10 +239,6 @@ export function HistoryList(props: HistoryListProps) {
         return items;
     }, [groupedChats, groupBy, displayChats, pinnedChatIds]);
 
-    const selectedItemIndex = useMemo(() => {
-        return listItems.findIndex((item) => item.type === 'chat' && item.id === selectedChat?.id);
-    }, [listItems, selectedChat]);
-
     const effectiveHasMore = loadMode === 'lazy' ? lazyHasMore : hasMore;
 
     /**
@@ -263,16 +273,15 @@ export function HistoryList(props: HistoryListProps) {
     }, [onLoadMore, loadMode]);
 
     const handleChatClick = (
-        chat: ListItemData<ListItemChatData>,
-        _: number,
-        fromKeyboard?: boolean,
-        event?: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>,
+        _: string,
+        chat: HistoryListItem,
+        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>,
     ) => {
-        if (fromKeyboard && (event?.target as HTMLButtonElement)?.type === 'button') {
+        if (chat.type !== 'chat' || (event.target as HTMLElement).closest('button')) {
             return;
         }
-        onSelectChat?.(chat as ChatType);
-        onChatClick?.(chat as ChatType);
+        onSelectChat?.(chat);
+        onChatClick?.(chat);
     };
 
     const handleDeleteClick = async (e: React.MouseEvent, chat: ChatType) => {
@@ -286,19 +295,18 @@ export function HistoryList(props: HistoryListProps) {
         }
     };
 
-    const wrappedFilterFunction = useMemo(() => {
-        return (filter: string) => {
-            const userFilter = filterFunction(filter);
-            return (item: ListItemData<ListItemChatData>): boolean => {
-                if (filter && item.type === 'date-header') {
-                    return false;
-                }
-                return userFilter(item);
-            };
-        };
-    }, [filterFunction]);
+    const filterItems = (query: string) => {
+        const userFilter = filterFunction(query);
+        return listItems.filter((item) => {
+            if (query && item.type === 'date-header') {
+                return false;
+            }
+            return userFilter(item);
+        });
+    };
+    const filteredItems = filterItems(searchable ? filter : '');
 
-    const renderItem = (item: ListItemData<ListItemChatData>, isActive: boolean) => {
+    const renderItem = (item: ListItemChatData, isActive: boolean) => {
         if (item.type === 'date-header') {
             return (
                 <DateHeaderItem
@@ -332,10 +340,7 @@ export function HistoryList(props: HistoryListProps) {
         <div className={b('empty')}>{i18n('empty-filtered-state')}</div>
     );
 
-    const finalEmptyPlaceholder =
-        filteredItemCount === null || filteredItemCount === listItems.length
-            ? emptyState
-            : emptyFilteredState;
+    const finalEmptyPlaceholder = !searchable || !filter ? emptyState : emptyFilteredState;
 
     return (
         <div className={b('container', className)} data-qa={qa} style={style}>
@@ -346,23 +351,60 @@ export function HistoryList(props: HistoryListProps) {
                     </div>
                 ) : (
                     <React.Fragment>
-                        <List<HistoryListItem>
-                            size={size}
-                            items={listItems}
-                            itemKey={(item) => item.rowKey}
-                            renderItem={renderItem}
-                            virtualized={false}
-                            filterable={searchable}
-                            filterItem={wrappedFilterFunction}
-                            filterPlaceholder={searchPlaceholder ?? i18n('search-placeholder')}
-                            filterClassName={b('filter')}
-                            emptyPlaceholder={finalEmptyPlaceholder}
-                            selectedItemIndex={selectedItemIndex}
-                            itemsClassName={b('list')}
-                            itemClassName={b('list-item')}
-                            onFilterEnd={(data) => setFilteredItemCount(data.items.length)}
-                            onItemClick={handleChatClick}
-                        />
+                        {searchable && (
+                            <div className={b('filter')}>
+                                <TextInput
+                                    size={size}
+                                    value={filter}
+                                    hasClear
+                                    placeholder={searchPlaceholder ?? i18n('search-placeholder')}
+                                    controlProps={inputProps}
+                                    onKeyDown={onKeyDown}
+                                    onUpdate={(query) => {
+                                        setFilter(query);
+                                        setActiveItemId(
+                                            filterItems(query).find((item) => item.type === 'chat')
+                                                ?.rowKey ?? null,
+                                        );
+                                    }}
+                                />
+                            </div>
+                        )}
+                        {filteredItems.length === 0 ? (
+                            finalEmptyPlaceholder
+                        ) : (
+                            <List<HistoryListItem>
+                                role="grid"
+                                aria-label={i18n('sheet-title')}
+                                size={size}
+                                items={filteredItems}
+                                getItemId={(item) => item.rowKey}
+                                getItemTextValue={(item) =>
+                                    item.type === 'chat' ? item.lastMessage || item.name : item.date
+                                }
+                                focusOwner={searchable ? focusOwner : undefined}
+                                activeItemId={activeItemId}
+                                onActiveItemUpdate={setActiveItemId}
+                                selectionMode="single"
+                                selectedIds={selectedChat ? [`chat:${selectedChat.id}`] : []}
+                                className={b('list')}
+                                renderItem={({item, state}, helpers) => (
+                                    <ListItemView
+                                        isContainer
+                                        {...helpers.getItemProps({className: b('list-item')})}
+                                        {...helpers.getItemViewProps()}
+                                    >
+                                        <div {...helpers.getCellProps()}>
+                                            {renderItem(
+                                                item,
+                                                state.active || Boolean(state.selected),
+                                            )}
+                                        </div>
+                                    </ListItemView>
+                                )}
+                                onItemAction={handleChatClick}
+                            />
+                        )}
                         {loadMode === 'lazy' && effectiveHasMore && onLoadMore && (
                             <IntersectionContainer
                                 key={displayChats.length}

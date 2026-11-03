@@ -73,8 +73,8 @@ export function History(props: HistoryProps) {
             <Sheet
                 id={sheetId}
                 title={i18n('sheet-title')}
-                visible={open}
-                onClose={() => onOpenChange?.(false)}
+                open={open}
+                onOpenChange={onOpenChange}
                 className={b('sheet')}
                 contentClassName={b('sheet-content', {
                     'without-title': !showSheetTitle,

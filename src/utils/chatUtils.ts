@@ -2,8 +2,6 @@
  * Chat utilities
  */
 
-import type {ListItemData} from '@gravity-ui/uikit';
-
 import type {ChatType, ListItemChatData} from '../types';
 
 /**
@@ -33,9 +31,7 @@ export function groupChatsByDate(chats: ChatType[]): Map<string, ChatType[]> {
 /**
  * Filter function type for chat list
  */
-export type ChatFilterFunction = (
-    filter: string,
-) => (item: ListItemData<ListItemChatData>) => boolean;
+export type ChatFilterFunction = (filter: string) => (item: ListItemChatData) => boolean;
 
 /**
  * Default filter function - searches in chat name and last message
@@ -44,7 +40,7 @@ export type ChatFilterFunction = (
  * @returns Function that filters list items
  */
 export function defaultChatFilter(filter: string) {
-    return (item: ListItemData<ListItemChatData>): boolean => {
+    return (item: ListItemChatData): boolean => {
         // Skip date headers from filtering
         if (item.type === 'date-header') {
             return true;

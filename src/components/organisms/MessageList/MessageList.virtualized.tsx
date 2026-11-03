@@ -1,6 +1,6 @@
 import {useCallback, useMemo} from 'react';
 
-import {List, type RowComponentProps, useDynamicRowHeight} from 'react-window';
+import {List, type RowComponentProps, useDynamicRowHeight} from 'react-window-v2';
 
 import {useVirtualStickToBottom} from '../../../hooks';
 import type {TChatMessage, TMessageContent, TMessageMetadata} from '../../../types/messages';

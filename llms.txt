@@ -3,9 +3,9 @@
 > React component library for building AI assistant chats. Built on Gravity UI design system, follows Atomic Design (atoms → molecules → organisms → templates → pages). Two-level approach: drop in the ready `ChatContainer` page or compose your own from organisms (`PromptInput`, `MessageList`, `Header`).
 
 Install: `npm i @gravity-ui/aikit`
-Peer deps: `@gravity-ui/uikit ^7.25`, `@gravity-ui/icons ^2.16`, `@gravity-ui/i18n ^1.8`, `@diplodoc/transform ^4.63`, `highlight.js ^11.11`, `react >=18`, `react-dom >=18`
+Peer deps: `@gravity-ui/uikit ^8.0.0`, `@gravity-ui/icons ^2.16`, `@gravity-ui/i18n ^1.8`, `@diplodoc/transform ^4.63`, `highlight.js ^11.11`, `react ^18 || ^19`, `react-dom ^18 || ^19`
 Theme CSS (required at app root): import `@gravity-ui/aikit/themes/common` plus one of `/light`, `/dark`
-Wrap your tree in `<ThemeProvider>` from `@gravity-ui/uikit` (sets `data-theme` and `.g-root`).
+Wrap your tree in `<Provider>` from `@gravity-ui/uikit` (configures theme, language, layout, and mobile mode).
 Starter: `<ChatContainer chats activeChat messages onSendMessage onSelectChat onCreateChat onDeleteChat />`
 Customize: drop down to `<MessageList>` + `<PromptInput>` + `<Header>` from organisms.
 Custom message content: `createMessageRendererRegistry()` + `registerMessageRenderer<T>(reg, 'type', {render})` → pass via `messageRendererRegistry` prop on `MessageList`.
@@ -16,6 +16,11 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 - [Quick Start](https://github.com/gravity-ui/aikit/blob/main/docs/GETTING_STARTED.md): install, render `ChatContainer`, basic usage patterns
 - [Architecture](https://github.com/gravity-ui/aikit/blob/main/docs/ARCHITECTURE.md): atomic-design layers, two-level approach, type system, extensibility
 - [Examples](https://github.com/gravity-ui/aikit/blob/main/docs/EXAMPLES.md): streaming, file upload, custom message types, OpenAI integration
+
+## Major-version migration
+
+- [Migration to AIKit v3](https://github.com/gravity-ui/aikit/blob/main/docs/migration-to-v3.md): UIKit 8 requirements, provider setup, sizes, history, menus, themes, and verification
+- [AIKit v3 release notes](https://github.com/gravity-ui/aikit/blob/main/docs/changelog-v3.md): complete changes from 2.28.0 and automatic release metadata
 
 ## Components — Atoms
 

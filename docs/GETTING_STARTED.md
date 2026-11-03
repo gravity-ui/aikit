@@ -2,6 +2,8 @@
 
 This guide walks you through installing `@gravity-ui/aikit` and rendering your first chat.
 
+AIKit 3 requires UIKit 8.0.0+ within v8, React/React DOM 18 or 19, and Node.js 20+. Upgrading an existing application? Follow the [v3 migration guide](./migration-to-v3.md).
+
 ## Installation
 
 ```bash
@@ -11,7 +13,7 @@ npm install @gravity-ui/aikit
 You also need to install the peer dependencies (most likely already in your app if you use Gravity UI):
 
 ```bash
-npm install @gravity-ui/uikit @gravity-ui/icons @gravity-ui/i18n @diplodoc/transform highlight.js react react-dom
+npm install @gravity-ui/uikit@^8.0.0 @gravity-ui/icons @gravity-ui/i18n @diplodoc/transform highlight.js react react-dom
 ```
 
 See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) if `Module not found` errors appear after install.
@@ -25,7 +27,7 @@ import '@gravity-ui/aikit/themes/common';
 import '@gravity-ui/aikit/themes/light'; // or '/dark'
 ```
 
-The component tree must be rendered inside Gravity UI's `<ThemeProvider>` (from `@gravity-ui/uikit`) so that `data-theme="light"` / `data-theme="dark"` is set on the root.
+The component tree must be rendered inside Gravity UI's `<Provider>` (from `@gravity-ui/uikit`) to configure theme, language, layout, and mobile mode. UIKit applies `.g-root_theme_light` / `.g-root_theme_dark` to the theme root.
 
 ## 1. Simple Chat Out of the Box
 
@@ -155,7 +157,7 @@ See [src/components/organisms/MessageList/README.md](../src/components/organisms
 
 ## Theming
 
-Theme switching is done via Gravity UI's `<ThemeProvider>` (sets `data-theme` on the root). AIKit ships per-theme CSS files; import them at the application root.
+Theme switching is done via Gravity UI's `<Provider>` (applies `.g-root_theme_light` / `.g-root_theme_dark` to the theme root). AIKit ships per-theme CSS files; import them at the application root.
 
 CSS variables follow the `--g-aikit-*` convention and are documented in [THEMING.md](./THEMING.md).
 

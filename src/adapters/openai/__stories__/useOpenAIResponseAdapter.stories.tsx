@@ -234,7 +234,11 @@ export const WithClientTool: Story = {
                 />
                 <Dialog
                     open={clientToolRequest !== null}
-                    onClose={() => setClientToolRequest(null)}
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            setClientToolRequest(null);
+                        }
+                    }}
                 >
                     <Dialog.Header caption={CLIENT_TOOL_NAME} />
                     <Dialog.Body>

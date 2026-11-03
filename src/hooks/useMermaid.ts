@@ -1,13 +1,10 @@
-import {type RefObject, useContext, useEffect, useLayoutEffect, useMemo} from 'react';
+import {type RefObject, useContext, useMemo} from 'react';
 
-import {ThemeContext, getThemeType} from '@gravity-ui/uikit';
+import {ThemeContext, getThemeType, useLayoutEffect} from '@gravity-ui/uikit';
 
 import {applyNewTabLinkAttributes} from '../utils/markdownLinks';
 import {MARKDOWN_MERMAID_CLASS} from '../utils/markdownMermaidPlugin';
 import {type MermaidOptions, renderMermaid} from '../utils/renderMermaid';
-
-// Keep SSR safe without requiring a newer UI Kit peer version.
-const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 export function useMermaid(
     containerRef: RefObject<HTMLDivElement | null>,
@@ -20,7 +17,7 @@ export function useMermaid(
     const load = mermaidOptions?.load;
     const cache = useMemo(() => new Map<string, string>(), [load]);
 
-    useIsomorphicLayoutEffect(() => {
+    useLayoutEffect(() => {
         if (!load) {
             return undefined;
         }

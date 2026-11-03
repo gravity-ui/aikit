@@ -246,16 +246,16 @@ All styles are controlled through CSS variables in the `--g-aikit-*` namespace, 
 
 ### Applying a Theme
 
-Wrap the application in Gravity UI's `<ThemeProvider>` and import the matching theme CSS:
+Wrap the application in Gravity UI's `<Provider>` and import the matching theme CSS:
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 import '@gravity-ui/aikit/themes/common';
 import '@gravity-ui/aikit/themes/dark';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
     <ChatContainer …/>
-</ThemeProvider>;
+</Provider>;
 ```
 
 Full CSS variable reference: [THEMING.md](./THEMING.md).
