@@ -1,14 +1,14 @@
 import React from 'react';
 
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 import {beforeMount} from '@playwright/experimental-ct-react/hooks';
 
 import './index.scss';
 
 beforeMount(async ({App}) => {
     return (
-        <ThemeProvider>
+        <Provider>
             <App />
-        </ThemeProvider>
+        </Provider>
     );
 });

@@ -11,6 +11,7 @@ import {useAutoCollapseOnCancelled} from './useAutoCollapseOnCancelled';
 import {useAutoCollapseOnSuccess} from './useAutoCollapseOnSuccess';
 
 function getDefaultFooterActions(
+    t: ReturnType<typeof i18n.useTranslation>['t'],
     status: TToolStatus | undefined,
     footerActions: Action[] | undefined,
     onAccept?: () => void,
@@ -24,12 +25,12 @@ function getDefaultFooterActions(
         case 'waitingConfirmation':
             return [
                 {
-                    label: i18n('action-reject'),
+                    label: t('action-reject'),
                     onClick: onReject,
                     view: 'outlined',
                 },
                 {
-                    label: i18n('action-accept'),
+                    label: t('action-accept'),
                     onClick: onAccept,
                     view: 'action',
                 },
@@ -37,7 +38,7 @@ function getDefaultFooterActions(
         case 'waitingSubmission':
             return [
                 {
-                    label: i18n('action-cancel'),
+                    label: t('action-cancel'),
                     onClick: onReject,
                     view: 'outlined',
                 },
@@ -48,6 +49,7 @@ function getDefaultFooterActions(
 }
 
 function getDefaultFooterMessage(
+    t: ReturnType<typeof i18n.useTranslation>['t'],
     status: TToolStatus | undefined,
     footerContent: React.ReactNode | undefined,
 ): React.ReactNode | undefined {
@@ -57,9 +59,9 @@ function getDefaultFooterMessage(
 
     switch (status) {
         case 'waitingConfirmation':
-            return i18n('status-waiting-confirmation');
+            return t('status-waiting-confirmation');
         case 'waitingSubmission':
-            return i18n('status-waiting-submission');
+            return t('status-waiting-submission');
         default:
             return undefined;
     }
@@ -86,6 +88,7 @@ function getDefaultInitialExpanded(
 const defaultHeaderActions: Action[] = [];
 
 export function useToolMessage(options: ToolMessageProps) {
+    const {t} = i18n.useTranslation();
     const {
         footerActions,
         headerActions = defaultHeaderActions,
@@ -117,21 +120,21 @@ export function useToolMessage(options: ToolMessageProps) {
         }
 
         return {
-            label: isExpanded ? i18n('action-collapse') : i18n('action-expand'),
+            label: isExpanded ? t('action-collapse') : t('action-expand'),
             onClick: toggleExpanded,
             icon: <Icon data={isExpanded ? ChevronUp : ChevronDown} size={16} />,
         };
-    }, [expandable, isExpanded, toggleExpanded]);
+    }, [expandable, isExpanded, toggleExpanded, t]);
 
     const finalHeaderActions = useMemo(() => {
         return expandCollapseAction ? [...headerActions, expandCollapseAction] : headerActions;
     }, [headerActions, expandCollapseAction]);
 
     const finalFooterActions = useMemo(() => {
-        return getDefaultFooterActions(status, footerActions, onAccept, onReject);
-    }, [status, footerActions, onAccept, onReject]);
+        return getDefaultFooterActions(t, status, footerActions, onAccept, onReject);
+    }, [status, footerActions, onAccept, onReject, t]);
 
-    const finalFooterMessage = getDefaultFooterMessage(status, footerContent);
+    const finalFooterMessage = getDefaultFooterMessage(t, status, footerContent);
 
     const showLoader = getShowLoader(status);
 

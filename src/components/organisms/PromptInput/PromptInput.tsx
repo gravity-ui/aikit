@@ -79,6 +79,7 @@ export type PromptInputProps = {
  * @returns React component
  */
 export function PromptInput(props: PromptInputProps) {
+    const {t} = i18n.useTranslation();
     const {
         apiRef,
         commands: commandsConfig,
@@ -189,7 +190,7 @@ export function PromptInput(props: PromptInputProps) {
                     disabled={commandsDisabled}
                 />
             )}
-            {hookState.sendError && <div role="alert">{i18n('send-error')}</div>}
+            {hookState.sendError && <div role="alert">{t('send-error')}</div>}
         </>
     );
 

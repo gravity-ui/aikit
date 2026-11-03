@@ -26,13 +26,14 @@ function getIndicatorStatus(
 }
 
 export function ToolStatus(props: ToolStatusProps) {
+    const {t} = i18n.useTranslation();
     const {status, className, qa} = props;
     const indicatorStatus = getIndicatorStatus(status);
 
     if (status === 'cancelled') {
         return (
             <Text color="secondary" className={b('', className)} data-qa={qa}>
-                {i18n('status-cancelled')}
+                {t('status-cancelled')}
             </Text>
         );
     }

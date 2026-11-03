@@ -15,9 +15,10 @@ export type ErrorAlertProps = {
 };
 
 export function ErrorAlert({onRetry, errorMessage, className}: ErrorAlertProps) {
+    const {t} = i18n.useTranslation();
     return (
         <Alert
-            text={i18n('default-error-text')}
+            text={t('default-error-text')}
             variant="warning"
             button={
                 onRetry
@@ -25,7 +26,7 @@ export function ErrorAlert({onRetry, errorMessage, className}: ErrorAlertProps) 
                           content: (
                               <div className={b('retry-button')}>
                                   <Icon data={ArrowRotateLeft} size={14} />
-                                  {i18n('retry-button')}
+                                  {t('retry-button')}
                               </div>
                           ),
                           onClick: onRetry,

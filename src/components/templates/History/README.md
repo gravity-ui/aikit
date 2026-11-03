@@ -6,7 +6,7 @@ A comprehensive chat history component that displays a list of chats in a popup 
 
 - **Popup Interface**: Controlled popup component for displaying chat list
 - **Mobile Sheet**: In mobile mode (uikit `MobileProvider`) the list is rendered in a bottom sheet instead of a popup, and delete buttons are always visible because there is no hover
-- **Integrated Search**: Built-in search using List component's filter API
+- **Integrated Search**: Search input connected to list keyboard navigation
 - **Date Grouping**: Automatically groups chats by date with relative date display (today, yesterday, N days ago)
 - **Pagination**: Supports "Load more" functionality for large chat lists
 - **Delete Operations**: Delete individual chats with visible delete buttons on hover
@@ -259,7 +259,7 @@ const nameOnlyFilter: ChatFilterFunction = (filter) => (item) => {
 The filter function should have the following signature:
 
 ```typescript
-type ChatFilterFunction = (filter: string) => (item: ListItemData<ListItemChatData>) => boolean;
+type ChatFilterFunction = (filter: string) => (item: ListItemChatData) => boolean;
 ```
 
 The `defaultChatFilter` utility function is exported from `@gravity-ui/aikit` and can be used as reference or extended.

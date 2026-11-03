@@ -10,6 +10,7 @@ import './McpToolRenderer.scss';
 const b = block('aistudio-mcp-tool');
 
 export function McpToolRenderer({part}: {part: ToolMessageContent}) {
+    const {t} = i18n.useTranslation();
     const {mcpRequest, mcpResponse, ...rest} = part.data;
     const hasMcp = Boolean(mcpRequest || mcpResponse);
 
@@ -21,13 +22,13 @@ export function McpToolRenderer({part}: {part: ToolMessageContent}) {
         <div className={b()}>
             {mcpRequest && (
                 <div className={b('section')}>
-                    <div className={b('section-label')}>{i18n('mcp_request')}</div>
+                    <div className={b('section-label')}>{t('mcp_request')}</div>
                     <MarkdownRenderer content={`\`\`\`json\n${mcpRequest}\n\`\`\``} />
                 </div>
             )}
             {mcpResponse && (
                 <div className={b('section')}>
-                    <div className={b('section-label')}>{i18n('mcp_response')}</div>
+                    <div className={b('section-label')}>{t('mcp_response')}</div>
                     <MarkdownRenderer content={`\`\`\`json\n${mcpResponse}\n\`\`\``} />
                 </div>
             )}

@@ -34,3 +34,8 @@ Start here if you're integrating AIKit into your application.
 - [Contributing](../CONTRIBUTING.md)
 - [License](../LICENSE)
 - [`llms.txt`](../llms.txt) / [`llms-full.txt`](../llms-full.txt) — machine-readable index for LLM agents
+
+## Major-version upgrades
+
+- [Migration to AIKit v3](./migration-to-v3.md) ([Русский](./migration-to-v3-ru.md))
+- [AIKit v3 release notes](./changelog-v3.md)

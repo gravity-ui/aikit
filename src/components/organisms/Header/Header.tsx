@@ -9,7 +9,7 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {DropdownMenu, Icon, Menu, Sheet, Text, useUniqId} from '@gravity-ui/uikit';
+import {Icon, Menu, MenuItem, Sheet, Text, useUniqId} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
@@ -63,6 +63,7 @@ function getNormalizedMenuItem(
  * @returns Header component
  */
 export function Header(props: HeaderProps) {
+    const {t} = i18n.useTranslation();
     const {
         title,
         preview,
@@ -136,7 +137,7 @@ export function Header(props: HeaderProps) {
                 <ActionButton
                     key={action.id}
                     ref={buttonRef as React.Ref<HTMLButtonElement>}
-                    tooltipTitle={tooltipOverride ?? i18n(tooltipKey as Parameters<typeof i18n>[0])}
+                    tooltipTitle={tooltipOverride ?? t(tooltipKey as Parameters<typeof i18n>[0])}
                     size={actionSize}
                     view="flat"
                     onClick={action.onClick}
@@ -147,7 +148,7 @@ export function Header(props: HeaderProps) {
                 </ActionButton>
             );
         },
-        [actionIcons, actionQa, actionSize, actionTooltipTexts, iconSize],
+        [actionIcons, actionQa, actionSize, actionTooltipTexts, iconSize, t],
     );
 
     // Render additional action
@@ -178,25 +179,13 @@ export function Header(props: HeaderProps) {
         [menuItems, menuItemQa],
     );
 
-    const dropdownMenuItems = useMemo(
-        () =>
-            normalizedMenuItems.map((item) => ({
-                text: item.label,
-                action: item.onClick,
-                disabled: item.disabled,
-                qa: item.qa,
-                ...(item.icon ? {iconStart: item.icon} : {}),
-            })),
-        [normalizedMenuItems],
-    );
-
     const headerMenu = useMemo(() => {
         if (normalizedMenuItems.length === 0) {
             return null;
         }
 
         const switcherContent = menuButtonIcon ?? <Icon data={Ellipsis} size={iconSize} />;
-        const switcherTooltip = menuButtonTooltip ?? i18n('action-tooltip-menu');
+        const switcherTooltip = menuButtonTooltip ?? t('action-tooltip-menu');
         const switcherQa = menuButtonQa ?? 'header-menu-button';
 
         if (isMobile) {
@@ -204,6 +193,7 @@ export function Header(props: HeaderProps) {
                 <React.Fragment>
                     <ActionButton
                         tooltipTitle={switcherTooltip}
+                        aria-label={switcherTooltip}
                         size={actionSize}
                         view="flat"
                         className={b('action-button')}
@@ -214,17 +204,22 @@ export function Header(props: HeaderProps) {
                     </ActionButton>
                     <Sheet
                         id={menuSheetId}
-                        title={i18n('menu-sheet-title')}
-                        visible={isMenuSheetVisible}
-                        onClose={() => setIsMenuSheetVisible(false)}
+                        title={t('menu-sheet-title')}
+                        open={isMenuSheetVisible}
+                        onOpenChange={setIsMenuSheetVisible}
                         contentClassName={b('menu-sheet-content', {
                             'without-title': !showSheetTitle,
                         })}
                         qa="header-menu-sheet-container"
                     >
-                        <Menu size="xl" qa="header-menu-sheet">
+                        <Menu
+                            inline
+                            size="xl"
+                            qa="header-menu-sheet"
+                            aria-label={t('menu-sheet-title')}
+                        >
                             {normalizedMenuItems.map((item) => (
-                                <Menu.Item
+                                <MenuItem
                                     key={item.id}
                                     className={b('menu-item')}
                                     disabled={item.disabled}
@@ -240,7 +235,7 @@ export function Header(props: HeaderProps) {
                                         ) : null}
                                         {item.label}
                                     </span>
-                                </Menu.Item>
+                                </MenuItem>
                             ))}
                         </Menu>
                     </Sheet>
@@ -249,12 +244,12 @@ export function Header(props: HeaderProps) {
         }
 
         return (
-            <DropdownMenu
-                items={dropdownMenuItems}
-                renderSwitcher={(switcherProps) => (
+            <Menu
+                aria-label={t('menu-sheet-title')}
+                trigger={
                     <ActionButton
-                        {...switcherProps}
                         tooltipTitle={switcherTooltip}
+                        aria-label={switcherTooltip}
                         size={actionSize}
                         view="flat"
                         className={b('action-button')}
@@ -262,8 +257,20 @@ export function Header(props: HeaderProps) {
                     >
                         {switcherContent}
                     </ActionButton>
-                )}
-            />
+                }
+            >
+                {normalizedMenuItems.map((item) => (
+                    <MenuItem
+                        key={item.id}
+                        disabled={item.disabled}
+                        qa={item.qa}
+                        onClick={item.onClick}
+                        icon={item.icon ? <span>{item.icon}</span> : undefined}
+                    >
+                        {item.label}
+                    </MenuItem>
+                ))}
+            </Menu>
         );
     }, [
         actionSize,
@@ -271,12 +278,12 @@ export function Header(props: HeaderProps) {
         isMobile,
         isMenuSheetVisible,
         menuSheetId,
-        dropdownMenuItems,
         normalizedMenuItems,
         menuButtonIcon,
         menuButtonQa,
         menuButtonTooltip,
         showSheetTitle,
+        t,
     ]);
 
     const [leftBaseActions, rightBaseActions] = useMemo(() => {

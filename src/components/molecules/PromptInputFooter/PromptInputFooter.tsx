@@ -59,6 +59,7 @@ export type PromptInputFooterProps = {
  * @returns React component
  */
 export function PromptInputFooter(props: PromptInputFooterProps) {
+    const {t} = i18n.useTranslation();
     const {
         submitButton,
         showSettings = false,
@@ -99,7 +100,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
                 size={buttonSize}
                 onClick={onAttachmentClick}
                 className={b('action-button')}
-                tooltipTitle={i18n('tooltip-attachment')}
+                tooltipTitle={t('tooltip-attachment')}
             >
                 <Icon data={Paperclip} size={iconSize} />
             </ActionButton>
@@ -116,7 +117,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
                         size={buttonSize}
                         onClick={onSettingsClick}
                         className={b('action-button')}
-                        tooltipTitle={i18n('tooltip-settings')}
+                        tooltipTitle={t('tooltip-settings')}
                     >
                         <Icon data={Sliders} size={iconSize} />
                     </ActionButton>
@@ -130,7 +131,7 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
                         size={buttonSize}
                         onClick={onMicrophoneClick}
                         className={b('action-button')}
-                        tooltipTitle={i18n('tooltip-microphone')}
+                        tooltipTitle={t('tooltip-microphone')}
                     >
                         <Icon data={Microphone} size={iconSize} />
                     </ActionButton>

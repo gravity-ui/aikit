@@ -1,7 +1,7 @@
 import {useState} from 'react';
 
 import {Paperclip} from '@gravity-ui/icons';
-import {DropdownMenu, Icon} from '@gravity-ui/uikit';
+import {Icon, Menu, MenuItem} from '@gravity-ui/uikit';
 import type {ButtonButtonProps} from '@gravity-ui/uikit';
 
 import {getControlIconSize, useMobileControlSize} from '../../../hooks/useMobileControlSize';
@@ -43,10 +43,13 @@ export const AttachmentPicker = ({
     fileDialogProps,
     onSelectFromStorage,
     buttonSize: buttonSizeProp,
-    uploadLabel = i18n('upload-label'),
-    selectFromStorageLabel = i18n('select-from-storage-label'),
+    uploadLabel: uploadLabelProp,
+    selectFromStorageLabel: selectFromStorageLabelProp,
     className,
 }: AttachmentPickerProps) => {
+    const {t} = i18n.useTranslation();
+    const uploadLabel = uploadLabelProp ?? t('upload-label');
+    const selectFromStorageLabel = selectFromStorageLabelProp ?? t('select-from-storage-label');
     const buttonSize = useMobileControlSize(buttonSizeProp, 'm', 'xl');
     const iconSize = getControlIconSize(buttonSize);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -72,32 +75,26 @@ export const AttachmentPicker = ({
             {uploadOnly ? (
                 button
             ) : (
-                <DropdownMenu
+                <Menu
                     disabled={disabled}
-                    items={[
-                        {
-                            text: uploadLabel,
-                            action: handleUploadClick,
-                        },
-                        {
-                            text: selectFromStorageLabel,
-                            action: () => onSelectFromStorage?.(),
-                        },
-                    ]}
-                    renderSwitcher={(props) => (
-                        <div className={b('button-wrapper')}>
-                            <ActionButton
-                                view="flat"
-                                size={buttonSize}
-                                disabled={disabled}
-                                className={b('button')}
-                                {...props}
-                            >
-                                <Icon data={Paperclip} size={iconSize} />
-                            </ActionButton>
-                        </div>
-                    )}
-                />
+                    aria-label={uploadLabel}
+                    trigger={
+                        <ActionButton
+                            view="flat"
+                            size={buttonSize}
+                            disabled={disabled}
+                            className={b('button')}
+                            aria-label={uploadLabel}
+                        >
+                            <Icon data={Paperclip} size={iconSize} />
+                        </ActionButton>
+                    }
+                >
+                    <MenuItem onClick={handleUploadClick}>{uploadLabel}</MenuItem>
+                    <MenuItem onClick={() => onSelectFromStorage?.()}>
+                        {selectFromStorageLabel}
+                    </MenuItem>
+                </Menu>
             )}
 
             <FileUploadDialog

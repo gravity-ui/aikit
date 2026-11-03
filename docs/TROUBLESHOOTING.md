@@ -8,7 +8,7 @@ AIKit declares the following peer dependencies. Your app must install them:
 
 ```bash
 npm install \
-  @gravity-ui/uikit@^7.25 \
+  @gravity-ui/uikit@^8.0.0 \
   @gravity-ui/icons@^2.16 \
   @gravity-ui/i18n@^1.8 \
   @diplodoc/transform@^4.63 \
@@ -27,15 +27,15 @@ Three things must all be in place:
    import '@gravity-ui/aikit/themes/common';
    import '@gravity-ui/aikit/themes/dark';
    ```
-2. **`<ThemeProvider>` wrapping AIKit components** (from `@gravity-ui/uikit`). It writes `data-theme="dark"` onto the root element.
-3. **`.g-root` class on a parent**, which is added automatically by `<ThemeProvider>`. If you bypass `<ThemeProvider>`, you must set `class="g-root"` manually.
+2. **`<Provider>` wrapping AIKit components** (from `@gravity-ui/uikit`). It applies the `.g-root_theme_dark` class to the theme root.
+3. **`.g-root` class on a parent**, which is added automatically by `<Provider>`. If you bypass `<Provider>`, you must set `class="g-root"` manually.
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
     <ChatContainer …/>
-</ThemeProvider>;
+</Provider>;
 ```
 
 ## Markdown Not Rendering

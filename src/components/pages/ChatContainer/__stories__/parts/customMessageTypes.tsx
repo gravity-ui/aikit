@@ -145,14 +145,14 @@ const CardsMessageView: React.FC<MessageContentComponentProps<CardsMessageConten
     const {cards} = part.data;
 
     return (
-        <Flex gap={2} wrap style={{maxWidth: '480px'}}>
+        <Flex gap="spacing-2" wrap style={{maxWidth: '480px'}}>
             {cards.map((card) => (
                 <Card
                     key={card.title}
                     view="outlined"
                     style={{padding: '16px', flex: '1 1 200px', minWidth: '200px'}}
                 >
-                    <Flex direction="column" gap={2} style={{height: '100%'}}>
+                    <Flex direction="column" gap="spacing-2" style={{height: '100%'}}>
                         <Text variant="subheader-2">{card.title}</Text>
                         <Text variant="body-1" color="secondary" style={{flex: 1}}>
                             {card.description}

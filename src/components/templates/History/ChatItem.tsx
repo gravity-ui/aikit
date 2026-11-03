@@ -28,6 +28,8 @@ export interface ChatItemProps {
     onPinnedChange?: (chatId: string, pinned: boolean) => void;
     pinningDisabled?: boolean;
     isActive?: boolean;
+    /** Row actions participate in Tab navigation only with an external search focus owner. */
+    actionTabIndex?: 0 | -1;
     onDeleteClick?: (e: React.MouseEvent, chat: ChatType) => Promise<void>;
     /** Size of the row actions (default: `s`, `xl` in mobile mode) */
     size?: InputControlSize;
@@ -43,12 +45,14 @@ export function ChatItem({
     chat,
     showActions,
     isActive,
+    actionTabIndex,
     onDeleteClick,
     size,
     pinned,
     onPinnedChange,
     pinningDisabled,
 }: ChatItemProps) {
+    const {t} = i18n.useTranslation();
     const [isDeleteProccesing, setIsDeleteProcessing] = useState(false);
     const [hasOverflow, setHasOverflow] = useState(false);
     const labelRef = useRef<HTMLDivElement>(null);
@@ -102,7 +106,7 @@ export function ChatItem({
             onClick={handleClick}
         >
             {pinned && (
-                <span role="img" aria-label={i18n('pinned')}>
+                <span role="img" aria-label={t('pinned')}>
                     <Icon data={Pin} size={16} />
                 </span>
             )}
@@ -116,27 +120,29 @@ export function ChatItem({
 
             {showDeleteAction ? (
                 <ActionButton
+                    tabIndex={actionTabIndex}
                     view="flat"
                     size={deleteButtonSize}
                     color="secondary"
                     loading={isDeleteProccesing}
                     className={b('delete-button')}
-                    aria-label={i18n('tooltip-delete')}
+                    aria-label={t('tooltip-delete')}
                     onClick={handleDeleteChat}
                     onKeyDown={handleActionKeyDown}
-                    tooltipTitle={i18n('tooltip-delete')}
+                    tooltipTitle={t('tooltip-delete')}
                 >
                     <Icon className={b('icon-button')} data={TrashBin} size={deleteIconSize} />
                 </ActionButton>
             ) : null}
             {showActions && onPinnedChange && (
                 <ActionButton
+                    tabIndex={actionTabIndex}
                     view="flat"
                     size={deleteButtonSize}
                     aria-disabled={Boolean(pinningDisabled || isDeleteProccesing)}
                     className={b('pin-button')}
-                    aria-label={i18n(pinned ? 'action-unpin' : 'action-pin')}
-                    tooltipTitle={i18n(pinned ? 'action-unpin' : 'action-pin')}
+                    aria-label={t(pinned ? 'action-unpin' : 'action-pin')}
+                    tooltipTitle={t(pinned ? 'action-unpin' : 'action-pin')}
                     onKeyDown={handleActionKeyDown}
                     onClick={(event) => {
                         event.stopPropagation();

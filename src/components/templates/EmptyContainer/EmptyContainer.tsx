@@ -85,6 +85,7 @@ export interface EmptyContainerProps {
  * @returns React component
  */
 export function EmptyContainer(props: EmptyContainerProps) {
+    const {t} = i18n.useTranslation();
     const {
         image,
         heroContent,
@@ -123,7 +124,7 @@ export function EmptyContainer(props: EmptyContainerProps) {
     const descriptionAlignment = alignment?.description || 'left';
 
     // Define text for "Show more" button with localization support
-    const showMoreButtonText = showMoreText || i18n('show-more-button');
+    const showMoreButtonText = showMoreText || t('show-more-button');
     let heroOrImage: React.ReactNode;
     if (heroContent !== undefined) {
         heroOrImage = (

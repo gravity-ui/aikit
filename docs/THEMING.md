@@ -13,14 +13,14 @@ import '@gravity-ui/aikit/themes/common';
 import '@gravity-ui/aikit/themes/light'; // or '/dark'
 ```
 
-Switching between themes is done via `@gravity-ui/uikit`'s `<ThemeProvider>`, which applies `.g-root_theme_light` or `.g-root_theme_dark` to the theme root. AIKit recognizes these classes and also retains its `data-theme` selectors for compatibility:
+Switching between themes is done via `@gravity-ui/uikit`'s `<Provider>`, which applies `.g-root_theme_light` or `.g-root_theme_dark` to the theme root. AIKit recognizes these classes and also retains its `data-theme` selectors for compatibility:
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
     <ChatContainer …/>
-</ThemeProvider>;
+</Provider>;
 ```
 
 `variables.css` is **deprecated** — keep importing `common.css` only.
@@ -254,3 +254,5 @@ Each `--g-aikit-color-*` variable falls back to a `--g-aikit-*` "raw" variable, 
 ```
 
 This means: if you already set `--g-color-base-float` via `@gravity-ui/uikit`'s theming, AIKit picks it up automatically.
+
+Use a nested `ThemeProvider` for a local theme override inside the application `Provider`. See the [v3 migration guide](./migration-to-v3.md).

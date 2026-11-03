@@ -9,7 +9,7 @@ test.describe('History pinned chats', {tag: '@History'}, () => {
         expectScreenshot,
     }) => {
         await mount(<HistoryStories.PinnedChats />);
-        const row = page.getByRole('listitem').filter({hasText: 'Last message from chat 2'});
+        const row = page.getByRole('row').filter({hasText: 'Last message from chat 2'});
         const pin = row.getByRole('button', {name: 'Pin chat', exact: true});
         await expect(pin).toHaveCSS('opacity', '0');
         await expectScreenshot({component: page});
@@ -32,7 +32,7 @@ test.describe('History pinned chats', {tag: '@History'}, () => {
 
     test('should reveal reserved desktop actions on hover and Tab', async ({mount, page}) => {
         await mount(<HistoryStories.PinnedChats />);
-        const row = page.getByRole('listitem').filter({hasText: 'Last message from chat 5'});
+        const row = page.getByRole('row').filter({hasText: 'Last message from chat 5'});
         const pin = row.getByRole('button', {name: 'Unpin chat', exact: true});
         const remove = row.getByRole('button', {name: 'Delete', exact: true});
         await expect(page.locator('.g-popup').first()).toHaveCSS('opacity', '1');
@@ -59,7 +59,7 @@ test.describe('History pinned chats', {tag: '@History'}, () => {
     }) => {
         await page.evaluate(() => localStorage.clear());
         let component = await mount(<HistoryStories.LocalPinnedChats />);
-        const row = page.getByRole('listitem').filter({hasText: 'Last message from chat 2'});
+        const row = page.getByRole('row').filter({hasText: 'Last message from chat 2'});
         await row.hover();
         await row.getByRole('button', {name: 'Pin chat', exact: true}).click();
         await expect(row.getByRole('button', {name: 'Unpin chat', exact: true})).toBeEnabled();
@@ -77,7 +77,7 @@ test.describe('History pinned chats', {tag: '@History'}, () => {
         expectScreenshot,
     }) => {
         await mount(<HistoryStories.ServerPinnedChats />);
-        const row = page.getByRole('listitem').filter({hasText: 'Last message from chat 2'});
+        const row = page.getByRole('row').filter({hasText: 'Last message from chat 2'});
         const pin = row.getByRole('button', {name: 'Pin chat', exact: true});
         await expect(pin).toBeEnabled();
         await expectScreenshot({component: page});
@@ -94,7 +94,7 @@ test.describe('History pinned chats', {tag: '@History'}, () => {
             page,
         }) => {
             await mount(<PendingPinnedHistory />);
-            const row = page.getByRole('listitem').filter({hasText: 'Second chat'});
+            const row = page.getByRole('row').filter({hasText: 'Second chat'});
             const pin = row.getByRole('button', {name: 'Pin chat', exact: true});
             await expect(pin).toBeEnabled();
             await pin.focus();
@@ -142,7 +142,7 @@ test.describe('History pinned mobile', {tag: '@History'}, () => {
         expectScreenshot,
     }) => {
         await mount(<HistoryStories.PinnedChatsMobile />);
-        const row = page.getByRole('listitem').filter({hasText: 'Last message from chat 5'});
+        const row = page.getByRole('row').filter({hasText: 'Last message from chat 5'});
         await expect(row.getByRole('button', {name: 'Unpin chat', exact: true})).toHaveCSS(
             'opacity',
             '1',

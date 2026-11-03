@@ -31,8 +31,11 @@ jobs:
         run: npm run typecheck
 
   tests:
-    name: Tests
+    name: Tests (UIKit ${{ matrix.uikit }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        uikit: [locked, '8.0.0']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -45,5 +48,28 @@ jobs:
           cache: 'npm'
       - name: Install Packages
         run: npm ci
+      - name: Install minimum supported UIKit
+        if: matrix.uikit != 'locked'
+        run: npm install --no-save --ignore-scripts @gravity-ui/uikit@${{ matrix.uikit }}
+      - name: Verify dependency manifests are unchanged
+        run: git diff --exit-code -- package.json package-lock.json
+      - name: Verify UIKit dependency tree
+        run: npm ls @gravity-ui/uikit
+      - name: Check minimum UIKit types and build
+        if: matrix.uikit != 'locked'
+        run: |
+          npm run typecheck
+          npm run build
       - name: Unit Tests
         run: npm run test:unit
+
+  tests_result:
+    name: Tests
+    needs: tests
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify test matrix
+        env:
+          TEST_RESULT: ${{ needs.tests.result }}
+        run: test "$TEST_RESULT" = success

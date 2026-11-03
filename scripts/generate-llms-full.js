@@ -19,6 +19,8 @@ const OUTPUT = path.join(ROOT, 'llms-full.txt');
 const SOURCES = [
     'README.md',
     'docs/GETTING_STARTED.md',
+    'docs/migration-to-v3.md',
+    'docs/changelog-v3.md',
     'docs/ARCHITECTURE.md',
     'docs/COMPONENTS.md',
     'docs/THEMING.md',

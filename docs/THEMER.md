@@ -38,15 +38,15 @@ import '@gravity-ui/aikit/styles';
 import './aikit-theme.css';
 ```
 
-Continue using UIKit's `ThemeProvider` to switch modes:
+Continue using UIKit's `Provider` to switch modes:
 
 ```tsx
-import {ThemeProvider} from '@gravity-ui/uikit';
+import {Provider} from '@gravity-ui/uikit';
 import {ChatContainer} from '@gravity-ui/aikit';
 
-<ThemeProvider theme="dark">
+<Provider theme="dark">
   <ChatContainer onSendMessage={handleSendMessage} />
-</ThemeProvider>;
+</Provider>;
 ```
 
 AIKit's theme styles recognize UIKit's light/dark classes and retain the existing `data-theme` selectors for compatibility. A nested scoped provider can use a different mode from the surrounding application.
@@ -61,3 +61,5 @@ npm run build
 ```
 
 The theme exchange checks exercise the real Gravity generator and parser with independent mode overrides, palette-to-semantic references, radii, malformed imports, preview scoping, and CSS/JSON round trips. They do not render UI components.
+
+Use a nested `ThemeProvider` for a local theme override inside the application `Provider`. See the [v3 migration guide](./migration-to-v3.md).

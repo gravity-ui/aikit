@@ -49,7 +49,7 @@ export function Loader({
     );
 
     return (
-        <Flex gap={2} className={b(null, className)}>
+        <Flex gap="spacing-2" className={b(null, className)}>
             {loader}
             {withMessageShimmer ? <Shimmer>{messageContent}</Shimmer> : messageContent}
         </Flex>

@@ -44,15 +44,27 @@ export const FileUploadDialog = ({
     files,
     onApply,
     onCancel,
-    title = i18n('title'),
+    title: titleProp,
     dropZoneLabel,
     dropZoneHint,
-    applyButtonText = i18n('apply-button'),
-    cancelButtonText = i18n('cancel-button'),
+    applyButtonText: applyButtonTextProp,
+    cancelButtonText: cancelButtonTextProp,
     disabled,
 }: FileUploadDialogProps) => {
+    const {t} = i18n.useTranslation();
+    const title = titleProp ?? t('title');
+    const applyButtonText = applyButtonTextProp ?? t('apply-button');
+    const cancelButtonText = cancelButtonTextProp ?? t('cancel-button');
     return (
-        <Dialog open={open} onClose={onClose} className={b()}>
+        <Dialog
+            open={open}
+            onOpenChange={(nextOpen) => {
+                if (!nextOpen) {
+                    onClose();
+                }
+            }}
+            className={b()}
+        >
             <Dialog.Header caption={title} />
             <Dialog.Body className={b('body')}>
                 <FileDropZone

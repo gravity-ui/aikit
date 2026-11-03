@@ -89,6 +89,7 @@ function buildFinalPromptInputHeaderProps(args: {
 }
 
 function buildFinalPromptInputProps(args: {
+    t: ReturnType<typeof i18n.useTranslation>['t'];
     promptInputProps: ChatContainerProps['promptInputProps'];
     onSendMessage: ChatContainerProps['onSendMessage'];
     onCancel: ChatContainerProps['onCancel'];
@@ -103,6 +104,7 @@ function buildFinalPromptInputProps(args: {
     onValueChange?: (value: string) => void;
 }) {
     const {
+        t,
         promptInputProps,
         onSendMessage,
         onCancel,
@@ -157,7 +159,7 @@ function buildFinalPromptInputProps(args: {
         bodyProps: {
             ...restBodyProps,
             placeholder:
-                texts.promptPlaceholder || restBodyProps?.placeholder || i18n('prompt-placeholder'),
+                texts.promptPlaceholder || restBodyProps?.placeholder || t('prompt-placeholder'),
             // The remount that clears the draft on a new or a freshly picked chat also puts the
             // cursor in the field. On a touch device that raises the keyboard over half the
             // screen, so a consumer that asked for no auto focus is taken at its word and keeps
@@ -195,6 +197,7 @@ function buildFinalPromptInputProps(args: {
  * @returns React component
  */
 export function ChatContainer(props: ChatContainerProps) {
+    const {t} = i18n.useTranslation();
     const {
         chats = [],
         messages = [],
@@ -347,8 +350,8 @@ export function ChatContainer(props: ChatContainerProps) {
             texts.headerTitle ||
             headerProps.title ||
             hookState.activeChat?.name ||
-            i18n('header-default-title'),
-        [texts.headerTitle, headerProps.title, hookState.activeChat?.name],
+            t('header-default-title'),
+        [texts.headerTitle, headerProps.title, hookState.activeChat?.name, t],
     );
 
     // Determine if chat is empty
@@ -462,12 +465,12 @@ export function ChatContainer(props: ChatContainerProps) {
                 texts.emptyStateTitle ??
                 welcomeConfig?.title ??
                 emptyContainerProps.title ??
-                (showDefaultTitle ? i18n('empty-state-title') : undefined),
+                (showDefaultTitle ? t('empty-state-title') : undefined),
             description:
                 texts.emptyStateDescription ??
                 welcomeConfig?.description ??
                 emptyContainerProps.description ??
-                (showDefaultDescription ? i18n('empty-state-description') : undefined),
+                (showDefaultDescription ? t('empty-state-description') : undefined),
             suggestionTitle:
                 texts.emptyStateSuggestionsTitle ??
                 welcomeConfig?.suggestionTitle ??
@@ -492,7 +495,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 texts.emptyStateShowMoreText ??
                 welcomeConfig?.showMoreText ??
                 emptyContainerProps.showMoreText ??
-                i18n('empty-state-show-more'),
+                t('empty-state-show-more'),
             onSuggestionClick: async (
                 content: string,
                 suggestionId?: string,
@@ -517,6 +520,7 @@ export function ChatContainer(props: ChatContainerProps) {
         texts.emptyStateShowMoreText,
         mascotNode,
         mascotView,
+        t,
     ]);
 
     // Build props for MessageList
@@ -577,6 +581,7 @@ export function ChatContainer(props: ChatContainerProps) {
     const finalPromptInputProps = useMemo(
         () =>
             buildFinalPromptInputProps({
+                t,
                 promptInputProps: {...promptInputProps, apiRef: mergedPromptApiRef},
                 onSendMessage: wrappedOnSendMessage,
                 onCancel: wrappedOnCancel,
@@ -609,20 +614,20 @@ export function ChatContainer(props: ChatContainerProps) {
             texts.submitButtonCancelableText,
             mascotState.handleValueChange,
             mascotConfig,
+            t,
         ],
     );
 
     // Build props for Disclaimer
     const finalDisclaimerProps = useMemo(() => {
-        const disclaimerText =
-            texts.disclaimerText ?? disclaimerProps.text ?? i18n('disclaimer-text');
+        const disclaimerText = texts.disclaimerText ?? disclaimerProps.text ?? t('disclaimer-text');
 
         return {
             ...disclaimerProps,
             text: disclaimerText,
             qa: resolveChatContainerQa(qaMap, 'disclaimer', 'disclaimer') ?? disclaimerProps.qa,
         };
-    }, [disclaimerProps, qaMap, texts.disclaimerText]);
+    }, [disclaimerProps, qaMap, texts.disclaimerText, t]);
 
     // Build props for ChatContent
     const finalContentProps = useMemo(
@@ -660,11 +665,11 @@ export function ChatContainer(props: ChatContainerProps) {
             emptyPlaceholder:
                 texts.historyEmptyPlaceholder ??
                 historyProps.emptyPlaceholder ??
-                i18n('history-empty'),
+                t('history-empty'),
             emptyFilteredPlaceholder:
                 texts.historyEmptyFilteredPlaceholder ??
                 historyProps.emptyFilteredPlaceholder ??
-                i18n('history-empty-filtered'),
+                t('history-empty-filtered'),
             searchPlaceholder: texts.historySearchPlaceholder ?? historyProps.searchPlaceholder,
         }),
         [
@@ -680,6 +685,7 @@ export function ChatContainer(props: ChatContainerProps) {
             texts.historyEmptyPlaceholder,
             texts.historyEmptyFilteredPlaceholder,
             texts.historySearchPlaceholder,
+            t,
         ],
     );
 

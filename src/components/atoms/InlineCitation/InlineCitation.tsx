@@ -56,6 +56,7 @@ export function InlineCitation({
     className,
     qa,
 }: InlineCitationProps) {
+    const {t} = i18n.useTranslation();
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
     const [interactive, setInteractive] = useState(defaultOpen);
     const [triggerElement, setTriggerElement] = useState<HTMLButtonElement | null>(null);
@@ -166,9 +167,9 @@ export function InlineCitation({
     }
 
     const hostname = getSourceUrl(sources[0].url)?.hostname;
-    const triggerLabel = label ?? hostname ?? sources[0].title ?? i18n('source');
+    const triggerLabel = label ?? hostname ?? sources[0].title ?? t('source');
     const sourceUrl = getSourceUrl(source.url);
-    const title = source.title || sourceUrl?.hostname || i18n('source');
+    const title = source.title || sourceUrl?.hostname || t('source');
 
     return (
         <span className={b(null, className)} data-qa={qa}>
@@ -176,7 +177,7 @@ export function InlineCitation({
                 ref={setTriggerRef}
                 type="button"
                 className={b('trigger')}
-                aria-label={i18n('show-sources', {count: sources.length})}
+                aria-label={t('show-sources', {count: sources.length})}
                 aria-haspopup="dialog"
                 aria-expanded={isOpen}
                 aria-controls={isOpen ? cardId : undefined}
@@ -236,7 +237,7 @@ export function InlineCitation({
                                     view="flat-secondary"
                                     size="s"
                                     disabled={selectedIndex === 0}
-                                    aria-label={i18n('previous')}
+                                    aria-label={t('previous')}
                                     onClick={(event) => navigateSource(selectedIndex - 1, event)}
                                 >
                                     <Icon data={ChevronLeft} size={16} />
@@ -248,7 +249,7 @@ export function InlineCitation({
                                     view="flat-secondary"
                                     size="s"
                                     disabled={selectedIndex === sources.length - 1}
-                                    aria-label={i18n('next')}
+                                    aria-label={t('next')}
                                     onClick={(event) => navigateSource(selectedIndex + 1, event)}
                                 >
                                     <Icon data={ChevronRight} size={16} />
@@ -259,7 +260,7 @@ export function InlineCitation({
                             view="flat-secondary"
                             size="s"
                             className={b('close')}
-                            aria-label={i18n('close')}
+                            aria-label={t('close')}
                             onClick={() => changeOpen(false)}
                         >
                             <Icon data={Xmark} size={16} />

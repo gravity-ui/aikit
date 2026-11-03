@@ -34,6 +34,7 @@ export const FileDropZone = ({
     hint,
     className,
 }: FileDropZoneProps) => {
+    const {t} = i18n.useTranslation();
     const [isDragging, setIsDragging] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -117,7 +118,7 @@ export const FileDropZone = ({
             />
             <Icon data={ArrowUpToLine} size={24} className={b('icon')} />
             <Text variant="body-2" className={b('label')}>
-                {label ?? i18n('label')}
+                {label ?? t('label')}
             </Text>
             {hint && (
                 <Text variant="body-1" className={b('hint')}>
