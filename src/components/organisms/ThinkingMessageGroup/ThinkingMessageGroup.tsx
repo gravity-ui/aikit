@@ -21,20 +21,18 @@ const b = block('thinking-message-group');
 
 function shouldShowStatus(
     step: ThinkingStep,
-    variant: ThinkingMessageGroupProps['variant'],
     iconMode: ThinkingMessageGroupProps['iconMode'],
     hasContent: boolean,
 ) {
     if (step.status === 'thinking' || step.status === 'thought') return false;
-    return variant === 'default' || (iconMode === 'none' && Boolean(step.title || hasContent));
+    return iconMode === 'none' && Boolean(step.title || hasContent);
 }
 
 export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
     const {t} = i18n.useTranslation();
     const {
         steps,
-        variant = 'default',
-        iconMode = variant === 'subtle' ? 'status' : 'type',
+        iconMode = 'status',
         activeStepLabel,
         stepTypes,
         status = steps[steps.length - 1]?.status ?? 'thought',
@@ -108,7 +106,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
 
     return (
         <div
-            className={b({variant, 'without-icons': iconMode === 'none'}, className)}
+            className={b({'without-icons': iconMode === 'none'}, className)}
             data-qa={qa}
             style={style}
         >
@@ -140,11 +138,8 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                         const typeLabel = type?.label;
                         const content = Array.isArray(step.content) ? step.content : [step.content];
                         const hasContent = Boolean(renderStepContent) || content.some(Boolean);
-                        const showTitle =
-                            variant === 'default' || Boolean(step.title) || !hasContent;
-                        const showStatus = shouldShowStatus(step, variant, iconMode, hasContent);
-                        const isActive =
-                            step.id === activeStep?.id && step.status === 'thinking' && isThinking;
+                        const showTitle = Boolean(step.title) || !hasContent;
+                        const showStatus = shouldShowStatus(step, iconMode, hasContent);
                         return (
                             <li className={b('step')} key={step.id}>
                                 <span
@@ -161,11 +156,10 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                         iconMode={iconMode}
                                     />
                                 </span>
-                                <div className={b('step-body', {active: isActive})}>
+                                <div className={b('step-body')}>
                                     {showTitle && (
                                         <Text
                                             className={b('step-title', {
-                                                active: isActive,
                                                 error: step.status === 'error' && !step.title,
                                             })}
                                         >
