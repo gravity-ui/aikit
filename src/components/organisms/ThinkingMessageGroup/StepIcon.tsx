@@ -20,7 +20,7 @@ const statusIcons = {
 export function StepIcon({
     status,
     operationIcon,
-    iconMode = 'type',
+    iconMode = 'status',
 }: {
     status: ThinkingStepStatus;
     operationIcon?: ReactNode;
