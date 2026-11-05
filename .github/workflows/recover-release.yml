@@ -1,0 +1,70 @@
+name: Recover npm Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Existing stable GitHub release tag to publish, for example v2.28.1'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ startsWith(inputs.release_tag, 'v2.') && 'release/v2' || 'main' }}
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/v2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate recovery request
+        id: policy
+        uses: actions/github-script@v7
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        with:
+          script: |
+            const tag = process.env.RELEASE_TAG;
+            if (!/^v[23]\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(tag)) {
+              throw new Error('An exact stable v2 or v3 release tag is required');
+            }
+            const {data: release} = await github.rest.repos.getReleaseByTag({...context.repo, tag});
+            if (release.draft || release.prerelease) throw new Error('A published stable GitHub release is required');
+            const response = await fetch(`https://registry.npmjs.org/@gravity-ui%2Faikit/${tag.slice(1)}`);
+            if (response.status === 200) throw new Error('This version already exists on npm; do not republish');
+            if (response.status !== 404) throw new Error(`Cannot verify npm version: HTTP ${response.status}`);
+            core.setOutput('branch', tag.startsWith('v2.') ? 'release/v2' : 'main');
+            core.setOutput('npm_tag', tag.startsWith('v2.') ? 'release-v2' : 'latest');
+      - name: Checkout exact release source
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ inputs.release_tag }}
+          path: release-source
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+      - name: Validate release source
+        working-directory: release-source
+        env:
+          RELEASE_BRANCH: ${{ steps.policy.outputs.branch }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          git merge-base --is-ancestor HEAD "origin/$RELEASE_BRANCH"
+          node ../scripts/release/check-major.cjs
+          node -e 'if (`v${require("./package.json").version}` !== process.env.RELEASE_TAG) throw new Error("Tag and package version differ")'
+      - run: npm ci
+        working-directory: release-source
+      - run: npm test
+        working-directory: release-source
+      - name: Publish missing npm version
+        working-directory: release-source
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GRAVITY_UI_BOT_NPM_TOKEN }}
+          NPM_DIST_TAG: ${{ steps.policy.outputs.npm_tag }}
+        run: npm publish --tag "$NPM_DIST_TAG" --access public

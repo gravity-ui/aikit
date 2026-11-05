@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 22
       - name: Test release policy
-        run: node --test scripts/release/check-major.test.cjs
+        run: node --test scripts/release/*.test.cjs
       - name: Check release line
         env:
           RELEASE_BRANCH: ${{ github.base_ref || github.event.merge_group.base_ref || github.ref_name }}
