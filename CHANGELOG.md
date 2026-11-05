@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/gravity-ui/aikit/compare/v3.0.1...v3.0.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* separate maintenance release tags and GitHub Latest ([#298](https://github.com/gravity-ui/aikit/issues/298)) ([8fb80ea](https://github.com/gravity-ui/aikit/commit/8fb80eaab5ebfa1a0333e54ccd226d94691c9a46))
+
 ## [3.0.1](https://github.com/gravity-ui/aikit/compare/v3.0.0...v3.0.1) (2026-11-05)
 
 
