@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.28.1](https://github.com/gravity-ui/aikit/compare/v2.28.0...v2.28.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* reject release lockfiles with mismatched package names ([#293](https://github.com/gravity-ui/aikit/issues/293)) ([#294](https://github.com/gravity-ui/aikit/issues/294)) ([53c57c3](https://github.com/gravity-ui/aikit/commit/53c57c3c8f47626b680ee321e6073d48993aa9e0))
+
 ## [2.28.0](https://github.com/gravity-ui/aikit/compare/v2.27.0...v2.28.0) (2026-11-03)
 
 
