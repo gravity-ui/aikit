@@ -1,0 +1,50 @@
+name: Backport
+
+on:
+  pull_request_target:
+    types: [closed, labeled]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backport-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  backport:
+    if: >-
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.labels.*.name, 'backport-v2') &&
+      !startsWith(github.event.pull_request.head.ref, 'release-please--') &&
+      !contains(github.event.pull_request.labels.*.name, 'autorelease: pending')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GRAVITY_UI_APP_ID }}
+          private-key: ${{ secrets.GRAVITY_UI_APP_PRIVATE_KEY }}
+      # Only check out the trusted base branch; never execute PR code in this workflow.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ steps.token.outputs.token }}
+      - name: Backport to v2
+        id: backport
+        uses: korthout/backport-action@v3
+        with:
+          github_token: ${{ steps.token.outputs.token }}
+          target_branches: release/v2
+          label_pattern: '^backport-to-(release/v2)$'
+          pull_title: '${pull_title}'
+          auto_merge_enabled: ${{ vars.RELEASE_AUTOMERGE == 'true' }}
+          auto_merge_method: squash
+      - name: Check backport result
+        if: steps.backport.outputs.was_successful != 'true'
+        run: |
+          echo 'Backport needs manual resolution. The v3 release is independent.' >> "$GITHUB_STEP_SUMMARY"
+          exit 1
