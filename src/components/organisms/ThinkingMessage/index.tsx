@@ -1,6 +1,6 @@
 'use client';
 
-import type {HTMLAttributes} from 'react';
+import type {HTMLAttributes, ReactNode} from 'react';
 
 import {OptionsType} from '@diplodoc/transform/lib/typings';
 import {ChevronDown, ChevronUp, Copy} from '@gravity-ui/icons';
@@ -15,6 +15,7 @@ import {
     type MarkdownRendererMdxOptions,
     type MermaidOptions,
 } from '../../atoms/MarkdownRenderer';
+import {CompactRow} from '../RunActivity/CompactRow';
 
 import {useThinkingMessage} from './useThinkingMessage';
 
@@ -34,6 +35,9 @@ export type ThinkingMessageProps = DOMProps &
          * @default 'plain'
          */
         format?: 'plain' | 'markdown';
+        view?: 'default' | 'compact';
+        icon?: ReactNode;
+        secondaryText?: ReactNode;
         /**
          * Options for @diplodoc/transform when `format` is `'markdown'`.
          * Shallow-merged with the component defaults (`disableCommonAnchors: true`).
@@ -66,6 +70,9 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
         qa,
         style,
         format = 'plain',
+        view = 'default',
+        icon,
+        secondaryText,
         transformOptions,
         mermaidOptions,
         openMarkdownLinksInNewTab,
@@ -89,6 +96,34 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
         handleCopy,
         showCopyButton,
     } = useThinkingMessage(data);
+
+    if (view === 'compact') {
+        return (
+            <div className={className} data-qa={qa} style={style}>
+                <CompactRow
+                    label={data.title || buttonTitle}
+                    icon={icon}
+                    context={secondaryText}
+                    active={showLoader}
+                    expanded={isExpanded}
+                    onToggle={toggleExpanded}
+                >
+                    {content.map((item, index) =>
+                        format === 'markdown' ? (
+                            <MarkdownRenderer key={index} content={item} />
+                        ) : (
+                            <p key={index}>{item}</p>
+                        ),
+                    )}
+                    {showCopyButton && (
+                        <ActionButton onClick={handleCopy}>
+                            <Icon data={Copy} size={16} />
+                        </ActionButton>
+                    )}
+                </CompactRow>
+            </div>
+        );
+    }
 
     return (
         <div className={b(null, className)} data-qa={qa} style={style}>

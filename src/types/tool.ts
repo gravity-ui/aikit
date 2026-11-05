@@ -22,11 +22,18 @@ export type ToolFooterProps = {
     content?: React.ReactNode;
     actions: Action[];
     showLoader?: boolean;
+    actionSize?: 's' | 'm';
     className?: string;
     qa?: string;
 };
 
 export type ToolMessageProps = {
+    view?: 'default' | 'compact';
+    footerActionSize?: 's' | 'm';
+    /** Render attention separately when embedding the tool in a folded trace. */
+    attentionPlacement?: 'inline' | 'external';
+    secondaryText?: React.ReactNode;
+    contextTooltip?: React.ReactNode;
     toolName: string;
     toolIcon?: React.ReactNode;
     footerActions?: Action[];

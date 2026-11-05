@@ -1,4 +1,4 @@
-import type {HTMLAttributes} from 'react';
+import type {HTMLAttributes, ReactNode} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import type {PopupPlacement} from '@gravity-ui/uikit';
@@ -78,6 +78,10 @@ export type MdxProps<TContent extends TMessageContent = never> = {
 
 export type MessageListProps<TContent extends TMessageContent = never> = {
     messages: TChatMessage<TContent, TMessageMetadata>[];
+    /** Render message-local content before assistant actions and timestamp. */
+    renderAssistantFooter?: (message: TAssistantMessage<TContent, TMessageMetadata>) => ReactNode;
+    /** Delegate scrolling to a surrounding layout such as ChatContentV2. */
+    scrollMode?: 'internal' | 'external';
     status?: ChatStatus;
     errorMessage?: AlertProps;
     loaderMessage?: string;
@@ -132,6 +136,7 @@ export function MessageList<TContent extends TMessageContent = never>(
 
 function PlainMessageList<TContent extends TMessageContent = never>({
     messages,
+    scrollMode = 'internal',
     messageRendererRegistry,
     thinkingMessageView,
     transformOptions,
@@ -144,6 +149,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     showAvatar,
     userActions,
     assistantActions,
+    renderAssistantFooter,
     userExtraInfo: UserExtraInfo,
     assistantExtraInfo: AssistantExtraInfo,
     loaderStatuses = ['submitted', 'streaming_loading'],
@@ -182,7 +188,12 @@ function PlainMessageList<TContent extends TMessageContent = never>({
     const isNotCompleted = isSubmitted || isStreaming;
 
     return (
-        <div ref={containerRef} className={b(null, className)} data-qa={qa ?? MessageListQa.Root}>
+        <div
+            ref={scrollMode === 'internal' ? containerRef : undefined}
+            style={scrollMode === 'external' ? {overflow: 'visible', flex: 'none'} : undefined}
+            className={b(null, className)}
+            data-qa={qa ?? MessageListQa.Root}
+        >
             {hasPreviousMessages && (
                 <IntersectionContainer
                     onIntersect={onLoadPreviousMessages}
@@ -214,6 +225,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
                         showAvatar={showAvatar}
                         userActions={userActions}
                         assistantActions={assistantActions}
+                        renderAssistantFooter={renderAssistantFooter}
                         userExtraInfo={UserExtraInfo}
                         assistantExtraInfo={AssistantExtraInfo}
                         onActionPopup={handleActionPopup}

@@ -8,6 +8,12 @@ $block: '.#{variables.$ns}prompt-input';
     background: var(--g-color-base-float);
     overflow: hidden;
 
+    transition: border-color 150ms ease;
+
+    &:focus-within {
+        border-color: var(--g-color-line-generic-active);
+    }
+
     &_view_simple {
         display: flex;
         flex-direction: column;

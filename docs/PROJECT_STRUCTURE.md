@@ -31,33 +31,34 @@ aikit/
 │   │   └── openai/
 │   │
 │   ├── components/
-│   │   ├── atoms/           # 16 atoms
+│   │   ├── atoms/           # 17 atoms
 │   │   │   ├── ActionButton/   ChatDate/         ContextItem/
 │   │   │   ├── Alert/          ContextIndicator/ DiffStat/
 │   │   │   ├── Disclaimer/     FileIcon/         InlineCitation/
 │   │   │   ├── IntersectionContainer/  Loader/   MarkdownRenderer/
-│   │   │   ├── MessageBalloon/ Shimmer/          SubmitButton/
+│   │   │   ├── MessageBalloon/ ScrollToBottomButton/ Shimmer/          SubmitButton/
 │   │   │   └── ToolIndicator/
 │   │   │
 │   │   ├── molecules/       # 19 molecules
 │   │   │   ├── ActionPopup/    BaseMessage/      ButtonGroup/
 │   │   │   ├── FeedbackForm/   FileDropZone/     FileItem/
+│   │   │   ├── ChangedFilesSummary/
 │   │   │   ├── InputContext/   PromptInputBody/  PromptInputFooter/
 │   │   │   ├── PromptInputHeader/  PromptInputPanel/   RatingBlock/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/
 │   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
 │   │   │
-│   │   ├── organisms/       # 9 organisms
+│   │   ├── organisms/       # 11 organisms
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
 │   │   │   ├── PromptInput/        ThinkingMessage/  ThinkingMessageGroup/
-│   │   │   ├── ToolMessage/        UserMessage/
+│   │   │   ├── RunActivity/        ToolMessage/      UserMessage/
 │   │   │
-│   │   ├── templates/       # 3 templates
-│   │   │   ├── ChatContent/        EmptyContainer/   History/
+│   │   ├── templates/       # 4 templates
+│   │   │   ├── ChatContent/        ChatContentV2/    EmptyContainer/   History/
 │   │   │
-│   │   └── pages/           # 2 pages
-│   │       ├── AIStudioChat/       ChatContainer/
+│   │   └── pages/           # 3 pages
+│   │       ├── AIStudioChat/       ChatContainer/    AgentChat/
 │   │
 │   ├── hooks/               # 7 public hooks (see docs/HOOKS.md)
 │   │   ├── useDateFormatter/

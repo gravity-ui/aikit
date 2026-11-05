@@ -15,3 +15,4 @@ export * from './Shimmer';
 export * from './SubmitButton';
 export * from './ToolIndicator';
 export * from './FileIcon';
+export * from './ScrollToBottomButton';

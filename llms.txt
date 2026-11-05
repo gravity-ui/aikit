@@ -41,7 +41,11 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 - [SubmitButton](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/SubmitButton/README.md): submit button with send/cancel state switching
 - [ToolIndicator](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/ToolIndicator/README.md): tool-execution status icon
 
+- [ScrollToBottomButton](https://github.com/gravity-ui/aikit/blob/main/src/components/atoms/ScrollToBottomButton/README.md): circular scroll-to-latest button with streaming activity
+
 ## Components — Molecules
+
+- [ChangedFilesSummary](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ChangedFilesSummary/README.md): Changed-files pill/card with baseline DiffStat and an accessible file list.
 
 - [ActionPopup](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ActionPopup/README.md): anchored popup container for action-button content
 - [BaseMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/BaseMessage/README.md): base wrapper with action buttons support
@@ -64,6 +68,8 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 
 ## Components — Organisms
 
+- [RunActivity](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/RunActivity/README.md): Presentational ordered run history with explicit state and duration.
+
 - [AssistantMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/AssistantMessage/README.md): assistant message with multi-part content and custom renderers
 - [AttachmentPicker](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/AttachmentPicker/README.md): paperclip button that opens the file upload dialog
 - [FileUploadDialog](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/FileUploadDialog/README.md): dialog with drag-and-drop and queued/uploaded files list
@@ -77,11 +83,15 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 
 ## Components — Templates
 
+- [ChatContentV2](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/ChatContentV2/README.md): Transcript and overlay composer layout with scroll cooperation.
+
 - [ChatContent](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/ChatContent/README.md): chat content container — empty state vs message list switching
 - [EmptyContainer](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/EmptyContainer/README.md): welcome screen with image, title, description, suggestions
 - [History](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/History/README.md): chat history popup with search, grouping, and actions
 
 ## Components — Pages
+
+- [AgentChat](https://github.com/gravity-ui/aikit/blob/main/src/components/pages/AgentChat/README.md): Agent chat composition with host-owned messages and configuration.
 
 - [AIStudioChat](https://github.com/gravity-ui/aikit/blob/main/src/components/pages/AIStudioChat/README.md): ready-to-use chat with built-in OpenAI streaming — needs only an API URL
 - [ChatContainer](https://github.com/gravity-ui/aikit/blob/main/src/components/pages/ChatContainer/README.md): fully assembled chat — integrates Header, ChatContent, and History

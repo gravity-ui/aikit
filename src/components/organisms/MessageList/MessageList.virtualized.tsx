@@ -108,6 +108,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     showAvatar,
     userActions,
     assistantActions,
+    renderAssistantFooter,
     userExtraInfo: UserExtraInfo,
     assistantExtraInfo: AssistantExtraInfo,
     loaderStatuses = ['submitted', 'streaming_loading'],
@@ -155,6 +156,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
             showAvatar,
             userActions,
             assistantActions,
+            renderAssistantFooter,
             userExtraInfo: UserExtraInfo,
             assistantExtraInfo: AssistantExtraInfo,
             onActionPopup: handleActionPopup,
@@ -174,6 +176,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
             assistantActions,
             UserExtraInfo,
             AssistantExtraInfo,
+            renderAssistantFooter,
             handleActionPopup,
         ],
     );

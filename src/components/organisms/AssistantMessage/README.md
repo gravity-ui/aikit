@@ -194,3 +194,7 @@ Set `thinkingMessageView="grouped"` to display adjacent legacy thinking parts in
 message with [ThinkingMessageGroup](../ThinkingMessageGroup/README.md). The default remains
 `"default"`. Existing custom thinking renderers take precedence. Separate messages are not
 automatically grouped across run boundaries.
+
+## Body footer
+
+Optional `footerContent: ReactNode` renders after all message parts and before the existing actions/timestamp row. It is separate from `extraInfo`, which belongs to the action row. Omitting it preserves the default layout. Use it for response-local summaries supplied by the host; no response parsing or tool part is required.
