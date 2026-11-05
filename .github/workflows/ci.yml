@@ -2,12 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, release/v2]
   pull_request:
-    branches: [main]
+    branches: [main, release/v2]
   merge_group:
 
 jobs:
+  release_major:
+    name: Release Major
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test release policy
+        run: node --test scripts/release/check-major.test.cjs
+      - name: Check release line
+        env:
+          RELEASE_BRANCH: ${{ github.base_ref || github.event.merge_group.base_ref || github.ref_name }}
+        run: |
+          export RELEASE_BRANCH="${RELEASE_BRANCH#refs/heads/}"
+          node scripts/release/check-major.cjs
+
   verify_files:
     name: Verify Files
     runs-on: ubuntu-latest
@@ -25,6 +42,8 @@ jobs:
         run: npm ci
       - name: Check Generated Mascot Assets
         run: npm run generate:mascot:check
+      - name: Check release script formatting
+        run: npx --no-install prettier --check scripts/release/*.cjs
       - name: Lint Files
         run: npm run lint
       - name: Typecheck
@@ -59,9 +78,10 @@ jobs:
         if: matrix.uikit != 'locked'
         run: |
           npm run typecheck
-          npm run build
       - name: Unit Tests
-        run: npm run test:unit
+        run: npm test
+      - name: Build package
+        run: npm run build
 
   tests_result:
     name: Tests
