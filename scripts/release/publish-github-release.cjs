@@ -16,4 +16,5 @@ module.exports = async function publishRelease({github, repo, branch, releaseId,
         draft: false,
         make_latest: branch === 'main' ? 'true' : 'false',
     });
+    await github.rest.git.getRef({...repo, ref: `tags/v${version}`});
 };
