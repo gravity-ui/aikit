@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/gravity-ui/aikit/compare/v3.0.0...v3.0.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* reject release lockfiles with mismatched package names ([#293](https://github.com/gravity-ui/aikit/issues/293)) ([d51ddcd](https://github.com/gravity-ui/aikit/commit/d51ddcd6ebcf3435f1c79a2ae3583d65e7a2dc8a))
+
 ## [3.0.0](https://github.com/gravity-ui/aikit/compare/v2.28.0...v3.0.0) (2026-11-03)
 
 
