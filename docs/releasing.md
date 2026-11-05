@@ -34,11 +34,11 @@ A clean cherry-pick is not proof of UIKit 7 compatibility. Both branches must ru
 
 If cherry-picking fails, the backport workflow fails and the action reports the conflict on the original PR. Manually cherry-pick/adapt the change into a branch based on `release/v2` and open a normal PR with a conventional title. The 3.x release continues independently. Never resolve conflicts by copying the 3.x package manifest or lockfile over 2.x.
 
-`Release Major` rejects prereleases, mismatched lockfile versions and unexpected majors. A breaking change intended for a new major needs an explicit update of the branch policy; it cannot silently turn `release/v2` into 3.x or `main` into 4.x.
+`Release Major` rejects prereleases, mismatched lockfile versions, unexpected majors and version downgrades against the PR base (or the previous push / merge-group base). A breaking change intended for a new major needs an explicit update of the branch policy; it cannot silently turn `release/v2` into 3.x or `main` into 4.x.
 
 ## Operational notes
 
-- Release Please calculates versions and changelogs and creates draft GitHub releases. The workflow publishes each GitHub release with an explicit Latest policy, then publishes the npm package. Only release PRs from the configured bot, with the expected branch prefix and release label, changing only manifests and changelog are eligible for automatic merging.
+- Release Please calculates versions and changelogs and creates draft GitHub releases. Run Release Please in `github-release` mode first. The workflow publishes the draft with an explicit Latest policy, verifies that its Git tag exists, and publishes npm. Only then run Release Please in `release-pr` mode to prepare the next PR. Never use its combined mode while GitHub releases remain drafts: the next PR can lose the release tag as its history boundary. Only release PRs from the configured bot, with the expected branch prefix and release label, changing only manifests and changelog are eligible for automatic merging.
 - GitHub Latest and npm dist-tags are independent. Publish 3.x GitHub releases with `make_latest=true` and 2.x with `make_latest=false`. Use `release-v2` for npm: npm rejects `v2` because it is a valid SemVer range.
 - Publishing runs are serialized per branch. A failure in one release line does not block the other.
 - PR prereleases validate the base branch and stable package/lockfile versions before changing the version or publishing. Only PRs into `main` and `release/v2` publish previews. PR prereleases use separate `beta-v2` and `beta-v3` tags. Install the exact version from the PR for reproducible testing; each tag points to the most recently published preview in that release line.
@@ -48,3 +48,5 @@ If cherry-picking fails, the backport workflow fails and the action reports the 
 ## Repairing GitHub Latest
 
 If a maintenance release was previously marked Latest, edit the intended stable 3.x GitHub release and mark it as Latest. This changes GitHub metadata only, not npm dist-tags. The explicit policy prevents future 2.x releases from taking the badge. If publication stops after draft creation, inspect the draft and its target commit before manually publishing it with the matching Latest policy; then recover npm publication from the resulting tag if necessary.
+
+If a faulty release PR repeats old changelog entries or proposes an older version, close it without merging. Do not delete published releases or their tags. Fix the release workflow before the next run; closing the PR alone does not fix its cause.
