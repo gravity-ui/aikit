@@ -308,6 +308,16 @@
         "default": "./build/cjs/components/atoms/MessageBalloon/index.js"
       }
     },
+    "./ScrollToBottomButton": {
+      "import": {
+        "types": "./build/esm/components/atoms/ScrollToBottomButton/index.d.ts",
+        "default": "./build/esm/components/atoms/ScrollToBottomButton/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/atoms/ScrollToBottomButton/index.d.ts",
+        "default": "./build/cjs/components/atoms/ScrollToBottomButton/index.js"
+      }
+    },
     "./Shimmer": {
       "import": {
         "types": "./build/esm/components/atoms/Shimmer/index.d.ts",
