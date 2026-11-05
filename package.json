@@ -698,6 +698,16 @@
         "default": "./build/cjs/components/pages/AIStudioChat/index.js"
       }
     },
+    "./AgentChat": {
+      "import": {
+        "types": "./build/esm/components/pages/AgentChat/index.d.ts",
+        "default": "./build/esm/components/pages/AgentChat/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/pages/AgentChat/index.d.ts",
+        "default": "./build/cjs/components/pages/AgentChat/index.js"
+      }
+    },
     "./ChatContainer": {
       "import": {
         "types": "./build/esm/components/pages/ChatContainer/index.d.ts",

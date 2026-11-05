@@ -1,0 +1,101 @@
+.agent-ui-components-SelectPopup-SelectPopup-module-css-wrapper {
+    width: var(--base-width-320);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-header {
+    padding-block: var(--dropdown-padding-m);
+    padding-inline: var(--dropdown-padding-m);
+    border-bottom: 1px solid var(--g-color-line-generic);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--dropdown-padding-m);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-header .g-segmented-radio-group__option {
+    flex-basis: 0;
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-header
+    .g-segmented-radio-group_width_max
+    .g-segmented-radio-group__option-text {
+    display: inline-flex;
+    align-items: center;
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-filter {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1-and-half);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-filter .g-select-filter {
+    flex: auto;
+    min-width: 0;
+    /* We need important because padding is specified as inline style */
+    /* stylelint-disable-next-line */
+    padding: 0 !important;
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-list .g-list {
+    padding-inline: var(--dropdown-padding-m);
+    padding-block: var(--dropdown-padding-m);
+    max-height: var(--select-popup-list-max-height, 280px);
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-list .g-list__item:not(:last-child) {
+    margin-bottom: var(--dropdown-item-gap-m);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-list .g-list__item {
+    border-radius: var(--dropdown-item-border-radius-m);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-list .g-select-list__option {
+    padding: 0;
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-list .g-select-empty-placeholder {
+    margin: 0;
+    padding: var(--g-spacing-2);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-footer {
+    padding-block: var(--dropdown-padding-m);
+    padding-inline: var(--dropdown-padding-m);
+    border-top: 1px solid var(--g-color-line-generic);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--dropdown-padding-m);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-search {
+    /* We need important because padding is specified as inline style */
+    /* stylelint-disable-next-line */
+    padding: 0 !important;
+    flex: auto;
+    min-width: 0;
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-searchIcon {
+    padding-inline: var(--g-spacing-2) var(--g-spacing-half);
+    color: var(--g-color-text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-emptyOptions {
+    display: flex;
+    align-self: center;
+    padding: 5px var(--g-spacing-2);
+}
+
+.agent-ui-components-SelectPopup-SelectPopup-module-css-listCount {
+    display: block;
+    padding-inline: calc(var(--dropdown-padding-m) + var(--g-spacing-2));
+    padding-block: var(--g-spacing-3) 0;
+}

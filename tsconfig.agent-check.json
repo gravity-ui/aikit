@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/components/pages/AgentChat/**/*",
+    "src/components/organisms/RunActivity/**/*",
+    "src/components/templates/ChatContentV2/**/*"
+  ],
+  "exclude": ["src/server/**"]
+}

@@ -1,0 +1,33 @@
+.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-item {
+    display: flex;
+    flex-direction: column;
+    padding: var(--g-spacing-1) var(--g-spacing-2);
+    border-radius: var(--g-border-radius-m);
+}
+
+.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-active {
+    background-color: var(--g-color-base-simple-hover);
+}
+
+.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-wrapper {
+    max-height: 400px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-search {
+    border-bottom: 1px solid var(--g-color-line-generic);
+    padding: var(--g-spacing-2);
+}
+
+.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-list {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    padding: var(--g-spacing-2);
+}
+
+.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-popup {
+    border-radius: var(--g-border-radius-xl);
+}

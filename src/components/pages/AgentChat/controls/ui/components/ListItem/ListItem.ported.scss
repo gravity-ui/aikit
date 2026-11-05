@@ -1,0 +1,63 @@
+.agent-ui-components-ListItem-ListItem-module-css-wrapper {
+    display: flex;
+    align-items: center;
+    transition: 0.15s background;
+    border-radius: var(--g-border-radius-m);
+    min-height: 28px;
+    box-sizing: border-box;
+    padding: var(--g-spacing-1) var(--g-spacing-2) var(--g-spacing-1) var(--g-spacing-1);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-interactive:hover {
+    background: var(--g-color-base-simple-hover);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-active {
+    background: var(--g-color-base-selection);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-title {
+    color: var(--g-color-text-primary);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-subtitle {
+    color: var(--g-color-text-secondary);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-disabled
+    .agent-ui-components-ListItem-ListItem-module-css-title,
+.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-disabled
+    .agent-ui-components-ListItem-ListItem-module-css-subtitle {
+    color: var(--g-color-text-hint);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-avatar {
+    padding-right: var(--g-spacing-1);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-left: var(--g-spacing-1);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-startIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0 var(--g-spacing-1);
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-endContent {
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+}
+
+.agent-ui-components-ListItem-ListItem-module-css-endContent:not(:empty) {
+    padding-left: var(--g-spacing-1);
+}
