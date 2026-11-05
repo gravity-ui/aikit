@@ -648,6 +648,16 @@
         "default": "./build/cjs/components/templates/ChatContent/index.js"
       }
     },
+    "./ChatContentV2": {
+      "import": {
+        "types": "./build/esm/components/templates/ChatContentV2/index.d.ts",
+        "default": "./build/esm/components/templates/ChatContentV2/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/templates/ChatContentV2/index.d.ts",
+        "default": "./build/cjs/components/templates/ChatContentV2/index.js"
+      }
+    },
     "./EmptyContainer": {
       "import": {
         "types": "./build/esm/components/templates/EmptyContainer/index.d.ts",
