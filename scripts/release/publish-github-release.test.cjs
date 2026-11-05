@@ -13,6 +13,7 @@ function fixture(branch, version, release = {tag_name: `v${version}`, prerelease
             repo: {owner: 'gravity-ui', repo: 'aikit'},
             github: {
                 rest: {
+                    git: {getRef: async () => ({data: {}})},
                     repos: {
                         getRelease: async () => ({data: release}),
                         updateRelease: async (update) => updates.push(update),
@@ -55,4 +56,24 @@ test('rejects unsupported branches, majors and missing release IDs', async () =>
         await assert.rejects(publishRelease({...args, ...overrides}));
         assert.deepEqual(updates, []);
     }
+});
+
+test('checks the exact Git tag only after publishing the draft', async () => {
+    const {args} = fixture('main', '3.0.2');
+    const calls = [];
+    args.github.rest.repos.updateRelease = async () => calls.push('published');
+    args.github.rest.git.getRef = async (request) => {
+        assert.deepEqual(request, {owner: 'gravity-ui', repo: 'aikit', ref: 'tags/v3.0.2'});
+        calls.push('tag found');
+    };
+    await publishRelease(args);
+    assert.deepEqual(calls, ['published', 'tag found']);
+});
+
+test('fails publication step when the Git tag is not visible yet', async () => {
+    const {args} = fixture('release/v2', '2.28.2');
+    args.github.rest.git.getRef = async () => {
+        throw new Error('Tag not found');
+    };
+    await assert.rejects(publishRelease(args), /Tag not found/);
 });

@@ -27,3 +27,16 @@ for (const file of ['package.json', 'package-lock.json']) {
         }
     }
 }
+
+const baseVersion = process.env.RELEASE_BASE_VERSION;
+if (baseVersion) {
+    if (!stableVersion.test(baseVersion)) {
+        throw new Error(`Invalid base version for ${branch}: ${baseVersion}`);
+    }
+    const current = packageVersion.split('.').map(BigInt);
+    const base = baseVersion.split('.').map(BigInt);
+    const firstDifference = current.findIndex((part, index) => part !== base[index]);
+    if (firstDifference !== -1 && current[firstDifference] < base[firstDifference]) {
+        throw new Error(`Version downgrade: ${packageVersion} is older than ${baseVersion}`);
+    }
+}
