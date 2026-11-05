@@ -10,7 +10,7 @@ function check(
     version,
     lockVersion = version,
     rootVersion = lockVersion,
-    {lockName = '@gravity-ui/aikit', rootName = lockName} = {},
+    {lockName = '@gravity-ui/aikit', rootName = lockName, baseVersion = ''} = {},
 ) {
     const cwd = mkdtempSync(path.join(tmpdir(), 'aikit-release-'));
     try {
@@ -28,7 +28,7 @@ function check(
         );
         return spawnSync(process.execPath, [path.join(__dirname, 'check-major.cjs')], {
             cwd,
-            env: {...process.env, RELEASE_BRANCH: branch},
+            env: {...process.env, RELEASE_BRANCH: branch, RELEASE_BASE_VERSION: baseVersion},
             encoding: 'utf8',
         }).status;
     } finally {
@@ -72,5 +72,31 @@ test('rejects lockfiles belonging to a different package', () => {
         ]) {
             assert.notEqual(check(branch, version, version, version, names), 0);
         }
+    }
+});
+
+test('rejects version downgrades against the target branch', () => {
+    for (const [branch, version, baseVersion] of [
+        ['main', '3.0.0', '3.0.2'],
+        ['main', '3.1.99', '3.2.0'],
+        ['release/v2', '2.28.1', '2.28.2'],
+    ]) {
+        assert.notEqual(check(branch, version, version, version, {baseVersion}), 0);
+    }
+});
+
+test('accepts unchanged versions and numeric patch or minor increases', () => {
+    for (const [version, baseVersion] of [
+        ['3.0.2', '3.0.2'],
+        ['3.0.10', '3.0.9'],
+        ['3.1.0', '3.0.99'],
+    ]) {
+        assert.equal(check('main', version, version, version, {baseVersion}), 0);
+    }
+});
+
+test('rejects invalid base versions instead of skipping comparison', () => {
+    for (const baseVersion of ['invalid', '3.0.2-beta.0', '2.28.2']) {
+        assert.notEqual(check('main', '3.0.2', '3.0.2', '3.0.2', {baseVersion}), 0);
     }
 });
