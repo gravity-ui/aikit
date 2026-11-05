@@ -5,15 +5,25 @@ const {tmpdir} = require('node:os');
 const path = require('node:path');
 const {spawnSync} = require('node:child_process');
 
-function check(branch, version, lockVersion = version, rootVersion = lockVersion) {
+function check(
+    branch,
+    version,
+    lockVersion = version,
+    rootVersion = lockVersion,
+    {lockName = '@gravity-ui/aikit', rootName = lockName} = {},
+) {
     const cwd = mkdtempSync(path.join(tmpdir(), 'aikit-release-'));
     try {
-        writeFileSync(path.join(cwd, 'package.json'), JSON.stringify({version}));
+        writeFileSync(
+            path.join(cwd, 'package.json'),
+            JSON.stringify({name: '@gravity-ui/aikit', version}),
+        );
         writeFileSync(
             path.join(cwd, 'package-lock.json'),
             JSON.stringify({
+                name: lockName,
                 version: lockVersion,
-                packages: {'': {version: rootVersion}},
+                packages: {'': {name: rootName, version: rootVersion}},
             }),
         );
         return spawnSync(process.execPath, [path.join(__dirname, 'check-major.cjs')], {
@@ -47,4 +57,20 @@ test('rejects inconsistent or missing lockfile versions', () => {
     assert.notEqual(check('main', '3.1.0', '3.0.0'), 0);
     assert.notEqual(check('main', '3.1.0', '3.1.0', '3.0.0'), 0);
     assert.notEqual(check('main', '3.1.0', '3.1.0', null), 0);
+});
+
+test('rejects lockfiles belonging to a different package', () => {
+    for (const [branch, version] of [
+        ['main', '3.1.0'],
+        ['release/v2', '2.29.0'],
+    ]) {
+        for (const names of [
+            {lockName: '@gravity-ui/other'},
+            {rootName: '@gravity-ui/other'},
+            {lockName: null},
+            {rootName: null},
+        ]) {
+            assert.notEqual(check(branch, version, version, version, names), 0);
+        }
+    }
 });
