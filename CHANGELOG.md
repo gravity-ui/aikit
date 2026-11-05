@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.28.2](https://github.com/gravity-ui/aikit/compare/v2.28.1...v2.28.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* publish v2 releases without replacing Latest ([#299](https://github.com/gravity-ui/aikit/issues/299)) ([69368c4](https://github.com/gravity-ui/aikit/commit/69368c44758781e4da90896cd6e94a837377af8c))
+
 ## [2.28.1](https://github.com/gravity-ui/aikit/compare/v2.28.0...v2.28.1) (2026-11-05)
 
 
