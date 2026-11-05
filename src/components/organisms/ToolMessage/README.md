@@ -68,3 +68,9 @@ The component uses CSS variables for theming:
 | `--g-spacing-2`        | Padding and gap between content elements                                 |
 | `--g-border-radius-xl` | Border radius of the component container                                 |
 | `--g-color-line-brand` | Border color when status is `waitingConfirmation` or `waitingSubmission` |
+
+## Compact presentation
+
+Set `view="compact"` to render a 24px activity row with the existing state and callbacks. The default presentation is unchanged. `secondaryText` remains visible while collapsed. ToolMessage also accepts `contextTooltip` for repository-relative paths. ThinkingMessage accepts a consumer-supplied `icon`. Use `defaultExpanded={false}` for reasoning histories and `initialExpanded={false}` for tools.
+
+For a folded activity, set `attentionPlacement="external"` and render approval controls in RunActivity's `attention` slot. This preserves the tool's waiting state and callbacks while keeping user input requests visible. The default remains `inline`.

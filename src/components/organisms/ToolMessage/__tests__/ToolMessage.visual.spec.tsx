@@ -38,4 +38,12 @@ test.describe('ToolMessage', {tag: '@ToolMessage'}, () => {
 
         await expectScreenshot();
     });
+    test('should render compact', async ({mount, expectScreenshot}) => {
+        await mount(<ToolMessageStories.Compact />);
+        await expectScreenshot();
+    });
+    test('should render compact states', async ({mount, expectScreenshot}) => {
+        await mount(<ToolMessageStories.CompactStates />);
+        await expectScreenshot();
+    });
 });

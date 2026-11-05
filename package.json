@@ -588,6 +588,16 @@
         "default": "./build/cjs/components/organisms/PromptInput/index.js"
       }
     },
+    "./RunActivity": {
+      "import": {
+        "types": "./build/esm/components/organisms/RunActivity/index.d.ts",
+        "default": "./build/esm/components/organisms/RunActivity/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/RunActivity/index.d.ts",
+        "default": "./build/cjs/components/organisms/RunActivity/index.js"
+      }
+    },
     "./ThinkingMessage": {
       "import": {
         "types": "./build/esm/components/organisms/ThinkingMessage/index.d.ts",
