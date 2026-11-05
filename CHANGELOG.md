@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.28.3](https://github.com/gravity-ui/aikit/compare/v2.28.2...v2.28.3) (2026-11-05)
+
+
+### Bug Fixes
+
+* preserve v2 release history when preparing release PRs ([#305](https://github.com/gravity-ui/aikit/issues/305)) ([544c105](https://github.com/gravity-ui/aikit/commit/544c10500a343d04e80e6dbd70df5eaf4a51c8fa))
+
 ## [2.28.2](https://github.com/gravity-ui/aikit/compare/v2.28.1...v2.28.2) (2026-11-05)
 
 
