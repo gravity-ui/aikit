@@ -4,12 +4,27 @@ on:
   push:
     branches:
       - main
-      - release/v*
+      - release/v2
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check release line before publishing
+        env:
+          RELEASE_BRANCH: ${{ github.ref_name }}
+        run: node scripts/release/check-major.cjs
       - name: Generate token
         id: generate-token
         uses: actions/create-github-app-token@v2
@@ -23,4 +38,35 @@ jobs:
           npm-token: ${{ secrets.GRAVITY_UI_BOT_NPM_TOKEN }}
           node-version: 20
           default-branch: ${{ github.ref_name != 'main' && github.ref_name || null }}
-          npm-dist-tag: ${{ github.ref_name != 'main' && 'untagged' || 'latest' }}
+          npm-dist-tag: ${{ github.ref_name != 'main' && 'v2' || 'latest' }}
+      - name: Enable release PR auto-merge
+        if: vars.RELEASE_AUTOMERGE == 'true' && vars.RELEASE_BOT_LOGIN != ''
+        uses: actions/github-script@v7
+        env:
+          RELEASE_BOT_LOGIN: ${{ vars.RELEASE_BOT_LOGIN }}
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          script: |
+            const prs = await github.paginate(github.rest.pulls.list, {
+              ...context.repo, state: 'open', base: context.ref.replace('refs/heads/', ''),
+            });
+            for (const pr of prs) {
+              if (pr.user.login !== process.env.RELEASE_BOT_LOGIN ||
+                  pr.head.repo.full_name !== context.payload.repository.full_name ||
+                  !pr.head.ref.startsWith('release-please--') ||
+                  !pr.labels.some(label => label.name === 'autorelease: pending') ||
+                  pr.draft || pr.auto_merge) continue;
+              const files = await github.paginate(github.rest.pulls.listFiles, {
+                ...context.repo, pull_number: pr.number,
+              });
+              const allowed = new Set(['package.json', 'package-lock.json', 'CHANGELOG.md']);
+              if (!files.length || files.some(file => !allowed.has(file.filename))) {
+                core.warning(`Release PR #${pr.number} changes unexpected files; review manually.`);
+                continue;
+              }
+              await github.graphql(`mutation($id: ID!) {
+                enablePullRequestAutoMerge(input: {pullRequestId: $id, mergeMethod: SQUASH}) {
+                  pullRequest { number }
+                }
+              }`, {id: pr.node_id});
+            }

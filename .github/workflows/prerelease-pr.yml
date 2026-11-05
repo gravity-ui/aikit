@@ -2,12 +2,15 @@ name: PR Prerelease
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [main, release/v2]
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   prerelease:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      (github.event.action != 'edited' || github.event.changes.base.ref.from != '')
     steps:
       - name: Generate token
         id: generate-token
@@ -23,14 +26,19 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
           scope: '@gravity-ui'
+      - name: Check release line before publishing
+        env:
+          RELEASE_BRANCH: ${{ github.base_ref }}
+        run: node scripts/release/check-major.cjs
       - name: Install dependencies
         run: npm ci
       - name: Bump version and publish
         run: |
           npm version prerelease --preid=beta.${{ github.event.pull_request.head.sha }} --no-git-tag-version
-          npm publish --tag beta --access public
+          npm publish --tag "$NPM_DIST_TAG" --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GRAVITY_UI_BOT_NPM_TOKEN }}
+          NPM_DIST_TAG: ${{ github.event.pull_request.base.ref == 'release/v2' && 'beta-v2' || 'beta-v3' }}
       - name: Get package info
         id: package
         uses: codex-team/action-nodejs-package-info@v1

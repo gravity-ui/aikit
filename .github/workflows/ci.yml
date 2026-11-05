@@ -2,12 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, release/v2]
   pull_request:
-    branches: [main]
+    branches: [main, release/v2]
   merge_group:
 
 jobs:
+  release_major:
+    name: Release Major
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test release policy
+        run: node --test scripts/release/check-major.test.cjs
+      - name: Check release line
+        env:
+          RELEASE_BRANCH: ${{ github.base_ref || github.event.merge_group.base_ref || github.ref_name }}
+        run: |
+          export RELEASE_BRANCH="${RELEASE_BRANCH#refs/heads/}"
+          node scripts/release/check-major.cjs
+
   verify_files:
     name: Verify Files
     runs-on: ubuntu-latest
@@ -25,14 +42,19 @@ jobs:
         run: npm ci
       - name: Check Generated Mascot Assets
         run: npm run generate:mascot:check
+      - name: Check release script formatting
+        run: npx --no-install prettier --check scripts/release/*.cjs
       - name: Lint Files
         run: npm run lint
       - name: Typecheck
         run: npm run typecheck
 
   tests:
-    name: Tests
+    name: Tests (UIKit ${{ matrix.uikit }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        uikit: [locked]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -45,5 +67,29 @@ jobs:
           cache: 'npm'
       - name: Install Packages
         run: npm ci
+      - name: Install minimum supported UIKit
+        if: matrix.uikit != 'locked'
+        run: npm install --no-save --ignore-scripts @gravity-ui/uikit@${{ matrix.uikit }}
+      - name: Verify dependency manifests are unchanged
+        run: git diff --exit-code -- package.json package-lock.json
+      - name: Verify UIKit dependency tree
+        run: npm ls @gravity-ui/uikit
+      - name: Check minimum UIKit types and build
+        if: matrix.uikit != 'locked'
+        run: |
+          npm run typecheck
       - name: Unit Tests
-        run: npm run test:unit
+        run: npm test
+      - name: Build package
+        run: npm run build
+
+  tests_result:
+    name: Tests
+    needs: tests
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify test matrix
+        env:
+          TEST_RESULT: ${{ needs.tests.result }}
+        run: test "$TEST_RESULT" = success
