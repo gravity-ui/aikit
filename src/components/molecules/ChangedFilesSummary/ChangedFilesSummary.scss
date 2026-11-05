@@ -1,0 +1,135 @@
+.g-aikit-changed-files-summary {
+    font-size: 12px;
+    line-height: 16px;
+    --g-button-font-size: 12px;
+    display: inline-flex;
+    &__pill {
+        --g-button-font-size: 12px;
+        border-radius: var(--g-border-radius-s);
+        box-shadow: 0 2px 8px var(--g-color-sfx-shadow);
+        background: var(--g-color-base-background);
+        .g-aikit-diff-stat {
+            font-size: inherit;
+        }
+        .g-button__text {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    }
+    &__label {
+        color: var(--g-color-text-primary);
+    }
+    &__content {
+        --g-button-font-size: 12px;
+        box-sizing: border-box;
+        width: var(--g-aikit-changed-files-summary-width, 360px);
+        max-width: calc(100vw - 32px);
+        max-height: min(var(--g-aikit-changed-files-summary-max-height, 320px), 60vh);
+        overflow: auto;
+        padding: var(--g-spacing-1);
+        color: var(--g-color-text-primary);
+        font-size: 12px;
+        line-height: 16px;
+        &:focus-visible {
+            outline: 2px solid var(--g-color-line-focus);
+            outline-offset: -2px;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            padding: 6px 0;
+        }
+        .g-aikit-diff-stat {
+            flex-shrink: 0;
+        }
+    }
+    &__path {
+        flex: 1;
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+}
+
+.g-aikit-changed-files-summary__content li.g-aikit-changed-files-summary__file_interactive {
+    padding: 0;
+}
+
+.g-aikit-changed-files-summary__file-action {
+    justify-content: flex-start;
+    text-align: left;
+    width: 100%;
+    flex: 1;
+    min-width: 0;
+    height: auto;
+    min-height: 28px;
+    .g-button__text {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: left;
+    }
+}
+
+.g-aikit-changed-files-summary_view_card {
+    --g-button-font-size: var(--g-text-body-1-font-size);
+    font-size: var(--g-text-body-1-font-size);
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--g-color-line-generic);
+    border-radius: 12px;
+    background: var(--g-color-base-background);
+    min-width: 0;
+    .g-aikit-changed-files-summary__summary {
+        margin-right: auto;
+        min-width: 0;
+        max-width: 100%;
+        height: auto;
+    }
+    .g-aikit-changed-files-summary__summary .g-button__text {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: normal;
+        text-align: left;
+    }
+}
+
+.g-aikit-changed-files-summary .g-aikit-diff-stat,
+.g-aikit-changed-files-summary__content .g-aikit-diff-stat {
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.g-aikit-changed-files-summary__popup {
+    --g-popup-border-radius: var(--g-border-radius-xl);
+}
+
+.g-aikit-changed-files-summary__content {
+    border-radius: var(--g-border-radius-xl);
+}
+
+.g-aikit-changed-files-summary__action {
+    flex-shrink: 0;
+}
+
+.g-aikit-changed-files-summary__actions {
+    display: flex;
+    margin-left: auto;
+    justify-content: flex-end;
+    gap: var(--g-spacing-2);
+}

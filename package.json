@@ -378,6 +378,16 @@
         "default": "./build/cjs/components/molecules/ButtonGroup/index.js"
       }
     },
+    "./ChangedFilesSummary": {
+      "import": {
+        "types": "./build/esm/components/molecules/ChangedFilesSummary/index.d.ts",
+        "default": "./build/esm/components/molecules/ChangedFilesSummary/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/molecules/ChangedFilesSummary/index.d.ts",
+        "default": "./build/cjs/components/molecules/ChangedFilesSummary/index.js"
+      }
+    },
     "./FeedbackForm": {
       "import": {
         "types": "./build/esm/components/molecules/FeedbackForm/index.d.ts",
