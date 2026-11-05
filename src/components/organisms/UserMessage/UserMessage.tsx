@@ -3,14 +3,11 @@ import React, {type HTMLAttributes} from 'react';
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import {Avatar, useMobile} from '@gravity-ui/uikit';
 
+import {MarkdownContent} from '../../../markdown/MarkdownProvider';
+import {type MarkdownRendererMdxOptions, type MermaidOptions} from '../../../markdown/types';
 import type {BaseMessageProps, FileAttachment} from '../../../types/messages';
 import {block, modsClassName} from '../../../utils/cn';
 import {FileIcon} from '../../atoms/FileIcon';
-import {
-    MarkdownRenderer,
-    type MarkdownRendererMdxOptions,
-    type MermaidOptions,
-} from '../../atoms/MarkdownRenderer';
 import {MessageBalloon} from '../../atoms/MessageBalloon';
 import {BaseMessage} from '../../molecules/BaseMessage';
 
@@ -87,7 +84,7 @@ export const UserMessage = (props: UserMessageProps) => {
                 ))}
                 <MessageBalloon className={modsClassName(b({format}))}>
                     {format === 'markdown' ? (
-                        <MarkdownRenderer
+                        <MarkdownContent
                             content={content as string}
                             transformOptions={transformOptions}
                             shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
