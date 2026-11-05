@@ -1,6 +1,6 @@
 .agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-item {
-    display: flex;
-    flex-direction: column;
+    min-width: 0;
+    text-align: left;
     padding: var(--g-spacing-1) var(--g-spacing-2);
     border-radius: var(--g-border-radius-m);
 }
@@ -12,6 +12,8 @@
 .agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-wrapper {
     max-height: 400px;
     width: 300px;
+    max-width: calc(100vw - 32px);
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
 }
@@ -22,7 +24,8 @@
 }
 
 .agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-list {
-    overflow-y: auto;
+    overflow: hidden auto;
+    min-width: 0;
     flex: 1;
     min-height: 0;
     padding: var(--g-spacing-2);
@@ -30,4 +33,10 @@
 
 .agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-popup {
     border-radius: var(--g-border-radius-xl);
+}
+
+.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-item
+    .g-text {
+    min-width: 0;
+    max-width: 100%;
 }

@@ -105,12 +105,14 @@ export function SkillsAutocompletePopup({
                                     onMouseDown: (event) => event.preventDefault(),
                                 })}
                                 {...helpers.getItemViewProps()}
+                                description={
+                                    <Text variant="body-short" color="secondary" ellipsis>
+                                        {item.text}
+                                    </Text>
+                                }
                             >
                                 <Text variant="body-short" ellipsis>
                                     /{item.value}
-                                </Text>
-                                <Text variant="body-short" color="secondary" ellipsis>
-                                    {item.text}
                                 </Text>
                             </ListItemView>
                         )}
