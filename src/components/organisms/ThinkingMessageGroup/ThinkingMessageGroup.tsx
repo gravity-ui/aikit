@@ -24,8 +24,9 @@ function shouldShowStatus(
     iconMode: ThinkingMessageGroupProps['iconMode'],
     hasContent: boolean,
 ) {
-    if (step.status === 'thinking' || step.status === 'thought') return false;
-    return iconMode === 'none' && Boolean(step.title || hasContent);
+    if (iconMode !== 'none') return false;
+    const isEmpty = !step.title && !hasContent;
+    return isEmpty || (step.status !== 'thinking' && step.status !== 'thought');
 }
 
 export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
@@ -138,7 +139,6 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                         const typeLabel = type?.label;
                         const content = Array.isArray(step.content) ? step.content : [step.content];
                         const hasContent = Boolean(renderStepContent) || content.some(Boolean);
-                        const showTitle = Boolean(step.title) || !hasContent;
                         const showStatus = shouldShowStatus(step, iconMode, hasContent);
                         return (
                             <li className={b('step')} key={step.id}>
@@ -157,13 +157,9 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                     />
                                 </span>
                                 <div className={b('step-body')}>
-                                    {showTitle && (
-                                        <Text
-                                            className={b('step-title', {
-                                                error: step.status === 'error' && !step.title,
-                                            })}
-                                        >
-                                            {step.title || t(`status-${step.status}`)}
+                                    {step.title && (
+                                        <Text variant="body-1" className={b('step-title')}>
+                                            {step.title}
                                         </Text>
                                     )}
                                     {(typeLabel || showStatus) && (

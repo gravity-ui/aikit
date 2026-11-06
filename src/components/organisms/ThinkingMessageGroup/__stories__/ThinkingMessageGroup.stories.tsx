@@ -417,7 +417,7 @@ export const Presentation: Story = {
     name: 'Presentation Options',
     parameters: {
         description:
-            'Compare status icons, application-provided operation icons and a history without icons. The heading uses primary text; all history text uses secondary. The first step has no title; the second has an application-provided title. Switch status in Controls to inspect completion, errors and pauses.',
+            'Compare status icons, application-provided operation icons and a history without icons. The heading and step titles use primary text; titles use body-1 accent and descriptions use secondary. The first step has no title; the second has an application-provided title. Switch status in Controls to inspect completion, errors and pauses.',
     },
     args: {
         status: 'thinking',
