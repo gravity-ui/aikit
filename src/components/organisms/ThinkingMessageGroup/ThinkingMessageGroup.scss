@@ -162,9 +162,10 @@ $block: '.#{variables.$ns}thinking-message-group';
     }
 
     &__step-title {
-        color: var(--g-color-text-secondary);
+        color: var(--g-color-text-primary);
         font-size: var(--g-text-body-1-font-size);
         line-height: var(--g-text-body-1-line-height);
+        font-weight: var(--g-text-body-accent-font-weight);
     }
 
     &__step-meta {
@@ -182,8 +183,7 @@ $block: '.#{variables.$ns}thinking-message-group';
 
     &__compact-label_error,
     &__step-icon_error,
-    &__step-status_error,
-    &__step-title_error {
+    &__step-status_error {
         color: var(--g-color-text-danger);
     }
 

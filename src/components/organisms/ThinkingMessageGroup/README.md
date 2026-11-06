@@ -44,7 +44,7 @@ import {ThinkingMessageGroup, thinkingMessageToStep} from '@gravity-ui/aikit/Thi
 
 Use a stable ID scoped to the response. One legacy message becomes one step, even when its
 `content` is an array of paragraphs. Titles, contents, statuses and copy callbacks are preserved.
-No category or action name is inferred from reasoning text. Without a title, details are shown directly; an empty step uses localized status text.
+No category or action name is inferred from reasoning text. Without a title, details are shown directly; an empty step is represented by its status indicator.
 
 ### Supply structured steps
 
@@ -81,13 +81,15 @@ names to icons. Details can be omitted when the backend does not supply them.
 ```
 
 The component uses `body-1` typography by default. The top-level heading uses primary text.
-All expanded history text, including the running step and Markdown inside a mobile chat, uses
-secondary text. Only the running heading pulses.
+Step titles use primary text with the `body-1` accent weight. Descriptions, including the running
+step and Markdown inside a mobile chat, use secondary text. Only the running heading pulses.
 Error indicators use the danger color. Completed steps stay neutral, not green.
 
 In expanded history, a supplied `title` is displayed above the details. Without a title, details
 are displayed directly, without a repeated "In progress" or "Completed" heading. A step with
-neither a title nor details still displays its localized status. No title is generated from content.
+neither a title nor details displays only its status icon; when icons are hidden, a localized
+status label keeps it identifiable. Status text is never substituted for a step title, and no
+title is generated from content.
 
 `iconMode="status"` uses a static clock while running and a check after completion.
 `iconMode="type"` uses application-provided category icons for running/completed steps,
