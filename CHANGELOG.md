@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/gravity-ui/aikit/compare/v3.0.3...v3.1.0) (2026-11-06)
+
+
+### Features
+
+* **markdown:** support custom rendering without bundling Diplodoc ([#290](https://github.com/gravity-ui/aikit/issues/290)) ([1ffd3d6](https://github.com/gravity-ui/aikit/commit/1ffd3d68308aed9823f8bc209808dc8402b86a24))
+
 ## [3.0.3](https://github.com/gravity-ui/aikit/compare/v3.0.2...v3.0.3) (2026-11-05)
 
 
