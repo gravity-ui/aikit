@@ -14,6 +14,7 @@ import type {
     TSubmitData,
 } from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
+import type {ChatMarkdownOptions} from '../../../utils/chatMarkdown';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
@@ -186,6 +187,12 @@ export interface ChatContainerQa {
  * Props for ChatContainer component
  */
 export interface ChatContainerProps {
+    /** Opt-in Markdown export. Supply complete history in messages, including off-screen messages. */
+    chatExport?: ChatMarkdownOptions & {
+        /** Disable export until the full conversation history is loaded. */
+        loading?: boolean;
+        filename?: string;
+    };
     // Chat data
     /** Array of chats for history */
     chats?: ChatType[];

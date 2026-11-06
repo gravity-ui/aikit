@@ -16,6 +16,7 @@ import {
 import {ChatContent} from '../../templates/ChatContent/ChatContent';
 import {History} from '../../templates/History';
 
+import {ChatExportHeader} from './ChatExportHeader';
 import {defaultGravityMascots} from './GravityMascot';
 import {
     normalizeChatContainerQa,
@@ -722,7 +723,17 @@ export function ChatContainer(props: ChatContainerProps) {
                     <div className={b('viewport-probe')} ref={viewportProbeRef} aria-hidden />
                 )}
                 <div className={b('header', headerClassName)} ref={headerRef}>
-                    <Header {...finalHeaderProps} />
+                    {props.chatExport ? (
+                        <ChatExportHeader
+                            key={props.activeChat?.id ?? hookState.promptInputKey}
+                            headerProps={finalHeaderProps}
+                            messages={messages}
+                            status={status}
+                            config={props.chatExport}
+                        />
+                    ) : (
+                        <Header {...finalHeaderProps} />
+                    )}
                 </div>
                 <div className={b('content', {view: hookState.chatContentView}, contentClassName)}>
                     <ChatContent {...finalContentProps} />
