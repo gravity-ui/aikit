@@ -1,6 +1,6 @@
+import {MarkdownContent} from '../../../markdown/MarkdownProvider';
 import type {ToolMessageContent} from '../../../types/messages';
 import {block} from '../../../utils/cn';
-import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 import {ToolMessage} from '../../organisms/ToolMessage';
 
 import {i18n} from './i18n';
@@ -23,13 +23,13 @@ export function McpToolRenderer({part}: {part: ToolMessageContent}) {
             {mcpRequest && (
                 <div className={b('section')}>
                     <div className={b('section-label')}>{t('mcp_request')}</div>
-                    <MarkdownRenderer content={`\`\`\`json\n${mcpRequest}\n\`\`\``} />
+                    <MarkdownContent content={`\`\`\`json\n${mcpRequest}\n\`\`\``} />
                 </div>
             )}
             {mcpResponse && (
                 <div className={b('section')}>
                     <div className={b('section-label')}>{t('mcp_response')}</div>
-                    <MarkdownRenderer content={`\`\`\`json\n${mcpResponse}\n\`\`\``} />
+                    <MarkdownContent content={`\`\`\`json\n${mcpResponse}\n\`\`\``} />
                 </div>
             )}
         </div>

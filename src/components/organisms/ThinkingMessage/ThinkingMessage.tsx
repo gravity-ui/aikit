@@ -6,15 +6,12 @@ import {OptionsType} from '@diplodoc/transform/lib/typings';
 import {ChevronDown, ChevronUp, Copy} from '@gravity-ui/icons';
 import {Button, DOMProps, Icon, QAProps, Text} from '@gravity-ui/uikit';
 
+import {MarkdownContent} from '../../../markdown/MarkdownProvider';
+import {type MarkdownRendererMdxOptions, type MermaidOptions} from '../../../markdown/types';
 import type {ThinkingMessageContentData} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 import {Loader} from '../../atoms/Loader';
-import {
-    MarkdownRenderer,
-    type MarkdownRendererMdxOptions,
-    type MermaidOptions,
-} from '../../atoms/MarkdownRenderer';
 
 import {useThinkingMessage} from './useThinkingMessage';
 
@@ -111,7 +108,7 @@ export const ThinkingMessage = (props: ThinkingMessageProps) => {
                 <div className={b('container')}>
                     {content.map((item, index) =>
                         format === 'markdown' ? (
-                            <MarkdownRenderer
+                            <MarkdownContent
                                 className={b('content')}
                                 key={index}
                                 content={item}

@@ -2,6 +2,7 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
 import {MdxProps, MessageListProps} from 'src/components/organisms/MessageList';
 
+import type {MermaidOptions} from '../../../markdown/types';
 import type {
     ChatStatus,
     ChatType,
@@ -15,7 +16,6 @@ import type {
 import type {SuggestionsItem} from '../../../types/common';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
-import type {MermaidOptions} from '../../atoms/MarkdownRenderer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
 import type {HeaderProps} from '../../organisms/Header';
 import type {PromptInputProps} from '../../organisms/PromptInput';

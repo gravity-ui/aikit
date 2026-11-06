@@ -1,5 +1,5 @@
 import {block} from '../../../utils/cn';
-import {MessageList, type MessageListProps} from '../../organisms/MessageList';
+import {MessageList, type MessageListProps} from '../../organisms/MessageList/MessageList';
 import {EmptyContainer, type EmptyContainerProps} from '../EmptyContainer';
 
 import './ChatContent.scss';

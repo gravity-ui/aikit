@@ -157,6 +157,7 @@ Full integrations:
 ## Documentation
 
 - [Quick Start Guide](./docs/GETTING_STARTED.md)
+- [Custom Markdown rendering without the built-in engine](./docs/custom-markdown.md)
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Project Structure](./docs/PROJECT_STRUCTURE.md)
 - [Testing Guide](./docs/TESTING.md)
