@@ -14,7 +14,7 @@ const mockClearFailedDraft = jest.fn().mockReturnValue(true);
 jest.mock('../McpToolRenderer', () => ({McpToolRenderer: () => null}));
 
 jest.mock('uuid', () => ({v4: () => `id-${++mockId}`}));
-jest.mock('../../ChatContainer', () => ({
+jest.mock('../../ChatContainer/ChatContainer', () => ({
     ChatContainer: (props: ChatContainerProps) => {
         mockChatProps = props;
         useImperativeHandle(props.promptInputProps?.apiRef, () => ({

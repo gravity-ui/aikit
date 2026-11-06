@@ -1,6 +1,6 @@
 import {expect, test} from '~playwright/core';
 
-import {ChatContainer} from '../ChatContainer';
+import {ChatContainer} from '..';
 
 import {ChatContainerStories} from './helpersPlaywright';
 

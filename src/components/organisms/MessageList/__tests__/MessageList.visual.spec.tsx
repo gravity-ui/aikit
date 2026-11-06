@@ -2,9 +2,9 @@ import type {Page} from '@playwright/test';
 
 import {expect, test} from '~playwright/core';
 
+import {MessageList} from '..';
 import type {TAssistantMessage, TUserMessage} from '../../../../types/messages';
 import {BaseMessageActionType} from '../../../../types/messages';
-import {MessageList} from '../MessageList';
 
 import {MessageListStories} from './helpersPlaywright';
 

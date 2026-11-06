@@ -6,7 +6,7 @@ import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import type {PromptInputHandle} from '../../../organisms/PromptInput';
 import {ChatContainer} from '../ChatContainer';
 
-jest.mock('../../../templates/ChatContent', () => ({
+jest.mock('../../../templates/ChatContent/ChatContent', () => ({
     ChatContent: ({
         emptyContainerProps,
     }: {

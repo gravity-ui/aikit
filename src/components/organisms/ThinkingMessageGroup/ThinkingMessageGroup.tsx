@@ -5,10 +5,10 @@ import {useId, useState} from 'react';
 import {Copy} from '@gravity-ui/icons';
 import {Button, Icon, Text} from '@gravity-ui/uikit';
 
+import {MarkdownContent} from '../../../markdown/MarkdownProvider';
 import {copyToClipboard} from '../../../utils/clipboardUtils';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
-import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 
 import {CompactHeading} from './CompactHeading';
 import {StepIcon} from './StepIcon';
@@ -164,7 +164,7 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                                                   }
                                                   if (format === 'markdown') {
                                                       return (
-                                                          <MarkdownRenderer
+                                                          <MarkdownContent
                                                               className={b('step-content')}
                                                               key={index}
                                                               content={item}
