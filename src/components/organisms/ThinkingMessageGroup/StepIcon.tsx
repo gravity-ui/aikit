@@ -1,15 +1,17 @@
 import type {ReactNode} from 'react';
 
-import {Ban, CircleXmark, Pause} from '@gravity-ui/icons';
+import {Ban, Check, CircleXmark, Clock, Pause} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
-import type {ThinkingStepStatus} from './types';
+import type {ThinkingMessageGroupProps, ThinkingStepStatus} from './types';
 
 const b = block('thinking-message-group');
 
 const statusIcons = {
+    thinking: Clock,
+    thought: Check,
     error: CircleXmark,
     cancelled: Ban,
     paused: Pause,
@@ -18,11 +20,15 @@ const statusIcons = {
 export function StepIcon({
     status,
     operationIcon,
+    iconMode = 'status',
 }: {
     status: ThinkingStepStatus;
     operationIcon?: ReactNode;
+    iconMode?: ThinkingMessageGroupProps['iconMode'];
 }) {
-    if (status === 'thinking' || status === 'thought') {
+    if (iconMode === 'none') return null;
+
+    if (iconMode === 'type' && (status === 'thinking' || status === 'thought')) {
         return operationIcon || <span className={b('step-dot')} />;
     }
 

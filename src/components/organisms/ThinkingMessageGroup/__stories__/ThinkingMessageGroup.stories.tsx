@@ -6,6 +6,7 @@ import type {Decorator, Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {
     ThinkingMessageGroup,
+    type ThinkingMessageGroupProps,
     type ThinkingStep,
     type ThinkingStepStatus,
     thinkingMessageToStep,
@@ -59,6 +60,8 @@ export default {
             options: ['thinking', 'thought', 'error', 'cancelled', 'paused'],
         },
         format: {control: 'select', options: ['plain', 'markdown']},
+        iconMode: {control: 'select', options: ['type', 'status', 'none']},
+        activeStepLabel: {control: 'text'},
         maxHistoryHeight: {
             control: 'text',
             description: 'Maximum expanded history height (default: 480px). Use none for no limit.',
@@ -213,6 +216,8 @@ export const CustomHistoryHeight: Story = {
 };
 
 function ProgressUpdatesExample({
+    iconMode,
+    activeStepLabel,
     controlled = false,
     defaultExpanded = true,
     initialExpanded = defaultExpanded,
@@ -220,7 +225,7 @@ function ProgressUpdatesExample({
     controlled?: boolean;
     defaultExpanded?: boolean;
     initialExpanded?: boolean;
-}) {
+} & Pick<ThinkingMessageGroupProps, 'iconMode' | 'activeStepLabel'>) {
     const [steps, setSteps] = useState(compactSteps);
     const [status, setStatus] = useState<ThinkingStepStatus>('thinking');
     const [expanded, setExpanded] = useState(initialExpanded);
@@ -322,6 +327,8 @@ function ProgressUpdatesExample({
             </div>
             <ThinkingMessageGroup
                 key={demoVersion}
+                iconMode={iconMode}
+                activeStepLabel={activeStepLabel}
                 format="markdown"
                 stepTypes={compactData.stepTypes}
                 steps={steps}
@@ -336,13 +343,14 @@ function ProgressUpdatesExample({
 
 export const CompactStreaming: Story = {
     name: 'Progress Updates',
-    render: (args) => <ProgressUpdatesExample defaultExpanded={args.defaultExpanded} />,
+    render: (args) => <ProgressUpdatesExample {...args} />,
 };
 
 export const CompactControlled: Story = {
     name: 'Controlled Expansion',
     render: (args) => (
         <ProgressUpdatesExample
+            {...args}
             controlled
             defaultExpanded={args.defaultExpanded}
             initialExpanded={args.expanded}
@@ -395,10 +403,62 @@ export const Legacy: Story = {
         format: 'markdown',
         steps: [
             thinkingMessageToStep('legacy', {
-                content: ['**First paragraph**', 'Second paragraph'],
+                content: [
+                    'Selecting tools to inspect **database clusters**.',
+                    'Checking which database engines are available.',
+                ],
                 status: 'thought',
-                enabledCopy: true,
             }),
         ],
     },
+};
+
+export const Presentation: Story = {
+    name: 'Presentation Options',
+    parameters: {
+        description:
+            'Compare status icons, application-provided operation icons and a history without icons. The heading and step titles use primary text; titles use body-1 accent and descriptions use secondary. The first step has no title; the second has an application-provided title. Switch status in Controls to inspect completion, errors and pauses.',
+    },
+    args: {
+        status: 'thinking',
+        activeStepLabel: 'Checking database clusters',
+        format: 'markdown',
+    },
+    render: (args) => (
+        <Showcase direction="column">
+            {(
+                [
+                    {title: 'Subtle · status icons', iconMode: 'status'},
+                    {title: 'Subtle · operation icons', iconMode: 'type'},
+                    {title: 'Subtle · without icons', iconMode: 'none'},
+                ] as const
+            ).map(({title, iconMode}) => (
+                <ShowcaseItem key={title} title={title} width="100%">
+                    <ThinkingMessageGroup
+                        {...args}
+                        iconMode={iconMode}
+                        defaultExpanded
+                        stepTypes={{search: {icon: <Icon data={Magnifier} size={16} />}}}
+                        steps={[
+                            {
+                                id: 'tools',
+                                type: 'search',
+                                status: 'thought',
+                                content:
+                                    'Selecting tools to inspect **PostgreSQL, MySQL and ClickHouse** clusters.',
+                            },
+                            {
+                                id: 'clusters',
+                                type: 'search',
+                                title: 'Checking database clusters',
+                                status: args.status ?? 'thinking',
+                                content:
+                                    'Checking which database engines are available in the folder.',
+                            },
+                        ]}
+                    />
+                </ShowcaseItem>
+            ))}
+        </Showcase>
+    ),
 };

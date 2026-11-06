@@ -18,7 +18,7 @@ export interface ThinkingStep {
 }
 
 export interface ThinkingStepType {
-    /** Operation icon shown while thinking and after completion; error, paused, and cancelled states use their status icon. */
+    /** Operation icon used with iconMode="type" while thinking and after completion; other states use their status icon. */
     icon?: ReactNode;
     /** Shown only in the expanded history. */
     label?: string;
@@ -40,6 +40,10 @@ export interface ThinkingMessageGroupProps
     > {
     /** Ordered, accumulated steps supplied by the application. */
     steps: readonly ThinkingStep[];
+    /** Defaults to status icons. Use type for application-supplied category icons. */
+    iconMode?: 'type' | 'status' | 'none';
+    /** Plain-text running heading supplied by the application; overrides the active step title. */
+    activeStepLabel?: string;
     stepTypes?: Readonly<Record<string, ThinkingStepType>>;
     /** Defaults to the last step's status. Explicit run status takes precedence. */
     status?: ThinkingStepStatus;

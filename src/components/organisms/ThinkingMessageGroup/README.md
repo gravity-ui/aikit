@@ -44,7 +44,7 @@ import {ThinkingMessageGroup, thinkingMessageToStep} from '@gravity-ui/aikit/Thi
 
 Use a stable ID scoped to the response. One legacy message becomes one step, even when its
 `content` is an array of paragraphs. Titles, contents, statuses and copy callbacks are preserved.
-No category or action name is inferred from reasoning text. Missing titles use localized status text.
+No category or action name is inferred from reasoning text. Without a title, details are shown directly; an empty step is represented by its status indicator.
 
 ### Supply structured steps
 
@@ -58,33 +58,73 @@ import {ThinkingMessageGroup} from '@gravity-ui/aikit/ThinkingMessageGroup';
     {id: 'analyze', type: 'reasoning', title: 'Analyzed the request', status: 'thought'},
     {id: 'search', type: 'search', title: 'Searching documentation', status: 'thinking'},
   ]}
+  iconMode="type"
   stepTypes={{search: {icon: <Icon data={Magnifier} size={16} />, label: 'Documentation search'}}}
   status="thinking"
   activeStepId="search"
 />;
 ```
 
-Types have no fixed enum. Running and completed steps keep their category icon, or a static dot
-when none is supplied. Error, paused and cancelled steps use their status icon instead. Category labels appear
+Types have no fixed enum. With `iconMode="type"`, running and completed steps keep their category icon, or a static dot when none is supplied. Error, paused and cancelled steps use their status icon instead. Category labels appear
 only in the expanded history. Applications choose icons; the component does not map backend event
 names to icons. Details can be omitted when the backend does not supply them.
 
+### Configure progress presentation
+
+```tsx
+<ThinkingMessageGroup
+  steps={steps}
+  iconMode="status"
+  activeStepLabel="Checking database clusters"
+  format="markdown"
+/>
+```
+
+The component uses `body-1` typography by default. The top-level heading uses primary text.
+Step titles use primary text with the `body-1` accent weight. Descriptions, including the running
+step and Markdown inside a mobile chat, use secondary text. Only the running heading pulses.
+Error indicators use the danger color. Completed steps stay neutral, not green.
+
+In expanded history, a supplied `title` is displayed above the details. Without a title, details
+are displayed directly, without a repeated "In progress" or "Completed" heading. A step with
+neither a title nor details displays only its status icon; when icons are hidden, a localized
+status label keeps it identifiable. Status text is never substituted for a step title, and no
+title is generated from content.
+
+`iconMode="status"` uses a static clock while running and a check after completion.
+`iconMode="type"` uses application-provided category icons for running/completed steps,
+falling back to a dot. Error, paused and cancelled states keep their dedicated status icons.
+`iconMode="none"` removes icons and the timeline gutter; accessible statuses remain, and
+exceptional states retain a visible status label. Custom icons can supply their own colors.
+The completed group heading does not add another checkmark above the step icons.
+
+Use `activeStepLabel` for an application-supplied plain-text heading while running. It takes
+precedence over the active step title, is truncated visually and is available in full on hover.
+When omitted, the active title or localized run status is used. It does not replace stored content
+or affect the completed summary (`renderSummary`).
+
+This presentation also applies automatically with `thinkingMessageView="grouped"`.
+To customize icons or the running heading inside a chat, render `ThinkingMessageGroup` through
+the existing custom thinking renderer, as in the example above.
+
 ## Props
 
-| Prop                       | Type                                            | Required | Default            | Description                                                        |
-| -------------------------- | ----------------------------------------------- | -------- | ------------------ | ------------------------------------------------------------------ |
-| `steps`                    | `readonly ThinkingStep[]`                       | Yes      | —                  | Accumulated, ordered steps with stable unique IDs                  |
-| `stepTypes`                | `Record<string, ThinkingStepType>`              | No       | —                  | Category icons and labels                                          |
-| `status`                   | `ThinkingStepStatus`                            | No       | Last step status   | Overall run status, independent of stored step statuses            |
-| `activeStepId`             | `string`                                        | No       | Last thinking step | Select the active step explicitly                                  |
-| `expanded`                 | `boolean`                                       | No       | —                  | Controlled expansion                                               |
-| `defaultExpanded`          | `boolean`                                       | No       | `false`            | Initial uncontrolled expansion                                     |
-| `maxHistoryHeight`         | `CSSProperties['maxHeight']`                    | No       | `480`              | Maximum expanded history height; use `"none"` to disable the limit |
-| `onExpandedChange`         | `(expanded: boolean) => void`                   | No       | —                  | Disclosure change callback                                         |
-| `renderSummary`            | `(completedSteps: ThinkingStep[]) => ReactNode` | No       | Completed count    | Optional summary; null, false and empty string hide it             |
-| `renderStepContent`        | `(step: ThinkingStep) => ReactNode`             | No       | Content renderer   | Custom details                                                     |
-| `format`                   | `'plain' \| 'markdown'`                         | No       | `'plain'`          | Content format                                                     |
-| `className`, `style`, `qa` | Standard DOM/QA props                           | No       | —                  | Root customization                                                 |
+| Prop                       | Type                                            | Required | Default                          | Description                                                        |
+| -------------------------- | ----------------------------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------ |
+| `steps`                    | `readonly ThinkingStep[]`                       | Yes      | —                                | Accumulated, ordered steps with stable unique IDs                  |
+| `iconMode`                 | `'type' \| 'status' \| 'none'`                  | No       | `'status'`                       | Category icons, execution-state icons, or no icons/timeline        |
+| `activeStepLabel`          | `string`                                        | No       | Active title or localized status | Plain-text override of the running heading                         |
+| `stepTypes`                | `Record<string, ThinkingStepType>`              | No       | —                                | Category icons and labels                                          |
+| `status`                   | `ThinkingStepStatus`                            | No       | Last step status                 | Overall run status, independent of stored step statuses            |
+| `activeStepId`             | `string`                                        | No       | Last thinking step               | Select the active step explicitly                                  |
+| `expanded`                 | `boolean`                                       | No       | —                                | Controlled expansion                                               |
+| `defaultExpanded`          | `boolean`                                       | No       | `false`                          | Initial uncontrolled expansion                                     |
+| `maxHistoryHeight`         | `CSSProperties['maxHeight']`                    | No       | `480`                            | Maximum expanded history height; use `"none"` to disable the limit |
+| `onExpandedChange`         | `(expanded: boolean) => void`                   | No       | —                                | Disclosure change callback                                         |
+| `renderSummary`            | `(completedSteps: ThinkingStep[]) => ReactNode` | No       | Completed count                  | Optional summary; null, false and empty string hide it             |
+| `renderStepContent`        | `(step: ThinkingStep) => ReactNode`             | No       | Content renderer                 | Custom details                                                     |
+| `format`                   | `'plain' \| 'markdown'`                         | No       | `'plain'`                        | Content format                                                     |
+| `className`, `style`, `qa` | Standard DOM/QA props                           | No       | —                                | Root customization                                                 |
 
 Markdown options match `ThinkingMessage`: `transformOptions`, `mermaidOptions`,
 `openMarkdownLinksInNewTab`, `mdxOptions`, `mdxContext`, `markdownExtraProps`.

@@ -13,16 +13,28 @@ import {MarkdownRenderer} from '../../atoms/MarkdownRenderer';
 import {CompactHeading} from './CompactHeading';
 import {StepIcon} from './StepIcon';
 import {i18n} from './i18n';
-import type {ThinkingMessageGroupProps} from './types';
+import type {ThinkingMessageGroupProps, ThinkingStep} from './types';
 
 import './ThinkingMessageGroup.scss';
 
 const b = block('thinking-message-group');
 
+function shouldShowStatus(
+    step: ThinkingStep,
+    iconMode: ThinkingMessageGroupProps['iconMode'],
+    hasContent: boolean,
+) {
+    if (iconMode !== 'none') return false;
+    const isEmpty = !step.title && !hasContent;
+    return isEmpty || (step.status !== 'thinking' && step.status !== 'thought');
+}
+
 export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
     const {t} = i18n.useTranslation();
     const {
         steps,
+        iconMode = 'status',
+        activeStepLabel,
         stepTypes,
         status = steps[steps.length - 1]?.status ?? 'thought',
         activeStepId,
@@ -84,6 +96,8 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
         <CompactHeading
             activeStep={activeStep}
             stepTypes={stepTypes}
+            iconMode={iconMode}
+            activeStepLabel={activeStepLabel}
             status={status}
             summary={summary}
             hasDetails={hasDetails}
@@ -92,7 +106,11 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
     );
 
     return (
-        <div className={b(null, className)} data-qa={qa} style={style}>
+        <div
+            className={b({'without-icons': iconMode === 'none'}, className)}
+            data-qa={qa}
+            style={style}
+        >
             {hasDetails ? (
                 <Button
                     id={headingId}
@@ -118,42 +136,44 @@ export function ThinkingMessageGroup(props: ThinkingMessageGroupProps) {
                 >
                     {steps.map((step) => {
                         const type = stepTypes?.[step.type];
+                        const typeLabel = type?.label;
                         const content = Array.isArray(step.content) ? step.content : [step.content];
+                        const hasContent = Boolean(renderStepContent) || content.some(Boolean);
+                        const showStatus = shouldShowStatus(step, iconMode, hasContent);
                         return (
                             <li className={b('step')} key={step.id}>
                                 <span
-                                    className={b('step-marker', {status: step.status})}
+                                    className={b('step-marker', {
+                                        status: step.status,
+                                        hidden: iconMode === 'none',
+                                    })}
                                     role="img"
                                     aria-label={t(`status-${step.status}`)}
                                 >
-                                    <StepIcon status={step.status} operationIcon={type?.icon} />
+                                    <StepIcon
+                                        status={step.status}
+                                        operationIcon={type?.icon}
+                                        iconMode={iconMode}
+                                    />
                                 </span>
                                 <div className={b('step-body')}>
-                                    <Text
-                                        className={b('step-title', {
-                                            active:
-                                                step.id === activeStep?.id &&
-                                                step.status === 'thinking' &&
-                                                isThinking,
-                                        })}
-                                    >
-                                        {step.title || t(`status-${step.status}`)}
-                                    </Text>
-                                    {(type?.label ||
-                                        (step.status !== 'thinking' &&
-                                            step.status !== 'thought')) && (
+                                    {step.title && (
+                                        <Text variant="body-1" className={b('step-title')}>
+                                            {step.title}
+                                        </Text>
+                                    )}
+                                    {(typeLabel || showStatus) && (
                                         <span className={b('step-meta')}>
-                                            {type?.label && <span>{type.label}</span>}
-                                            {step.status !== 'thinking' &&
-                                                step.status !== 'thought' && (
-                                                    <span
-                                                        className={b('step-status', {
-                                                            error: step.status === 'error',
-                                                        })}
-                                                    >
-                                                        {t(`status-${step.status}`)}
-                                                    </span>
-                                                )}
+                                            {typeLabel && <span>{typeLabel}</span>}
+                                            {showStatus && (
+                                                <span
+                                                    className={b('step-status', {
+                                                        error: step.status === 'error',
+                                                    })}
+                                                >
+                                                    {t(`status-${step.status}`)}
+                                                </span>
+                                            )}
                                         </span>
                                     )}
                                     <div className={b('step-details')}>
