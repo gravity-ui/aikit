@@ -1,4 +1,5 @@
-export {ThinkingMessageGroup} from './ThinkingMessageGroup';
+export {ThinkingMessageGroup} from './ThinkingMessageGroupWithMarkdown';
+
 export type {
     ThinkingMessageGroupProps,
     ThinkingStep,

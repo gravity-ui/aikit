@@ -28,3 +28,6 @@ export * from './hooks';
 
 // === Utilities ===
 export * from './utils';
+
+export {MarkdownProvider} from './markdown/MarkdownProvider';
+export type {MarkdownProviderProps} from './markdown/MarkdownProvider';

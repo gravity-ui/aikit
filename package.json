@@ -683,6 +683,16 @@
         "types": "./build/server/cjs/openai/index.d.ts",
         "default": "./build/server/cjs/openai/index.js"
       }
+    },
+    "./custom-markdown": {
+      "import": {
+        "types": "./build/esm/custom-markdown/index.d.ts",
+        "default": "./build/esm/custom-markdown/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/custom-markdown/index.d.ts",
+        "default": "./build/cjs/custom-markdown/index.js"
+      }
     }
   },
   "files": [

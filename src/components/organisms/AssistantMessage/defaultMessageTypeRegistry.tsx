@@ -2,6 +2,8 @@ import type {HTMLAttributes} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import {MarkdownContent} from '../../../markdown/MarkdownProvider';
+import {type MarkdownRendererMdxOptions, type MermaidOptions} from '../../../markdown/types';
 import type {
     TextMessageContent,
     ThinkingMessageContent,
@@ -12,12 +14,7 @@ import {
     createMessageRendererRegistry,
     registerMessageRenderer,
 } from '../../../utils/messageTypeRegistry';
-import {
-    MarkdownRenderer,
-    type MarkdownRendererMdxOptions,
-    type MermaidOptions,
-} from '../../atoms/MarkdownRenderer';
-import {ThinkingMessage} from '../ThinkingMessage';
+import {ThinkingMessage} from '../ThinkingMessage/ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
 
 export function createDefaultMessageRegistry(
@@ -36,7 +33,7 @@ export function createDefaultMessageRegistry(
         'text',
         {
             component: ({part}) => (
-                <MarkdownRenderer
+                <MarkdownContent
                     content={part.data.text}
                     transformOptions={transformOptions}
                     shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}

@@ -13,7 +13,7 @@ import {
     type PromptInputHandle,
     type PromptInputProps,
 } from '../../organisms/PromptInput';
-import {ChatContent} from '../../templates/ChatContent';
+import {ChatContent} from '../../templates/ChatContent/ChatContent';
 import {History} from '../../templates/History';
 
 import {defaultGravityMascots} from './GravityMascot';

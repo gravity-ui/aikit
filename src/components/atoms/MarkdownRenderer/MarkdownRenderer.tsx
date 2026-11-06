@@ -1,4 +1,4 @@
-import {Fragment, type HTMLAttributes, memo, useMemo, useRef} from 'react';
+import {Fragment, memo, useMemo, useRef} from 'react';
 
 import {mdxPlugin} from '@diplodoc/mdx-extension';
 import type {
@@ -6,51 +6,26 @@ import type {
     MarkdownIt,
     OptionsType,
 } from '@diplodoc/transform/lib/typings';
-import type {MDXComponents} from 'mdx/types';
 
 import {useMarkdownTransform} from '../../../hooks/useMarkdownTransform';
 import {useMermaid} from '../../../hooks/useMermaid';
 import {useRemend} from '../../../hooks/useRemend';
+import type {MarkdownRendererProps} from '../../../markdown/types';
 import {block} from '../../../utils/cn';
 import {getNewTabLinkAttributes} from '../../../utils/markdownLinks';
 import {areOptionsEqual} from '../../../utils/markdownUtils';
-import type {MermaidOptions} from '../../../utils/renderMermaid';
 
-export type {MermaidOptions} from '../../../utils/renderMermaid';
+export type {
+    MarkdownRendererProps,
+    MarkdownRendererMdxOptions,
+    MermaidOptions,
+} from '../../../markdown/types';
 
 import {MdxPortals} from './MdxPortals';
 
 import './MarkdownRenderer.scss';
 
 const b = block('markdown-renderer');
-
-/**
- * Options for rendering embedded MDX/JSX in the markdown content via
- * `@diplodoc/mdx-extension`. Passing `mdxOptions` enables MDX processing.
- */
-export interface MarkdownRendererMdxOptions {
-    /** Map of components rendered from embedded MDX/JSX in the markdown content. */
-    components: MDXComponents;
-    /** Optional list of tag names to limit which components are processed as MDX. */
-    tagNames?: string[];
-    /** CSP nonce applied to compiled MDX scripts. Defaults to a nonce found in the document. */
-    nonce?: string;
-}
-
-export interface MarkdownRendererProps {
-    content: string;
-    className?: string;
-    qa?: string;
-    transformOptions?: OptionsType;
-    shouldParseIncompleteMarkdown?: boolean;
-    openLinksInNewTab?: boolean;
-    /** Enables Mermaid diagrams using the supplied lazy loader. Disabled by default. */
-    mermaidOptions?: MermaidOptions;
-    mdxOptions?: MarkdownRendererMdxOptions;
-    mdxContext?: Record<string, unknown>;
-    /** Extra props forwarded to the root container `div` element. */
-    extraProps?: HTMLAttributes<HTMLDivElement>;
-}
 
 const openLinksInNewTabPlugin: ExtendedPluginWithCollect = ((md: MarkdownIt) => {
     const rendererRules = md.renderer.rules;
