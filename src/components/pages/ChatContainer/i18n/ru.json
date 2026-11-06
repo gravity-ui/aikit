@@ -6,5 +6,18 @@
   "prompt-placeholder": "Введите ваше сообщение...",
   "history-empty": "История чатов пока пуста",
   "history-empty-filtered": "Ничего не найдено по вашему запросу",
-  "disclaimer-text": "ИИ может ошибаться. Проверяйте важную информацию."
+  "disclaimer-text": "ИИ может ошибаться. Проверяйте важную информацию.",
+  "export-copy": "Скопировать чат в Markdown",
+  "export-download": "Скачать чат (.md)",
+  "export-select": "Выбрать сообщения для экспорта",
+  "export-copied": "Чат скопирован",
+  "export-copy-error": "Не удалось скопировать чат. Попробуйте ещё раз",
+  "export-downloaded": "Скачивание началось",
+  "export-download-error": "Не удалось скачать чат. Попробуйте ещё раз",
+  "export-user": "Пользователь",
+  "export-assistant": "Ассистент",
+  "export-close": "Закрыть",
+  "export-copy-selected": "Скопировать",
+  "export-download-selected": "Скачать",
+  "export-select-all": "Выбрать все"
 }

@@ -1377,3 +1377,48 @@ without changing existing message data. Merge this property with your existing c
 Adjacent thinking parts inside one assistant message are grouped; custom thinking renderers
 take precedence. See [ThinkingMessageGroup](../../organisms/ThinkingMessageGroup/README.md)
 for migration and explicit cross-message grouping.
+
+### Markdown export
+
+Enable the header actions for copying the conversation, downloading a `.md` file,
+and selecting individual messages:
+
+```tsx
+<ChatContainer
+  activeChat={chat}
+  messages={allMessages}
+  status={status}
+  chatExport={{loading: isHistoryLoading, filename: 'conversation.md'}}
+/>
+```
+
+| Option                          | Type                                                           | Required | Default          | Description                                            |
+| ------------------------------- | -------------------------------------------------------------- | -------- | ---------------- | ------------------------------------------------------ |
+| `chatExport`                    | `ChatMarkdownOptions & {loading?: boolean; filename?: string}` | -        | -                | Opt in to conversation export                          |
+| `chatExport.loading`            | `boolean`                                                      | -        | `false`          | Disable export until the complete history is available |
+| `chatExport.filename`           | `string`                                                       | -        | `'chat.md'`      | Markdown download filename                             |
+| `chatExport.roleLabels`         | `{user: string; assistant: string}`                            | -        | Localized labels | Headings for exported messages                         |
+| `chatExport.getContentMarkdown` | `(content, message) => string \| undefined`                    | -        | -                | Public Markdown for custom message content             |
+
+Supply the **complete chronological history** in `messages`, including messages
+outside the virtualized viewport. Set `loading` while fetching history, including
+older pages. Export is disabled for empty conversations and while a response is
+being generated. Keep `activeChat.id` stable and unique per conversation so pending
+clipboard results and message selection remain scoped to the originating chat.
+
+Source Markdown is preserved. System messages, reasoning, tool calls, metadata,
+and unknown content are excluded. File attachment names and HTTP(S) image links
+are included; inline image data and private attachment IDs are omitted. For custom
+cards, use `getContentMarkdown` to return their user-visible title, result, and link.
+Do not return raw card payloads or private metadata. Built-in reasoning and tool
+content never invoke this callback.
+
+Copy and download feedback is localized in English and Russian and appears in the
+chat or the selection dialog. Clipboard failures leave the action available for retry.
+The same actions use the header's mobile menu on small screens. Updating message
+history closes the selection dialog to prevent exporting a different selection.
+
+For custom integrations, `getMessageMarkdown`, `serializeChatMarkdown`,
+`downloadChatMarkdown`, and `ChatMarkdownOptions` are available from the package
+root. The serializer defaults to English role headings; pass `roleLabels` for
+another language.
