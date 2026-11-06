@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.0.3](https://github.com/gravity-ui/aikit/compare/v3.0.2...v3.0.3) (2026-11-05)
+
+
+### Bug Fixes
+
+* publish release tags before preparing the next release PR ([#304](https://github.com/gravity-ui/aikit/issues/304)) ([1ab11b2](https://github.com/gravity-ui/aikit/commit/1ab11b2337877d69c9d011c4fae56219e733d3ee))
+
+## [3.0.2](https://github.com/gravity-ui/aikit/compare/v3.0.1...v3.0.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* separate maintenance release tags and GitHub Latest ([#298](https://github.com/gravity-ui/aikit/issues/298)) ([8fb80ea](https://github.com/gravity-ui/aikit/commit/8fb80eaab5ebfa1a0333e54ccd226d94691c9a46))
+
+## [3.0.1](https://github.com/gravity-ui/aikit/compare/v3.0.0...v3.0.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* reject release lockfiles with mismatched package names ([#293](https://github.com/gravity-ui/aikit/issues/293)) ([d51ddcd](https://github.com/gravity-ui/aikit/commit/d51ddcd6ebcf3435f1c79a2ae3583d65e7a2dc8a))
+
 ## [3.0.0](https://github.com/gravity-ui/aikit/compare/v2.28.0...v3.0.0) (2026-11-03)
 
 
