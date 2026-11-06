@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.29.0](https://github.com/gravity-ui/aikit/compare/v2.28.3...v2.29.0) (2026-11-06)
+
+
+### Features
+
+* **markdown:** backport custom rendering to v2 ([#309](https://github.com/gravity-ui/aikit/issues/309)) ([22b8639](https://github.com/gravity-ui/aikit/commit/22b86397c06aaebffa7f9111166902f7c61e361a))
+
 ## [2.28.3](https://github.com/gravity-ui/aikit/compare/v2.28.2...v2.28.3) (2026-11-05)
 
 
