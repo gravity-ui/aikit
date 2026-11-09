@@ -19,6 +19,7 @@ module.exports = {
     },
     transformIgnorePatterns: ['node_modules/(?!(@gravity-ui)/)'],
     moduleNameMapper: {
+        '^marked$': '<rootDir>/node_modules/marked/lib/marked.umd.js',
         '\\.(css|scss|sass)$': '<rootDir>/test-utils/__mocks__/styleMock.js',
     },
     coverageDirectory: './coverage',

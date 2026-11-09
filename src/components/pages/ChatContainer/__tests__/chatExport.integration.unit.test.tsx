@@ -4,6 +4,7 @@ import {ThemeProvider} from '@gravity-ui/uikit';
 import {act, fireEvent, render, renderHook, screen} from '@testing-library/react';
 
 import type {ChatType} from '../../../../types';
+import type {TChatMessage} from '../../../../types/messages';
 import * as chatMarkdown from '../../../../utils/chatMarkdown';
 import {ChatContainer} from '../ChatContainer';
 import type {ChatExportConfig} from '../types';
@@ -231,7 +232,7 @@ describe('export hook lifecycle', () => {
         expect(result.current.menuItems).toEqual([]);
         rerender({enabled: true});
         expect(result.current.dialogProps.open).toBe(false);
-        expect(result.current.dialogProps.messages[0].selected).toBe(false);
+        expect(result.current.dialogProps.messages).toEqual([]);
         await act(async () => original.reject(new Error('Clipboard denied')));
         expect(result.current.notice).toBeUndefined();
     });
@@ -381,4 +382,110 @@ describe('custom export notifications', () => {
         expect(result.current.dialogProps.disabled).toBe(false);
         expect(result.current.notice).toBeUndefined();
     });
+});
+
+describe('export review regressions', () => {
+    it('defers custom serializers until user interaction and reports export failures', async () => {
+        const error = new Error('Incomplete custom card');
+        const getContentMarkdown = jest.fn(() => {
+            throw error;
+        });
+        const onResult = jest.fn();
+        const {result, rerender} = renderHook(
+            ({streaming}) =>
+                useChatExport({
+                    conversationKey: 'chat:A',
+                    chatId: 'A',
+                    messages: [
+                        {role: 'assistant', content: {type: 'card', data: {}}},
+                    ] as unknown as TChatMessage[],
+                    status: streaming ? 'streaming' : 'ready',
+                    config: {getContentMarkdown, onResult},
+                }),
+            {initialProps: {streaming: true}},
+        );
+        expect(result.current.menuItems[0].disabled).toBe(true);
+        expect(getContentMarkdown).not.toHaveBeenCalled();
+        rerender({streaming: false});
+        act(() => {
+            result.current.menuItems[2].onClick();
+        });
+        expect(getContentMarkdown).toHaveBeenCalledTimes(1);
+        expect(result.current.dialogProps.open).toBe(true);
+        expect(onResult).not.toHaveBeenCalled();
+        await act(async () => {
+            await result.current.menuItems[0].onClick();
+        });
+        expect(onResult).toHaveBeenCalledWith({
+            action: 'copy',
+            status: 'error',
+            chatId: 'A',
+            error,
+        });
+        expect(result.current.dialogProps.disabled).toBe(false);
+    });
+
+    it('keeps selection through equivalent arrays and closes it after reordering', () => {
+        const first = {id: 'a', role: 'user' as const, content: 'First'};
+        const second = {id: 'b', role: 'assistant' as const, content: 'Second'};
+        const {result, rerender} = renderHook(
+            ({messages}) =>
+                useChatExport({
+                    conversationKey: 'chat:A',
+                    messages,
+                    status: 'error',
+                    config: {},
+                }),
+            {initialProps: {messages: [first, second]}},
+        );
+        expect(result.current.dialogProps.messages).toEqual([]);
+        act(() => {
+            result.current.menuItems[2].onClick();
+        });
+        act(() => {
+            result.current.dialogProps.onSelectionChange(0, false);
+        });
+        rerender({messages: [{...first}, {...second}]});
+        expect(result.current.dialogProps.open).toBe(true);
+        expect(result.current.dialogProps.messages.map(({selected}) => selected)).toEqual([
+            false,
+            true,
+        ]);
+        rerender({messages: [second, first]});
+        expect(result.current.dialogProps.open).toBe(false);
+    });
+});
+
+it('shows distinct custom card previews only after opening the picker', () => {
+    const getContentMarkdown = jest.fn((part) => part.data.title);
+    const messages = ['First card', 'Second card'].map((title, index) => ({
+        id: String(index),
+        role: 'assistant',
+        content: {type: 'card', data: {title}},
+    })) as unknown as TChatMessage[];
+    const {result, rerender} = renderHook(() =>
+        useChatExport({
+            conversationKey: 'chat:A',
+            messages: [...messages],
+            status: 'ready',
+            config: {getContentMarkdown},
+        }),
+    );
+    expect(getContentMarkdown).not.toHaveBeenCalled();
+    act(() => {
+        result.current.menuItems[2].onClick();
+    });
+    expect(result.current.dialogProps.messages.map(({text}) => text)).toEqual([
+        'Assistant: First card',
+        'Assistant: Second card',
+    ]);
+    act(() => {
+        result.current.dialogProps.onSelectionChange(0, false);
+    });
+    rerender();
+    expect(getContentMarkdown).toHaveBeenCalledTimes(2);
+    expect(result.current.dialogProps.messages.map(({selected}) => selected)).toEqual([
+        false,
+        true,
+    ]);
 });
