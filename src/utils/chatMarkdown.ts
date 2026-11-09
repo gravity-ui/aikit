@@ -13,7 +13,10 @@ export interface ChatMarkdownOptions {
 }
 
 function escapeMarkdownSyntax(text: string): string {
-    return text.replace(/&/g, '&amp;').replace(/[\\`*_{}[\]()<>#+.!|~-]/g, '\\$&');
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/[\\`*_{}[\]()<>#+!|~-]/g, '\\$&')
+        .replace(/^( {0,3}\d+)\.(?=\s)/gm, '$1\\.');
 }
 
 function escapePlainText(text: string): string {
@@ -23,9 +26,8 @@ function escapePlainText(text: string): string {
         const token = Lexer.lexInline(match[0])[0];
         if (token?.type !== 'link') continue;
         const offset = match.index;
-        const href = token.href.replace(/&/g, '&amp;').replace(/</g, '%3C').replace(/>/g, '%3E');
         result += escapeMarkdownSyntax(text.slice(cursor, offset));
-        result += `[${escapeMarkdownSyntax(token.raw)}](<${href}>)`;
+        result += token.raw;
         cursor = offset + token.raw.length;
     }
     return result + escapeMarkdownSyntax(text.slice(cursor));
