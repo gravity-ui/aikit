@@ -1392,13 +1392,14 @@ and selecting individual messages:
 />
 ```
 
-| Option                          | Type                                                           | Required | Default          | Description                                            |
-| ------------------------------- | -------------------------------------------------------------- | -------- | ---------------- | ------------------------------------------------------ |
-| `chatExport`                    | `ChatMarkdownOptions & {loading?: boolean; filename?: string}` | -        | -                | Opt in to conversation export                          |
-| `chatExport.loading`            | `boolean`                                                      | -        | `false`          | Disable export until the complete history is available |
-| `chatExport.filename`           | `string`                                                       | -        | `'chat.md'`      | Markdown download filename                             |
-| `chatExport.roleLabels`         | `{user: string; assistant: string}`                            | -        | Localized labels | Headings for exported messages                         |
-| `chatExport.getContentMarkdown` | `(content, message) => string \| undefined`                    | -        | -                | Public Markdown for custom message content             |
+| Option                          | Type                                        | Required | Default          | Description                                            |
+| ------------------------------- | ------------------------------------------- | -------- | ---------------- | ------------------------------------------------------ |
+| `chatExport`                    | `ChatExportConfig`                          | -        | -                | Opt in to conversation export                          |
+| `chatExport.onResult`           | `(result: ChatExportResult) => void`        | -        | -                | Replace built-in export feedback                       |
+| `chatExport.loading`            | `boolean`                                   | -        | `false`          | Disable export until the complete history is available |
+| `chatExport.filename`           | `string`                                    | -        | `'chat.md'`      | Markdown download filename                             |
+| `chatExport.roleLabels`         | `{user: string; assistant: string}`         | -        | Localized labels | Headings for exported messages                         |
+| `chatExport.getContentMarkdown` | `(content, message) => string \| undefined` | -        | -                | Public Markdown for custom message content             |
 
 Supply the **complete chronological history** in `messages`, including messages
 outside the virtualized viewport. Set `loading` while fetching history, including
@@ -1422,3 +1423,37 @@ For custom integrations, `getMessageMarkdown`, `serializeChatMarkdown`,
 `downloadChatMarkdown`, and `ChatMarkdownOptions` are available from the package
 root. The serializer defaults to English role headings; pass `roleLabels` for
 another language.
+
+#### Custom export notifications
+
+Pass `chatExport.onResult` to replace the built-in alerts with your application's
+notification mechanism. The callback applies to both full-chat and selected-message
+exports, including copy and download. Without it, AIKit keeps its default feedback.
+
+```tsx
+<ChatContainer
+  activeChat={chat}
+  messages={allMessages}
+  onSendMessage={sendMessage}
+  chatExport={{
+    onResult: ({action, status, chatId, ...details}) => {
+      notifyExportResult({action, status, chatId, ...details});
+    },
+  }}
+/>
+```
+
+| Field    | Type                   | Description                                                 |
+| -------- | ---------------------- | ----------------------------------------------------------- |
+| `action` | `'copy' \| 'download'` | The requested operation                                     |
+| `status` | `'success' \| 'error'` | The operation outcome                                       |
+| `chatId` | `string \| undefined`  | Originating `activeChat.id`; undefined for a draft          |
+| `error`  | `unknown`              | Original exception; present only when `status` is `'error'` |
+
+`onResult` has type `(result: ChatExportResult) => void`. `ChatExportConfig` and
+`ChatExportResult` are exported from the package root and the `ChatContainer` entry.
+The callback supplied when the operation starts is called once on completion.
+Results are discarded after changing conversations, disabling export, or unmounting.
+Download success means the browser download was initiated, not that the file was saved.
+Notification callbacks should handle their own errors; they do not change the export
+outcome or leave the action pending.
