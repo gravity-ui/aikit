@@ -1,10 +1,11 @@
 import {useState} from 'react';
 
 import {ThemeProvider} from '@gravity-ui/uikit';
-import {act, fireEvent, render, screen} from '@testing-library/react';
+import {act, fireEvent, render, renderHook, screen} from '@testing-library/react';
 
 import type {ChatType} from '../../../../types';
 import {ChatContainer} from '../ChatContainer';
+import {useChatExport} from '../useChatExport';
 
 jest.mock('../../../templates/ChatContent/ChatContent', () => ({ChatContent: () => null}));
 jest.mock('../../../organisms/PromptInput', () => ({PromptInput: () => null}));
@@ -165,4 +166,84 @@ describe('chat export clipboard compatibility', () => {
             'Could not copy chat. Please try again.',
         );
     });
+});
+
+describe('export hook lifecycle', () => {
+    const messages = [{role: 'user' as const, content: 'Message'}];
+
+    it('ignores the original request after A -> B -> A without unlocking the new request', async () => {
+        const original = deferClipboard();
+        const {result, rerender} = renderHook(
+            ({conversationKey}) =>
+                useChatExport({
+                    conversationKey,
+                    messages,
+                    status: 'ready',
+                    config: {},
+                }),
+            {initialProps: {conversationKey: 'chat:A'}},
+        );
+        act(() => result.current.menuItems[0].onClick());
+        rerender({conversationKey: 'chat:B'});
+        rerender({conversationKey: 'chat:A'});
+        const next = deferClipboard();
+        act(() => result.current.menuItems[0].onClick());
+        await act(async () => original.resolve());
+        expect(result.current.notice).toBeUndefined();
+        expect(result.current.dialogProps.disabled).toBe(true);
+        await act(async () => next.resolve());
+        expect(result.current.notice?.text).toBe('Chat copied');
+        expect(result.current.dialogProps.disabled).toBe(false);
+    });
+
+    it('resets selection and invalidates an operation when export is disabled and enabled again', async () => {
+        const original = deferClipboard();
+        const {result, rerender} = renderHook(
+            ({enabled}) =>
+                useChatExport({
+                    conversationKey: 'chat:A',
+                    messages,
+                    status: 'ready',
+                    config: enabled ? {} : undefined,
+                }),
+            {initialProps: {enabled: true}},
+        );
+        act(() => result.current.menuItems[2].onClick());
+        expect(result.current.dialogProps.open).toBe(true);
+        act(() => result.current.dialogProps.onCopy());
+        rerender({enabled: false});
+        expect(result.current.menuItems).toEqual([]);
+        rerender({enabled: true});
+        expect(result.current.dialogProps.open).toBe(false);
+        expect(result.current.dialogProps.messages[0].selected).toBe(false);
+        await act(async () => original.reject(new Error('Clipboard denied')));
+        expect(result.current.notice).toBeUndefined();
+    });
+
+    it('supports a ChatContainer with omitted messages and export configuration', () => {
+        render(
+            <ThemeProvider>
+                <ChatContainer onSendMessage={async () => undefined} />
+            </ThemeProvider>,
+        );
+        expect(screen.queryByRole('status')).toBeNull();
+        expect(document.querySelector('[data-qa="header-menu-button"]')).toBeNull();
+    });
+});
+
+it('connects dialog selection and copy actions to the export hook', async () => {
+    document.execCommand = jest.fn(() => true);
+    render(<Conversation autoFocus={false} />);
+    await act(async () => {
+        clickQa('header-menu-button');
+    });
+    await act(async () => {
+        clickQa('header-menu-item-chat-export-select');
+    });
+    fireEvent.click(screen.getByRole('checkbox', {name: 'Select all'}));
+    expect((screen.getByRole('button', {name: 'Copy'}) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByRole('checkbox', {name: 'User: Saved message'}));
+    fireEvent.click(screen.getByRole('button', {name: 'Copy'}));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+    expect(screen.getByRole('status').textContent).toBe('Chat copied');
 });
