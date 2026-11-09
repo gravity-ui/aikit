@@ -11,9 +11,17 @@ const activity = createChatActivityStore({accountId: authenticatedAccount.id});
 activity.load();
 ```
 
-Keep one stable store for the authenticated account outside the panel's lifecycle. On logout/account change, disconnect the old store and create the next account's store. The account identifier is required and becomes part of the localStorage key. Storage is accessed lazily and creation is safe during server rendering. Optionally pass `storage` implementing `getItem` and `setItem`, or `null` for memory-only usage. `onPersistenceError` reports unavailable storage, malformed data and quota failures; activity remains usable in memory.
+Keep one stable store for the authenticated account outside the panel's lifecycle. On logout/account change, disconnect the old store and create the next account's store. The account identifier is required and becomes part of the localStorage key. Storage is accessed lazily and creation is safe during server rendering. Optionally pass `storage` implementing `getItem`, `setItem`, `key` and `length`, or `null` for memory-only usage. `onPersistenceError` reports unavailable storage, malformed data and quota failures; activity remains usable in memory.
 
-Only completed response IDs and their unread/viewed markers are persisted. Loading history does not mark old answers unread. Active requests are never persisted: after reload, use current backend request state to resume their lifecycle. Keep the returned handles with the request objects, independently of chat selection. Call `startGeneration` only at dispatch or for a confirmed active request, never for a historical completion. Starting another generation for the same chat supersedes its previous handle.
+Completed response IDs, per-response viewed markers and request ownership metadata are persisted. Generation activity flags remain in memory. Loading history does not mark old answers unread. Active requests are never persisted: after reload, use current backend request state to resume their lifecycle. Keep the returned handles with the request objects, independently of chat selection. Call `startGeneration` only at dispatch or for a confirmed active request, never for a historical completion. Starting another generation for the same chat supersedes its previous handle.
+
+### Several tabs of the same account
+
+Local persistence uses separate account-scoped keys for each chat's request owner, each completed response, each viewed response, and deletion tombstones. Operations read current shared data and write only their own keys; starting a request in another chat never replaces an account-wide snapshot. Acknowledging one response cannot overwrite a newer response, and deletion keeps late completion writes from bringing a chat back. Chat IDs must not be reused after deletion.
+
+Subscribed stores refresh on browser `storage` events while preserving their own active requests. A newer dispatch in the same chat or deletion invalidates older local handles. Initial loading never restores an active flag from stored request ownership. Custom storage adapters must enumerate their keys through `key(index)` and `length`; call `load()` to refresh data after an external update when the adapter does not emit browser storage events.
+
+Existing version-one account snapshots remain readable as baselines. Per-chat records, viewed markers and tombstones take precedence, and the old account snapshot is never rewritten. Different accounts use different key namespaces. This coordinates browser tabs; it does not synchronize devices.
 
 ## Report the complete request lifecycle
 

@@ -1,3 +1,5 @@
+import {createChatActivityPersistence} from './chatActivityPersistence';
+
 /** Activity is independent of the currently selected chat and survives panel unmounts. */
 export interface ChatActivity {
     readonly isGenerating: boolean;
@@ -49,8 +51,8 @@ export interface LocalChatActivityStore extends ChatActivityStore {
 export interface ChatActivityStoreOptions {
     /** Stable authenticated account identifier. Create a separate store on account change. */
     accountId: string;
-    /** Defaults to localStorage; use null to disable persistence. */
-    storage?: Pick<Storage, 'getItem' | 'setItem'> | null;
+    /** Storage must enumerate keys via key/length. Defaults to localStorage; null uses memory. */
+    storage?: Pick<Storage, 'getItem' | 'setItem' | 'key' | 'length'> | null;
     onPersistenceError?: (error: unknown) => void;
 }
 
@@ -76,118 +78,82 @@ export function createChatActivitySnapshot(
 }
 
 /**
- * Create once per account, outside the panel's lifecycle. Only completed response markers are
- * persisted. Restore live requests from the backend with startGeneration; history loading must
+ * Create once per account, outside the panel's lifecycle. Persist response/read markers and request
+ * ownership, but keep generation activity in memory. Restore live requests from the backend with
+ * startGeneration; history loading must
  * never replay completion events. Response IDs must be unique across requests and stable on reload.
  */
-export function createChatActivityStore({
-    accountId,
-    storage,
-    onPersistenceError,
-}: ChatActivityStoreOptions): LocalChatActivityStore {
-    if (!accountId) throw new Error('Chat activity requires an account identifier');
-    const key = `aikit:chat-activity:v1:${encodeURIComponent(accountId)}`;
+export function createChatActivityStore(options: ChatActivityStoreOptions): LocalChatActivityStore {
+    if (!options.accountId) throw new Error('Chat activity requires an account identifier');
+    const persistence = createChatActivityPersistence(options);
     let snapshot = EMPTY_CHAT_ACTIVITY;
-    let loaded = false;
     const listeners = new Set<() => void>();
-    const generations = new Map<string, object>();
-    const getStorage = () => {
-        if (storage !== undefined) return storage;
-        return typeof window === 'undefined' ? null : window.localStorage;
-    };
-    const publish = (chats: Record<string, ChatActivity>, persist = true) => {
-        snapshot = createChatActivitySnapshot(chats);
-        if (persist) {
-            try {
-                getStorage()?.setItem(
-                    key,
-                    JSON.stringify(
-                        Object.entries(chats)
-                            .filter(([, chat]) => chat.responseId !== undefined)
-                            .map(([id, chat]) => [id, chat.responseId, chat.hasUnread]),
-                    ),
-                );
-            } catch (error) {
-                onPersistenceError?.(error);
+    const generations = new Map<string, string>();
+    const load = () => {
+        const {chats, requestIds} = persistence.readState();
+        const activities = new Map<string, ChatActivity>(
+            Object.entries(chats).map(([id, response]) => [id, {...response, isGenerating: false}]),
+        );
+        for (const [chatId, id] of generations) {
+            if (requestIds.get(chatId) === id) {
+                activities.set(chatId, {
+                    ...activities.get(chatId),
+                    isGenerating: true,
+                    hasUnread: activities.get(chatId)?.hasUnread ?? false,
+                });
+            } else {
+                generations.delete(chatId);
             }
         }
+        snapshot = createChatActivitySnapshot(Object.fromEntries(activities));
         listeners.forEach((listener) => listener());
     };
-    const load = () => {
-        if (loaded) return;
-        loaded = true;
-        try {
-            const raw = getStorage()?.getItem(key);
-            if (!raw) return;
-            const entries: unknown = JSON.parse(raw);
-            if (
-                !Array.isArray(entries) ||
-                entries.some(
-                    (entry) =>
-                        !Array.isArray(entry) ||
-                        entry.length !== 3 ||
-                        typeof entry[0] !== 'string' ||
-                        typeof entry[1] !== 'string' ||
-                        typeof entry[2] !== 'boolean',
-                )
-            ) {
-                throw new Error('Invalid chat activity storage');
-            }
-            publish(
-                Object.fromEntries(
-                    entries.map(([id, responseId, hasUnread]) => [
-                        id,
-                        Object.freeze({isGenerating: false, responseId, hasUnread}),
-                    ]),
-                ),
-                false,
-            );
-        } catch (error) {
-            onPersistenceError?.(error);
-        }
+    const handleStorage = (event: StorageEvent) => {
+        if (persistence.isStorageEvent(event)) load();
     };
-    const update = (id: string, activity: ChatActivity) =>
-        publish({...snapshot.chats, [id]: Object.freeze(activity)});
     return {
         getSnapshot: () => snapshot,
         subscribe: (listener) => {
+            if (!listeners.size && typeof window !== 'undefined') {
+                window.addEventListener('storage', handleStorage);
+            }
             listeners.add(listener);
             return () => {
                 listeners.delete(listener);
+                if (!listeners.size && typeof window !== 'undefined') {
+                    window.removeEventListener('storage', handleStorage);
+                }
             };
         },
         load,
         startGeneration: (chatId) => {
             load();
-            const token = {};
-            generations.set(chatId, token);
+            const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), (value) =>
+                value.toString(36),
+            ).join('-');
             let responseId: string | undefined;
-            update(chatId, {
-                ...snapshot.chats[chatId],
-                isGenerating: true,
-                hasUnread: snapshot.chats[chatId]?.hasUnread ?? false,
-            });
+            if (!persistence.isDeleted(chatId)) {
+                const current = snapshot.chats[chatId];
+                persistence.start(
+                    chatId,
+                    id,
+                    current?.responseId === undefined
+                        ? undefined
+                        : {responseId: current.responseId, hasUnread: current.hasUnread},
+                );
+                generations.set(chatId, id);
+                load();
+            }
             return {
-                responseReceived: (id) => {
-                    if (generations.get(chatId) === token && id) responseId = id;
+                responseReceived: (response) => {
+                    if (generations.get(chatId) === id && response) responseId = response;
                 },
                 finish: () => {
-                    if (generations.get(chatId) !== token) return;
+                    load();
+                    if (generations.get(chatId) !== id) return;
                     generations.delete(chatId);
-                    const previous = snapshot.chats[chatId];
-                    update(chatId, {
-                        ...previous,
-                        isGenerating: false,
-                        ...(responseId === undefined
-                            ? {}
-                            : {
-                                  responseId,
-                                  hasUnread:
-                                      previous.responseId === responseId
-                                          ? previous.hasUnread
-                                          : true,
-                              }),
-                    });
+                    if (responseId !== undefined) persistence.finish(chatId, id, responseId);
+                    load();
                 },
             };
         },
@@ -195,15 +161,14 @@ export function createChatActivityStore({
             load();
             const current = snapshot.chats[chatId];
             if (current?.hasUnread && current.responseId === responseId) {
-                update(chatId, {...current, hasUnread: false});
+                persistence.markViewed(chatId, responseId);
+                load();
             }
         },
         deleteChat: (chatId) => {
-            load();
+            persistence.deleteChat(chatId);
             generations.delete(chatId);
-            const chats = {...snapshot.chats};
-            delete chats[chatId];
-            publish(chats);
+            load();
         },
     };
 }
