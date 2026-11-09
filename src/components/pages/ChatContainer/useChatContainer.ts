@@ -44,7 +44,7 @@ export function useChatContainer(props: ChatContainerProps) {
 
     // Key incremented on each new chat to remount PromptInput with autofocus
     const [promptInputKey, setPromptInputKey] = useState(0);
-    const [commandsRevision, setCommandsRevision] = useState(0);
+    const [conversationRevision, setConversationRevision] = useState(0);
 
     // Determine view for ChatContent (empty or chat)
     const chatContentView = useMemo(() => {
@@ -60,7 +60,7 @@ export function useChatContainer(props: ChatContainerProps) {
     // Handler for creating new chat
     const handleNewChat = useCallback(() => {
         onCreateChat?.();
-        setCommandsRevision((revision) => revision + 1);
+        setConversationRevision((revision) => revision + 1);
         if (autoFocusOnNewChat) {
             setPromptInputKey((prev) => prev + 1);
         }
@@ -90,7 +90,7 @@ export function useChatContainer(props: ChatContainerProps) {
         (chat: ChatContainerProps['activeChat']) => {
             if (chat) {
                 onSelectChat?.(chat);
-                setCommandsRevision((revision) => revision + 1);
+                setConversationRevision((revision) => revision + 1);
                 setIsHistoryOpen(false);
                 if (autoFocusOnChatSelect) {
                     setPromptInputKey((prev) => prev + 1);
@@ -134,9 +134,11 @@ export function useChatContainer(props: ChatContainerProps) {
         isHistoryOpen,
         activeChat,
         promptInputKey,
+        // Keep persisted IDs distinct from draft revisions, independent of autofocus settings.
+        chatExportKey: activeChat ? `chat:${activeChat.id}` : `draft:${conversationRevision}`,
         commandsResetKey:
             promptInputProps?.commandsResetKey ??
-            JSON.stringify([activeChat?.id, commandsRevision]),
+            JSON.stringify([activeChat?.id, conversationRevision]),
 
         // Refs
         historyButtonRef,
