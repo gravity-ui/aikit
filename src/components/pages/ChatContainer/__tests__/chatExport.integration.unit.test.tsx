@@ -4,7 +4,9 @@ import {ThemeProvider} from '@gravity-ui/uikit';
 import {act, fireEvent, render, renderHook, screen} from '@testing-library/react';
 
 import type {ChatType} from '../../../../types';
+import * as chatMarkdown from '../../../../utils/chatMarkdown';
 import {ChatContainer} from '../ChatContainer';
+import type {ChatExportConfig} from '../types';
 import {useChatExport} from '../useChatExport';
 
 jest.mock('../../../templates/ChatContent/ChatContent', () => ({ChatContent: () => null}));
@@ -43,7 +45,13 @@ afterAll(() => {
     else Reflect.deleteProperty(navigator, 'clipboard');
 });
 
-function Conversation({autoFocus}: {autoFocus: boolean}) {
+function Conversation({
+    autoFocus,
+    onResult,
+}: {
+    autoFocus: boolean;
+    onResult?: ChatExportConfig['onResult'];
+}) {
     const [chat, setChat] = useState<ChatType | undefined>({
         id: '1',
         name: 'Saved chat',
@@ -56,7 +64,7 @@ function Conversation({autoFocus}: {autoFocus: boolean}) {
                 messages={[{role: 'user', content: chat ? 'Saved message' : 'Draft message'}]}
                 onCreateChat={() => setChat(undefined)}
                 onSendMessage={async () => undefined}
-                chatExport={{}}
+                chatExport={{onResult}}
                 showHistory={false}
                 promptInputProps={{bodyProps: {autoFocusOnNewChat: autoFocus}}}
             />
@@ -183,11 +191,15 @@ describe('export hook lifecycle', () => {
                 }),
             {initialProps: {conversationKey: 'chat:A'}},
         );
-        act(() => result.current.menuItems[0].onClick());
+        act(() => {
+            result.current.menuItems[0].onClick();
+        });
         rerender({conversationKey: 'chat:B'});
         rerender({conversationKey: 'chat:A'});
         const next = deferClipboard();
-        act(() => result.current.menuItems[0].onClick());
+        act(() => {
+            result.current.menuItems[0].onClick();
+        });
         await act(async () => original.resolve());
         expect(result.current.notice).toBeUndefined();
         expect(result.current.dialogProps.disabled).toBe(true);
@@ -208,9 +220,13 @@ describe('export hook lifecycle', () => {
                 }),
             {initialProps: {enabled: true}},
         );
-        act(() => result.current.menuItems[2].onClick());
+        act(() => {
+            result.current.menuItems[2].onClick();
+        });
         expect(result.current.dialogProps.open).toBe(true);
-        act(() => result.current.dialogProps.onCopy());
+        act(() => {
+            result.current.dialogProps.onCopy();
+        });
         rerender({enabled: false});
         expect(result.current.menuItems).toEqual([]);
         rerender({enabled: true});
@@ -246,4 +262,123 @@ it('connects dialog selection and copy actions to the export hook', async () => 
     fireEvent.click(screen.getByRole('button', {name: 'Copy'}));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
     expect(screen.getByRole('status').textContent).toBe('Chat copied');
+});
+
+describe('custom export notifications', () => {
+    const messages = [{role: 'user' as const, content: 'Message'}];
+    afterEach(() => jest.restoreAllMocks());
+
+    it.each(['success', 'error'] as const)(
+        'delivers copy %s to the application without a built-in alert',
+        async (status) => {
+            const clipboard = deferClipboard();
+            const onResult = jest.fn();
+            const error = new Error('Clipboard denied');
+            render(<Conversation autoFocus={false} onResult={onResult} />);
+            copy();
+            await act(async () => {
+                if (status === 'success') clipboard.resolve();
+                else clipboard.reject(error);
+            });
+            expect(onResult).toHaveBeenCalledTimes(1);
+            expect(onResult).toHaveBeenCalledWith({
+                action: 'copy',
+                status,
+                chatId: '1',
+                ...(status === 'error' ? {error} : {}),
+            });
+            expect(screen.queryByRole('status')).toBeNull();
+        },
+    );
+
+    it.each(['success', 'error'] as const)(
+        'delivers selected-message download %s with an undefined draft ID',
+        async (status) => {
+            const onResult = jest.fn();
+            const error = new Error('Download failed');
+            const download = jest
+                .spyOn(chatMarkdown, 'downloadChatMarkdown')
+                .mockImplementation(() => {
+                    if (status === 'error') throw error;
+                });
+            const {result} = renderHook(() =>
+                useChatExport({
+                    conversationKey: 'draft:1',
+                    messages,
+                    status: 'ready',
+                    config: {onResult},
+                }),
+            );
+            act(() => {
+                result.current.menuItems[2].onClick();
+            });
+            await act(async () => result.current.dialogProps.onDownload());
+            expect(download).toHaveBeenCalledWith('## User\n\nMessage', undefined);
+            expect(onResult).toHaveBeenCalledTimes(1);
+            expect(onResult).toHaveBeenCalledWith({
+                action: 'download',
+                status,
+                chatId: undefined,
+                ...(status === 'error' ? {error} : {}),
+            });
+            expect(result.current.notice).toBeUndefined();
+            expect(result.current.dialogProps.disabled).toBe(false);
+        },
+    );
+
+    it.each(['switch', 'disable', 'unmount'] as const)(
+        'does not notify after %s',
+        async (transition) => {
+            const clipboard = deferClipboard();
+            const onResult = jest.fn();
+            const {result, rerender, unmount} = renderHook(
+                ({conversationKey, enabled}) =>
+                    useChatExport({
+                        conversationKey,
+                        chatId: conversationKey,
+                        messages,
+                        status: 'ready',
+                        config: enabled ? {onResult} : undefined,
+                    }),
+                {initialProps: {conversationKey: 'A', enabled: true}},
+            );
+            act(() => {
+                result.current.menuItems[0].onClick();
+            });
+            if (transition === 'switch') {
+                rerender({conversationKey: 'B', enabled: true});
+                rerender({conversationKey: 'A', enabled: true});
+            } else if (transition === 'disable') {
+                rerender({conversationKey: 'A', enabled: false});
+            } else unmount();
+            await act(async () => clipboard.resolve());
+            expect(onResult).not.toHaveBeenCalled();
+        },
+    );
+
+    it('does not report callback exceptions as export failures or keep the action pending', async () => {
+        document.execCommand = jest.fn(() => true);
+        const error = new Error('Notification failed');
+        const onResult = jest.fn(() => {
+            throw error;
+        });
+        const {result} = renderHook(() =>
+            useChatExport({
+                conversationKey: 'A',
+                chatId: 'A',
+                messages,
+                status: 'ready',
+                config: {onResult},
+            }),
+        );
+        await act(async () => {
+            await expect(Promise.resolve(result.current.menuItems[0].onClick())).rejects.toBe(
+                error,
+            );
+        });
+        expect(onResult).toHaveBeenCalledTimes(1);
+        expect(onResult).toHaveBeenCalledWith({action: 'copy', status: 'success', chatId: 'A'});
+        expect(result.current.dialogProps.disabled).toBe(false);
+        expect(result.current.notice).toBeUndefined();
+    });
 });

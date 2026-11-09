@@ -10,16 +10,18 @@ import type {HeaderMenuItem} from '../../organisms/Header';
 
 import type {ChatExportDialogProps} from './ChatExportDialog';
 import {i18n} from './i18n';
-import type {ChatContainerProps} from './types';
+import type {ChatContainerProps, ChatExportResult} from './types';
 
 /** Own export operations and selection for one conversation at a time. */
 export function useChatExport({
     conversationKey,
+    chatId,
     messages,
     status,
     config,
 }: {
     conversationKey: string;
+    chatId?: string;
     messages: NonNullable<ChatContainerProps['messages']>;
     status: ChatContainerProps['status'];
     config: ChatContainerProps['chatExport'];
@@ -81,6 +83,7 @@ export function useChatExport({
         inFlight.current = true;
         setPending(true);
         setNotice(undefined);
+        let result: ChatExportResult;
         try {
             const markdown = serializeChatMarkdown(
                 selection.map(({message}) => message),
@@ -96,22 +99,27 @@ export function useChatExport({
                 }
                 await navigator.clipboard.writeText(markdown);
             }
-            if (activeScope.current === scope)
-                setNotice({
-                    error: false,
-                    text: t(action === 'copy' ? 'export-copied' : 'export-downloaded'),
-                });
-        } catch {
-            if (activeScope.current === scope)
-                setNotice({
-                    error: true,
-                    text: t(action === 'copy' ? 'export-copy-error' : 'export-download-error'),
-                });
+            result = {action, status: 'success', chatId};
+        } catch (error) {
+            result = {action, status: 'error', chatId, error};
         } finally {
             if (activeScope.current === scope) {
                 inFlight.current = false;
                 setPending(false);
             }
+        }
+        if (activeScope.current !== scope) return;
+        // Notify outside the operation catch: a consumer error is not an export failure.
+        if (config.onResult) {
+            config.onResult(result);
+        } else {
+            setNotice({
+                error: result.status === 'error',
+                text:
+                    result.status === 'success'
+                        ? t(action === 'copy' ? 'export-copied' : 'export-downloaded')
+                        : t(action === 'copy' ? 'export-copy-error' : 'export-download-error'),
+            });
         }
     };
 
@@ -121,17 +129,13 @@ export function useChatExport({
                   id: 'chat-export-copy',
                   label: t('export-copy'),
                   disabled,
-                  onClick: () => {
-                      run('copy');
-                  },
+                  onClick: () => run('copy'),
               },
               {
                   id: 'chat-export-download',
                   label: t('export-download'),
                   disabled,
-                  onClick: () => {
-                      run('download');
-                  },
+                  onClick: () => run('download'),
               },
               {
                   id: 'chat-export-select',
@@ -162,12 +166,13 @@ export function useChatExport({
                 return next;
             }),
         onClose: () => setOpen(false),
-        onCopy: () => {
-            run('copy', selectedEntries);
-        },
-        onDownload: () => {
-            run('download', selectedEntries);
-        },
+        onCopy: () => run('copy', selectedEntries),
+        onDownload: () => run('download', selectedEntries),
     };
-    return {menuItems, dialogProps, notice, dismissNotice: () => setNotice(undefined)};
+    return {
+        menuItems,
+        dialogProps,
+        notice: config?.onResult ? undefined : notice,
+        dismissNotice: () => setNotice(undefined),
+    };
 }

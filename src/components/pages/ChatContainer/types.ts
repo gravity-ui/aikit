@@ -183,16 +183,27 @@ export interface ChatContainerQa {
     history?: string;
 }
 
+/** Outcome of an export operation for its originating conversation. */
+export type ChatExportResult = {
+    action: 'copy' | 'download';
+    /** Undefined for an unsaved conversation. */
+    chatId?: string;
+} & ({status: 'success'} | {status: 'error'; error: unknown});
+
+export interface ChatExportConfig extends ChatMarkdownOptions {
+    /** Disable export until the full conversation history is loaded. */
+    loading?: boolean;
+    filename?: string;
+    /** Replace built-in feedback. Stale results after switching chats are not delivered. */
+    onResult?: (result: ChatExportResult) => void;
+}
+
 /**
  * Props for ChatContainer component
  */
 export interface ChatContainerProps {
     /** Opt-in Markdown export. Supply complete history in messages, including off-screen messages. */
-    chatExport?: ChatMarkdownOptions & {
-        /** Disable export until the full conversation history is loaded. */
-        loading?: boolean;
-        filename?: string;
-    };
+    chatExport?: ChatExportConfig;
     // Chat data
     /** Array of chats for history */
     chats?: ChatType[];

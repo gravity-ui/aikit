@@ -266,6 +266,7 @@ export function ChatContainer(props: ChatContainerProps) {
     const hookState = useChatContainer(props);
     const chatExport = useChatExport({
         conversationKey: hookState.chatExportKey,
+        chatId: props.activeChat?.id,
         messages,
         status,
         config: props.chatExport,
