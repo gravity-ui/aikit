@@ -731,7 +731,7 @@ export function ChatContainer(props: ChatContainerProps) {
                 <div className={b('header', headerClassName)} ref={headerRef}>
                     {props.chatExport ? (
                         <ChatExportHeader
-                            key={props.activeChat?.id ?? hookState.promptInputKey}
+                            key={hookState.chatExportKey}
                             headerProps={finalHeaderProps}
                             messages={messages}
                             status={status}
