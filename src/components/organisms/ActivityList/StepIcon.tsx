@@ -5,7 +5,7 @@ import {Icon} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
-import type {ThinkingMessageGroupProps, ThinkingStepStatus} from './types';
+import type {ActivityListProps, ActivityStepStatus} from './types';
 
 const b = block('thinking-message-group');
 
@@ -22,9 +22,9 @@ export function StepIcon({
     operationIcon,
     iconMode = 'status',
 }: {
-    status: ThinkingStepStatus;
+    status: ActivityStepStatus;
     operationIcon?: ReactNode;
-    iconMode?: ThinkingMessageGroupProps['iconMode'];
+    iconMode?: ActivityListProps['iconMode'];
 }) {
     if (iconMode === 'none') return null;
 

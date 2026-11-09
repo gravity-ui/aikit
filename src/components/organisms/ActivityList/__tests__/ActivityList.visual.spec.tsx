@@ -1,23 +1,23 @@
 import {expect, test} from '~playwright/core';
 
-import {ThinkingMessageGroup} from '..';
+import {ActivityList} from '..';
 
-import {EmptySummaryExample, ThinkingMessageGroupStories} from './helpersPlaywright';
+import {ActivityListStories, EmptySummaryExample} from './helpersPlaywright';
 
-test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
+test.describe('ActivityList', {tag: '@ActivityList'}, () => {
     const stories = {
-        Legacy: ThinkingMessageGroupStories.Legacy,
-        Compact: ThinkingMessageGroupStories.Playground,
-        CompactCompleted: ThinkingMessageGroupStories.Completed,
-        CompactExpanded: ThinkingMessageGroupStories.CompactExpanded,
-        CompactWithoutDetails: ThinkingMessageGroupStories.CompactWithoutDetails,
-        CompactCustomRendering: ThinkingMessageGroupStories.CompactCustomRendering,
-        CompactTerminalStates: ThinkingMessageGroupStories.CompactTerminalStates,
-        CompactNarrow: ThinkingMessageGroupStories.CompactNarrow,
-        CompactDark: ThinkingMessageGroupStories.CompactDark,
-        CustomHistoryHeight: ThinkingMessageGroupStories.CustomHistoryHeight,
-        CompactStreaming: ThinkingMessageGroupStories.CompactStreaming,
-        CompactControlled: ThinkingMessageGroupStories.CompactControlled,
+        Legacy: ActivityListStories.Legacy,
+        Compact: ActivityListStories.Playground,
+        CompactCompleted: ActivityListStories.Completed,
+        CompactExpanded: ActivityListStories.CompactExpanded,
+        CompactWithoutDetails: ActivityListStories.CompactWithoutDetails,
+        CompactCustomRendering: ActivityListStories.CompactCustomRendering,
+        CompactTerminalStates: ActivityListStories.CompactTerminalStates,
+        CompactNarrow: ActivityListStories.CompactNarrow,
+        CompactDark: ActivityListStories.CompactDark,
+        CustomHistoryHeight: ActivityListStories.CustomHistoryHeight,
+        CompactStreaming: ActivityListStories.CompactStreaming,
+        CompactControlled: ActivityListStories.CompactControlled,
     };
 
     for (const [name, Story] of Object.entries(stories)) {
@@ -28,12 +28,12 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
     }
 
     test('should render nothing for an empty history', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroup steps={[]} />);
+        const component = await mount(<ActivityList steps={[]} />);
         await expect(component.locator('.g-aikit-thinking-message-group')).toHaveCount(0);
     });
 
     test('should reveal types and optional details only after expanding', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroupStories.Playground />);
+        const component = await mount(<ActivityListStories.Playground />);
         const toggle = component.getByRole('button');
         await expect(toggle).toHaveAttribute('aria-expanded', 'false');
         await expect(component.getByText('Documentation search', {exact: true})).toHaveCount(0);
@@ -46,7 +46,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
 
     test('should synchronize controlled expansion with the application', async ({mount}) => {
         const component = await mount(
-            <ThinkingMessageGroupStories.CompactControlled expanded={false} defaultExpanded />,
+            <ActivityListStories.CompactControlled expanded={false} defaultExpanded />,
         );
         const group = component.locator('.g-aikit-thinking-message-group');
         const toggle = group.getByRole('button');
@@ -84,8 +84,8 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
                 mount,
             }) => {
                 const Story = controlled
-                    ? ThinkingMessageGroupStories.CompactControlled
-                    : ThinkingMessageGroupStories.CompactStreaming;
+                    ? ActivityListStories.CompactControlled
+                    : ActivityListStories.CompactStreaming;
                 const component = await mount(<Story defaultExpanded={defaultExpanded} />);
                 const group = component.locator('.g-aikit-thinking-message-group');
                 const toggle = group.getByRole('button');
@@ -143,7 +143,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
     }
 
     test('should toggle details with the keyboard', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroupStories.Playground />);
+        const component = await mount(<ActivityListStories.Playground />);
         const toggle = component.getByRole('button');
         await toggle.focus();
         await toggle.press('Enter');
@@ -154,7 +154,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
 
     test('should keep icons static and animate only the active text', async ({mount, page}) => {
         await page.emulateMedia({reducedMotion: 'no-preference'});
-        const component = await mount(<ThinkingMessageGroupStories.Playground defaultExpanded />);
+        const component = await mount(<ActivityListStories.Playground defaultExpanded />);
         const activeLabel = component.locator(
             '.g-aikit-thinking-message-group__compact-label_active',
         );
@@ -185,7 +185,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
     });
 
     test('should disable animation for every non-running state', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroupStories.CompactTerminalStates />);
+        const component = await mount(<ActivityListStories.CompactTerminalStates />);
         await expect(
             component.locator('.g-aikit-thinking-message-group__compact-label_active'),
         ).toHaveCount(0);
@@ -193,20 +193,20 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
 
     test('should respect reduced motion', async ({mount, page}) => {
         await page.emulateMedia({reducedMotion: 'reduce'});
-        const component = await mount(<ThinkingMessageGroupStories.Playground />);
+        const component = await mount(<ActivityListStories.Playground />);
         await expect(
             component.locator('.g-aikit-thinking-message-group__compact-label_active'),
         ).toHaveCSS('animation-name', 'none');
     });
 
     test('should not offer expansion when details are unavailable', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroupStories.CompactWithoutDetails />);
+        const component = await mount(<ActivityListStories.CompactWithoutDetails />);
         await expect(component.getByText('Processing the request')).toBeVisible();
         await expect(component.getByRole('button')).toHaveCount(0);
     });
 
     test('should contain a long history in a narrow container', async ({mount}) => {
-        const component = await mount(<ThinkingMessageGroupStories.CompactNarrow />);
+        const component = await mount(<ActivityListStories.CompactNarrow />);
         const root = component.locator('.g-aikit-thinking-message-group');
         expect(await root.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
             true,
@@ -233,7 +233,7 @@ test.describe('ThinkingMessageGroup', {tag: '@ThinkingMessageGroup'}, () => {
 
 test('single completed step keeps its title accessible', async ({mount}) => {
     const component = await mount(
-        <ThinkingMessageGroup
+        <ActivityList
             steps={[
                 {id: 'one', type: 'custom', title: 'Checked the documentation', status: 'thought'},
             ]}

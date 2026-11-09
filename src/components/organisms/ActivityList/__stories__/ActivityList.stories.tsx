@@ -5,10 +5,10 @@ import {Button, Icon, ThemeProvider} from '@gravity-ui/uikit';
 import type {Decorator, Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {
-    ThinkingMessageGroup,
-    type ThinkingMessageGroupProps,
-    type ThinkingStep,
-    type ThinkingStepStatus,
+    ActivityList,
+    type ActivityListProps,
+    type ActivityStep,
+    type ActivityStepStatus,
     thinkingMessageToStep,
 } from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
@@ -17,7 +17,7 @@ import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
 import MDXDocs from './Docs.mdx';
 
-type Story = StoryObj<typeof ThinkingMessageGroup>;
+type Story = StoryObj<typeof ActivityList>;
 
 const frameDecorator: Decorator = (Story, context) => {
     const showcase = (
@@ -50,8 +50,8 @@ const frameDecorator: Decorator = (Story, context) => {
 const defaultDecorators = [frameDecorator] satisfies Story['decorators'];
 
 export default {
-    title: 'organisms/ThinkingMessageGroup',
-    component: ThinkingMessageGroup,
+    title: 'organisms/ActivityList',
+    component: ActivityList,
     decorators: defaultDecorators,
     parameters: {docs: {page: MDXDocs}},
     argTypes: {
@@ -71,9 +71,9 @@ export default {
         renderSummary: {control: false},
         renderStepContent: {control: false},
     },
-} satisfies Meta<typeof ThinkingMessageGroup>;
+} satisfies Meta<typeof ActivityList>;
 
-const compactSteps: ThinkingStep[] = [
+const compactSteps: ActivityStep[] = [
     {
         id: 'analyze',
         type: 'reasoning',
@@ -133,10 +133,10 @@ export const CompactCustomRendering: Story = {
     name: 'Custom Rendering',
     args: {...compactData, defaultExpanded: true},
     render: (args) => (
-        <ThinkingMessageGroup
+        <ActivityList
             {...args}
-            renderSummary={(completed: ThinkingStep[]) => `${completed.length} sources checked`}
-            renderStepContent={(step: ThinkingStep) => (
+            renderSummary={(completed: ActivityStep[]) => `${completed.length} sources checked`}
+            renderStepContent={(step: ActivityStep) => (
                 <TextContent title={step.title ?? step.id} />
             )}
         />
@@ -153,7 +153,7 @@ export const CompactTerminalStates: Story = {
         <Showcase direction="column">
             {(['thought', 'error', 'cancelled', 'paused'] as const).map((status) => (
                 <ShowcaseItem title={status} key={status}>
-                    <ThinkingMessageGroup
+                    <ActivityList
                         {...compactData}
                         steps={compactSteps.map((step) =>
                             step.status === 'thinking' ? {...step, status} : step,
@@ -225,9 +225,9 @@ function ProgressUpdatesExample({
     controlled?: boolean;
     defaultExpanded?: boolean;
     initialExpanded?: boolean;
-} & Pick<ThinkingMessageGroupProps, 'iconMode' | 'activeStepLabel'>) {
+} & Pick<ActivityListProps, 'iconMode' | 'activeStepLabel'>) {
     const [steps, setSteps] = useState(compactSteps);
-    const [status, setStatus] = useState<ThinkingStepStatus>('thinking');
+    const [status, setStatus] = useState<ActivityStepStatus>('thinking');
     const [expanded, setExpanded] = useState(initialExpanded);
     const [fragmentCount, setFragmentCount] = useState(0);
     const [demoVersion, setDemoVersion] = useState(0);
@@ -325,7 +325,7 @@ function ProgressUpdatesExample({
                     {controlled && ` · application expanded = ${expanded}`}
                 </p>
             </div>
-            <ThinkingMessageGroup
+            <ActivityList
                 key={demoVersion}
                 iconMode={iconMode}
                 activeStepLabel={activeStepLabel}
@@ -367,17 +367,17 @@ export const Completed: Story = {
     render: () => (
         <Showcase direction="column">
             <ShowcaseItem title="Several completed steps">
-                <ThinkingMessageGroup
+                <ActivityList
                     steps={compactSteps.map((step) => ({...step, status: 'thought'}))}
                     stepTypes={compactData.stepTypes}
                     format="markdown"
                 />
             </ShowcaseItem>
             <ShowcaseItem title="One completed step with details">
-                <ThinkingMessageGroup steps={[{...compactSteps[0], status: 'thought'}]} />
+                <ActivityList steps={[{...compactSteps[0], status: 'thought'}]} />
             </ShowcaseItem>
             <ShowcaseItem title="One completed step without details">
-                <ThinkingMessageGroup
+                <ActivityList
                     steps={[
                         {
                             id: 'one',
@@ -396,7 +396,7 @@ export const Legacy: Story = {
     name: 'Legacy Data Migration',
     parameters: {
         description:
-            'The new ThinkingMessageGroup renders an existing ThinkingMessage payload through thinkingMessageToStep. Two paragraphs remain one step.',
+            'The new ActivityList renders an existing ThinkingMessage payload through thinkingMessageToStep. Two paragraphs remain one step.',
     },
     args: {
         defaultExpanded: true,
@@ -434,7 +434,7 @@ export const Presentation: Story = {
                 ] as const
             ).map(({title, iconMode}) => (
                 <ShowcaseItem key={title} title={title} width="100%">
-                    <ThinkingMessageGroup
+                    <ActivityList
                         {...args}
                         iconMode={iconMode}
                         defaultExpanded

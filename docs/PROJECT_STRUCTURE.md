@@ -48,10 +48,11 @@ aikit/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/
 │   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
 │   │   │
-│   │   ├── organisms/       # 11 organisms
+│   │   ├── organisms/       # 12 organisms
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
-│   │   │   ├── PromptInput/        ThinkingMessage/  ThinkingMessageGroup/
+│   │   │   ├── ActivityList/       PromptInput/      ThinkingMessage/
+│   │   │   ├── ThinkingMessageGroup/              Deprecated ActivityList alias
 │   │   │   ├── RunActivity/        ToolMessage/      UserMessage/
 │   │   │
 │   │   ├── templates/       # 4 templates

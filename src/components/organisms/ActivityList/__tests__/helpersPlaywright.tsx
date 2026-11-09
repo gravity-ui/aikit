@@ -1,12 +1,12 @@
 import {composeStories} from '@storybook/react';
 
-import {ThinkingMessageGroup} from '..';
-import * as stories from '../__stories__/ThinkingMessageGroup.stories';
-export const ThinkingMessageGroupStories = composeStories(stories);
+import {ActivityList} from '..';
+import * as stories from '../__stories__/ActivityList.stories';
+export const ActivityListStories = composeStories(stories);
 
 export function EmptySummaryExample() {
     return (
-        <ThinkingMessageGroup
+        <ActivityList
             steps={[{id: 'one', type: 'reasoning', status: 'thought'}]}
             renderSummary={() => false}
         />

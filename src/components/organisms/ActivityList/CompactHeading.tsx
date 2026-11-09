@@ -7,14 +7,14 @@ import {block} from '../../../utils/cn';
 
 import {StepIcon} from './StepIcon';
 import {i18n} from './i18n';
-import type {ThinkingMessageGroupProps, ThinkingStep} from './types';
+import type {ActivityListProps, ActivityStep} from './types';
 
 const b = block('thinking-message-group');
 
 interface CompactHeadingProps
-    extends Pick<ThinkingMessageGroupProps, 'stepTypes' | 'iconMode' | 'activeStepLabel'> {
-    status: NonNullable<ThinkingMessageGroupProps['status']>;
-    activeStep?: ThinkingStep;
+    extends Pick<ActivityListProps, 'stepTypes' | 'iconMode' | 'activeStepLabel'> {
+    status: NonNullable<ActivityListProps['status']>;
+    activeStep?: ActivityStep;
     summary: ReactNode;
     hasDetails: boolean;
     isExpanded: boolean;
