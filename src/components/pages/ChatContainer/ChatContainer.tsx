@@ -1,6 +1,6 @@
 import {type CSSProperties, Fragment, type ReactNode, useCallback, useMemo, useRef} from 'react';
 
-import {MobileProvider, useForkRef, useMobile} from '@gravity-ui/uikit';
+import {Alert, MobileProvider, useForkRef, useMobile} from '@gravity-ui/uikit';
 
 import {getMascotAnimationType, useKeyboardViewportFit} from '../../../hooks';
 import {useChatActivity} from '../../../hooks/useChatActivity';
@@ -17,6 +17,7 @@ import {
 import {ChatContent} from '../../templates/ChatContent/ChatContent';
 import {History} from '../../templates/History';
 
+import {ChatExportDialog} from './ChatExportDialog';
 import {defaultGravityMascots} from './GravityMascot';
 import {
     normalizeChatContainerQa,
@@ -28,6 +29,7 @@ import {i18n} from './i18n';
 import type {ChatContainerProps, ChatContainerTexts, MascotConfig} from './types';
 import {useChatContainer} from './useChatContainer';
 import {useChatContainerMascot} from './useChatContainerMascot';
+import {useChatExport} from './useChatExport';
 import {useKeyboardLayoutFit} from './useKeyboardLayoutFit';
 
 import './ChatContainer.scss';
@@ -265,6 +267,23 @@ export function ChatContainer(props: ChatContainerProps) {
         isPanelVisible: props.chatActivity?.isPanelVisible ?? false,
         renderedResponseId: props.chatActivity?.renderedResponseId,
     });
+
+    const chatExport = useChatExport({
+        conversationKey: hookState.chatExportKey,
+        chatId: props.activeChat?.id,
+        messages,
+        status,
+        config: props.chatExport,
+    });
+    const exportFeedback = chatExport.notice && (
+        <div role="status">
+            <Alert
+                theme={chatExport.notice.error ? 'danger' : 'success'}
+                message={chatExport.notice.text}
+                onClose={chatExport.dismissNotice}
+            />
+        </div>
+    );
 
     const mascotConfig = customMascotConfig ?? (showMascot ? DEFAULT_MASCOT_CONFIG : undefined);
     const mascotState = useChatContainerMascot({
@@ -733,7 +752,11 @@ export function ChatContainer(props: ChatContainerProps) {
                     <div className={b('viewport-probe')} ref={viewportProbeRef} aria-hidden />
                 )}
                 <div className={b('header', headerClassName)} ref={headerRef}>
-                    <Header {...finalHeaderProps} />
+                    <Header
+                        {...finalHeaderProps}
+                        menuItems={[...(finalHeaderProps.menuItems ?? []), ...chatExport.menuItems]}
+                    />
+                    {!chatExport.dialogProps.open && exportFeedback}
                 </div>
                 <div className={b('content', {view: hookState.chatContentView}, contentClassName)}>
                     <ChatContent {...finalContentProps} />
@@ -754,6 +777,9 @@ export function ChatContainer(props: ChatContainerProps) {
                 )}
                 {/* History is integrated via popup anchored to button in Header */}
                 <History {...finalHistoryProps} />
+                {props.chatExport && (
+                    <ChatExportDialog {...chatExport.dialogProps} feedback={exportFeedback} />
+                )}
             </div>
         </MobileProvider>
     );

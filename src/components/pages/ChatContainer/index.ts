@@ -8,6 +8,8 @@ export const ChatContainer = withDefaultMarkdown(ChatContainerCore);
 
 export type {
     ChatContainerProps,
+    ChatExportConfig,
+    ChatExportResult,
     ChatContainerQa,
     ChatContainerTexts,
     WelcomeConfig,

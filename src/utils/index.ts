@@ -10,3 +10,4 @@ export * from './mascot';
 export * from './pinnedChatsStore';
 export * from './chatActivityStore';
 export * from './remoteChatActivityStore';
+export * from './chatMarkdown';

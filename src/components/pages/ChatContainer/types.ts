@@ -15,6 +15,7 @@ import type {
 } from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
 import type {ChatActivityStore} from '../../../utils/chatActivityStore';
+import type {ChatMarkdownOptions} from '../../../utils/chatMarkdown';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
@@ -183,6 +184,21 @@ export interface ChatContainerQa {
     history?: string;
 }
 
+/** Outcome of an export operation for its originating conversation. */
+export type ChatExportResult = {
+    action: 'copy' | 'download';
+    /** Undefined for an unsaved conversation. */
+    chatId?: string;
+} & ({status: 'success'} | {status: 'error'; error: unknown});
+
+export interface ChatExportConfig extends ChatMarkdownOptions {
+    /** Disable export until the full conversation history is loaded. */
+    loading?: boolean;
+    filename?: string;
+    /** Replace built-in feedback. Stale results after switching chats are not delivered. */
+    onResult?: (result: ChatExportResult) => void;
+}
+
 /**
  * Props for ChatContainer component
  */
@@ -195,6 +211,8 @@ export interface ChatContainerProps {
         /** The completed response actually rendered for activeChat; omit while loading it. */
         renderedResponseId?: string;
     };
+    /** Opt-in Markdown export. Supply complete history in messages, including off-screen messages. */
+    chatExport?: ChatExportConfig;
     // Chat data
     /** Array of chats for history */
     chats?: ChatType[];
