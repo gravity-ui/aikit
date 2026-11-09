@@ -1,6 +1,6 @@
 import {useEffect, useState, useSyncExternalStore} from 'react';
 
-import {type ChatActivityStore, EMPTY_CHAT_ACTIVITY} from '../utils/chatActivityStore';
+import {type ChatActivityStore, EMPTY_CHAT_ACTIVITY} from '../utils/chatActivity';
 
 export interface ChatActivityView {
     chatId?: string;

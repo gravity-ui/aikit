@@ -15,7 +15,7 @@ import {DateLocaleConfig} from '../../../hooks';
 import {useChatActivity} from '../../../hooks/useChatActivity';
 import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType, ListItemChatData} from '../../../types';
-import type {ChatActivityStore} from '../../../utils/chatActivityStore';
+import type {ChatActivityStore} from '../../../utils/chatActivity';
 import {ChatFilterFunction, defaultChatFilter, groupChatsByDate} from '../../../utils/chatUtils';
 import {block} from '../../../utils/cn';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';

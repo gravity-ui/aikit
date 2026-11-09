@@ -2,6 +2,8 @@
 
 AIKit supports both a local generation engine and application-provided server state. The local engine owns generation tracking, unread markers and browser persistence. With a backend, the server owns generation and unread state, and AIKit adapts its snapshots. In both modes, AIKit owns indicator priority and confirms that a specific response is actually visible before requesting an acknowledgement. `ChatContainer` connects the store to `Header`, desktop history and mobile history. Existing consumers remain unchanged until activity is configured.
 
+The [store module architecture](../src/utils/chatActivity/README.md) describes file responsibilities, local persistence keys, cross-tab coordination, and the server adapter.
+
 ## Local generation engine
 
 ```tsx

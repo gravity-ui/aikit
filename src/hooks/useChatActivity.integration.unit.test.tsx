@@ -1,10 +1,10 @@
 import {act, renderHook, waitFor} from '@testing-library/react';
 
-import {createChatActivityStore} from '../utils/chatActivityStore';
 import {
     type RemoteChatActivityState,
+    createChatActivityStore,
     createRemoteChatActivityStore,
-} from '../utils/remoteChatActivityStore';
+} from '../utils/chatActivity';
 
 import {type ChatActivityView, useChatActivity} from './useChatActivity';
 

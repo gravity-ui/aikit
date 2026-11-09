@@ -10,7 +10,11 @@ interface StoredRequest {
     previous?: StoredResponse;
 }
 
-/** Each writer owns its completion key; view and deletion markers only move forward. */
+/**
+ * Browser persistence protocol used by the local store. Each writer owns its completion key;
+ * viewed and deletion markers only move forward. This module does not own React subscriptions
+ * or active-generation state. See README.md for the key layout and cross-tab ordering rules.
+ */
 export function createChatActivityPersistence({
     accountId,
     storage,

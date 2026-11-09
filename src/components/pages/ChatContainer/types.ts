@@ -14,7 +14,7 @@ import type {
     TSubmitData,
 } from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
-import type {ChatActivityStore} from '../../../utils/chatActivityStore';
+import type {ChatActivityStore} from '../../../utils/chatActivity';
 import type {ChatMarkdownOptions} from '../../../utils/chatMarkdown';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';

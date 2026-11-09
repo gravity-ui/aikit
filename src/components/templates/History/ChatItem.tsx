@@ -5,7 +5,7 @@ import {Icon, InputControlSize, Spin, Text, Tooltip, useMobile} from '@gravity-u
 
 import {getControlIconSize, resolveMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType} from '../../../types';
-import type {ChatActivity} from '../../../utils/chatActivityStore';
+import type {ChatActivity} from '../../../utils/chatActivity';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 

@@ -7,7 +7,7 @@ import {ChatContainer} from '../..';
 import {ContentWrapper} from '../../../../../demo/ContentWrapper';
 import {useChatActivity} from '../../../../../hooks/useChatActivity';
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../../../types';
-import {type ChatGeneration, createChatActivityStore} from '../../../../../utils/chatActivityStore';
+import {type ChatGeneration, createChatActivityStore} from '../../../../../utils/chatActivity';
 
 import {
     type Story,

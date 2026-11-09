@@ -1,7 +1,7 @@
 import {
     type RemoteChatActivityState,
     createRemoteChatActivityStore,
-} from './remoteChatActivityStore';
+} from '../remoteChatActivityStore';
 
 function deferred<T>() {
     let resolve!: (value: T) => void;

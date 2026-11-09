@@ -1,3 +1,4 @@
+/** Shared activity contracts, immutable snapshots, and the local request lifecycle. */
 import {createChatActivityPersistence} from './chatActivityPersistence';
 
 /** Activity is independent of the currently selected chat and survives panel unmounts. */
@@ -89,6 +90,7 @@ export function createChatActivityStore(options: ChatActivityStoreOptions): Loca
     let snapshot = EMPTY_CHAT_ACTIVITY;
     const listeners = new Set<() => void>();
     const generations = new Map<string, string>();
+    // Reconcile shared markers with this instance's active requests before publishing UI state.
     const load = () => {
         const {chats, requestIds} = persistence.readState();
         const activities = new Map<string, ChatActivity>(
