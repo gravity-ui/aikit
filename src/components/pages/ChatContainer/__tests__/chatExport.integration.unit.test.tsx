@@ -10,9 +10,14 @@ jest.mock('../../../templates/ChatContent/ChatContent', () => ({ChatContent: () 
 jest.mock('../../../organisms/PromptInput', () => ({PromptInput: () => null}));
 jest.mock('uuid', () => ({v4: () => 'test-id'}));
 
+const originalExecCommand = document.execCommand;
 const originalMatchMedia = window.matchMedia;
 const originalResizeObserver = global.ResizeObserver;
 const originalClipboard = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
+
+beforeEach(() => {
+    document.execCommand = jest.fn(() => false);
+});
 
 beforeAll(() => {
     window.matchMedia = jest.fn().mockImplementation(() => ({
@@ -30,6 +35,7 @@ beforeAll(() => {
 });
 
 afterAll(() => {
+    document.execCommand = originalExecCommand;
     window.matchMedia = originalMatchMedia;
     global.ResizeObserver = originalResizeObserver;
     if (originalClipboard) Object.defineProperty(navigator, 'clipboard', originalClipboard);
@@ -118,4 +124,45 @@ describe.each([true, false])('chat export conversation isolation (autofocus=%s)'
             expect(screen.getByRole('status').textContent).toBe('Chat copied');
         },
     );
+});
+
+describe('chat export clipboard compatibility', () => {
+    it('copies synchronously without using a restricted async clipboard API', () => {
+        const clipboard = deferClipboard();
+        document.execCommand = jest.fn((command) => {
+            expect(command).toBe('copy');
+            expect((document.activeElement as HTMLTextAreaElement).value).toBe(
+                '## User\n\nSaved message',
+            );
+            return true;
+        });
+        render(<Conversation autoFocus={false} />);
+        copy();
+        expect(document.execCommand).toHaveBeenCalledTimes(1);
+        expect(clipboard.writeText).not.toHaveBeenCalled();
+        expect(screen.getByRole('status').textContent).toBe('Chat copied');
+    });
+
+    it('reports failure when both methods fail and allows retry via synchronous copy', async () => {
+        const clipboard = deferClipboard();
+        render(<Conversation autoFocus={false} />);
+        copy();
+        await act(async () => clipboard.reject(new Error('NotAllowedError')));
+        expect(screen.getByRole('status').textContent).toBe(
+            'Could not copy chat. Please try again.',
+        );
+        document.execCommand = jest.fn(() => true);
+        copy();
+        expect(screen.getByRole('status').textContent).toBe('Chat copied');
+        expect(clipboard.writeText).toHaveBeenCalledTimes(1);
+    });
+
+    it('reports failure when synchronous copy fails and the async API is unavailable', () => {
+        Object.defineProperty(navigator, 'clipboard', {configurable: true, value: undefined});
+        render(<Conversation autoFocus={false} />);
+        copy();
+        expect(screen.getByRole('status').textContent).toBe(
+            'Could not copy chat. Please try again.',
+        );
+    });
 });

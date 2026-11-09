@@ -78,10 +78,13 @@ export function ChatExportHeader({
             );
             if (action === 'download') {
                 downloadChatMarkdown(markdown, config.filename);
-            } else if (navigator.clipboard?.writeText) {
-                await navigator.clipboard.writeText(markdown);
             } else if (!copyToClipboard(markdown)) {
-                throw new Error('Clipboard copy failed');
+                // Prefer the shared synchronous copy path while the user gesture is active.
+                // The async API can be restricted in Safari and embedded previews.
+                if (!navigator.clipboard?.writeText) {
+                    throw new Error('Clipboard copy failed');
+                }
+                await navigator.clipboard.writeText(markdown);
             }
             if (mounted.current)
                 setNotice({
