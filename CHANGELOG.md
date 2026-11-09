@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/gravity-ui/aikit/compare/v3.1.0...v3.2.0) (2026-11-09)
+
+
+### Features
+
+* add opt-in chat Markdown export ([#311](https://github.com/gravity-ui/aikit/issues/311)) ([19d5484](https://github.com/gravity-ui/aikit/commit/19d5484be21928263badad1460c85f22231a0384))
+
 ## [3.1.0](https://github.com/gravity-ui/aikit/compare/v3.0.3...v3.1.0) (2026-11-06)
 
 
