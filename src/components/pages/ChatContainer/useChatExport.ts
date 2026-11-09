@@ -1,4 +1,4 @@
-import {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import {useLayoutEffect, useMemo, useRef, useState} from 'react';
 
 import {
     downloadChatMarkdown,
@@ -57,26 +57,39 @@ export function useChatExport({
         }),
         [config, t],
     );
+    const unavailable = !enabled || config?.loading || (status !== 'ready' && status !== 'error');
+    // Inspect only built-in public fields here. Consumer serializers run inside export actions.
     const entries = useMemo(
         () =>
-            (enabled ? messages : []).flatMap((message, index) => {
-                const text = getMessageMarkdown(message, options);
-                return text ? [{index, message, text}] : [];
-            }),
-        [enabled, messages, options],
+            unavailable
+                ? []
+                : messages.flatMap((message, index) => {
+                      const text = getMessageMarkdown(message);
+                      const custom =
+                          message.role === 'assistant' &&
+                          typeof message.content !== 'string' &&
+                          (Array.isArray(message.content)
+                              ? message.content
+                              : [message.content]
+                          ).some((part) => !['text', 'thinking', 'tool'].includes(part.type));
+                      return text || (custom && config?.getContentMarkdown)
+                          ? [{index, message, text}]
+                          : [];
+                  }),
+        [unavailable, messages, config?.getContentMarkdown],
     );
-    const disabled =
-        !enabled ||
-        pending ||
-        config?.loading ||
-        (status !== 'ready' && status !== 'error') ||
-        !entries.length;
+    const disabled = unavailable || pending || !entries.length;
     const selectedEntries = entries.filter(({index}) => selected.has(index));
-    // Close selection when the history changes, rather than apply indices to different messages.
-    useEffect(() => {
+    // Public content and order identify the selection, not the array instance from a consumer.
+    const historyKey = unavailable
+        ? ''
+        : JSON.stringify(
+              entries.map(({index, message, text}) => [index, message.id, message.role, text]),
+          );
+    useLayoutEffect(() => {
         setOpen(false);
         setSelected((previous) => (previous.size ? new Set() : previous));
-    }, [messages]);
+    }, [historyKey]);
 
     const run = async (action: 'copy' | 'download', selection = entries) => {
         if (!config || disabled || inFlight.current || !selection.length) return;
@@ -89,6 +102,7 @@ export function useChatExport({
                 selection.map(({message}) => message),
                 options,
             );
+            if (!markdown.trim()) throw new Error('No public content to export');
             if (action === 'download') {
                 downloadChatMarkdown(markdown, config.filename);
             } else if (!copyToClipboard(markdown)) {
@@ -151,9 +165,11 @@ export function useChatExport({
     const dialogProps: ChatExportDialogProps = {
         open,
         disabled: Boolean(disabled),
-        messages: entries.map(({index, message, text}) => ({
+        messages: (open ? entries : []).map(({index, message, text}) => ({
             index,
-            text: `${options.roleLabels[message.role]}: ${text}`,
+            text: text
+                ? `${options.roleLabels[message.role]}: ${text}`
+                : options.roleLabels[message.role],
             selected: selected.has(index),
         })),
         onSelectAll: (checked) =>
