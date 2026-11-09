@@ -73,6 +73,22 @@ $block: '.#{variables.$ns}history';
         }
     }
 
+    &__activity-slot {
+        display: flex;
+        width: 16px;
+        flex: 0 0 16px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__unread-dot {
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--g-color-text-info);
+    }
+
     &__chat-content {
         height: var(--g-aikit-history-item-height);
         flex: 1;

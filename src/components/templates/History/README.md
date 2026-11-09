@@ -195,6 +195,8 @@ are independent, so results from an old account cannot update the new store.
 | `showSheetTitle`           | `boolean`                                   | -        | `true`              | Show the mobile sheet title (stays in `aria-label`) |
 | `modal`                    | `boolean`                                   | -        | `true`              | Keep the keyboard focus inside the desktop popup    |
 | `initialFocus`             | `PopupProps['initialFocus']`                | -        | -                   | Element to focus when the desktop popup opens       |
+| `activityStore`            | `ChatActivityStore`                         | -        | -                   | Shared activity and deletion cleanup.               |
+| `preserveOrder`            | `boolean`                                   | -        | `false`             | Freeze row order in standalone HistoryList.         |
 
 Without an explicit `size` the list is `m` on desktop and `xl` in mobile mode, and the row delete
 button follows it: `s` on desktop, `xl` with a `20px` icon on mobile, so a row keeps a comfortable
@@ -568,3 +570,7 @@ The following types are exported from `@gravity-ui/aikit`:
 - **DateHeaderItem**: Date group header (exported from History)
 - **Header**: May contain the History trigger button
 - **PromptBox**: Often used alongside History in chat interfaces
+
+## Chat activity
+
+See the [chat activity integration guide](../../../../docs/chat-activity.md) for request lifecycle, persistence and visibility handling.

@@ -1,6 +1,7 @@
 import type {ButtonButtonProps, IconData} from '@gravity-ui/uikit';
 
 import type {Action} from '../../../types/common';
+import type {ChatActivitySnapshot} from '../../../utils/chatActivityStore';
 
 export type HeaderMenuItem = {
     id: string;
@@ -58,6 +59,8 @@ export type HeaderProps = {
     baseActions?: HeaderAction[];
     handleNewChat?: () => void;
     handleHistoryToggle?: () => void;
+    /** Shared activity summary; the history button remains available during generation. */
+    historyActivity?: Pick<ChatActivitySnapshot, 'isGenerating' | 'hasUnread'>;
     handleFolding?: (value: 'collapsed' | 'opened') => void;
     handleClose?: () => void;
     additionalActions?: Action[];

@@ -12,3 +12,4 @@ export * from './useMascotState';
 export * from './useKeyboardViewportFit';
 export * from './useSheetKeyboardFit';
 export * from './usePinnedChatsStore';
+export * from './useChatActivity';

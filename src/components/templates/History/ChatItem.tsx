@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 
 import {Pin, PinSlash, TrashBin} from '@gravity-ui/icons';
-import {Icon, InputControlSize, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
+import {Icon, InputControlSize, Spin, Text, Tooltip, useMobile} from '@gravity-ui/uikit';
 
 import {getControlIconSize, resolveMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType} from '../../../types';
+import type {ChatActivity} from '../../../utils/chatActivityStore';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 
@@ -23,6 +24,8 @@ function handleActionKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
  */
 export interface ChatItemProps {
     chat: ChatType;
+    activity?: ChatActivity;
+    showActivity?: boolean;
     showActions: boolean;
     pinned?: boolean;
     onPinnedChange?: (chatId: string, pinned: boolean) => void;
@@ -43,6 +46,8 @@ export interface ChatItemProps {
  */
 export function ChatItem({
     chat,
+    activity,
+    showActivity,
     showActions,
     isActive,
     actionTabIndex,
@@ -105,6 +110,19 @@ export function ChatItem({
             })}
             onClick={handleClick}
         >
+            {showActivity && (
+                <span className={b('activity-slot')}>
+                    {!activity?.isGenerating && activity?.hasUnread && (
+                        <Tooltip content={t('activity-unread')}>
+                            <span
+                                className={b('unread-dot')}
+                                role="img"
+                                aria-label={t('activity-unread')}
+                            />
+                        </Tooltip>
+                    )}
+                </span>
+            )}
             {pinned && (
                 <span role="img" aria-label={t('pinned')}>
                     <Icon data={Pin} size={16} />
@@ -118,6 +136,17 @@ export function ChatItem({
                 label
             )}
 
+            {showActivity && (
+                <span className={b('activity-slot')}>
+                    {activity?.isGenerating && (
+                        <Tooltip content={t('activity-generating')}>
+                            <span role="img" aria-label={t('activity-generating')}>
+                                <Spin size="xs" />
+                            </span>
+                        </Tooltip>
+                    )}
+                </span>
+            )}
             {showDeleteAction ? (
                 <ActionButton
                     tabIndex={actionTabIndex}
