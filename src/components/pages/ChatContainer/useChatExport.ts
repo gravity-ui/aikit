@@ -33,6 +33,7 @@ export function useChatExport({
     const inFlight = useRef(false);
     const [pending, setPending] = useState(false);
     const [open, setOpen] = useState(false);
+    const [previews, setPreviews] = useState<Map<number, string>>(new Map());
     const [selected, setSelected] = useState<Set<number>>(new Set());
     const [notice, setNotice] = useState<{error: boolean; text: string}>();
     // Reset before paint and invalidate old operations, including an A -> B -> A switch.
@@ -156,6 +157,19 @@ export function useChatExport({
                   label: t('export-select'),
                   disabled,
                   onClick: () => {
+                      setPreviews(
+                          new Map(
+                              entries.map(({index, message, text}) => {
+                                  try {
+                                      return [index, getMessageMarkdown(message, options)];
+                                  } catch {
+                                      // A broken custom preview must not prevent selecting other messages.
+                                      // Exporting this message still reports the serializer error via onResult.
+                                      return [index, text];
+                                  }
+                              }),
+                          ),
+                      );
                       setSelected(new Set(entries.map(({index}) => index)));
                       setOpen(true);
                   },
@@ -165,13 +179,16 @@ export function useChatExport({
     const dialogProps: ChatExportDialogProps = {
         open,
         disabled: Boolean(disabled),
-        messages: (open ? entries : []).map(({index, message, text}) => ({
-            index,
-            text: text
-                ? `${options.roleLabels[message.role]}: ${text}`
-                : options.roleLabels[message.role],
-            selected: selected.has(index),
-        })),
+        messages: (open ? entries : []).map(({index, message, text}) => {
+            const preview = previews.get(index) ?? text;
+            return {
+                index,
+                text: preview
+                    ? `${options.roleLabels[message.role]}: ${preview}`
+                    : options.roleLabels[message.role],
+                selected: selected.has(index),
+            };
+        }),
         onSelectAll: (checked) =>
             setSelected(new Set(checked ? entries.map(({index}) => index) : [])),
         onSelectionChange: (index, checked) =>

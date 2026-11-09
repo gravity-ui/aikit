@@ -385,7 +385,7 @@ describe('custom export notifications', () => {
 });
 
 describe('export review regressions', () => {
-    it('defers custom serializers until exporting and reports their failures', async () => {
+    it('defers custom serializers until user interaction and reports export failures', async () => {
         const error = new Error('Incomplete custom card');
         const getContentMarkdown = jest.fn(() => {
             throw error;
@@ -410,7 +410,9 @@ describe('export review regressions', () => {
         act(() => {
             result.current.menuItems[2].onClick();
         });
-        expect(getContentMarkdown).not.toHaveBeenCalled();
+        expect(getContentMarkdown).toHaveBeenCalledTimes(1);
+        expect(result.current.dialogProps.open).toBe(true);
+        expect(onResult).not.toHaveBeenCalled();
         await act(async () => {
             await result.current.menuItems[0].onClick();
         });
@@ -452,4 +454,38 @@ describe('export review regressions', () => {
         rerender({messages: [second, first]});
         expect(result.current.dialogProps.open).toBe(false);
     });
+});
+
+it('shows distinct custom card previews only after opening the picker', () => {
+    const getContentMarkdown = jest.fn((part) => part.data.title);
+    const messages = ['First card', 'Second card'].map((title, index) => ({
+        id: String(index),
+        role: 'assistant',
+        content: {type: 'card', data: {title}},
+    })) as unknown as TChatMessage[];
+    const {result, rerender} = renderHook(() =>
+        useChatExport({
+            conversationKey: 'chat:A',
+            messages: [...messages],
+            status: 'ready',
+            config: {getContentMarkdown},
+        }),
+    );
+    expect(getContentMarkdown).not.toHaveBeenCalled();
+    act(() => {
+        result.current.menuItems[2].onClick();
+    });
+    expect(result.current.dialogProps.messages.map(({text}) => text)).toEqual([
+        'Assistant: First card',
+        'Assistant: Second card',
+    ]);
+    act(() => {
+        result.current.dialogProps.onSelectionChange(0, false);
+    });
+    rerender();
+    expect(getContentMarkdown).toHaveBeenCalledTimes(2);
+    expect(result.current.dialogProps.messages.map(({selected}) => selected)).toEqual([
+        false,
+        true,
+    ]);
 });

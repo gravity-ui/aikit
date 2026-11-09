@@ -155,3 +155,39 @@ it('preserves reference destinations in lists, quotes and tables without rewriti
     expect(output).toContain('`[link][ref]`');
     expect(output).toContain('```\n[link][ref]\n```');
 });
+
+it.each(['- ', '1. ', '- [x] '])(
+    'keeps adjacent %s list items separate after resolving references',
+    (prefix) => {
+        for (const separator of ['\n', '\n\n']) {
+            const markdown = serializeChatMarkdown([
+                {
+                    role: 'assistant',
+                    content: `${prefix}[Docs][ref]${separator}${prefix}Second\n\n[ref]: https://example.com`,
+                },
+            ]);
+            const html = marked.parse(markdown) as string;
+            const container = document.createElement('div');
+            container.innerHTML = html;
+            expect(container.querySelectorAll('li')).toHaveLength(2);
+            expect(container.querySelector('a')?.getAttribute('href')).toBe('https://example.com');
+            expect(container.querySelectorAll('li')[1].textContent).toContain('Second');
+        }
+    },
+);
+
+it.each(['https://example.com', 'https://example.com/a_b?q=x&b=y#part-1', 'www.example.com/a_b'])(
+    'preserves the destination of a plain-text URL: %s',
+    (url) => {
+        const markdown = serializeChatMarkdown([
+            {role: 'user', content: `See ${url}.\n\n\x60\x60\x60\n**plain**`},
+        ]);
+        const container = document.createElement('div');
+        container.innerHTML = marked.parse(markdown) as string;
+        expect(container.querySelector('a')?.getAttribute('href')).toBe(
+            url.startsWith('www.') ? `http://${url}` : url,
+        );
+        expect(container.querySelector('a')?.textContent).toBe(url);
+        expect(container.querySelector('strong, pre')).toBeNull();
+    },
+);

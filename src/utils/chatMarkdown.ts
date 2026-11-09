@@ -12,8 +12,23 @@ export interface ChatMarkdownOptions {
     ) => string | undefined;
 }
 
-function escapePlainText(text: string): string {
+function escapeMarkdownSyntax(text: string): string {
     return text.replace(/&/g, '&amp;').replace(/[\\`*_{}[\]()<>#+.!|~-]/g, '\\$&');
+}
+
+function escapePlainText(text: string): string {
+    let cursor = 0;
+    let result = '';
+    for (const match of text.matchAll(/(?:https?:\/\/|www\.)[^\s<>]+/gi)) {
+        const token = Lexer.lexInline(match[0])[0];
+        if (token?.type !== 'link') continue;
+        const offset = match.index;
+        const href = token.href.replace(/&/g, '&amp;').replace(/</g, '%3C').replace(/>/g, '%3E');
+        result += escapeMarkdownSyntax(text.slice(cursor, offset));
+        result += `[${escapeMarkdownSyntax(token.raw)}](<${href}>)`;
+        cursor = offset + token.raw.length;
+    }
+    return result + escapeMarkdownSyntax(text.slice(cursor));
 }
 
 function rewriteChildren(raw: string, tokens: Token[], rewrite: (token: Token) => string): string {
@@ -71,7 +86,14 @@ function isolateMarkdown(markdown: string): string {
             if (text === token.text) return token.raw;
             const prefix = token.raw.match(/^\s*(?:[-+*]|\d+[.)])\s+/)?.[0] ?? '- ';
             const checkbox = token.task ? `[${token.checked ? 'x' : ' '}] ` : '';
-            return prefix + checkbox + text.split('\n').join(`\n${' '.repeat(prefix.length)}`);
+            const trailingNewlines = token.raw.match(/\n+$/)?.[0] ?? '';
+            const body = text.replace(/\n+$/, '');
+            return (
+                prefix +
+                checkbox +
+                body.split('\n').join(`\n${' '.repeat(prefix.length)}`) +
+                trailingNewlines
+            );
         }
         if (token.type === 'table') {
             return rewriteChildren(

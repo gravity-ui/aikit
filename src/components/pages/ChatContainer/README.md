@@ -1421,7 +1421,8 @@ bottom-right corner of the chat, above its content and the selection dialog. Cli
 The same actions use the header's mobile menu on small screens. Updating message
 content or order closes the selection dialog to prevent exporting a different selection.
 Recreating an equivalent message array preserves the selection. Custom serializers run
-only when exporting; their exceptions are reported as export failures.
+only when opening the message picker or exporting. Failed previews fall back to
+built-in text; exporting a failing message reports the serializer error.
 
 For custom integrations, `getMessageMarkdown`, `serializeChatMarkdown`,
 `downloadChatMarkdown`, and `ChatMarkdownOptions` are available from the package
