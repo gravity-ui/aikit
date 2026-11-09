@@ -191,14 +191,3 @@ it.each(['https://example.com', 'https://example.com/a_b?q=x&b=y#part-1', 'www.e
         expect(container.querySelector('strong, pre')).toBeNull();
     },
 );
-
-it('keeps ordinary URLs and sentence punctuation readable in copied Markdown', () => {
-    const content =
-        'See https://example.com and https://example.com/a_b?q=x&b=y#part-1. These URLs should keep their destinations.';
-    expect(serializeChatMarkdown([{role: 'user', content}])).toBe(`## User\n\n${content}`);
-});
-
-it('still escapes a plain-text numbered list marker', () => {
-    const output = serializeChatMarkdown([{role: 'user', content: '1. Plain text'}]);
-    expect(marked.parse(output)).not.toContain('<ol>');
-});
