@@ -14,6 +14,7 @@ import type {
     TSubmitData,
 } from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
+import type {ChatActivityStore} from '../../../utils/chatActivityStore';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
 import type {ContextItemConfig} from '../../molecules/PromptInputHeader';
@@ -186,6 +187,14 @@ export interface ChatContainerQa {
  * Props for ChatContainer component
  */
 export interface ChatContainerProps {
+    /** Stable account-scoped activity source; accepts local and server-backed stores. */
+    chatActivity?: {
+        store: ChatActivityStore;
+        /** False while the host panel is closed or collapsed. */
+        isPanelVisible: boolean;
+        /** The completed response actually rendered for activeChat; omit while loading it. */
+        renderedResponseId?: string;
+    };
     // Chat data
     /** Array of chats for history */
     chats?: ChatType[];

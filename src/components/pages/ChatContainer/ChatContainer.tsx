@@ -3,6 +3,7 @@ import {type CSSProperties, Fragment, type ReactNode, useCallback, useMemo, useR
 import {MobileProvider, useForkRef, useMobile} from '@gravity-ui/uikit';
 
 import {getMascotAnimationType, useKeyboardViewportFit} from '../../../hooks';
+import {useChatActivity} from '../../../hooks/useChatActivity';
 import type {TSuggestionContext} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {getMascotNode, resolveMascotAssets, resolveMascotCollection} from '../../../utils/mascot';
@@ -259,6 +260,11 @@ export function ChatContainer(props: ChatContainerProps) {
     );
 
     const hookState = useChatContainer(props);
+    const chatActivity = useChatActivity(props.chatActivity?.store, {
+        chatId: hookState.activeChat?.id,
+        isPanelVisible: props.chatActivity?.isPanelVisible ?? false,
+        renderedResponseId: props.chatActivity?.renderedResponseId,
+    });
 
     const mascotConfig = customMascotConfig ?? (showMascot ? DEFAULT_MASCOT_CONFIG : undefined);
     const mascotState = useChatContainerMascot({
@@ -408,6 +414,7 @@ export function ChatContainer(props: ChatContainerProps) {
 
         return {
             ...headerProps,
+            historyActivity: props.chatActivity ? chatActivity : headerProps.historyActivity,
             title: headerTitle,
             showTitle,
             baseActions: hookState.baseActions,
@@ -431,6 +438,8 @@ export function ChatContainer(props: ChatContainerProps) {
         };
     }, [
         headerTitle,
+        props.chatActivity,
+        chatActivity,
         showTitle,
         hookState.baseActions,
         hookState.handleNewChat,
@@ -648,6 +657,7 @@ export function ChatContainer(props: ChatContainerProps) {
             ...historyProps,
             qa: resolveChatContainerQa(qaMap, 'history', 'history') ?? historyProps.qa,
             chats,
+            activityStore: props.chatActivity?.store ?? historyProps.activityStore,
             selectedChat: hookState.activeChat,
             onSelectChat: hookState.handleSelectChat,
             onDeleteChat,
@@ -669,6 +679,7 @@ export function ChatContainer(props: ChatContainerProps) {
         }),
         [
             chats,
+            props.chatActivity?.store,
             hookState.activeChat,
             hookState.handleSelectChat,
             onDeleteChat,

@@ -64,7 +64,7 @@ export {
     WithContextIndicatorTooltip,
 } from './parts/context';
 
-export {LoadingState, ErrorState, FullStreamingExample} from './parts/states';
+export {LoadingState, ErrorState, FullStreamingExample, BackgroundActivity} from './parts/states';
 
 export {HiddenTitleOnEmpty} from './parts/welcome';
 

@@ -12,6 +12,29 @@ $block: '.#{variables.$ns}header';
     box-sizing: border-box;
     background: var(--g-aikit-header-background);
 
+    &__action-icon {
+        position: relative;
+        display: inline-flex;
+    }
+
+    &__activity {
+        position: absolute;
+        top: -6px;
+        right: -8px;
+        display: flex;
+        width: 12px;
+        height: 12px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__unread-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--g-color-text-info);
+    }
+
     &__icon {
         display: flex;
         align-items: center;

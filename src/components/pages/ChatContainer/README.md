@@ -447,6 +447,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `contentClassName`          | `string`                               | -                  | -         | Additional CSS class for content section                                                                                                                                      |
 | `footerClassName`           | `string`                               | -                  | -         | Additional CSS class for footer section                                                                                                                                       |
 | `qa`                        | `string \| ChatContainerQa`            | -                  | -         | QA/test identifiers: string = root only; object = map or `prefix` (see **QA**)                                                                                                |
+| `chatActivity`              | `ChatContainerProps['chatActivity']`   | -                  | -         | Shared activity and visibility of the response actually rendered for the selected chat.                                                                                       |
 
 ## Types
 
@@ -1377,3 +1378,7 @@ without changing existing message data. Merge this property with your existing c
 Adjacent thinking parts inside one assistant message are grouped; custom thinking renderers
 take precedence. See [ThinkingMessageGroup](../../organisms/ThinkingMessageGroup/README.md)
 for migration and explicit cross-message grouping.
+
+## Chat activity
+
+See the [chat activity integration guide](../../../../docs/chat-activity.md) for request lifecycle, persistence and visibility handling.
