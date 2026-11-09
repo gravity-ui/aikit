@@ -1,7 +1,7 @@
 import type {ButtonButtonProps, IconData} from '@gravity-ui/uikit';
 
 import type {Action} from '../../../types/common';
-import type {ChatActivitySnapshot} from '../../../utils/chatActivityStore';
+import type {ChatActivitySnapshot} from '../../../utils/chatActivity';
 
 export type HeaderMenuItem = {
     id: string;

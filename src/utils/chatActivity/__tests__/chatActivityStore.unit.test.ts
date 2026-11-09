@@ -1,4 +1,4 @@
-import {createChatActivityStore} from './chatActivityStore';
+import {createChatActivityStore} from '../chatActivityStore';
 
 function setup(accountId = 'alice') {
     return createChatActivityStore({accountId, storage: localStorage});
