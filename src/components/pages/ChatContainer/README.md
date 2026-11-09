@@ -1388,6 +1388,7 @@ and selecting individual messages:
   activeChat={chat}
   messages={allMessages}
   status={status}
+  onSendMessage={sendMessage}
   chatExport={{loading: isHistoryLoading, filename: 'conversation.md'}}
 />
 ```
@@ -1407,7 +1408,8 @@ older pages. Export is disabled for empty conversations and while a response is
 being generated. Keep `activeChat.id` stable and unique per conversation so pending
 clipboard results and message selection remain scoped to the originating chat.
 
-Source Markdown is preserved. System messages, reasoning, tool calls, metadata,
+Markdown formatting is preserved; plain user messages are escaped. Open code fences
+are closed at message boundaries, and reference links keep their own destinations. System messages, reasoning, tool calls, metadata,
 and unknown content are excluded. File attachment names and HTTP(S) image links
 are included; inline image data and private attachment IDs are omitted. For custom
 cards, use `getContentMarkdown` to return their user-visible title, result, and link.
@@ -1415,9 +1417,12 @@ Do not return raw card payloads or private metadata. Built-in reasoning and tool
 content never invoke this callback.
 
 Copy and download feedback is localized in English and Russian and appears in the
-chat or the selection dialog. Clipboard failures leave the action available for retry.
+bottom-right corner of the chat, above its content and the selection dialog. Clipboard failures leave the action available for retry.
 The same actions use the header's mobile menu on small screens. Updating message
-history closes the selection dialog to prevent exporting a different selection.
+content or order closes the selection dialog to prevent exporting a different selection.
+Recreating an equivalent message array preserves the selection. Custom serializers run
+only when opening the message picker or exporting. Failed previews fall back to
+built-in text; exporting a failing message reports the serializer error.
 
 For custom integrations, `getMessageMarkdown`, `serializeChatMarkdown`,
 `downloadChatMarkdown`, and `ChatMarkdownOptions` are available from the package

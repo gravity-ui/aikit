@@ -19,6 +19,24 @@
     overflow: hidden;
     background: var(--g-aikit-chat-container-background);
 
+    &__export-overlay {
+        position: fixed;
+        z-index: 1100;
+        pointer-events: none;
+    }
+
+    &__export-feedback {
+        position: absolute;
+        pointer-events: auto;
+        right: var(--g-spacing-4);
+        bottom: var(--g-spacing-4);
+        max-width: calc(100% - 2 * var(--g-spacing-4));
+        width: max-content;
+        background: var(--g-color-base-background);
+        border-radius: var(--g-border-radius-m);
+        box-shadow: 0 4px 16px var(--g-color-sfx-shadow);
+    }
+
     &_mobile {
         // On a phone the chat fills a surface pinned to the visible viewport, and a gesture that
         // chains out of an inner scroller drags that surface away. Desktop keeps native chaining.
