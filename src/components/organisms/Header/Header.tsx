@@ -9,7 +9,7 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {DropdownMenu, Icon, Menu, Sheet, Spin, Text, useUniqId} from '@gravity-ui/uikit';
+import {Button, DropdownMenu, Icon, Menu, Sheet, Spin, Text, useUniqId} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
@@ -163,17 +163,21 @@ export function Header(props: HeaderProps) {
                     className={b('action-button')}
                     qa={actionQa?.[action.id as HeaderAction] ?? `header-action-${action.id}`}
                 >
-                    <span className={b('action-icon')}>
-                        <Icon data={IconComponent} size={iconSize} />
-                        {isHistory && historyActivity && (
-                            <span className={b('activity')} aria-hidden>
-                                {historyActivity.isGenerating && <Spin size="xs" />}
-                                {!historyActivity.isGenerating && historyActivity.hasUnread && (
-                                    <span className={b('unread-dot')} />
-                                )}
-                            </span>
-                        )}
-                    </span>
+                    <Button.Icon>
+                        <span className={b('action-icon')}>
+                            <Icon data={IconComponent} size={iconSize} />
+                            {isHistory && historyActivity && (
+                                <span className={b('activity')} aria-hidden>
+                                    {historyActivity.isGenerating && (
+                                        <Spin size="xs" className={b('activity-spinner')} />
+                                    )}
+                                    {!historyActivity.isGenerating && historyActivity.hasUnread && (
+                                        <span className={b('unread-dot')} />
+                                    )}
+                                </span>
+                            )}
+                        </span>
+                    </Button.Icon>
                 </ActionButton>
             );
         },
