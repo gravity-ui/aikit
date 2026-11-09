@@ -5,6 +5,7 @@ import {Gear, Star} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 
 import {ChatContainer} from '../..';
+import {ContentWrapper} from '../../../../../demo/ContentWrapper';
 import type {
     ChatStatus,
     ChatType,
@@ -705,4 +706,25 @@ export const WithActionPopup: Story = {
         );
     },
     decorators: defaultDecorators,
+};
+
+/** Export the full conversation or selected messages from the header menu. */
+export const WithMarkdownExport: Story = {
+    args: {
+        activeChat: mockChats[0],
+        messages: mockMessages,
+        status: 'ready',
+        chatExport: {},
+    },
+    decorators: [
+        (Story) => (
+            <ContentWrapper
+                boxSizing="border-box"
+                height="min(800px, calc(100vh - 32px))"
+                width="min(600px, calc(100vw - 32px))"
+            >
+                <Story />
+            </ContentWrapper>
+        ),
+    ],
 };
