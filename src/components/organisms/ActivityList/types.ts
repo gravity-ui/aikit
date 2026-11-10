@@ -18,7 +18,7 @@ export interface ActivityStep {
 }
 
 export interface ActivityStepType {
-    /** Operation icon used with iconMode="type" while thinking and after completion; other states use their status icon. */
+    /** Operation icon used by default or with iconMode="type" while thinking and after completion; other states use their status icon. */
     icon?: ReactNode;
     /** Shown only in the expanded history. */
     label?: string;
@@ -40,7 +40,7 @@ export interface ActivityListProps
     > {
     /** Ordered, accumulated steps supplied by the application. */
     steps: readonly ActivityStep[];
-    /** Defaults to status icons. Use type for application-supplied category icons. */
+    /** When omitted, preserves supplied category icons and otherwise uses status icons. Explicit modes override this behavior. */
     iconMode?: 'type' | 'status' | 'none';
     /** Plain-text running heading supplied by the application; overrides the active step title. */
     activeStepLabel?: string;

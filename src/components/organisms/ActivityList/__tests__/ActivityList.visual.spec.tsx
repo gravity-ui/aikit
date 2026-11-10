@@ -2,11 +2,12 @@ import {expect, test} from '~playwright/core';
 
 import {ActivityList} from '..';
 
-import {ActivityListStories, EmptySummaryExample} from './helpersPlaywright';
+import {ActivityListStories, EmptySummaryExample, IconModesExample} from './helpersPlaywright';
 
 test.describe('ActivityList', {tag: '@ActivityList'}, () => {
     const stories = {
         Legacy: ActivityListStories.Legacy,
+        Presentation: ActivityListStories.Presentation,
         Compact: ActivityListStories.Playground,
         CompactCompleted: ActivityListStories.Completed,
         CompactExpanded: ActivityListStories.CompactExpanded,
@@ -231,19 +232,121 @@ test.describe('ActivityList', {tag: '@ActivityList'}, () => {
     });
 });
 
-test('single completed step keeps its title accessible', async ({mount}) => {
-    const component = await mount(
-        <ActivityList
-            steps={[
-                {id: 'one', type: 'custom', title: 'Checked the documentation', status: 'thought'},
-            ]}
-        />,
-    );
-    await component.getByRole('button', {expanded: false}).click();
-    await expect(component.getByText('Checked the documentation')).toBeVisible();
-});
+test(
+    'single completed step keeps its title accessible',
+    {tag: '@ActivityList'},
+    async ({mount}) => {
+        const component = await mount(
+            <ActivityList
+                steps={[
+                    {
+                        id: 'one',
+                        type: 'custom',
+                        title: 'Checked the documentation',
+                        status: 'thought',
+                    },
+                ]}
+            />,
+        );
+        await component.getByRole('button', {expanded: false}).click();
+        await expect(component.getByText('Checked the documentation')).toBeVisible();
+    },
+);
 
-test('empty custom summary does not erase the completed heading', async ({mount}) => {
-    const component = await mount(<EmptySummaryExample />);
-    await expect(component.getByRole('button')).not.toHaveText('');
+test(
+    'empty custom summary does not erase the completed heading',
+    {tag: '@ActivityList'},
+    async ({mount}) => {
+        const component = await mount(<EmptySummaryExample />);
+        await expect(component.getByRole('button')).not.toHaveText('');
+    },
+);
+
+test.describe('ActivityList presentation', {tag: '@ActivityList'}, () => {
+    for (const legacy of [false, true]) {
+        test(`preserves supplied icons without a new prop (legacy: ${legacy})`, async ({mount}) => {
+            const component = await mount(<IconModesExample legacy={legacy} />);
+            await expect(component.locator('[data-qa="operation-icon"]')).toHaveCount(2);
+            await expect(component.locator('strong')).toHaveText('Stored details');
+            await component.update(<IconModesExample legacy={legacy} status="thought" />);
+            await expect(component.getByRole('button')).toHaveAttribute('aria-expanded', 'true');
+            await expect(
+                component.getByRole('listitem').locator('[data-qa="operation-icon"]'),
+            ).toHaveCount(1);
+        });
+    }
+
+    test('explicit status mode overrides the supplied category icon', async ({mount}) => {
+        const component = await mount(<IconModesExample iconMode="status" />);
+        await expect(component.locator('[data-qa="operation-icon"]')).toHaveCount(0);
+        await expect(
+            component
+                .getByRole('listitem')
+                .getByRole('img', {name: 'In progress'})
+                .locator(':scope > svg'),
+        ).toHaveCount(1);
+    });
+
+    test('defaults to a status icon when the category has no icon', async ({mount}) => {
+        const component = await mount(<IconModesExample withIcon={false} />);
+        const marker = component.getByRole('listitem').getByRole('img', {name: 'In progress'});
+        await expect(marker.locator(':scope > svg')).toHaveCount(1);
+        await expect(marker.locator('.g-aikit-thinking-message-group__step-dot')).toHaveCount(0);
+    });
+
+    test('type mode preserves category icons and falls back to a dot', async ({mount}) => {
+        const component = await mount(<IconModesExample iconMode="type" />);
+        await expect(component.locator('[data-qa="operation-icon"]')).toHaveCount(2);
+        await component.update(<IconModesExample iconMode="type" withIcon={false} />);
+        await expect(
+            component.getByRole('listitem').locator('.g-aikit-thinking-message-group__step-dot'),
+        ).toHaveCount(1);
+    });
+
+    for (const status of ['error', 'cancelled', 'paused'] as const) {
+        test(`keeps ${status} identifiable instead of using the category icon`, async ({mount}) => {
+            const component = await mount(<IconModesExample iconMode="type" status={status} />);
+            await expect(component.locator('[data-qa="operation-icon"]')).toHaveCount(0);
+            await expect(
+                component
+                    .getByRole('listitem')
+                    .getByRole('img', {
+                        name: {error: 'Failed', cancelled: 'Stopped', paused: 'Waiting'}[status],
+                    })
+                    .locator(':scope > svg'),
+            ).toHaveCount(1);
+        });
+    }
+
+    test('none mode removes icons and the timeline but preserves accessible status', async ({
+        mount,
+    }) => {
+        const component = await mount(<IconModesExample iconMode="none" status="error" />);
+        const step = component.getByRole('listitem');
+        await expect(component.locator('[data-qa="operation-icon"]')).toHaveCount(0);
+        await expect(step.locator('svg')).toHaveCount(0);
+        await expect(step.getByRole('img', {name: 'Failed'})).toHaveAttribute(
+            'aria-label',
+            'Failed',
+        );
+        await expect(step.getByText('Failed', {exact: true})).toBeVisible();
+        expect(
+            await step.evaluate((element) => getComputedStyle(element, '::before').display),
+        ).toBe('none');
+    });
+
+    test('activeStepLabel changes only the running heading and stops applying on completion', async ({
+        mount,
+    }) => {
+        const component = await mount(<IconModesExample activeStepLabel="Checking the quota" />);
+        await expect(component.getByRole('button')).toContainText('Checking the quota');
+        await expect(component.getByRole('listitem').getByText('Stored step title')).toBeVisible();
+        await expect(component.locator('strong')).toHaveText('Stored details');
+        await component.update(
+            <IconModesExample activeStepLabel="Checking the quota" status="thought" />,
+        );
+        await expect(component.getByRole('button')).toContainText('1 completed');
+        await expect(component.getByText('Checking the quota')).toHaveCount(0);
+        await expect(component.getByRole('listitem').getByText('Stored step title')).toBeVisible();
+    });
 });

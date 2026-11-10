@@ -91,7 +91,12 @@ neither a title nor details displays only its status icon; when icons are hidden
 status label keeps it identifiable. Status text is never substituted for a step title, and no
 title is generated from content.
 
-`iconMode="status"` uses a static clock while running and a check after completion.
+When `iconMode` is omitted, running and completed steps use their application-provided
+category icon, falling back to a static clock or check when no icon is supplied. Existing
+`stepTypes` configurations continue to work without adding a new prop.
+
+`iconMode="status"` explicitly ignores category icons and uses a static clock while running
+and a check after completion.
 `iconMode="type"` uses application-provided category icons for running/completed steps,
 falling back to a dot. Error, paused and cancelled states keep their dedicated status icons.
 `iconMode="none"` removes icons and the timeline gutter; accessible statuses remain, and
@@ -112,7 +117,7 @@ the existing custom thinking renderer, as in the example above.
 | Prop                       | Type                                            | Required | Default                          | Description                                                        |
 | -------------------------- | ----------------------------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------ |
 | `steps`                    | `readonly ActivityStep[]`                       | Yes      | —                                | Accumulated, ordered steps with stable unique IDs                  |
-| `iconMode`                 | `'type' \| 'status' \| 'none'`                  | No       | `'status'`                       | Category icons, execution-state icons, or no icons/timeline        |
+| `iconMode`                 | `'type' \| 'status' \| 'none'`                  | No       | Category icon or status icon     | Category icons, execution-state icons, or no icons/timeline        |
 | `activeStepLabel`          | `string`                                        | No       | Active title or localized status | Plain-text override of the running heading                         |
 | `stepTypes`                | `Record<string, ActivityStepType>`              | No       | —                                | Category icons and labels                                          |
 | `status`                   | `ActivityStepStatus`                            | No       | Last step status                 | Overall run status, independent of stored step statuses            |

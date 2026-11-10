@@ -11,4 +11,6 @@ test('exports chat components without loading the built-in Markdown engine', () 
     expect(customMarkdown.AIStudioChat).toBeDefined();
     expect(customMarkdown.AssistantMessage).toBeDefined();
     expect(customMarkdown.MarkdownProvider).toBeDefined();
+    expect(customMarkdown.ActivityList).toBeDefined();
+    expect(customMarkdown.ThinkingMessageGroup).toBe(customMarkdown.ActivityList);
 });

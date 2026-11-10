@@ -33,7 +33,7 @@ export function ActivityList(props: ActivityListProps) {
     const {t} = i18n.useTranslation();
     const {
         steps,
-        iconMode = 'status',
+        iconMode,
         activeStepLabel,
         stepTypes,
         status = steps[steps.length - 1]?.status ?? 'thought',

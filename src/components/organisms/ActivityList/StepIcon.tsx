@@ -20,16 +20,23 @@ const statusIcons = {
 export function StepIcon({
     status,
     operationIcon,
-    iconMode = 'status',
+    iconMode,
 }: {
     status: ActivityStepStatus;
     operationIcon?: ReactNode;
     iconMode?: ActivityListProps['iconMode'];
 }) {
-    if (iconMode === 'none') return null;
+    if (iconMode === 'none') {
+        return null;
+    }
 
-    if (iconMode === 'type' && (status === 'thinking' || status === 'thought')) {
-        return operationIcon || <span className={b('step-dot')} />;
+    if (status === 'thinking' || status === 'thought') {
+        if (iconMode === 'type') {
+            return operationIcon || <span className={b('step-dot')} />;
+        }
+        if (iconMode === undefined && operationIcon) {
+            return operationIcon;
+        }
     }
 
     return <Icon data={statusIcons[status]} size={16} />;

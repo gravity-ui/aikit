@@ -428,9 +428,10 @@ export const Presentation: Story = {
         <Showcase direction="column">
             {(
                 [
-                    {title: 'Subtle · status icons', iconMode: 'status'},
-                    {title: 'Subtle · operation icons', iconMode: 'type'},
-                    {title: 'Subtle · without icons', iconMode: 'none'},
+                    {title: 'Default · supplied icons', iconMode: undefined},
+                    {title: 'Status icons', iconMode: 'status'},
+                    {title: 'Operation icons', iconMode: 'type'},
+                    {title: 'Without icons', iconMode: 'none'},
                 ] as const
             ).map(({title, iconMode}) => (
                 <ShowcaseItem key={title} title={title} width="100%">
