@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.30.1](https://github.com/gravity-ui/aikit/compare/v2.30.0...v2.30.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* isolate chat exports and overlay feedback ([#317](https://github.com/gravity-ui/aikit/issues/317)) ([#318](https://github.com/gravity-ui/aikit/issues/318)) ([6ce1572](https://github.com/gravity-ui/aikit/commit/6ce1572f4525dbf16bfce06f63225f58e67af67e))
+
 ## [2.30.0](https://github.com/gravity-ui/aikit/compare/v2.29.0...v2.30.0) (2026-11-09)
 
 
