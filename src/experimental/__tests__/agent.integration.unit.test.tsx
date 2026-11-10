@@ -12,6 +12,7 @@ import {
     RunActivity,
     ScrollToBottomButton,
 } from '..';
+import {ToolMessage} from '../../components/organisms/ToolMessage';
 import {MarkdownProvider} from '../../markdown/MarkdownProvider';
 import type {MarkdownRendererProps} from '../../markdown/types';
 
@@ -526,4 +527,29 @@ it('preserves history position when older messages arrive during scrolling to la
     expect(chat.viewport.scrollTop).toBe(500);
     chat.append('More streamed content', 1700, 'older');
     expect(chat.viewport.scrollTop).toBe(500);
+});
+
+it('shows one waiting summary for approvals while preserving standalone tool status and actions', () => {
+    const accept = jest.fn();
+    const approval = (
+        <ToolMessage toolName="Commit changes" status="waitingConfirmation" onAccept={accept} />
+    );
+    const {container, rerender} = render(
+        <RunActivity
+            id="approval"
+            state="needs-input"
+            durationMs={0}
+            steps={[]}
+            attention={approval}
+        />,
+    );
+    expect(
+        container.querySelector('.g-aikit-compact-row__toggle .g-aikit-shimmer__container'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Awaiting confirmation')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', {name: /^Accept$/}));
+    expect(accept).toHaveBeenCalledTimes(1);
+    rerender(approval);
+    expect(screen.getByText('Awaiting confirmation')).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: /^Accept$/})).toBeInTheDocument();
 });

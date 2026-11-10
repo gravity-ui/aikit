@@ -57,6 +57,7 @@ Experimental entries use `@gravity-ui/aikit/experimental`; see [the compatibilit
 | Component                                                                          | Description                                                                           |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | [AssistantMessage](../src/components/organisms/AssistantMessage/README.md)         | Assistant message with multi-part content and custom renderers.                       |
+| [AskUserQuestion](../src/components/organisms/AskUserQuestion/README.md)           | Clarification card with answer options, navigation, and custom answers.               |
 | [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md)         | Paperclip button that opens the file upload dialog.                                   |
 | [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md)         | Dialog with drag-and-drop and queued/uploaded files list.                             |
 | [Header](../src/components/organisms/Header/README.md)                             | Chat header with navigation and actions.                                              |

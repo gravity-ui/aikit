@@ -9,6 +9,7 @@ import {withDefaultMarkdown} from '../../../markdown/withDefaultMarkdown';
 import type {ToolMessageProps} from '../../../types/tool';
 import {CompactRow} from '../../internal/CompactRow/CompactRow';
 import {MessageMarkdownContext} from '../../internal/MessageMarkdownContext';
+import {RunActivityWaitingContext} from '../../internal/RunActivityWaitingContext';
 import {ThinkingMessageView} from '../../internal/ThinkingMessage/ThinkingMessageView';
 import type {ThinkingMessageProps} from '../ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
@@ -136,7 +137,7 @@ export function RunActivity({
                 }
                 icon={icon}
                 showIcon={showIcon}
-                active={state === 'running'}
+                active={state === 'running' || state === 'needs-input'}
                 expanded={expanded}
                 onToggle={() => {
                     setExpanded(!expanded);
@@ -157,7 +158,9 @@ export function RunActivity({
                     ))}
                 </ol>
             </CompactRow>
-            {attention}
+            <RunActivityWaitingContext.Provider value={state === 'needs-input'}>
+                {attention}
+            </RunActivityWaitingContext.Provider>
         </section>
     );
 }
