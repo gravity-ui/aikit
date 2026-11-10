@@ -167,7 +167,9 @@ export function HistoryList(props: HistoryListProps) {
 
         const filteredChats = totalChats.filter((chat) => !deletedChats.has(chat.id));
 
-        if (!preserveOrder) return filteredChats;
+        if (!preserveOrder) {
+            return filteredChats;
+        }
         const positions = new Map(orderRef.current.map((id, index) => [id, index]));
         return filteredChats.sort(
             (first, second) =>
@@ -231,7 +233,9 @@ export function HistoryList(props: HistoryListProps) {
         }
 
         const sortedGroups = Array.from(groupedChats.entries()).sort(([dateA], [dateB]) => {
-            if (dateA === 'all') return 0;
+            if (dateA === 'all') {
+                return 0;
+            }
             return new Date(dateB).getTime() - new Date(dateA).getTime();
         });
 

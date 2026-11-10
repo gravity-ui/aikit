@@ -27,17 +27,26 @@ export function createChatActivityPersistence({
     const memory = new Map<string, string>();
     const unsaved = new Set<string>();
     const getStorage = () => {
-        if (storage !== undefined) return storage;
+        if (storage !== undefined) {
+            return storage;
+        }
         return typeof window === 'undefined' ? null : window.localStorage;
     };
     const read = (key: string) => {
-        if (unsaved.has(key)) return memory.get(key) ?? null;
+        if (unsaved.has(key)) {
+            return memory.get(key) ?? null;
+        }
         try {
             const source = getStorage();
-            if (!source) return memory.get(key) ?? null;
+            if (!source) {
+                return memory.get(key) ?? null;
+            }
             const value = source.getItem(key);
-            if (value === null) memory.delete(key);
-            else memory.set(key, value);
+            if (value === null) {
+                memory.delete(key);
+            } else {
+                memory.set(key, value);
+            }
             return value;
         } catch (error) {
             onPersistenceError?.(error);
@@ -64,7 +73,9 @@ export function createChatActivityPersistence({
             if (source) {
                 for (let index = 0; index < source.length; index++) {
                     const key = source.key(index);
-                    if (key !== null) result.add(key);
+                    if (key !== null) {
+                        result.add(key);
+                    }
                 }
             }
         } catch (error) {
@@ -74,7 +85,9 @@ export function createChatActivityPersistence({
     };
     const parse = (key: string): unknown => {
         const raw = read(key);
-        if (raw === null) return undefined;
+        if (raw === null) {
+            return undefined;
+        }
         try {
             return JSON.parse(raw);
         } catch (error) {
@@ -83,13 +96,17 @@ export function createChatActivityPersistence({
         }
     };
     const isResponse = (value: unknown): value is StoredResponse => {
-        if (!value || typeof value !== 'object') return false;
+        if (!value || typeof value !== 'object') {
+            return false;
+        }
         const row = value as Record<string, unknown>;
         return typeof row.responseId === 'string' && typeof row.hasUnread === 'boolean';
     };
     const readRequest = (chatId: string): StoredRequest | undefined => {
         const value = parse(`${headPrefix}${encodeURIComponent(chatId)}`);
-        if (!value || typeof value !== 'object') return undefined;
+        if (!value || typeof value !== 'object') {
+            return undefined;
+        }
         const row = value as Record<string, unknown>;
         if (
             typeof row.id !== 'string' ||
@@ -126,7 +143,9 @@ export function createChatActivityPersistence({
                 for (const [id, responseId, hasUnread] of legacy) {
                     chats.set(id, {responseId, hasUnread});
                 }
-            } else onPersistenceError?.(new Error('Invalid chat activity storage'));
+            } else {
+                onPersistenceError?.(new Error('Invalid chat activity storage'));
+            }
         }
         const chatIds = new Set(chats.keys());
         for (const key of keys()) {
@@ -157,8 +176,11 @@ export function createChatActivityPersistence({
                                       : true,
                           }
                         : request.previous;
-                if (response) chats.set(chatId, response);
-                else chats.delete(chatId);
+                if (response) {
+                    chats.set(chatId, response);
+                } else {
+                    chats.delete(chatId);
+                }
             }
             const response = chats.get(chatId);
             if (response && read(viewedKey(chatId, response.responseId)) === '1') {

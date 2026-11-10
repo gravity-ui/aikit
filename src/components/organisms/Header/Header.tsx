@@ -139,7 +139,9 @@ export function Header(props: HeaderProps) {
             if (isHistory && historyActivity) {
                 if (historyActivity.isGenerating) {
                     activityText = t('activity-generating');
-                    if (historyActivity.hasUnread) activityText = t('activity-generating-unread');
+                    if (historyActivity.hasUnread) {
+                        activityText = t('activity-generating-unread');
+                    }
                 } else if (historyActivity.hasUnread) {
                     activityText = t('activity-unread');
                 }

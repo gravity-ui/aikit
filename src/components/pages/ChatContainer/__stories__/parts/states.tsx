@@ -381,7 +381,9 @@ export const BackgroundActivity: Story = {
         };
         const finish = (chatId: string, withText: boolean) => {
             const request = requests.current.get(chatId);
-            if (!request) return;
+            if (!request) {
+                return;
+            }
             if (withText) {
                 const id = `answer-${++sequence.current}`;
                 request.responseReceived(id);

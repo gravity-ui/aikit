@@ -85,7 +85,9 @@ export function createChatActivitySnapshot(
  * never replay completion events. Response IDs must be unique across requests and stable on reload.
  */
 export function createChatActivityStore(options: ChatActivityStoreOptions): LocalChatActivityStore {
-    if (!options.accountId) throw new Error('Chat activity requires an account identifier');
+    if (!options.accountId) {
+        throw new Error('Chat activity requires an account identifier');
+    }
     const persistence = createChatActivityPersistence(options);
     let snapshot = EMPTY_CHAT_ACTIVITY;
     const listeners = new Set<() => void>();
@@ -111,7 +113,9 @@ export function createChatActivityStore(options: ChatActivityStoreOptions): Loca
         listeners.forEach((listener) => listener());
     };
     const handleStorage = (event: StorageEvent) => {
-        if (persistence.isStorageEvent(event)) load();
+        if (persistence.isStorageEvent(event)) {
+            load();
+        }
     };
     return {
         getSnapshot: () => snapshot,
@@ -148,13 +152,19 @@ export function createChatActivityStore(options: ChatActivityStoreOptions): Loca
             }
             return {
                 responseReceived: (response) => {
-                    if (generations.get(chatId) === id && response) responseId = response;
+                    if (generations.get(chatId) === id && response) {
+                        responseId = response;
+                    }
                 },
                 finish: () => {
                     load();
-                    if (generations.get(chatId) !== id) return;
+                    if (generations.get(chatId) !== id) {
+                        return;
+                    }
                     generations.delete(chatId);
-                    if (responseId !== undefined) persistence.finish(chatId, id, responseId);
+                    if (responseId !== undefined) {
+                        persistence.finish(chatId, id, responseId);
+                    }
                     load();
                 },
             };
