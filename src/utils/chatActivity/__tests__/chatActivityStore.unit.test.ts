@@ -124,6 +124,9 @@ function sharedStorage() {
         setItem: (key: string, value: string) => {
             values.set(key, value);
         },
+        removeItem: (key: string) => {
+            values.delete(key);
+        },
     };
 }
 
@@ -280,4 +283,235 @@ test('storage events refresh other-tab markers, preserve local generation and in
     } finally {
         unsubscribe();
     }
+});
+
+test('a completion between another tab reading and dispatching survives an empty request', () => {
+    const {first, second, storage, reload} = twoTabs();
+    const earlier = first.startGeneration('a');
+    earlier.responseReceived('a1');
+    const write = storage.setItem.bind(storage);
+    jest.spyOn(storage, 'setItem').mockImplementationOnce((key, value) => {
+        earlier.finish();
+        write(key, value);
+    });
+    second.startGeneration('a').finish();
+    expect(reload().chats.a).toMatchObject({responseId: 'a1', hasUnread: true});
+    second.startGeneration('a').finish();
+    expect(reload().chats.a).toMatchObject({responseId: 'a1', hasUnread: true});
+});
+
+test('compaction bounds request, completion and viewed keys and retains only deletion tombstones', () => {
+    const {first, storage, reload} = twoTabs();
+    storage.setItem('unrelated', 'keep');
+    for (let index = 0; index < 100; index++) {
+        complete(first, 'a', `a${index}`);
+        first.markResponseViewed('a', `a${index}`);
+    }
+    expect(storage.length).toBe(4);
+    expect(reload().chats.a).toMatchObject({responseId: 'a99', hasUnread: false});
+    first.startGeneration('a').finish();
+    expect(storage.length).toBe(4);
+    expect(reload().chats.a.hasUnread).toBe(false);
+    first.deleteChat('a');
+    expect(storage.length).toBe(2);
+    expect(storage.getItem('aikit:chat-activity:v2:alice:deleted:a')).toBe('1');
+    expect(storage.getItem('unrelated')).toBe('keep');
+});
+
+test('repeated responses fit a fixed storage quota and remain durable after reload', () => {
+    const storage = sharedStorage();
+    const write = storage.setItem.bind(storage);
+    storage.setItem = (key, value) => {
+        const entries = new Map(
+            Array.from({length: storage.length}, (_, index) => {
+                const storedKey = storage.key(index) as string;
+                return [storedKey, storage.getItem(storedKey) as string] as const;
+            }),
+        );
+        entries.set(key, value);
+        const bytes = Array.from(entries).reduce(
+            (total, [k, v]) => total + 2 * (k.length + v.length),
+            0,
+        );
+        if (bytes > 3000) {
+            throw new DOMException('Storage is full', 'QuotaExceededError');
+        }
+        write(key, value);
+    };
+    const onPersistenceError = jest.fn();
+    const store = createChatActivityStore({accountId: 'alice', storage, onPersistenceError});
+    for (let index = 0; index < 100; index++) {
+        complete(store, 'a', `a${index}`);
+        store.markResponseViewed('a', `a${index}`);
+    }
+    complete(store, 'a', 'latest');
+    const restored = createChatActivityStore({accountId: 'alice', storage});
+    restored.load();
+    expect(restored.getSnapshot().chats.a).toMatchObject({responseId: 'latest', hasUnread: true});
+    expect(onPersistenceError).not.toHaveBeenCalled();
+});
+
+test('a failed replacement cannot collect the previously durable response', () => {
+    const {first, storage, reload} = twoTabs();
+    complete(first, 'a', 'durable');
+    const write = storage.setItem.bind(storage);
+    jest.spyOn(storage, 'setItem').mockImplementation((key, value) => {
+        if (key.includes(':completion:') && value.includes('unsaved')) {
+            throw new DOMException('Storage is full', 'QuotaExceededError');
+        }
+        write(key, value);
+    });
+    complete(first, 'a', 'unsaved');
+    first.markResponseViewed('a', 'unsaved');
+    expect(first.getSnapshot().chats.a).toMatchObject({responseId: 'unsaved', hasUnread: false});
+    expect(reload().chats.a).toMatchObject({responseId: 'durable', hasUnread: true});
+});
+
+test('a collector cannot erase a newer completion and viewed marker written by another tab', () => {
+    const {first, second, storage, reload} = twoTabs();
+    complete(first, 'a', 'a1');
+    first.markResponseViewed('a', 'a1');
+    const remove = storage.removeItem.bind(storage);
+    jest.spyOn(storage, 'removeItem').mockImplementationOnce((key) => {
+        complete(second, 'a', 'a3');
+        second.markResponseViewed('a', 'a3');
+        remove(key);
+    });
+    complete(first, 'a', 'a2');
+    expect(reload().chats.a).toMatchObject({responseId: 'a3', hasUnread: false});
+});
+
+test('a completion written after deletion is reclaimed without removing its tombstone', () => {
+    const {first, second, storage, reload} = twoTabs();
+    const request = first.startGeneration('a');
+    request.responseReceived('late');
+    const write = storage.setItem.bind(storage);
+    jest.spyOn(storage, 'setItem').mockImplementationOnce((key, value) => {
+        second.deleteChat('a');
+        write(key, value);
+    });
+    request.finish();
+    expect(reload().chats.a).toBeUndefined();
+    expect(storage.length).toBe(1);
+    expect(storage.getItem('aikit:chat-activity:v2:alice:deleted:a')).toBe('1');
+});
+
+test('the previous per-chat format remains readable until a new durable completion replaces it', () => {
+    const storage = sharedStorage();
+    const prefix = 'aikit:chat-activity:v2:alice:';
+    storage.setItem(`${prefix}chat:a`, JSON.stringify({id: 'old'}));
+    storage.setItem(`${prefix}response:a:old`, JSON.stringify('a1'));
+    storage.setItem(`${prefix}viewed:a:a1`, '1');
+    const {first, reload} = twoTabs(storage);
+    first.startGeneration('a').finish();
+    expect(reload().chats.a).toMatchObject({responseId: 'a1', hasUnread: false});
+    complete(first, 'a', 'a2');
+    expect(reload().chats.a).toMatchObject({responseId: 'a2', hasUnread: true});
+    expect(storage.getItem(`${prefix}chat:a`)).toBeNull();
+    expect(storage.getItem(`${prefix}response:a:old`)).toBeNull();
+    expect(storage.getItem(`${prefix}viewed:a:a1`)).toBeNull();
+});
+
+test('storage adapters without removeItem keep the original durable read/write contract', () => {
+    const source = sharedStorage();
+    const storage = {
+        getItem: source.getItem,
+        setItem: source.setItem,
+        key: source.key,
+        get length() {
+            return source.length;
+        },
+    };
+    const first = createChatActivityStore({accountId: 'alice', storage});
+    complete(first, 'a', 'a1');
+    first.markResponseViewed('a', 'a1');
+    complete(first, 'a', 'a2');
+    const restored = createChatActivityStore({accountId: 'alice', storage});
+    restored.load();
+    expect(restored.getSnapshot().chats.a).toMatchObject({responseId: 'a2', hasUnread: true});
+});
+
+test('compaction reclaims obsolete keys from the previous format without losing its current marker', () => {
+    const storage = sharedStorage();
+    const prefix = 'aikit:chat-activity:v2:alice:';
+    for (let index = 0; index < 30; index++) {
+        storage.setItem(`${prefix}response:a:old-${index}`, JSON.stringify(`a${index}`));
+        storage.setItem(`${prefix}viewed:a:a${index}`, '1');
+    }
+    storage.setItem(`${prefix}chat:a`, JSON.stringify({id: 'old-29'}));
+    const {first, reload} = twoTabs(storage);
+    first.load();
+    expect(storage.length).toBe(3);
+    expect(reload().chats.a).toMatchObject({responseId: 'a29', hasUnread: false});
+});
+
+test('a transient quota failure is retried after compaction without reporting a durable failure', () => {
+    const storage = sharedStorage();
+    const onPersistenceError = jest.fn();
+    const store = createChatActivityStore({accountId: 'alice', storage, onPersistenceError});
+    jest.spyOn(storage, 'setItem').mockImplementationOnce(() => {
+        throw new DOMException('Storage is full', 'QuotaExceededError');
+    });
+    complete(store, 'a', 'a1');
+    const restored = createChatActivityStore({accountId: 'alice', storage});
+    restored.load();
+    expect(restored.getSnapshot().chats.a).toMatchObject({responseId: 'a1', hasUnread: true});
+    expect(onPersistenceError).not.toHaveBeenCalled();
+});
+
+test('a failed tombstone write does not collect the still-durable chat', () => {
+    const {first, second, storage, reload} = twoTabs();
+    complete(first, 'a', 'a1');
+    const write = storage.setItem.bind(storage);
+    jest.spyOn(storage, 'setItem').mockImplementation((key, value) => {
+        if (key.includes(':deleted:')) {
+            throw new Error('storage unavailable');
+        }
+        write(key, value);
+    });
+    second.deleteChat('a');
+    expect(second.getSnapshot().chats.a).toBeUndefined();
+    expect(reload().chats.a).toMatchObject({responseId: 'a1', hasUnread: true});
+});
+
+test('simultaneous dispatches use a deterministic owner even if writes arrive in reverse order', () => {
+    const {first, second, storage, reload} = twoTabs();
+    let nested!: ReturnType<typeof first.startGeneration>;
+    const write = storage.setItem.bind(storage);
+    jest.spyOn(storage, 'setItem').mockImplementationOnce((key, value) => {
+        nested = second.startGeneration('a');
+        write(key, value);
+    });
+    const outer = first.startGeneration('a');
+    first.load();
+    second.load();
+    const firstOwns = first.getSnapshot().isGenerating;
+    expect(Number(firstOwns) + Number(second.getSnapshot().isGenerating)).toBe(1);
+    outer.responseReceived('outer');
+    nested.responseReceived('nested');
+    outer.finish();
+    nested.finish();
+    expect(reload().chats.a).toMatchObject({
+        responseId: firstOwns ? 'outer' : 'nested',
+        hasUnread: true,
+    });
+});
+
+test('a durable completion supersedes old ownership when its initial request write failed', () => {
+    const {first, second, storage, reload} = twoTabs();
+    const previous = first.startGeneration('a');
+    const write = storage.setItem.bind(storage);
+    jest.spyOn(storage, 'setItem').mockImplementation((key, value) => {
+        if (key.includes(':request:') && JSON.parse(value).sequence === 2) {
+            throw new Error('request write failed');
+        }
+        write(key, value);
+    });
+    complete(second, 'a', 'durable-new');
+    first.load();
+    expect(first.getSnapshot().isGenerating).toBe(false);
+    previous.responseReceived('obsolete');
+    previous.finish();
+    expect(reload().chats.a).toMatchObject({responseId: 'durable-new', hasUnread: true});
+    expect(storage.length).toBe(1);
 });

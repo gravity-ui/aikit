@@ -10,7 +10,7 @@ Import public types and factories from `@gravity-ui/aikit` or `@gravity-ui/aikit
 | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [index.ts](./index.ts)                                                                             | Public exports for the common contracts, local factory and remote factory. The persistence helper is internal.                                                                                                                    |
 | [chatActivityStore.ts](./chatActivityStore.ts)                                                     | Defines `ChatActivity`, snapshots, store interfaces and options. Creates immutable snapshots and derives aggregate activity. Implements the local request lifecycle, subscriber notifications and browser storage-event handling. |
-| [chatActivityPersistence.ts](./chatActivityPersistence.ts)                                         | Implements the local storage protocol: account-scoped keys, parsing, legacy data, request ownership, response/read/deletion records and memory fallback after storage failures.                                                   |
+| [chatActivityPersistence.ts](./chatActivityPersistence.ts)                                         | Implements the local storage protocol: account-scoped keys, parsing, legacy data, logically ordered request/completion records, safe compaction, response/read/deletion markers and memory fallback after storage failures.       |
 | [remoteChatActivityStore.ts](./remoteChatActivityStore.ts)                                         | Adapts complete backend snapshots. Validates account/revision, orders incoming state, coalesces loads and acknowledgements, reports failures and filters deleted chats.                                                           |
 | [**tests**/chatActivityStore.unit.test.ts](./__tests__/chatActivityStore.unit.test.ts)             | Covers local lifecycle, reload, account isolation, concurrent writes, exact-response reads, deletion, legacy data and storage events.                                                                                             |
 | [**tests**/remoteChatActivityStore.unit.test.ts](./__tests__/remoteChatActivityStore.unit.test.ts) | Covers server revisions, load/acknowledgement races, deduplication, retries, deletion and account validation.                                                                                                                     |
@@ -38,9 +38,9 @@ Consumers keep a stable store instance per account. `getSnapshot` returns the ca
 
 `createChatActivityStore` delegates persistence to `createChatActivityPersistence` and keeps active request handles in memory.
 
-1. `startGeneration(chatId)` reads current shared state and assigns a fresh request owner. It records the previously completed response as a fallback, then marks the new handle active in this instance.
+1. `startGeneration(chatId)` reads shared request/completion records and writes a fresh request ID with the next logical sequence. Concurrent dispatches with the same sequence are ordered by their unique request IDs. The greatest request determines ownership; a completion also durably records its request, even if the earlier request write failed.
 2. `responseReceived(responseId)` records that user-visible assistant text arrived. The host excludes tool output, reasoning and error notices.
-3. `finish()` refreshes shared state and accepts output only if the handle still owns the chat. A completed response is persisted under that request's own key. Finishing without text preserves the previous response and its read state.
+3. `finish()` refreshes shared state and accepts output only if the handle still owns the chat. A completed response is persisted independently with its request's sequence and ID. The greatest completion determines the displayed response. An empty request writes no completion, so it cannot hide a response that another tab completed during dispatch.
 4. `markResponseViewed(chatId, responseId)` refreshes state and acknowledges only the matching completed response. It cannot clear a newer response.
 5. `deleteChat(chatId)` writes a permanent deletion marker and invalidates the local handle. Late completions stay hidden; deleted chat IDs must not be reused.
 
@@ -48,22 +48,26 @@ The local store's `load()` also refreshes shared state and invalidates supersede
 
 ## Local persistence keys and concurrency
 
-The default storage is `window.localStorage`, accessed lazily. `storage: null` uses memory. Custom storage implements `getItem`, `setItem`, `key(index)` and `length` so a new instance can discover stored chats.
+The default storage is `window.localStorage`, accessed lazily. `storage: null` uses memory. Custom storage implements `getItem`, `setItem`, `key(index)` and `length`. Providing optional `removeItem` enables compaction; adapters without it remain compatible but retain their records.
 
-The prefix is `aikit:chat-activity:v2:<account>:`. Account, chat and response identifiers are encoded with `encodeURIComponent`; request IDs are generated by the local store.
+The prefix is `aikit:chat-activity:v2:<account>:`. Account, chat and response identifiers are encoded with `encodeURIComponent`; request IDs are random and unique.
 
-| Key after the prefix        | Stored value            | Purpose                                                                      |
-| --------------------------- | ----------------------- | ---------------------------------------------------------------------------- |
-| `chat:<chat>`               | JSON `{id, previous?}`  | Current request owner and the previously completed response's ID/read state. |
-| `response:<chat>:<request>` | JSON response-ID string | Completion belonging to that particular request.                             |
-| `viewed:<chat>:<response>`  | `1`                     | Monotonic acknowledgement of one response.                                   |
-| `deleted:<chat>`            | `1`                     | Permanent tombstone preventing stale events from reviving the chat.          |
+| Key after the prefix          | Stored value                                 | Purpose                                                             |
+| ----------------------------- | -------------------------------------------- | ------------------------------------------------------------------- |
+| `request:<chat>:<request>`    | JSON `{sequence, id}`                        | Immutable request ownership record.                                 |
+| `completion:<chat>:<request>` | JSON `{sequence, id, responseId, hasUnread}` | Immutable completed response, independent of a newer request.       |
+| `viewed:<chat>:<response>`    | JSON `{sequence, id}`, or legacy `1`         | Acknowledgement of that exact response.                             |
+| `deleted:<chat>`              | `1`                                          | Permanent tombstone preventing stale events from reviving the chat. |
 
-Operations read current shared values and update their own keys. They never write an account-wide snapshot. This prevents a stale tab changing chat B from erasing chat A's markers. Completion and acknowledgement have separate keys, so acknowledging an older response cannot overwrite a new completion. Even if an old handle writes after deletion or a new dispatch, reading the current owner/tombstone prevents that output from becoming current.
+Request and completion records have separate maxima, ordered by logical sequence and then request ID using code-unit string order. A completion also supplies its request ownership if persisting the initial request failed. Starting a request never copies the last response. If tab A completes between tab B reading shared state and writing its request, A's completion remains readable even when B stops without text. Acknowledging an older response cannot acknowledge a newer one.
 
-The old `aikit:chat-activity:v1:<account>` array remains a read-only baseline. New chat records and tombstones override it; viewed markers apply to the exact response ID. Loading legacy data does not mark historical replies unread or rewrite the old array.
+Compaction runs during reads and mutations. It removes a completion only when a strictly greater completion has already been persisted. A request can be removed after a greater request or completion has been persisted, since a completion also records its request ownership. Thus concurrent collectors cannot remove the last durable record: a collector can remove its replacement only after an even greater durable replacement exists. Failed writes never authorize collection of durable state. Viewed markers older than the latest durable completion can be removed when they refer to a different response.
 
-The persistence helper caches values and retains failed writes in memory. Failures call `onPersistenceError`; those unsaved values are available to the current instance without claiming successful durable storage. This local implementation coordinates same-origin browser tabs. Cross-device state belongs to the server adapter.
+After operations settle, a live chat normally keeps one request, one completion and at most one viewed marker, regardless of its message count. Deletion first persists a tombstone and then removes the chat's other records. Late writers also run compaction; subsequent loads reclaim any remaining late records while retaining the tombstone. Tombstones are permanent because deleted chat IDs must not be reused. Other accounts and unrelated localStorage keys are untouched.
+
+The original `aikit:chat-activity:v1:<account>` array and the previous `chat:<chat>` / `response:<chat>:<request>` format remain readable baselines. A new durable completion supersedes the old per-chat records; obsolete old response/read keys are reclaimed. The account-wide legacy array remains read-only, and tombstones continue to mask deleted legacy chats.
+
+The helper caches values and retains failed writes in memory. Quota failures trigger compaction and one retry. Persistent failures call `onPersistenceError`; unsaved values remain available to the current instance without claiming durability. A failed replacement or tombstone cannot delete the previous durable data. This implementation coordinates same-origin browser tabs; cross-device state belongs to the server adapter.
 
 ## Server-backed state
 
@@ -73,13 +77,13 @@ The persistence helper caches values and retains failed writes in memory. Failur
 - Revisions increase per account. Equal/older snapshots are ignored, regardless of whether they came from loading, push or acknowledgement.
 - `load()` performs the initial load; `refresh()` explicitly reloads. Concurrent loads share the request.
 - Acknowledgements are coalesced per chat/response. The marker stays until authoritative state confirms viewing. A callback can return that state directly or let a later push/query update supply it.
-- Errors are exposed through snapshot `error` and optional `onError`, and async commands reject. The React hook consumes rejections without an automatic retry loop.
+- Errors are exposed through snapshot `error` and optional `onError`, and async commands reject. An authoritative read confirmation suppresses a later failure for that exact pending acknowledgement, even after a newer response arrives. A later confirmation also clears its matching acknowledgement error, without clearing unrelated load/command failures. The React hook consumes rejections without an automatic retry loop.
 - `deleteChat` evicts cached activity and retains a tombstone. The host deletes the actual server chat through its own API.
 
 This adapter does not use the local persistence helper. Backend revisions and application callbacks provide its ordering and durability.
 
 ## Visibility and UI boundary
 
-The application supplies `isPanelVisible` and the response revision actually displayed in the selected chat. `useChatActivity` additionally checks document visibility and rechecks on visibility/focus events. Opening history or merely seeing a chat row never marks an answer viewed.
+The application supplies `isPanelVisible` and the response revision actually displayed in the selected chat. `useChatActivity` additionally checks document visibility and rechecks on visibility/focus events. Opening history or merely seeing a chat row never marks an answer viewed. Stable callback wrappers invoke store methods on their owner, so class-based application stores retain their `this` receiver. History preserves row order within pin/date groups only by default when activity tracking is enabled; an explicit `preserveOrder` always takes precedence.
 
 Keeping these concerns separate allows the same Header, History and ChatContainer components to work with local state, backend state or an application-owned store. UI behavior and storage ordering are covered by the existing tests listed above.

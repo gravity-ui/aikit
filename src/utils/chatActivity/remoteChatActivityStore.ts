@@ -63,6 +63,7 @@ export function createRemoteChatActivityStore(
     let loaded = false;
     let loadingPromise: Promise<void> | undefined;
     const acknowledgements = new Map<string, Promise<void>>();
+    const confirmedAcknowledgements = new Set<string>();
     // Chat IDs must not be reused within an account. Tombstones also filter late command results.
     const deletedChats = new Set<string>();
     const listeners = new Set<() => void>();
@@ -91,6 +92,21 @@ export function createRemoteChatActivityStore(
         activity = createChatActivitySnapshot(
             Object.fromEntries(Object.entries(state.chats).filter(([id]) => !deletedChats.has(id))),
         );
+        for (const [chatId, chat] of Object.entries(activity.chats)) {
+            if (chat.responseId && !chat.hasUnread) {
+                const key = JSON.stringify([chatId, chat.responseId]);
+                if (acknowledgements.has(key)) {
+                    confirmedAcknowledgements.add(key);
+                }
+                if (
+                    error?.operation === 'markResponseViewed' &&
+                    error.chatId === chatId &&
+                    error.responseId === chat.responseId
+                ) {
+                    error = undefined;
+                }
+            }
+        }
         revision = state.revision;
         loaded = true;
         publish();
@@ -157,7 +173,7 @@ export function createRemoteChatActivityStore(
                     }
                 })
                 .catch((cause: unknown) => {
-                    if (deletedChats.has(chatId)) {
+                    if (deletedChats.has(chatId) || confirmedAcknowledgements.has(key)) {
                         return;
                     }
                     reportError({operation: 'markResponseViewed', chatId, responseId, cause});
@@ -165,6 +181,7 @@ export function createRemoteChatActivityStore(
                 })
                 .finally(() => {
                     acknowledgements.delete(key);
+                    confirmedAcknowledgements.delete(key);
                 });
             acknowledgements.set(key, command);
             error = undefined;

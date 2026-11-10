@@ -1,4 +1,4 @@
-import {useEffect, useState, useSyncExternalStore} from 'react';
+import {useCallback, useEffect, useState, useSyncExternalStore} from 'react';
 
 import {type ChatActivityStore, EMPTY_CHAT_ACTIVITY} from '../utils/chatActivity';
 
@@ -17,11 +17,12 @@ const ignoreStoreError = () => {};
 
 /** Subscribe to shared activity and acknowledge only a committed, visible response revision. */
 export function useChatActivity(store?: ChatActivityStore, view?: ChatActivityView) {
-    const snapshot = useSyncExternalStore(
-        store?.subscribe ?? noopSubscribe,
-        store?.getSnapshot ?? emptySnapshot,
-        emptySnapshot,
+    const subscribe = useCallback(
+        (listener: () => void) => (store ? store.subscribe(listener) : noopSubscribe()),
+        [store],
     );
+    const getSnapshot = useCallback(() => (store ? store.getSnapshot() : emptySnapshot()), [store]);
+    const snapshot = useSyncExternalStore(subscribe, getSnapshot, emptySnapshot);
     const [visibilityRevision, setVisibilityRevision] = useState(0);
     useEffect(() => {
         Promise.resolve(store?.load?.()).catch(ignoreStoreError);

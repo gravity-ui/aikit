@@ -70,7 +70,13 @@ export function History(props: HistoryProps) {
         onOpenChange?.(false);
     };
 
-    const list = <HistoryList {...listProps} preserveOrder={open} onChatClick={handleChatClick} />;
+    const list = (
+        <HistoryList
+            {...listProps}
+            preserveOrder={listProps.preserveOrder ?? (open && Boolean(listProps.activityStore))}
+            onChatClick={handleChatClick}
+        />
+    );
 
     if (isMobile) {
         return (

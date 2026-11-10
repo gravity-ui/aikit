@@ -52,8 +52,14 @@ export interface LocalChatActivityStore extends ChatActivityStore {
 export interface ChatActivityStoreOptions {
     /** Stable authenticated account identifier. Create a separate store on account change. */
     accountId: string;
-    /** Storage must enumerate keys via key/length. Defaults to localStorage; null uses memory. */
-    storage?: Pick<Storage, 'getItem' | 'setItem' | 'key' | 'length'> | null;
+    /**
+     * Defaults to localStorage; null uses memory. key/length enumerate records.
+     * Optional removeItem enables compaction; adapters without it retain all records.
+     */
+    storage?:
+        | (Pick<Storage, 'getItem' | 'setItem' | 'key' | 'length'> &
+              Partial<Pick<Storage, 'removeItem'>>)
+        | null;
     onPersistenceError?: (error: unknown) => void;
 }
 
@@ -139,14 +145,7 @@ export function createChatActivityStore(options: ChatActivityStoreOptions): Loca
             ).join('-');
             let responseId: string | undefined;
             if (!persistence.isDeleted(chatId)) {
-                const current = snapshot.chats[chatId];
-                persistence.start(
-                    chatId,
-                    id,
-                    current?.responseId === undefined
-                        ? undefined
-                        : {responseId: current.responseId, hasUnread: current.hasUnread},
-                );
+                persistence.start(chatId, id);
                 generations.set(chatId, id);
                 load();
             }
