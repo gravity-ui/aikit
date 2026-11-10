@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/gravity-ui/aikit/compare/v3.3.0...v3.4.0) (2026-11-10)
+
+
+### Features
+
+* add chat history activity stores and indicators ([#313](https://github.com/gravity-ui/aikit/issues/313)) ([1393df8](https://github.com/gravity-ui/aikit/commit/1393df893218f61c230f33c97d0ba0d62faf2ae9))
+
 ## [3.3.0](https://github.com/gravity-ui/aikit/compare/v3.2.1...v3.3.0) (2026-11-10)
 
 
