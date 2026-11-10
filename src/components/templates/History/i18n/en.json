@@ -8,5 +8,7 @@
   "tooltip-delete": "Delete",
   "pinned": "Pinned chat",
   "action-pin": "Pin chat",
-  "action-unpin": "Unpin chat"
+  "action-unpin": "Unpin chat",
+  "activity-generating": "Generating a response",
+  "activity-unread": "New responses available"
 }

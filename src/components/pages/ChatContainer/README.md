@@ -447,6 +447,7 @@ Use the `texts` prop with type `ChatContainerTexts` for a **flat** API over user
 | `contentClassName`          | `string`                               | -                  | -         | Additional CSS class for content section                                                                                                                                      |
 | `footerClassName`           | `string`                               | -                  | -         | Additional CSS class for footer section                                                                                                                                       |
 | `qa`                        | `string \| ChatContainerQa`            | -                  | -         | QA/test identifiers: string = root only; object = map or `prefix` (see **QA**)                                                                                                |
+| `chatActivity`              | `ChatContainerProps['chatActivity']`   | -                  | -         | Shared activity and visibility of the response actually rendered for the selected chat.                                                                                       |
 
 ## Types
 
@@ -1029,7 +1030,9 @@ function App() {
 
       while (true) {
         const {done, value} = await reader!.read();
-        if (done) break;
+        if (done) {
+          break;
+        }
 
         const chunk = decoder.decode(value);
         assistantMessage.content += chunk;
@@ -1462,3 +1465,7 @@ Results are discarded after changing conversations, disabling export, or unmount
 Download success means the browser download was initiated, not that the file was saved.
 Notification callbacks should handle their own errors; they do not change the export
 outcome or leave the action pending.
+
+## Chat activity
+
+See the [chat activity integration guide](../../../../docs/chat-activity.md) for request lifecycle, persistence and visibility handling.

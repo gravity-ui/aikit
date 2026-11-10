@@ -8,4 +8,5 @@ export * from './aiAgentContext';
 export * from './toolset';
 export * from './mascot';
 export * from './pinnedChatsStore';
+export * from './chatActivity';
 export * from './chatMarkdown';

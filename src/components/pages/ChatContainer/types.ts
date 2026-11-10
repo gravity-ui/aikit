@@ -14,6 +14,7 @@ import type {
     TSubmitData,
 } from '../../../types';
 import type {SuggestionsItem} from '../../../types/common';
+import type {ChatActivityStore} from '../../../utils/chatActivity';
 import type {ChatMarkdownOptions} from '../../../utils/chatMarkdown';
 import type {ContextIndicatorProps} from '../../atoms/ContextIndicator';
 import type {DisclaimerProps} from '../../atoms/Disclaimer';
@@ -202,6 +203,14 @@ export interface ChatExportConfig extends ChatMarkdownOptions {
  * Props for ChatContainer component
  */
 export interface ChatContainerProps {
+    /** Stable account-scoped activity source; accepts local and server-backed stores. */
+    chatActivity?: {
+        store: ChatActivityStore;
+        /** False while the host panel is closed or collapsed. */
+        isPanelVisible: boolean;
+        /** The completed response actually rendered for activeChat; omit while loading it. */
+        renderedResponseId?: string;
+    };
     /** Opt-in Markdown export. Supply complete history in messages, including off-screen messages. */
     chatExport?: ChatExportConfig;
     // Chat data

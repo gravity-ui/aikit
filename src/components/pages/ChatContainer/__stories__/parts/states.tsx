@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
 
 import {Sparkles} from '@gravity-ui/icons';
-import {Icon} from '@gravity-ui/uikit';
+import {Button, Flex, Icon} from '@gravity-ui/uikit';
 
 import {ChatContainer} from '../..';
+import {ContentWrapper} from '../../../../../demo/ContentWrapper';
+import {useChatActivity} from '../../../../../hooks/useChatActivity';
 import type {ChatStatus, ChatType, TChatMessage, TSubmitData} from '../../../../../types';
+import {type ChatGeneration, createChatActivityStore} from '../../../../../utils/chatActivity';
 
 import {
     type Story,
@@ -354,6 +357,93 @@ export const EmbeddedInPageWithStreaming: Story = {
             <div style={{minHeight: '100vh', overflow: 'visible'}}>
                 <Story />
             </div>
+        ),
+    ],
+};
+
+/** Manually controlled requests make parallel and hidden-panel scenarios easy to reproduce. */
+export const BackgroundActivity: Story = {
+    args: {isMobile: false},
+    render: (args) => {
+        const [store] = useState(() =>
+            createChatActivityStore({accountId: 'storybook', storage: null}),
+        );
+        const activity = useChatActivity(store);
+        const requests = React.useRef(new Map<string, ChatGeneration>());
+        const sequence = React.useRef(0);
+        const [chats, setChats] = useState(mockChats.slice(0, 2));
+        const [activeChat, setActiveChat] = useState<ChatType>(chats[0]);
+        const [visible, setVisible] = useState(true);
+        const [answers, setAnswers] = useState<Record<string, TChatMessage>>({});
+        const answer = answers[activeChat.id];
+        const start = () => {
+            requests.current.set(activeChat.id, store.startGeneration(activeChat.id));
+        };
+        const finish = (chatId: string, withText: boolean) => {
+            const request = requests.current.get(chatId);
+            if (!request) {
+                return;
+            }
+            if (withText) {
+                const id = `answer-${++sequence.current}`;
+                request.responseReceived(id);
+                setAnswers((previous) => ({
+                    ...previous,
+                    [chatId]: {
+                        id,
+                        role: 'assistant',
+                        content: `Response ${sequence.current} is ready.`,
+                    },
+                }));
+            }
+            request.finish();
+            requests.current.delete(chatId);
+        };
+        return (
+            <Flex direction="column" style={{height: '100%', gap: 'var(--g-spacing-3)'}}>
+                <Flex style={{gap: 'var(--g-spacing-2)'}} wrap>
+                    <Button onClick={start}>Start in selected chat</Button>
+                    {chats.map((chat, index) => (
+                        <Button key={chat.id} onClick={() => finish(chat.id, true)}>
+                            Finish chat {index + 1}
+                        </Button>
+                    ))}
+                    <Button onClick={() => finish(activeChat.id, false)}>Stop without text</Button>
+                    <Button onClick={() => setVisible(!visible)}>
+                        {visible ? 'Hide panel' : 'Show panel'}
+                    </Button>
+                </Flex>
+                <div style={{flex: 1, minHeight: 0, display: visible ? undefined : 'none'}}>
+                    <ChatContainer
+                        {...args}
+                        chats={chats}
+                        activeChat={activeChat}
+                        messages={answer ? [answer] : []}
+                        status={activity.chats[activeChat.id]?.isGenerating ? 'submitted' : 'ready'}
+                        chatActivity={{
+                            store,
+                            isPanelVisible: visible,
+                            renderedResponseId: answer?.id,
+                        }}
+                        onSendMessage={async () => start()}
+                        onSelectChat={setActiveChat}
+                        onDeleteChat={async (chat) =>
+                            setChats((previous) => previous.filter(({id}) => id !== chat.id))
+                        }
+                    />
+                </div>
+            </Flex>
+        );
+    },
+    decorators: [
+        (Story) => (
+            <ContentWrapper
+                width="min(600px, 100%)"
+                height="calc(100vh - 32px)"
+                boxSizing="border-box"
+            >
+                <Story />
+            </ContentWrapper>
         ),
     ],
 };
