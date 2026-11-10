@@ -26,9 +26,13 @@ it('stores a settled cancellation instead of a still-running saved conversation'
         activityPausedAt: undefined,
         activityPausedDuration: 200,
     });
-    if (!Array.isArray(result[0].content)) throw new Error('Expected parts');
+    if (!Array.isArray(result[0].content)) {
+        throw new Error('Expected parts');
+    }
     const part = result[0].content[0];
-    if (part.type !== 'tool') throw new Error('Expected tool');
+    if (part.type !== 'tool') {
+        throw new Error('Expected tool');
+    }
     expect(part.data.status).toBe('cancelled');
     expect(messages[0].metadata?.activityState).toBe('running');
 });

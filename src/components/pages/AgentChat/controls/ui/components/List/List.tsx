@@ -2,12 +2,13 @@ import {type CSSProperties, type PropsWithChildren, type Ref} from 'react';
 
 import {List as GList, type ListProps, Text} from '@gravity-ui/uikit';
 
-import {cn as cn, i18n as i18nGlobal} from '../../../adapters';
+import {cn} from '../../../classNames';
+import {i18n as i18nGlobal} from '../../../../i18n';
 
 import './List.ported.scss';
 const css = {
-    wrapper: 'agent-ui-components-List-List-module-css-wrapper',
-    count: 'agent-ui-components-List-List-module-css-count',
+    wrapper: 'g-aikit-agent-list__wrapper',
+    count: 'g-aikit-agent-list__count',
 };
 
 export interface IListProps<Item> extends ListProps<Item> {

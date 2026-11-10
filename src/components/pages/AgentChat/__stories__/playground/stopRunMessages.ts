@@ -11,8 +11,9 @@ export function stopRunMessages(
             message.role !== 'assistant' ||
             (message.metadata?.activityState !== 'running' &&
                 message.metadata?.responseState !== 'running')
-        )
+        ) {
             return message;
+        }
         return {
             ...message,
             metadata: {
@@ -39,13 +40,15 @@ export function stopRunMessages(
                           ['loading', 'waitingConfirmation', 'waitingSubmission'].includes(
                               part.data.status ?? '',
                           )
-                      )
+                      ) {
                           return {...part, data: {...part.data, status: 'cancelled' as const}};
-                      if (part.type === 'thinking' && part.data.status === 'thinking')
+                      }
+                      if (part.type === 'thinking' && part.data.status === 'thinking') {
                           return {
                               ...part,
                               data: {...part.data, status: 'thought' as const, title: 'Stopped'},
                           };
+                      }
                       return part;
                   })
                 : message.content,

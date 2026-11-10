@@ -9,5 +9,3 @@ export * from './UserMessage';
 export * from './FileUploadDialog';
 export * from './AttachmentPicker';
 export * from './ThinkingMessageGroup';
-
-export * from './RunActivity';

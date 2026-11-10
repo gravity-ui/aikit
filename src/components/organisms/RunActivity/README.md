@@ -1,5 +1,7 @@
 # RunActivity
 
+> **Experimental.** This API is outside AIKit's stable compatibility guarantees. It may change or be removed in minor releases without a major version bump. Patch releases preserve compatibility. Pin an exact package version and review the changelog before upgrading.
+
 Presentational ordered run history with explicit state and duration.
 
 ## Features
@@ -11,7 +13,7 @@ Presentational ordered run history with explicit state and duration.
 ## Usage
 
 ```tsx
-import {RunActivity} from '@gravity-ui/aikit';
+import {RunActivity} from '@gravity-ui/aikit/experimental';
 ```
 
 ## Props
@@ -29,6 +31,7 @@ import {RunActivity} from '@gravity-ui/aikit';
 | onExpandedChange | function                   | —        | —       | Disclosure callback                                                |
 | renderStep       | function                   | —        | —       | Custom renderer                                                    |
 | attention        | ReactNode                  | —        | —       | Always-visible approvals, questions or actionable errors           |
+| showIcon         | boolean                    | —        | true    | Show summary and default step icons                                |
 | className        | string                     | —        | —       | Root class                                                         |
 
 ```tsx
@@ -53,3 +56,11 @@ The host adapter must explicitly identify the activity boundary and final answer
 ## Styling
 
 Uses `--g-color-text-primary`, `--g-color-text-secondary`, `--g-color-line-focus` and Shimmer's theme variables. Rows use 14px text, a fixed 20px icon container and a 24px minimum height. Buttons support Enter/Space and visible focus. Shimmer respects reduced motion.
+
+## Icon visibility
+
+`showIcon` defaults to `true`. Set it to `false` to hide the summary and default thinking/tool step icons, including their gutter. A step can override this through `props.showIcon`. Disclosure chevrons remain available.
+
+```tsx
+<RunActivity id="run" state="completed" durationMs={3000} steps={steps} showIcon={false} />
+```

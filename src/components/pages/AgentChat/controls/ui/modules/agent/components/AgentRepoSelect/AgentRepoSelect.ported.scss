@@ -1,54 +1,48 @@
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-select {
+.g-aikit-agent-agent-repo-select__select {
     max-width: min(260px, 100%);
     min-width: 0;
 }
 
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-selectedOption {
+.g-aikit-agent-agent-repo-select__selectedOption {
     display: flex;
     align-items: center;
     gap: var(--g-spacing-1);
     min-width: 0;
 }
 
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-filter {
+.g-aikit-agent-agent-repo-select__filter {
     padding: var(--g-spacing-1);
 }
 
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-list .g-select-list {
+.g-aikit-agent-agent-repo-select__list .g-select-list {
     max-height: calc(5 * 28px);
 }
 
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-list
-    .g-select-list_mobile {
+.g-aikit-agent-agent-repo-select__list .g-select-list_mobile {
     max-height: calc(5 * 32px);
 }
 
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-repoIcon {
+.g-aikit-agent-agent-repo-select__repoIcon {
     flex-shrink: 0;
 }
 
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-selectedLabel {
+.g-aikit-agent-agent-repo-select__selectedLabel {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.g-aikit-context-item:has(
-    .agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-select
-) {
+.g-aikit-context-item:has(.g-aikit-agent-agent-repo-select__select) {
     max-width: min(260px, 100%);
     box-shadow: none;
 }
 
-.g-aikit-context-item:has(
-        .agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-select
-    )
-    .g-label__text {
+.g-aikit-context-item:has(.g-aikit-agent-agent-repo-select__select) .g-label__text {
     margin: 0;
     text-align: start;
 }
 
-.agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-skeleton {
+.g-aikit-agent-agent-repo-select__skeleton {
     display: block;
     width: 120px;
     height: 16px;

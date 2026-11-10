@@ -3,50 +3,37 @@ import React, {useCallback, useState} from 'react';
 import {ChevronDown} from '@gravity-ui/icons';
 import {Button, Icon} from '@gravity-ui/uikit';
 
-import {cn as cn} from '../../../adapters';
-import {type ModelItem} from '../../../shared/types/models';
+import {cn} from '../../../classNames';
+import type {AgentModelOption} from '../../../../types';
 import {getAssistantModelIcon} from '../../lib/utils/getAssistantModelIcon';
 
 import {AssistantModelSelectMenu} from './AssistantModelSelectMenu';
 
 import './AssistantModelSelect.ported.scss';
-const useDevice = () => ({isMobile: false});
 
 const css = {
-    switcher: 'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-switcher',
-    switcherWidthMax:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-switcherWidthMax',
-    switcherLoading:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-switcherLoading',
-    switcherOutlined:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-switcherOutlined',
-    label: 'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-label',
-    switcherLabel:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-switcherLabel',
-    switcherBrandIcon:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-switcherBrandIcon',
-    popup: 'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-popup',
-    popupContent:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-popupContent',
-    itemRow: 'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-itemRow',
-    itemTitleUnavailable:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-itemTitleUnavailable',
-    brandIcon: 'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-brandIcon',
-    brandIconUnavailable:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-brandIconUnavailable',
-    itemEndContent:
-        'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-itemEndContent',
-    modelInfo: 'agent-ui-components-AssistantModelSelect-AssistantModelSelect-module-css-modelInfo',
+    switcher: 'g-aikit-agent-model-select__switcher',
+    switcherWidthMax: 'g-aikit-agent-model-select__switcherWidthMax',
+    switcherLoading: 'g-aikit-agent-model-select__switcherLoading',
+    switcherOutlined: 'g-aikit-agent-model-select__switcherOutlined',
+    label: 'g-aikit-agent-model-select__label',
+    switcherLabel: 'g-aikit-agent-model-select__switcherLabel',
+    switcherBrandIcon: 'g-aikit-agent-model-select__switcherBrandIcon',
+    popup: 'g-aikit-agent-model-select__popup',
+    popupContent: 'g-aikit-agent-model-select__popupContent',
+    itemRow: 'g-aikit-agent-model-select__itemRow',
+    itemTitleUnavailable: 'g-aikit-agent-model-select__itemTitleUnavailable',
+    brandIcon: 'g-aikit-agent-model-select__brandIcon',
+    brandIconUnavailable: 'g-aikit-agent-model-select__brandIconUnavailable',
+    itemEndContent: 'g-aikit-agent-model-select__itemEndContent',
+    modelInfo: 'g-aikit-agent-model-select__modelInfo',
 };
 
 export interface AssistantModelSelectProps {
-    models: ModelItem[];
+    models: AgentModelOption[];
     selectedModelId?: string;
     selectedModelLabel: string;
     onSelect: (modelId: string) => void;
-    onTariffLockedSelect?: (modelId: string) => void;
-    onRequestLockedSelect?: (modelId: string) => void;
-    tariffLockedTooltip?: string;
     disabled?: boolean;
     loading?: boolean;
     size?: 's' | 'm' | 'l' | 'xl';
@@ -56,8 +43,6 @@ export interface AssistantModelSelectProps {
     header?: React.ReactNode;
     footer?: React.ReactNode;
     onOpen?: () => void;
-    mobileMenuOpen?: boolean;
-    onMobileMenuOpenChange?: (open: boolean) => void;
 }
 
 export function AssistantModelSelect({
@@ -65,9 +50,6 @@ export function AssistantModelSelect({
     selectedModelId,
     selectedModelLabel,
     onSelect,
-    onTariffLockedSelect,
-    onRequestLockedSelect,
-    tariffLockedTooltip,
     disabled = false,
     loading = false,
     size = 's',
@@ -77,13 +59,9 @@ export function AssistantModelSelect({
     header,
     footer,
     onOpen,
-    mobileMenuOpen,
-    onMobileMenuOpenChange,
 }: AssistantModelSelectProps) {
-    const {isMobile} = useDevice();
-    const usesExternalMobileMenu = isMobile && onMobileMenuOpenChange !== undefined;
     const [internalOpen, setInternalOpen] = useState(false);
-    const open = usesExternalMobileMenu ? Boolean(mobileMenuOpen) : internalOpen;
+    const open = internalOpen;
 
     const handleOpenToggle = useCallback(
         (nextOpen: boolean) => {
@@ -91,17 +69,12 @@ export function AssistantModelSelect({
                 return;
             }
 
-            if (usesExternalMobileMenu) {
-                onMobileMenuOpenChange(nextOpen);
-            } else {
-                setInternalOpen(nextOpen);
-            }
-
-            if (nextOpen && !usesExternalMobileMenu) {
+            setInternalOpen(nextOpen);
+            if (nextOpen) {
                 onOpen?.();
             }
         },
-        [disabled, loading, models.length, onMobileMenuOpenChange, onOpen, usesExternalMobileMenu],
+        [disabled, loading, models.length, onOpen],
     );
 
     const handleSelectModel = useCallback(
@@ -131,7 +104,6 @@ export function AssistantModelSelect({
             selected={open}
             aria-haspopup="listbox"
             aria-expanded={open}
-            onClick={isMobile ? () => handleOpenToggle(!open) : undefined}
         >
             {!loading && (
                 <span className={css.switcherLabel}>
@@ -151,18 +123,11 @@ export function AssistantModelSelect({
         return switcher;
     }
 
-    if (usesExternalMobileMenu) {
-        return switcher;
-    }
-
     return (
         <AssistantModelSelectMenu
             models={models}
             selectedModelId={selectedModelId}
             onSelect={handleSelectModel}
-            onTariffLockedSelect={onTariffLockedSelect}
-            onRequestLockedSelect={onRequestLockedSelect}
-            tariffLockedTooltip={tariffLockedTooltip}
             header={header}
             footer={footer}
             open={open}

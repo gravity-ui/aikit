@@ -197,3 +197,5 @@ Each component additionally has a dedicated subpath in `package.json#exports` (`
 - [AI Agent Integration](./AI_AGENTS.md)
 - [Testing Guide](./TESTING.md)
 - [Contributor Guidelines](./guidelines/)
+
+Experimental component directories are registered in `src/components/stability.json` and exported through `src/experimental/index.ts`. Shared private renderers live in `src/components/internal/`.

@@ -18,8 +18,9 @@ export function getMessageChanges(message: TChatMessage) {
         message.role !== 'assistant' ||
         !Array.isArray(message.content) ||
         message.metadata?.changesUndone
-    )
+    ) {
         return undefined;
+    }
     const parts = message.content;
     const files = developerChanges.files.filter((_, fileIndex) =>
         parts.some(
@@ -29,7 +30,9 @@ export function getMessageChanges(message: TChatMessage) {
                 part.data.status === 'success',
         ),
     );
-    if (!files.length) return undefined;
+    if (!files.length) {
+        return undefined;
+    }
     return {
         runId: message.id,
         files,
@@ -45,8 +48,12 @@ export function getResponseState(message: TChatMessage) {
 }
 
 export function getDeveloperChanges(messages: TChatMessage[], status: ChatStatus) {
-    if (status === 'submitted') return undefined;
+    if (status === 'submitted') {
+        return undefined;
+    }
     const latest = messages[messages.length - 1];
-    if (!latest || getResponseState(latest) !== 'running') return undefined;
+    if (!latest || getResponseState(latest) !== 'running') {
+        return undefined;
+    }
     return getMessageChanges(latest);
 }

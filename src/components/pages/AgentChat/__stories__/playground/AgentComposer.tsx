@@ -1,23 +1,17 @@
 import {type ComponentProps, useState} from 'react';
 
 import {AgentComposer as Composer} from '../../AgentComposer';
-import type {ModelItem} from '../../controls/shared/types/models';
+import type {AgentModelOption} from '../../types';
 const skills: Array<{slug: string; title?: string}> = [
     {slug: 'implement-feature', title: 'Build a feature with repository context'},
     {slug: 'review', title: 'Review code changes'},
     {slug: 'write-tests', title: 'Add regression tests'},
 ];
-const models: ModelItem[] = [
+const models: AgentModelOption[] = [
     {
         id: 'default',
-        created: 1,
         name: 'Default model',
         description: 'Default model',
-        context_length: 128000,
-        max_output_tokens: 8192,
-        architecture: {input_modalities: ['text'], output_modalities: ['text']},
-        supported_parameters: [],
-        external: false,
     },
 ];
 

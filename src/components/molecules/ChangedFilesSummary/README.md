@@ -1,5 +1,7 @@
 # ChangedFilesSummary
 
+> **Experimental.** This API is outside AIKit's stable compatibility guarantees. It may change or be removed in minor releases without a major version bump. Patch releases preserve compatibility. Pin an exact package version and review the changelog before upgrading.
+
 Changed-files pill or response card with aggregate DiffStat and a shared upward file-list popup.
 
 ## Features
@@ -13,7 +15,7 @@ Changed-files pill or response card with aggregate DiffStat and a shared upward 
 ## Usage
 
 ```tsx
-import {ChangedFilesSummary} from '@gravity-ui/aikit';
+import {ChangedFilesSummary} from '@gravity-ui/aikit/experimental';
 
 <ChangedFilesSummary files={[
     {id: 'app', path: 'src/App.tsx', added: 14, deleted: 3},

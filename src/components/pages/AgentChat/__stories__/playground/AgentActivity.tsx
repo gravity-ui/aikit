@@ -61,13 +61,14 @@ function getActivity(part: ActivityPart, now: number): RunActivityProps {
     const failedTool = parts.find((item) => item.type === 'tool' && item.data.status === 'error');
     const current = [...parts].reverse().find((item) => item.type !== 'text');
     const steps: RunActivityStep[] = parts.map((item) => {
-        if (item.type === 'text')
+        if (item.type === 'text') {
             return {
                 id: item.id!,
                 kind: 'commentary',
                 content: <MarkdownRenderer content={item.data.text} />,
             };
-        if (item.type === 'thinking')
+        }
+        if (item.type === 'thinking') {
             return {
                 id: item.id!,
                 kind: 'thinking',
@@ -78,6 +79,7 @@ function getActivity(part: ActivityPart, now: number): RunActivityProps {
                     icon: <Icon data={Sparkles} size={14} />,
                 },
             };
+        }
         const context = (item as DemoToolPart).data.demoContext;
         return {
             id: item.id!,
@@ -118,8 +120,12 @@ function getActivity(part: ActivityPart, now: number): RunActivityProps {
         };
     });
     let activityState: RunActivityProps['state'] = state === 'stopped' ? 'cancelled' : state;
-    if (waiting) activityState = 'needs-input';
-    if (pausedAt !== undefined && !waiting) activityState = 'paused';
+    if (waiting) {
+        activityState = 'needs-input';
+    }
+    if (pausedAt !== undefined && !waiting) {
+        activityState = 'paused';
+    }
     return {
         id: part.id!,
         steps,
@@ -157,16 +163,22 @@ export function useAgentActivity(messages: TChatMessage[]) {
     const [now, setNow] = useState(performance.now());
     const active = messages.some((message) => message.metadata?.activityState === 'running');
     useEffect(() => {
-        if (!active) return undefined;
+        if (!active) {
+            return undefined;
+        }
         const timer = window.setInterval(() => setNow(performance.now()), 1000);
         return () => window.clearInterval(timer);
     }, [active]);
     return useMemo(() => {
         const runs: AgentChatRun[] = [];
         const finalMessages = messages.map((message) => {
-            if (message.role !== 'assistant' || !Array.isArray(message.content)) return message;
+            if (message.role !== 'assistant' || !Array.isArray(message.content)) {
+                return message;
+            }
             const activityParts = message.content.filter((item) => item.id !== 'demo-answer');
-            if (!activityParts.length) return message;
+            if (!activityParts.length) {
+                return message;
+            }
             const metadata = message.metadata ?? {};
             const activity: ActivityPart = {
                 id: `${message.id}-activity`,

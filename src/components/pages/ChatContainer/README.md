@@ -1377,3 +1377,88 @@ without changing existing message data. Merge this property with your existing c
 Adjacent thinking parts inside one assistant message are grouped; custom thinking renderers
 take precedence. See [ThinkingMessageGroup](../../organisms/ThinkingMessageGroup/README.md)
 for migration and explicit cross-message grouping.
+
+### Markdown export
+
+Enable the header actions for copying the conversation, downloading a `.md` file,
+and selecting individual messages:
+
+```tsx
+<ChatContainer
+  activeChat={chat}
+  messages={allMessages}
+  status={status}
+  onSendMessage={sendMessage}
+  chatExport={{loading: isHistoryLoading, filename: 'conversation.md'}}
+/>
+```
+
+| Option                          | Type                                        | Required | Default          | Description                                            |
+| ------------------------------- | ------------------------------------------- | -------- | ---------------- | ------------------------------------------------------ |
+| `chatExport`                    | `ChatExportConfig`                          | -        | -                | Opt in to conversation export                          |
+| `chatExport.onResult`           | `(result: ChatExportResult) => void`        | -        | -                | Replace built-in export feedback                       |
+| `chatExport.loading`            | `boolean`                                   | -        | `false`          | Disable export until the complete history is available |
+| `chatExport.filename`           | `string`                                    | -        | `'chat.md'`      | Markdown download filename                             |
+| `chatExport.roleLabels`         | `{user: string; assistant: string}`         | -        | Localized labels | Headings for exported messages                         |
+| `chatExport.getContentMarkdown` | `(content, message) => string \| undefined` | -        | -                | Public Markdown for custom message content             |
+
+Supply the **complete chronological history** in `messages`, including messages
+outside the virtualized viewport. Set `loading` while fetching history, including
+older pages. Export is disabled for empty conversations and while a response is
+being generated. Keep `activeChat.id` stable and unique per conversation so pending
+clipboard results and message selection remain scoped to the originating chat.
+
+Markdown formatting is preserved; plain user messages are escaped. Open code fences
+are closed at message boundaries, and reference links keep their own destinations. System messages, reasoning, tool calls, metadata,
+and unknown content are excluded. File attachment names and HTTP(S) image links
+are included; inline image data and private attachment IDs are omitted. For custom
+cards, use `getContentMarkdown` to return their user-visible title, result, and link.
+Do not return raw card payloads or private metadata. Built-in reasoning and tool
+content never invoke this callback.
+
+Copy and download feedback is localized in English and Russian and appears in the
+bottom-right corner of the chat, above its content and the selection dialog. Clipboard failures leave the action available for retry.
+The same actions use the header's mobile menu on small screens. Updating message
+content or order closes the selection dialog to prevent exporting a different selection.
+Recreating an equivalent message array preserves the selection. Custom serializers run
+only when opening the message picker or exporting. Failed previews fall back to
+built-in text; exporting a failing message reports the serializer error.
+
+For custom integrations, `getMessageMarkdown`, `serializeChatMarkdown`,
+`downloadChatMarkdown`, and `ChatMarkdownOptions` are available from the package
+root. The serializer defaults to English role headings; pass `roleLabels` for
+another language.
+
+#### Custom export notifications
+
+Pass `chatExport.onResult` to replace the built-in alerts with your application's
+notification mechanism. The callback applies to both full-chat and selected-message
+exports, including copy and download. Without it, AIKit keeps its default feedback.
+
+```tsx
+<ChatContainer
+  activeChat={chat}
+  messages={allMessages}
+  onSendMessage={sendMessage}
+  chatExport={{
+    onResult: ({action, status, chatId, ...details}) => {
+      notifyExportResult({action, status, chatId, ...details});
+    },
+  }}
+/>
+```
+
+| Field    | Type                   | Description                                                 |
+| -------- | ---------------------- | ----------------------------------------------------------- |
+| `action` | `'copy' \| 'download'` | The requested operation                                     |
+| `status` | `'success' \| 'error'` | The operation outcome                                       |
+| `chatId` | `string \| undefined`  | Originating `activeChat.id`; undefined for a draft          |
+| `error`  | `unknown`              | Original exception; present only when `status` is `'error'` |
+
+`onResult` has type `(result: ChatExportResult) => void`. `ChatExportConfig` and
+`ChatExportResult` are exported from the package root and the `ChatContainer` entry.
+The callback supplied when the operation starts is called once on completion.
+Results are discarded after changing conversations, disabling export, or unmounting.
+Download success means the browser download was initiated, not that the file was saved.
+Notification callbacks should handle their own errors; they do not change the export
+outcome or leave the action pending.

@@ -9,7 +9,9 @@ export function useScrollToLatest(rootRef: RefObject<HTMLDivElement>, enabled: b
 
     useEffect(() => {
         const root = rootRef.current;
-        if (!root || !enabled) return undefined;
+        if (!root || !enabled) {
+            return undefined;
+        }
         let frame = 0;
         const measure = () => {
             frame = 0;
@@ -23,11 +25,15 @@ export function useScrollToLatest(rootRef: RefObject<HTMLDivElement>, enabled: b
                 resize.observe(root);
                 if (list) {
                     resize.observe(list);
-                    if (list.firstElementChild) resize.observe(list.firstElementChild);
+                    if (list.firstElementChild) {
+                        resize.observe(list.firstElementChild);
+                    }
                 }
                 listRef.current = list;
             }
-            if (composer) resize.observe(composer);
+            if (composer) {
+                resize.observe(composer);
+            }
             if (!list || list.clientHeight === 0) {
                 setVisible(false);
                 return;
@@ -45,7 +51,9 @@ export function useScrollToLatest(rootRef: RefObject<HTMLDivElement>, enabled: b
             );
         };
         const schedule = () => {
-            if (!frame) frame = requestAnimationFrame(measure);
+            if (!frame) {
+                frame = requestAnimationFrame(measure);
+            }
         };
         const resize = new ResizeObserver(schedule);
         const mutations = new MutationObserver(schedule);
@@ -64,7 +72,9 @@ export function useScrollToLatest(rootRef: RefObject<HTMLDivElement>, enabled: b
 
     const scrollToLatest = useCallback(() => {
         const list = listRef.current;
-        if (!list) return;
+        if (!list) {
+            return;
+        }
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         list.scrollTo({top: list.scrollHeight, behavior: reducedMotion ? 'auto' : 'smooth'});
     }, []);

@@ -1,5 +1,7 @@
 # ChatContentV2
 
+> **Experimental.** This API is outside AIKit's stable compatibility guarantees. It may change or be removed in minor releases without a major version bump. Patch releases preserve compatibility. Pin an exact package version and review the changelog before upgrading.
+
 Transcript and overlay composer layout with scroll cooperation.
 
 ## Features
@@ -11,19 +13,20 @@ Transcript and overlay composer layout with scroll cooperation.
 ## Usage
 
 ```tsx
-import {ChatContentV2} from '@gravity-ui/aikit';
+import {ChatContentV2} from '@gravity-ui/aikit/experimental';
 ```
 
 ## Props
 
-| Prop       | Type             | Required | Default | Description                                  |
-| ---------- | ---------------- | -------- | ------- | -------------------------------------------- |
-| children   | ReactNode        | —        | —       | Transcript content                           |
-| header     | ReactNode        | —        | —       | Fixed header above scroll viewport           |
-| composer   | ReactNode        | —        | —       | Bottom overlay, measured dynamically         |
-| streaming  | boolean          | —        | false   | Activity dots in down button                 |
-| historyKey | string or number | —        | —       | Change together with prepended older history |
-| className  | string           | —        | —       | Root class                                   |
+| Prop               | Type             | Required | Default | Description                                  |
+| ------------------ | ---------------- | -------- | ------- | -------------------------------------------- |
+| children           | ReactNode        | —        | —       | Transcript content                           |
+| header             | ReactNode        | —        | —       | Fixed header above scroll viewport           |
+| composer           | ReactNode        | —        | —       | Bottom overlay, measured dynamically         |
+| streaming          | boolean          | —        | false   | Activity dots in down button                 |
+| waitingForApproval | boolean          | —        | false   | Show approval state in the scroll control    |
+| historyKey         | string or number | —        | —       | Change together with prepended older history |
+| className          | string           | —        | —       | Root class                                   |
 
 ```tsx
 <ChatContentV2 header={<MyHeader />} composer={<MyComposer />} streaming={running}>

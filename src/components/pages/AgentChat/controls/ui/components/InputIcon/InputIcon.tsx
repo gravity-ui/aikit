@@ -1,12 +1,12 @@
 import {Icon, type IconProps} from '@gravity-ui/uikit';
 
-import {cn as cn} from '../../../adapters';
+import {cn} from '../../../classNames';
 
 import './InputIcon.ported.scss';
 const css = {
-    wrapper: 'agent-ui-components-InputIcon-InputIcon-module-css-wrapper',
-    start: 'agent-ui-components-InputIcon-InputIcon-module-css-start',
-    end: 'agent-ui-components-InputIcon-InputIcon-module-css-end',
+    wrapper: 'g-aikit-agent-input-icon__wrapper',
+    start: 'g-aikit-agent-input-icon__start',
+    end: 'g-aikit-agent-input-icon__end',
 };
 
 export const InputIcon = (props: IconProps) => (

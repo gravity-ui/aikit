@@ -4,6 +4,7 @@ import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import type {PopupPlacement} from '@gravity-ui/uikit';
 
 import {useScrollPreservation, useSmartScroll} from '../../../hooks';
+import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../../markdown/types';
 import {ChatStatus} from '../../../types';
 import type {
     DefaultMessageAction,
@@ -19,7 +20,6 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AlertProps} from '../../atoms/Alert';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
-import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../atoms/MarkdownRenderer';
 import {type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 
 import {MessageItem} from './MessageItem';

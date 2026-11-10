@@ -6,7 +6,7 @@ import {RunActivity} from '../../../organisms/RunActivity';
 import MDXDocs from './Docs.mdx';
 
 export default {
-    title: 'templates/ChatContentV2',
+    title: 'experimental/ChatContentV2',
     component: ChatContentV2,
     parameters: {docs: {page: MDXDocs}},
     decorators: [

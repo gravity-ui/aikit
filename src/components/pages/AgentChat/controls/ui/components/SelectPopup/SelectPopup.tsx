@@ -13,22 +13,23 @@ import {
 } from '@gravity-ui/uikit';
 import {Icon} from '@gravity-ui/uikit';
 
-import {cn as cn, i18n} from '../../../adapters';
+import {cn} from '../../../classNames';
+import {i18n} from '../../../../i18n';
 import {ListItem} from '../ListItem/index';
 
 import './SelectPopup.ported.scss';
 const DebounceTextInput = TextInput;
 
 const css = {
-    wrapper: 'agent-ui-components-SelectPopup-SelectPopup-module-css-wrapper',
-    header: 'agent-ui-components-SelectPopup-SelectPopup-module-css-header',
-    filter: 'agent-ui-components-SelectPopup-SelectPopup-module-css-filter',
-    list: 'agent-ui-components-SelectPopup-SelectPopup-module-css-list',
-    footer: 'agent-ui-components-SelectPopup-SelectPopup-module-css-footer',
-    search: 'agent-ui-components-SelectPopup-SelectPopup-module-css-search',
-    searchIcon: 'agent-ui-components-SelectPopup-SelectPopup-module-css-searchIcon',
-    emptyOptions: 'agent-ui-components-SelectPopup-SelectPopup-module-css-emptyOptions',
-    listCount: 'agent-ui-components-SelectPopup-SelectPopup-module-css-listCount',
+    wrapper: 'g-aikit-agent-select-popup__wrapper',
+    header: 'g-aikit-agent-select-popup__header',
+    filter: 'g-aikit-agent-select-popup__filter',
+    list: 'g-aikit-agent-select-popup__list',
+    footer: 'g-aikit-agent-select-popup__footer',
+    search: 'g-aikit-agent-select-popup__search',
+    searchIcon: 'g-aikit-agent-select-popup__searchIcon',
+    emptyOptions: 'g-aikit-agent-select-popup__emptyOptions',
+    listCount: 'g-aikit-agent-select-popup__listCount',
 };
 
 export function SelectPopup(props: React.HTMLAttributes<HTMLDivElement>) {

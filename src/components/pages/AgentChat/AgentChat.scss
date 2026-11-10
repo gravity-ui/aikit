@@ -123,3 +123,10 @@
 .agent-chat__tool-error {
     margin-top: var(--g-spacing-3);
 }
+
+.agent-chat__agent-input {
+    transition: border-color 150ms ease;
+    &:focus-within {
+        border-color: var(--g-color-line-generic-active);
+    }
+}

@@ -1,6 +1,8 @@
 'use client';
 
-import {type ReactNode, useCallback, useLayoutEffect, useRef, useState} from 'react';
+import {type ReactNode, useCallback, useRef, useState} from 'react';
+
+import {useLayoutEffect} from '@gravity-ui/uikit';
 
 import {flushSync} from 'react-dom';
 
@@ -9,6 +11,7 @@ import {ScrollToBottomButton} from '../../atoms/ScrollToBottomButton';
 
 import './ChatContentV2.scss';
 
+/** @experimental May change or be removed in minor releases. */
 export interface ChatContentV2Props {
     header?: ReactNode;
     composer?: ReactNode;
@@ -20,6 +23,7 @@ export interface ChatContentV2Props {
     historyKey?: string | number;
 }
 
+/** @experimental May change or be removed in minor releases. */
 export function ChatContentV2({
     header,
     composer,
@@ -39,7 +43,9 @@ export function ChatContentV2({
     const [height, setHeight] = useState(0);
     const update = useCallback(() => {
         const el = viewport.current;
-        if (!el) return;
+        if (!el) {
+            return;
+        }
         setScrolled(el.scrollTop > 0);
         setAway(el.scrollHeight - el.clientHeight - el.scrollTop > 24);
     }, []);
@@ -49,17 +55,23 @@ export function ChatContentV2({
             const top = el?.scrollTop ?? 0;
             following.current = false;
             flushSync(change);
-            if (el) el.scrollTop = top;
+            if (el) {
+                el.scrollTop = top;
+            }
             update();
         },
         [update],
     );
     useLayoutEffect(() => {
         const el = viewport.current;
-        if (!el) return;
+        if (!el) {
+            return;
+        }
         if (previous.current.historyKey !== historyKey) {
             el.scrollTop += el.scrollHeight - previous.current.height;
-        } else if (following.current) el.scrollTop = el.scrollHeight;
+        } else if (following.current) {
+            el.scrollTop = el.scrollHeight;
+        }
         previous.current = {historyKey, height: el.scrollHeight};
         update();
     }, [children, historyKey, height, update]);
@@ -67,12 +79,23 @@ export function ChatContentV2({
         const observer = new ResizeObserver(() => {
             setHeight(footer.current?.offsetHeight ?? 0);
             const el = viewport.current;
-            if (el && following.current) el.scrollTop = el.scrollHeight;
-            if (el) previous.current.height = el.scrollHeight;
+            if (el && following.current) {
+                el.scrollTop = el.scrollHeight;
+            }
+            if (el) {
+                previous.current.height = el.scrollHeight;
+            }
             update();
         });
-        if (content.current) observer.observe(content.current);
-        if (footer.current) observer.observe(footer.current);
+        if (viewport.current) {
+            observer.observe(viewport.current);
+        }
+        if (content.current) {
+            observer.observe(content.current);
+        }
+        if (footer.current) {
+            observer.observe(footer.current);
+        }
         return () => observer.disconnect();
     }, [update]);
     return (
@@ -86,7 +109,9 @@ export function ChatContentV2({
                         className="g-aikit-chat-content-v2__viewport"
                         onScroll={() => {
                             const el = viewport.current;
-                            if (!el) return;
+                            if (!el) {
+                                return;
+                            }
                             following.current =
                                 el.scrollHeight - el.clientHeight - el.scrollTop <= 24;
                             update();
@@ -108,7 +133,9 @@ export function ChatContentV2({
                             onClick={() => {
                                 following.current = true;
                                 const el = viewport.current;
-                                if (el) el.scrollTop = el.scrollHeight;
+                                if (el) {
+                                    el.scrollTop = el.scrollHeight;
+                                }
                                 update();
                             }}
                         />

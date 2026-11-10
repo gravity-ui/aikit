@@ -89,3 +89,5 @@ export {WithCustomMessageTypes, WithLazyCustomMessageType} from './parts/customM
 export {WithMascot, MascotColors} from './parts/mascot';
 
 export {WithInlineCitations} from './parts/citations';
+
+export {WithMarkdownExport} from './parts/actions';

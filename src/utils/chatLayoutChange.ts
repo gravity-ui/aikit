@@ -5,6 +5,7 @@ export const LayoutChangeContext = createContext<(change: () => void) => void>((
     change(),
 );
 
+/** @experimental May change in minor releases. */
 export function useChatLayoutChange() {
     return useContext(LayoutChangeContext);
 }

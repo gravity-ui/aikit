@@ -8,10 +8,13 @@ import {Button, Icon, Popup, useUniqId} from '@gravity-ui/uikit';
 import {block} from '../../../utils/cn';
 import {DiffStat} from '../../atoms/DiffStat';
 
+import {i18n} from './i18n';
+
 import './ChangedFilesSummary.scss';
 
 const b = block('changed-files-summary');
 
+/** @experimental May change or be removed in minor releases. */
 export interface ChangedFile {
     id: string;
     path: string;
@@ -19,6 +22,7 @@ export interface ChangedFile {
     deleted: number;
 }
 
+/** @experimental May change or be removed in minor releases. */
 export interface ChangedFilesSummaryProps {
     /** Final per-file differences against the host's baseline, not tool-call deltas. */
     files: readonly ChangedFile[];
@@ -39,15 +43,16 @@ export interface ChangedFilesSummaryProps {
     qa?: string;
 }
 
+/** @experimental May change or be removed in minor releases. */
 export function ChangedFilesSummary({
     files,
     view = 'pill',
     onViewChanges,
     onUndo,
-    viewChangesLabel = 'View changes',
-    undoLabel = 'Undo',
+    viewChangesLabel = i18n('view'),
+    undoLabel = i18n('undo'),
     label,
-    title = 'Changed files',
+    title = i18n('title'),
     disabled = false,
     defaultOpen = false,
     open: controlledOpen,
@@ -83,7 +88,8 @@ export function ChangedFilesSummary({
                 onClick={() => changeOpen(!open)}
             >
                 <span className={b('label')}>
-                    {label ?? `${files.length} ${files.length === 1 ? 'file' : 'files'} changed`}
+                    {label ??
+                        i18n(files.length === 1 ? 'one-file' : 'files', {count: files.length})}
                 </span>
                 <DiffStat {...totals} />
             </Button>

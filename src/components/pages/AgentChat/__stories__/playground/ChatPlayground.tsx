@@ -154,14 +154,18 @@ export function ChatPlayground() {
     };
 
     const send = async ({content}: TSubmitData, retry = false, seekTarget?: number) => {
-        if (runRef.current || !content.trim()) return;
+        if (runRef.current || !content.trim()) {
+            return;
+        }
         const controller = new AbortController();
         runRef.current = controller;
         const context =
             seekTarget === undefined || !replayContext.current
                 ? {messages: [...messages], content, retry, scenario}
                 : replayContext.current;
-        if (!context) return;
+        if (!context) {
+            return;
+        }
         replayContext.current = context;
         const runScenario = context.scenario;
         let checkpoint = -1;
@@ -175,7 +179,9 @@ export function ChatPlayground() {
         let activityFinishedAt: number | undefined;
         let responseCompleted = false;
         const update = () => {
-            if (controller.signal.aborted) return;
+            if (controller.signal.aborted) {
+                return;
+            }
             setMessages((previous) =>
                 previous.map((message) =>
                     message.role === 'assistant' && message.id === id
@@ -246,7 +252,9 @@ export function ChatPlayground() {
                 };
                 const timer = window.setInterval(() => {
                     const now = performance.now();
-                    if (playbackRef.current.pausedAt === undefined) remaining -= now - previous;
+                    if (playbackRef.current.pausedAt === undefined) {
+                        remaining -= now - previous;
+                    }
                     previous = now;
                     if (
                         playbackRef.current.skip ||
@@ -373,7 +381,9 @@ export function ChatPlayground() {
                             update();
                         });
                     }
-                    if (controller.signal.aborted) return;
+                    if (controller.signal.aborted) {
+                        return;
+                    }
                 }
                 if (runScenario === 'tool-error' && step.tool === 'repo_code_search') {
                     failed = true;
@@ -429,7 +439,9 @@ export function ChatPlayground() {
             const chunks = response.match(/\S+\s*/g) || [];
             const textIndex = parts.length;
             for (let index = 0; index < chunks.length; index++) {
-                if (index === 30) await wait(0);
+                if (index === 30) {
+                    await wait(0);
+                }
                 await wait(25, false);
                 if (runScenario === 'generation-error' && index === 30) {
                     throw new Error(
@@ -480,7 +492,9 @@ export function ChatPlayground() {
 
     const seekStep = (target: number) => {
         const context = replayContext.current;
-        if (target < 0) return;
+        if (target < 0) {
+            return;
+        }
         if (!context) {
             send({content: developerPrompt}, false, 0);
             return;
@@ -521,14 +535,20 @@ export function ChatPlayground() {
         {
             type: BaseMessageActionType.Retry,
             onClick: (message) => {
-                if (runRef.current) return;
+                if (runRef.current) {
+                    return;
+                }
                 const index = messages.findIndex((item) => item.id === message.id);
-                if (index < 0) return;
+                if (index < 0) {
+                    return;
+                }
                 const prompt = messages
                     .slice(0, index)
                     .reverse()
                     .find((item) => item.role === 'user');
-                if (prompt?.role !== 'user') return;
+                if (prompt?.role !== 'user') {
+                    return;
+                }
                 setMessages((previous) => previous.slice(0, index));
                 send({content: prompt.content}, true);
             },
@@ -549,7 +569,9 @@ export function ChatPlayground() {
                     aria-label="Skin"
                     value={skin}
                     onUpdate={(value) => {
-                        if (value === skin) return;
+                        if (value === skin) {
+                            return;
+                        }
                         reset();
                         setSkin(value);
                     }}

@@ -5,14 +5,16 @@ import {RunActivity} from '..';
 import MDXDocs from './Docs.mdx';
 
 export default {
-    title: 'organisms/RunActivity',
+    title: 'experimental/RunActivity',
     component: RunActivity,
+    argTypes: {showIcon: {control: 'boolean'}},
     parameters: {docs: {page: MDXDocs}},
 } satisfies Meta<typeof RunActivity>;
 type Story = StoryObj<typeof RunActivity>;
 export const Playground: Story = {
     args: {
         id: 'run-1',
+        showIcon: true,
         state: 'running',
         durationMs: 4000,
         currentAction: {label: 'Read'},
@@ -54,3 +56,5 @@ export const Error: Story = {
 export const NeedsInput: Story = {
     args: {...Playground.args, state: 'needs-input', attention: <button>Approve change</button>},
 };
+
+export const WithoutIcons: Story = {args: {...Completed.args, showIcon: false}};

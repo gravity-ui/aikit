@@ -1,8 +1,11 @@
 import {Fragment} from 'react';
 
 /** Agent context formatting; the adapter supplies repository paths and result labels. */
+/** @experimental May change or be removed in minor releases. */
 export function AgentToolContext({text, path}: {text?: string; path?: string}) {
-    if (path) return <>{path.split('/').pop()}</>;
+    if (path) {
+        return <>{path.split('/').pop()}</>;
+    }
     return (
         <>
             {text

@@ -1,7 +1,9 @@
 import type {TChatMessage, TMessageContent} from '../../../types';
 import type {RunActivityProps} from '../../organisms/RunActivity';
 
+/** @experimental May change or be removed in minor releases. */
 export type AgentRunContent = TMessageContent<'agent-run', RunActivityProps>;
+/** @experimental May change or be removed in minor releases. */
 export type AgentChatRun = {messageId: string; activity: RunActivityProps};
 
 /** The adapter supplies final content separately; no part is classified heuristically. */
@@ -11,7 +13,9 @@ export function composeRunMessages(
 ): TChatMessage<AgentRunContent>[] {
     return messages.map((message) => {
         const run = runs.find((item) => item.messageId === message.id);
-        if (!run || message.role !== 'assistant') return message;
+        if (!run || message.role !== 'assistant') {
+            return message;
+        }
         let finalContent;
         if (typeof message.content === 'string') {
             finalContent = [

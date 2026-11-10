@@ -6,7 +6,7 @@ import MDXDocs from './Docs.mdx';
 import {ChatPlayground} from './playground/ChatPlayground';
 
 export default {
-    title: 'pages/AgentChat',
+    title: 'experimental/AgentChat',
     component: AgentChat,
     parameters: {layout: 'fullscreen', docs: {page: MDXDocs}},
 } satisfies Meta<typeof AgentChat>;

@@ -1,4 +1,4 @@
-.agent-ui-components-ListItem-ListItem-module-css-wrapper {
+.g-aikit-agent-list-item__wrapper {
     display: flex;
     align-items: center;
     transition: 0.15s background;
@@ -8,34 +8,33 @@
     padding: var(--g-spacing-1) var(--g-spacing-2) var(--g-spacing-1) var(--g-spacing-1);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-interactive:hover {
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__interactive:hover {
     background: var(--g-color-base-simple-hover);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-active {
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__active {
     background: var(--g-color-base-selection);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-title {
+.g-aikit-agent-list-item__title {
     color: var(--g-color-text-primary);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-subtitle {
+.g-aikit-agent-list-item__subtitle {
     color: var(--g-color-text-secondary);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-disabled
-    .agent-ui-components-ListItem-ListItem-module-css-title,
-.agent-ui-components-ListItem-ListItem-module-css-wrapper.agent-ui-components-ListItem-ListItem-module-css-disabled
-    .agent-ui-components-ListItem-ListItem-module-css-subtitle {
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__disabled .g-aikit-agent-list-item__title,
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__disabled
+    .g-aikit-agent-list-item__subtitle {
     color: var(--g-color-text-hint);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-avatar {
+.g-aikit-agent-list-item__avatar {
     padding-right: var(--g-spacing-1);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-content {
+.g-aikit-agent-list-item__content {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -43,7 +42,7 @@
     padding-left: var(--g-spacing-1);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-startIcon {
+.g-aikit-agent-list-item__startIcon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -52,12 +51,12 @@
     padding: 0 var(--g-spacing-1);
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-endContent {
+.g-aikit-agent-list-item__endContent {
     display: flex;
     align-items: center;
     align-self: flex-start;
 }
 
-.agent-ui-components-ListItem-ListItem-module-css-endContent:not(:empty) {
+.g-aikit-agent-list-item__endContent:not(:empty) {
     padding-left: var(--g-spacing-1);
 }

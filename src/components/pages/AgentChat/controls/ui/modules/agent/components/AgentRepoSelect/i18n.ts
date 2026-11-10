@@ -1,34 +1,23 @@
-import {intl} from '../../../../../adapters';
+import {addComponentKeysets} from '@gravity-ui/uikit/i18n';
 
-export const {t: i18n} = intl.createMessages({
-    action_no_repository: {
-        meta: {id: 'AgentRepoSelect.action_no_repository:gH3tN'},
-        ru: 'Без репозитория',
-        en: 'No repository',
+export const i18n = addComponentKeysets(
+    {
+        en: {
+            action_no_repository: 'No repository',
+            label_repository: 'Repository for the next message',
+            placeholder_repository: 'Repository',
+            placeholder_search: 'Find a repository',
+            empty_repositories: 'No repositories found',
+            error_repositories: 'Could not load repositories',
+        },
+        ru: {
+            action_no_repository: 'Без репозитория',
+            label_repository: 'Репозиторий для следующего сообщения',
+            placeholder_repository: 'Репозиторий',
+            placeholder_search: 'Найти репозиторий',
+            empty_repositories: 'Репозитории не найдены',
+            error_repositories: 'Не удалось загрузить репозитории',
+        },
     },
-    label_repository: {
-        meta: {id: 'AgentRepoSelect.label_repository:dTDjW'},
-        ru: 'Репозиторий для следующего сообщения',
-        en: 'Repository for the next message',
-    },
-    placeholder_repository: {
-        meta: {id: 'AgentRepoSelect.placeholder_repository:qv4QV'},
-        ru: 'Репозиторий',
-        en: 'Repository',
-    },
-    placeholder_search: {
-        meta: {id: 'AgentRepoSelect.placeholder_search:k1oyZ'},
-        ru: 'Найти репозиторий',
-        en: 'Find a repository',
-    },
-    empty_repositories: {
-        meta: {id: 'AgentRepoSelect.empty_repositories:qmy3k'},
-        ru: 'Репозитории не найдены',
-        en: 'No repositories found',
-    },
-    error_repositories: {
-        meta: {id: 'AgentRepoSelect.error_repositories:iY5Hy'},
-        ru: 'Не удалось загрузить репозитории',
-        en: 'Could not load repositories',
-    },
-});
+    'g-aikit.AgentChat.AgentRepoSelect',
+);

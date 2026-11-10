@@ -2,6 +2,7 @@ import {type HTMLAttributes, type ReactNode, memo, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../../markdown/types';
 import type {
     BaseMessageActionConfig,
     DefaultMessageAction,
@@ -19,9 +20,8 @@ import {
     resolveMessageActions,
 } from '../../../utils';
 import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
-import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../atoms/MarkdownRenderer';
-import {AssistantMessage} from '../AssistantMessage';
-import {UserMessage} from '../UserMessage';
+import {AssistantMessage} from '../AssistantMessage/AssistantMessage';
+import {UserMessage} from '../UserMessage/UserMessage';
 
 /**
  * Shared configuration for a single rendered message. These props are expected to be

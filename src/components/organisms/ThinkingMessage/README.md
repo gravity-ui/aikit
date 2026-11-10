@@ -162,3 +162,7 @@ The component uses the following CSS variables for styling, which can be customi
 ## Compact presentation
 
 Set `view="compact"` to render a 24px activity row with the existing state and callbacks. The default presentation is unchanged. `secondaryText` remains visible while collapsed. ToolMessage also accepts `contextTooltip` for repository-relative paths. ThinkingMessage accepts a consumer-supplied `icon`. Use `defaultExpanded={false}` for reasoning histories and `initialExpanded={false}` for tools.
+
+## Experimental compact presentation
+
+`view="compact"` and its icon/context/attention options are experimental and may change in minor releases. Default presentation keeps its stable contract. `showIcon` defaults to `true`; set it to `false` to remove the compact icon and its gutter. See [the experimental API policy](../../../../docs/experimental.md).

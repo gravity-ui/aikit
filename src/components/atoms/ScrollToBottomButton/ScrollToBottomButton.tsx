@@ -5,10 +5,13 @@ import {Icon} from '@gravity-ui/uikit';
 
 import {block} from '../../../utils/cn';
 
+import {i18n} from './i18n';
+
 import './ScrollToBottomButton.scss';
 
 const b = block('scroll-to-bottom-button');
 
+/** @experimental May change or be removed in minor releases. */
 export interface ScrollToBottomButtonProps
     extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
     /** Show an activity indicator until the button is hovered or keyboard-focused. */
@@ -19,6 +22,7 @@ export interface ScrollToBottomButtonProps
 }
 
 /** Presentational scroll control. The parent owns visibility and scroll behavior. */
+/** @experimental May change or be removed in minor releases. */
 export const ScrollToBottomButton = forwardRef<HTMLButtonElement, ScrollToBottomButtonProps>(
     (
         {
@@ -27,7 +31,7 @@ export const ScrollToBottomButton = forwardRef<HTMLButtonElement, ScrollToBottom
             className,
             qa,
             type = 'button',
-            'aria-label': label = 'Scroll to bottom',
+            'aria-label': label = i18n('scroll'),
             ...props
         },
         ref,

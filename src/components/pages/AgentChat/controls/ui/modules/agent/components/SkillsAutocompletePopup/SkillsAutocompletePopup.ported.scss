@@ -1,15 +1,15 @@
-.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-item {
+.g-aikit-agent-skills-autocomplete-popup__item {
     min-width: 0;
     text-align: left;
     padding: var(--g-spacing-1) var(--g-spacing-2);
     border-radius: var(--g-border-radius-m);
 }
 
-.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-active {
+.g-aikit-agent-skills-autocomplete-popup__active {
     background-color: var(--g-color-base-simple-hover);
 }
 
-.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-wrapper {
+.g-aikit-agent-skills-autocomplete-popup__wrapper {
     max-height: 400px;
     width: 300px;
     max-width: calc(100vw - 32px);
@@ -18,12 +18,12 @@
     flex-direction: column;
 }
 
-.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-search {
+.g-aikit-agent-skills-autocomplete-popup__search {
     border-bottom: 1px solid var(--g-color-line-generic);
     padding: var(--g-spacing-2);
 }
 
-.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-list {
+.g-aikit-agent-skills-autocomplete-popup__list {
     overflow: hidden auto;
     min-width: 0;
     flex: 1;
@@ -31,12 +31,11 @@
     padding: var(--g-spacing-2);
 }
 
-.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-popup {
+.g-aikit-agent-skills-autocomplete-popup__popup {
     border-radius: var(--g-border-radius-xl);
 }
 
-.agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-item
-    .g-text {
+.g-aikit-agent-skills-autocomplete-popup__item .g-text {
     min-width: 0;
     max-width: 100%;
 }

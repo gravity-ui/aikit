@@ -1,5 +1,7 @@
 # AgentChat
 
+> **Experimental.** This API is outside AIKit's stable compatibility guarantees. It may change or be removed in minor releases without a major version bump. Patch releases preserve compatibility. Pin an exact package version and review the changelog before upgrading.
+
 Agent chat composition with host-owned messages and configuration.
 
 ## Features
@@ -11,22 +13,24 @@ Agent chat composition with host-owned messages and configuration.
 ## Usage
 
 ```tsx
-import {AgentChat} from '@gravity-ui/aikit';
+import {AgentChat} from '@gravity-ui/aikit/experimental';
 ```
 
 ## Props
 
-| Prop                            | Type                | Required | Default        | Description                                                    |
-| ------------------------------- | ------------------- | -------- | -------------- | -------------------------------------------------------------- |
-| messages                        | TChatMessage[]      | ✓        | —              | Host-adapted messages; activity/final boundaries are explicit  |
-| composer                        | ReactNode           | ✓        | —              | Host composer, usually AgentComposer                           |
-| header                          | ReactNode           | —        | —              | Replace header                                                 |
-| headerProps                     | HeaderProps         | —        | Code Assistant | Header presentation                                            |
-| status                          | ChatStatus          | —        | —              | Host lifecycle                                                 |
-| emptyContent                    | ReactNode           | —        | —              | Empty-state content                                            |
-| chats, activeChat, onSelectChat | HistoryProps fields | —        | —              | Host-owned saved chats                                         |
-| onCreateChat, onClose           | function            | —        | —              | Header callbacks                                               |
-| ...MessageListProps             | object              | —        | —              | Render registry, actions, error/retry, timestamps and markdown |
+| Prop                            | Type                    | Required | Default        | Description                                                    |
+| ------------------------------- | ----------------------- | -------- | -------------- | -------------------------------------------------------------- |
+| messages                        | TChatMessage[]          | ✓        | —              | Host-adapted messages; activity/final boundaries are explicit  |
+| runs                            | readonly AgentChatRun[] | —        | []             | Activity associated with assistant message IDs                 |
+| historyKey                      | string or number        | —        | —              | Change with prepended history to preserve the viewport         |
+| composer                        | ReactNode               | ✓        | —              | Host composer, usually AgentComposer                           |
+| header                          | ReactNode               | —        | —              | Replace header                                                 |
+| headerProps                     | HeaderProps             | —        | Code Assistant | Header presentation                                            |
+| status                          | ChatStatus              | —        | —              | Host lifecycle                                                 |
+| emptyContent                    | ReactNode               | —        | —              | Empty-state content                                            |
+| chats, activeChat, onSelectChat | HistoryProps fields     | —        | —              | Host-owned saved chats                                         |
+| onCreateChat, onClose           | function                | —        | —              | Header callbacks                                               |
+| ...MessageListProps             | object                  | —        | —              | Render registry, actions, error/retry, timestamps and markdown |
 
 ```tsx
 <AgentChat
@@ -43,8 +47,6 @@ import {AgentChat} from '@gravity-ui/aikit';
 `AgentComposer` requires host-provided `models`, `skills`, `repositories`, controlled `repository`/`onRepositoryChange` and `model`/`onModelChange`, plus `status`, `onSend` and `onStop`. No fixture model or repository list ships as a production default. The host may replace it entirely.
 
 The host adapter derives file context from tool input.path and commit context from successful output.payload.hash. Supply short actions/basenames with full path tooltips via compact ToolMessage props. PR and CI context is presentation data supplied by the adapter. Never drop context on lifecycle changes. Keep final answers separate from RunActivity and keep approvals/errors requiring attention outside folded traces. User actions are copy and timestamp; assistant actions are copy final answer, regenerate, rating and timestamp as configured by the host.
-
-The Playground story simulates a complete catalog search/category feature scenario locally, including pause/resume, previous/next step, skip, approval, recovery, cancellation and saved history. It has no backend dependency. The Standard / Agent segmented control resets playback and switches between ChatContainer and AgentChat. There is one Playground. Previous/next step reconstructs the local fixtures at a visible checkpoint and pauses there, including approval, partial streaming and the completed response. Next step can also start the scenario directly in step mode; Resume continues from the selected checkpoint. Seeking does not execute backend or Git operations.
 
 ## Styling
 
@@ -68,6 +70,49 @@ Use `historyKey` when prepending older messages. Composer's optional `modelLabel
 
 Compose the stock `DiffStat` in compact ToolMessage's `secondaryText` for completed edits and commits. Supply numeric `added`/`deleted` values from the host and guard rendering with the successful tool state; Read rows have no change counts. Keep the filename, commit hash and file count alongside the atom. Zero counts follow DiffStat's existing behavior.
 
-## Response-local changes lifecycle in Playground
+## AgentComposer
 
-The host tracks explicit `responseState` separately from activity/tool completion. Completed edits appear progressively in the active response's composer pill. At answer completion the pill disappears and `renderAssistantFooter` renders ChangedFilesSummary with `view="card"` for that message, after text and before actions/time. The card survives saved-history restoration and later requests. Cancellation/error retain the actual completed subset with a neutral interruption label; no synthetic success is shown. Undo/Restore and per-file previews are local, reversible fixture controls; the trace remains readable and no real Git/filesystem action runs. The Standard presentation continues to use ChatContainer.
+`AgentComposerProps` and `AgentModelOption` are exported from `/experimental`. Models only require `id` and `name`; `description`, `icon`, `disabled`, `group` and `endContent` are optional presentation data. Adapt service-specific model metadata in the host.
+
+```tsx
+import {AgentChat, AgentComposer, type AgentModelOption} from '@gravity-ui/aikit/experimental';
+
+const models: AgentModelOption[] = [{id: 'default', name: 'Default model'}];
+
+<AgentChat
+  messages={messages}
+  runs={runs}
+  composer={
+    <AgentComposer
+      models={models}
+      model={model}
+      onModelChange={setModel}
+      repositories={repositories}
+      repository={repository}
+      onRepositoryChange={setRepository}
+      skills={skills}
+      status={status}
+      onSend={sendMessage}
+      onStop={stopRun}
+      resetKey={chatId}
+    />
+  }
+/>;
+```
+
+| Prop               | Type                                          | Required | Default             | Description                                                           |
+| ------------------ | --------------------------------------------- | -------- | ------------------- | --------------------------------------------------------------------- |
+| models             | AgentModelOption[]                            | ✓        | —                   | Host-localized model options                                          |
+| model              | string                                        | ✓        | —                   | Controlled model ID                                                   |
+| modelLabel         | string                                        | —        | Selected model name | Short trigger label                                                   |
+| onModelChange      | (id: string) => void                          | ✓        | —                   | Model selection                                                       |
+| repositories       | {orgSlug: string; slug: string}[]             | ✓        | —                   | Available repositories                                                |
+| repository         | {orgSlug: string; repoSlug: string}           | ✓        | —                   | Controlled repository                                                 |
+| onRepositoryChange | (repository) => void                          | ✓        | —                   | Repository selection                                                  |
+| skills             | {slug: string; title?: string}[]              | ✓        | —                   | Available slash commands                                              |
+| status             | ChatStatus                                    | ✓        | —                   | Host lifecycle                                                        |
+| onSend             | (data: TSubmitData) => Promise<void or false> | ✓        | —                   | Send; rejection or false restores the draft unless newer input exists |
+| onStop             | () => void                                    | ✓        | —                   | Cancel the active run                                                 |
+| resetKey           | string or number                              | —        | —                   | Active conversation identity for stale draft recovery                 |
+
+Enter sends, Shift+Enter inserts a newline, Ctrl/Cmd+Enter follows the standard prompt shortcut. IME confirmation does not send. Slash completion takes precedence only while its menu is active. Controls use the configured UIKit language.

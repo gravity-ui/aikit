@@ -2,20 +2,20 @@ import React, {type PropsWithChildren, type RefAttributes, forwardRef} from 'rea
 
 import {Icon, type IconProps, Text, type TextProps} from '@gravity-ui/uikit';
 
-import {cn as cn} from '../../../adapters';
+import {cn} from '../../../classNames';
 
 import './ListItem.ported.scss';
 const css = {
-    wrapper: 'agent-ui-components-ListItem-ListItem-module-css-wrapper',
-    interactive: 'agent-ui-components-ListItem-ListItem-module-css-interactive',
-    active: 'agent-ui-components-ListItem-ListItem-module-css-active',
-    title: 'agent-ui-components-ListItem-ListItem-module-css-title',
-    subtitle: 'agent-ui-components-ListItem-ListItem-module-css-subtitle',
-    disabled: 'agent-ui-components-ListItem-ListItem-module-css-disabled',
-    avatar: 'agent-ui-components-ListItem-ListItem-module-css-avatar',
-    content: 'agent-ui-components-ListItem-ListItem-module-css-content',
-    startIcon: 'agent-ui-components-ListItem-ListItem-module-css-startIcon',
-    endContent: 'agent-ui-components-ListItem-ListItem-module-css-endContent',
+    wrapper: 'g-aikit-agent-list-item__wrapper',
+    interactive: 'g-aikit-agent-list-item__interactive',
+    active: 'g-aikit-agent-list-item__active',
+    title: 'g-aikit-agent-list-item__title',
+    subtitle: 'g-aikit-agent-list-item__subtitle',
+    disabled: 'g-aikit-agent-list-item__disabled',
+    avatar: 'g-aikit-agent-list-item__avatar',
+    content: 'g-aikit-agent-list-item__content',
+    startIcon: 'g-aikit-agent-list-item__startIcon',
+    endContent: 'g-aikit-agent-list-item__endContent',
 };
 
 export type TListItemProps = RefAttributes<HTMLDivElement> &

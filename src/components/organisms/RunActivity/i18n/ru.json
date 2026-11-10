@@ -1,0 +1,8 @@
+{
+  "running": "Думаю",
+  "completed": "Работа заняла {{seconds}} с",
+  "cancelled": "Остановлено через {{seconds}} с",
+  "error": "Работа прервана · {{seconds}} с",
+  "needs-input": "Ожидание подтверждения",
+  "paused": "Приостановлено · {{seconds}} с"
+}

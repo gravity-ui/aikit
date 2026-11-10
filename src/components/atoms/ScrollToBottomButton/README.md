@@ -1,5 +1,7 @@
 # ScrollToBottomButton
 
+> **Experimental.** This API is outside AIKit's stable compatibility guarantees. It may change or be removed in minor releases without a major version bump. Patch releases preserve compatibility. Pin an exact package version and review the changelog before upgrading.
+
 A circular button for returning to the latest chat message.
 
 ## Features
@@ -12,7 +14,7 @@ A circular button for returning to the latest chat message.
 ## Usage
 
 ```tsx
-import {ScrollToBottomButton} from '@gravity-ui/aikit';
+import {ScrollToBottomButton} from '@gravity-ui/aikit/experimental';
 
 <ScrollToBottomButton onClick={() => scrollToLatestMessage()} />;
 ```

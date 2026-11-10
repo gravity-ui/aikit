@@ -12,7 +12,7 @@ const files: ChangedFile[] = [
 ];
 
 export default {
-    title: 'molecules/ChangedFilesSummary',
+    title: 'experimental/ChangedFilesSummary',
     component: ChangedFilesSummary,
     parameters: {docs: {page: MDXDocs}},
     decorators: [
@@ -97,13 +97,14 @@ export const CardActions: Story = {
     render: (args) => {
         const [undone, setUndone] = useState(false);
         const [preview, setPreview] = useState(false);
-        if (undone)
+        if (undone) {
             return (
                 <div role="status">
                     Fixture changes reverted.{' '}
                     <button onClick={() => setUndone(false)}>Restore fixture</button>
                 </div>
             );
+        }
         return (
             <div style={{width: 420}}>
                 <ChangedFilesSummary

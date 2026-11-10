@@ -3,7 +3,7 @@
 | Branch       | Stable npm tag | PR preview tag | Dependencies |
 | ------------ | -------------- | -------------- | ------------ |
 | `main`       | `latest`       | `beta-v3`      | UIKit 8      |
-| `release/v2` | `v2`           | `beta-v2`      | UIKit 7      |
+| `release/v2` | `release-v2`   | `beta-v2`      | UIKit 7      |
 
 Versions and changelogs advance independently. A shared feature can ship as 3.1.0 and 2.29.0. Releases are not an atomic operation across branches.
 
@@ -34,12 +34,23 @@ A clean cherry-pick is not proof of UIKit 7 compatibility. Both branches must ru
 
 If cherry-picking fails, the backport workflow fails and the action reports the conflict on the original PR. Manually cherry-pick/adapt the change into a branch based on `release/v2` and open a normal PR with a conventional title. The 3.x release continues independently. Never resolve conflicts by copying the 3.x package manifest or lockfile over 2.x.
 
-`Release Major` rejects prereleases, mismatched lockfile versions and unexpected majors. A breaking change intended for a new major needs an explicit update of the branch policy; it cannot silently turn `release/v2` into 3.x or `main` into 4.x.
+`Release Major` rejects prereleases, mismatched lockfile versions, unexpected majors and version downgrades against the PR base (or the previous push / merge-group base). A breaking change intended for a new major needs an explicit update of the branch policy; it cannot silently turn `release/v2` into 3.x or `main` into 4.x.
 
 ## Operational notes
 
-- The existing release action remains responsible for version calculation, changelog generation and publication. Only release PRs from the configured bot, with the expected branch prefix and release label, changing only manifests and changelog are eligible for automatic merging.
+- Release Please calculates versions and changelogs and creates draft GitHub releases. Run Release Please in `github-release` mode first. The workflow publishes the draft with an explicit Latest policy, verifies that its Git tag exists, and publishes npm. Only then run Release Please in `release-pr` mode to prepare the next PR. Never use its combined mode while GitHub releases remain drafts: the next PR can lose the release tag as its history boundary. Only release PRs from the configured bot, with the expected branch prefix and release label, changing only manifests and changelog are eligible for automatic merging.
+- GitHub Latest and npm dist-tags are independent. Publish 3.x GitHub releases with `make_latest=true` and 2.x with `make_latest=false`. Use `release-v2` for npm: npm rejects `v2` because it is a valid SemVer range.
 - Publishing runs are serialized per branch. A failure in one release line does not block the other.
 - PR prereleases validate the base branch and stable package/lockfile versions before changing the version or publishing. Only PRs into `main` and `release/v2` publish previews. PR prereleases use separate `beta-v2` and `beta-v3` tags. Install the exact version from the PR for reproducible testing; each tag points to the most recently published preview in that release line.
-- If npm publication fails after a GitHub release was created, inspect npm before retrying. The existing release action does not guarantee a retry will republish an already-created release. Publish the missing version from its exact release tag through the project's authorized recovery process; never bump merely to retry or republish an existing version.
+- If npm publication fails after a GitHub release was created, inspect npm before retrying. A rerun does not guarantee republication of an already-created release. Use the manual **Recover npm Release** workflow with the exact published tag (for example `v2.28.1`). It checks branch ancestry, package identity and version, and refuses versions already present on npm. It publishes 2.x under `release-v2` and 3.x under `latest`. Never bump merely to retry or republish an existing version. Before recovering an older 3.x version, ensure it is still the version intended for npm `latest`.
 - To pause automatic merging, set `RELEASE_AUTOMERGE` to `false`. This does not cancel already-enabled GitHub auto-merge requests; disable those on the affected PRs as well.
+
+## Repairing GitHub Latest
+
+If a maintenance release was previously marked Latest, edit the intended stable 3.x GitHub release and mark it as Latest. This changes GitHub metadata only, not npm dist-tags. The explicit policy prevents future 2.x releases from taking the badge. If publication stops after draft creation, inspect the draft and its target commit before manually publishing it with the matching Latest policy; then recover npm publication from the resulting tag if necessary.
+
+If a faulty release PR repeats old changelog entries or proposes an older version, close it without merging. Do not delete published releases or their tags. Fix the release workflow before the next run; closing the PR alone does not fix its cause.
+
+## Experimental APIs
+
+The `/experimental` entry may change incompatibly only in minor releases. Patch releases preserve compatibility. Record migrations in release notes and use `feat(experimental):` for incompatible experimental changes. Stable API changes still follow normal major-version rules. See [the experimental API policy](experimental.md).

@@ -3,7 +3,7 @@ import {useMemo, useState} from 'react';
 import {Magnifier} from '@gravity-ui/icons';
 import {ListItemView, Popup, type PopupPlacement, Text, TextInput} from '@gravity-ui/uikit';
 
-import {cn as cn} from '../../../../../adapters';
+import {cn} from '../../../../../classNames';
 import type {AgentSkill} from '../../../../../types';
 import {InputIcon} from '../../../../components/InputIcon/index';
 import {List} from '../../../../components/List/index';
@@ -11,13 +11,12 @@ import {i18n} from '../../i18n';
 
 import './SkillsAutocompletePopup.ported.scss';
 const css = {
-    item: 'agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-item',
-    active: 'agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-active',
-    wrapper:
-        'agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-wrapper',
-    search: 'agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-search',
-    list: 'agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-list',
-    popup: 'agent-ui-modules-agent-components-SkillsAutocompletePopup-SkillsAutocompletePopup-module-css-popup',
+    item: 'g-aikit-agent-skills-autocomplete-popup__item',
+    active: 'g-aikit-agent-skills-autocomplete-popup__active',
+    wrapper: 'g-aikit-agent-skills-autocomplete-popup__wrapper',
+    search: 'g-aikit-agent-skills-autocomplete-popup__search',
+    list: 'g-aikit-agent-skills-autocomplete-popup__list',
+    popup: 'g-aikit-agent-skills-autocomplete-popup__popup',
 };
 
 interface SkillsAutocompletePopupProps {
@@ -72,7 +71,9 @@ export function SkillsAutocompletePopup({
             offset={{mainAxis: 2}}
             strategy="fixed"
             onOpenChange={(open) => {
-                if (!open) onClose();
+                if (!open) {
+                    onClose();
+                }
             }}
             className={css.popup}
             qa="skills-autocomplete-popup"

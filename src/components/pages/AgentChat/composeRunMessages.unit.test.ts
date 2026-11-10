@@ -38,7 +38,9 @@ it('retains explicit final content, run identity, ordered tool data and callback
     expect(result[0]).toBe(messages[0]);
     const content = result[1].content;
     expect(Array.isArray(content)).toBe(true);
-    if (!Array.isArray(content)) throw new Error('Expected parts');
+    if (!Array.isArray(content)) {
+        throw new Error('Expected parts');
+    }
     expect(content[0]).toEqual({id: 'run', type: 'agent-run', data: runs[0].activity});
     expect(content[0].data).toBe(runs[0].activity);
     expect(content[1]).toBe((messages[1].content as unknown[])[0]);

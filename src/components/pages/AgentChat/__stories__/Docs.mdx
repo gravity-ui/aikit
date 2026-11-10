@@ -9,3 +9,5 @@ import Readme from '../README.md?raw';
 
 <Canvas of={Stories.Playground} />
 <Controls of={Stories.Playground} />
+
+The playground uses local fixture data and the exported components. Pause/resume, seeking, approval, recovery, cancellation, file previews and Undo/Restore simulate host behavior; they do not execute backend, filesystem or Git operations. Switching Standard / Agent resets playback. Production execution and response-local file state belong to the host.

@@ -2,6 +2,7 @@ import {type HTMLAttributes, type ReactNode, memo, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
+import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../../markdown/types';
 import type {
     BaseMessageProps,
     TAssistantMessage,
@@ -17,13 +18,9 @@ import {
     mergeMessageRendererRegistries,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
-import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../atoms/MarkdownRenderer';
 import {BaseMessage} from '../../molecules/BaseMessage';
-import {
-    ThinkingMessageGroup,
-    groupThinkingMessages,
-    thinkingMessageToStep,
-} from '../ThinkingMessageGroup';
+import {ThinkingMessageGroup} from '../ThinkingMessageGroup/ThinkingMessageGroup';
+import {groupThinkingMessages, thinkingMessageToStep} from '../ThinkingMessageGroup/utils';
 
 import {createDefaultMessageRegistry} from './defaultMessageTypeRegistry';
 

@@ -26,7 +26,7 @@ import {
 import {InputContextProvider, useInputContext} from '../../molecules/InputContext';
 import type {PromptInputHandle} from '../../organisms/PromptInput';
 import type {MessageListConfig} from '../ChatContainer';
-import {ChatContainer} from '../ChatContainer';
+import {ChatContainer} from '../ChatContainer/ChatContainer';
 
 import {McpToolRenderer} from './McpToolRenderer';
 import {serializeChatRequest} from './request';

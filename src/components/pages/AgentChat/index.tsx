@@ -10,7 +10,8 @@ import {ChatContentV2} from '../../templates/ChatContentV2';
 import {History, type HistoryProps} from '../../templates/History';
 
 export {AgentToolAttention} from './AgentToolAttention';
-export {AgentComposer} from './AgentComposer';
+export {AgentComposer, type AgentComposerProps} from './AgentComposer';
+export type {AgentModelOption} from './types';
 import {type AgentChatRun, type AgentRunContent, composeRunMessages} from './composeRunMessages';
 
 import './AgentChat.scss';
@@ -20,6 +21,7 @@ const runRegistry = registerMessageRenderer<AgentRunContent>({}, 'agent-run', {
     component: ({part}) => <RunActivity {...part.data} />,
 });
 
+/** @experimental May change or be removed in minor releases. */
 export interface AgentChatProps
     extends Omit<MessageListProps<AgentRunContent>, 'scrollMode' | 'virtualized'> {
     composer: ReactNode;
@@ -37,6 +39,7 @@ export interface AgentChatProps
 }
 
 /** Agent presentation with host-owned messages, configuration and execution. */
+/** @experimental May change or be removed in minor releases. */
 export function AgentChat({
     composer,
     runs = [],

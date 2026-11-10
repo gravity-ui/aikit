@@ -1,5 +1,40 @@
 # Changelog
 
+## [3.2.1](https://github.com/gravity-ui/aikit/compare/v3.2.0...v3.2.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* isolate chat exports and overlay feedback ([#317](https://github.com/gravity-ui/aikit/issues/317)) ([08e2d14](https://github.com/gravity-ui/aikit/commit/08e2d149c756b170df692587f2ced11386cea30a))
+
+## [3.2.0](https://github.com/gravity-ui/aikit/compare/v3.1.0...v3.2.0) (2026-11-09)
+
+
+### Features
+
+* add opt-in chat Markdown export ([#311](https://github.com/gravity-ui/aikit/issues/311)) ([19d5484](https://github.com/gravity-ui/aikit/commit/19d5484be21928263badad1460c85f22231a0384))
+
+## [3.1.0](https://github.com/gravity-ui/aikit/compare/v3.0.3...v3.1.0) (2026-11-06)
+
+
+### Features
+
+* **markdown:** support custom rendering without bundling Diplodoc ([#290](https://github.com/gravity-ui/aikit/issues/290)) ([1ffd3d6](https://github.com/gravity-ui/aikit/commit/1ffd3d68308aed9823f8bc209808dc8402b86a24))
+
+## [3.0.3](https://github.com/gravity-ui/aikit/compare/v3.0.2...v3.0.3) (2026-11-05)
+
+
+### Bug Fixes
+
+* publish release tags before preparing the next release PR ([#304](https://github.com/gravity-ui/aikit/issues/304)) ([1ab11b2](https://github.com/gravity-ui/aikit/commit/1ab11b2337877d69c9d011c4fae56219e733d3ee))
+
+## [3.0.2](https://github.com/gravity-ui/aikit/compare/v3.0.1...v3.0.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* separate maintenance release tags and GitHub Latest ([#298](https://github.com/gravity-ui/aikit/issues/298)) ([8fb80ea](https://github.com/gravity-ui/aikit/commit/8fb80eaab5ebfa1a0333e54ccd226d94691c9a46))
+
 ## [3.0.1](https://github.com/gravity-ui/aikit/compare/v3.0.0...v3.0.1) (2026-11-05)
 
 

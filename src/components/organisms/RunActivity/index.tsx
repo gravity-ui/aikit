@@ -7,11 +7,17 @@ import {Icon} from '@gravity-ui/uikit';
 
 import type {ToolMessageProps} from '../../../types/tool';
 import type {ThinkingMessageProps} from '../ThinkingMessage';
-import {ThinkingMessage} from '../ThinkingMessage';
+import {withDefaultMarkdown} from '../../../markdown/withDefaultMarkdown';
+import {ThinkingMessageView} from '../../internal/ThinkingMessage/ThinkingMessageView';
 import {ToolMessage} from '../ToolMessage';
 
-import {CompactRow} from './CompactRow';
+import {i18n} from './i18n';
 
+import {CompactRow} from '../../internal/CompactRow/CompactRow';
+
+const ThinkingStep = withDefaultMarkdown(ThinkingMessageView);
+
+/** @experimental May change or be removed in minor releases. */
 export type RunActivityState =
     | 'running'
     | 'completed'
@@ -19,6 +25,7 @@ export type RunActivityState =
     | 'error'
     | 'needs-input'
     | 'paused';
+/** @experimental May change or be removed in minor releases. */
 export type RunActivityStep =
     | {id: string; kind: 'thinking'; props: ThinkingMessageProps}
     | {
@@ -31,6 +38,7 @@ export type RunActivityStep =
       }
     | {id: string; kind: 'commentary'; content: ReactNode};
 
+/** @experimental May change or be removed in minor releases. */
 export interface RunActivityProps {
     /** Stable identity supplied by the host. */
     id: string;
@@ -38,6 +46,8 @@ export interface RunActivityProps {
     state: RunActivityState;
     /** Recorded elapsed time, excluding pauses. Never inferred from mount time. */
     durationMs: number;
+    /** Show summary and step icons. Individual steps can override this setting. */
+    showIcon?: boolean;
     currentAction?: {label: ReactNode; icon?: ReactNode};
     label?: ReactNode;
     defaultExpanded?: boolean;
@@ -49,12 +59,14 @@ export interface RunActivityProps {
     className?: string;
 }
 
+/** @experimental May change or be removed in minor releases. */
 export function RunActivity({
     id,
     steps,
     state,
     durationMs,
     currentAction,
+    showIcon = true,
     label,
     defaultExpanded = false,
     expanded: controlled,
@@ -66,14 +78,6 @@ export function RunActivity({
     const [localExpanded, setExpanded] = useState(defaultExpanded);
     const expanded = controlled ?? localExpanded;
     const seconds = Math.max(0, Math.round(durationMs / 1000));
-    const labels = {
-        running: 'Thinking',
-        completed: `Worked for ${seconds} s`,
-        cancelled: `Stopped after ${seconds} s`,
-        error: `Work interrupted · ${seconds} s`,
-        'needs-input': 'Waiting for your approval',
-        paused: `Paused · ${seconds} s`,
-    };
     const statusIcons = {
         completed: CircleCheck,
         cancelled: CircleStop,
@@ -84,8 +88,24 @@ export function RunActivity({
     const icon =
         state === 'running' ? currentAction?.icon : <Icon size={14} data={statusIcons[state]} />;
     function renderDefaultStep(step: RunActivityStep) {
-        if (step.kind === 'thinking') return <ThinkingMessage {...step.props} view="compact" />;
-        if (step.kind === 'tool') return <ToolMessage {...step.props} view="compact" />;
+        if (step.kind === 'thinking') {
+            return (
+                <ThinkingStep
+                    {...step.props}
+                    showIcon={step.props.showIcon ?? showIcon}
+                    view="compact"
+                />
+            );
+        }
+        if (step.kind === 'tool') {
+            return (
+                <ToolMessage
+                    {...step.props}
+                    showIcon={step.props.showIcon ?? showIcon}
+                    view="compact"
+                />
+            );
+        }
         return <div style={{margin: '6px 0 6px 24px'}}>{step.content}</div>;
     }
     return (
@@ -94,9 +114,12 @@ export function RunActivity({
                 persistentChevron
                 label={
                     label ??
-                    (state === 'running' ? (currentAction?.label ?? labels.running) : labels[state])
+                    (state === 'running'
+                        ? (currentAction?.label ?? i18n('running'))
+                        : i18n(state, {seconds}))
                 }
                 icon={icon}
+                showIcon={showIcon}
                 active={state === 'running'}
                 expanded={expanded}
                 onToggle={() => {
@@ -104,7 +127,13 @@ export function RunActivity({
                     onExpandedChange?.(!expanded);
                 }}
             >
-                <ol style={{listStyle: 'none', padding: 0, margin: '8px 0 0 -24px'}}>
+                <ol
+                    style={{
+                        listStyle: 'none',
+                        padding: 0,
+                        margin: showIcon ? '8px 0 0 -24px' : '8px 0 0',
+                    }}
+                >
                     {steps.map((step) => (
                         <li key={step.id}>
                             {renderStep ? renderStep(step) : renderDefaultStep(step)}

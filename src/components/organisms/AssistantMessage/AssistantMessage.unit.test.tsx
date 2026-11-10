@@ -23,7 +23,9 @@ it('renders the opt-in footer after text and before actions/time', () => {
     const text = screen.getByText('Answer');
     const card = screen.getByTestId('card');
     const actions = container.querySelector('.g-aikit-base-message__actions');
-    if (!actions) throw new Error('Expected actions');
+    if (!actions) {
+        throw new Error('Expected actions');
+    }
     expect(text.compareDocumentPosition(card)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(card.compareDocumentPosition(actions)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });

@@ -10,17 +10,13 @@ import {i18n} from './i18n';
 
 import './AgentRepoSelect.ported.scss';
 const css = {
-    select: 'agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-select',
-    selectedOption:
-        'agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-selectedOption',
-    filter: 'agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-filter',
-    list: 'agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-list',
-    repoIcon:
-        'agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-repoIcon',
-    selectedLabel:
-        'agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-selectedLabel',
-    skeleton:
-        'agent-ui-modules-agent-components-AgentRepoSelect-AgentRepoSelect-module-css-skeleton',
+    select: 'g-aikit-agent-agent-repo-select__select',
+    selectedOption: 'g-aikit-agent-agent-repo-select__selectedOption',
+    filter: 'g-aikit-agent-agent-repo-select__filter',
+    list: 'g-aikit-agent-agent-repo-select__list',
+    repoIcon: 'g-aikit-agent-agent-repo-select__repoIcon',
+    selectedLabel: 'g-aikit-agent-agent-repo-select__selectedLabel',
+    skeleton: 'g-aikit-agent-agent-repo-select__skeleton',
 };
 
 export enum RepoSelectStatus {

@@ -5,7 +5,7 @@ import {ScrollToBottomButton} from '..';
 import MDXDocs from './Docs.mdx';
 
 export default {
-    title: 'atoms/ScrollToBottomButton',
+    title: 'experimental/ScrollToBottomButton',
     component: ScrollToBottomButton,
     parameters: {docs: {page: MDXDocs}},
     decorators: [

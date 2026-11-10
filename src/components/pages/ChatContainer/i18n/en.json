@@ -6,5 +6,18 @@
   "prompt-placeholder": "Type your message...",
   "history-empty": "No chat history yet",
   "history-empty-filtered": "No chats match your search",
-  "disclaimer-text": "AI can make mistakes. Check important info."
+  "disclaimer-text": "AI can make mistakes. Check important info.",
+  "export-copy": "Copy chat as Markdown",
+  "export-download": "Download chat (.md)",
+  "export-select": "Select messages to export",
+  "export-copied": "Chat copied",
+  "export-copy-error": "Could not copy chat. Please try again.",
+  "export-downloaded": "Download started",
+  "export-download-error": "Could not download chat. Please try again.",
+  "export-user": "User",
+  "export-assistant": "Assistant",
+  "export-close": "Close",
+  "export-copy-selected": "Copy",
+  "export-download-selected": "Download",
+  "export-select-all": "Select all"
 }

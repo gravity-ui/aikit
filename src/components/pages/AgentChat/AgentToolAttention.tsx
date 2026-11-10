@@ -2,6 +2,7 @@ import type {ToolMessageProps} from '../../../types/tool';
 import {ToolMessage} from '../../organisms/ToolMessage';
 
 /** Keep confirmation visible using the standard tool confirmation surface. */
+/** @experimental May change or be removed in minor releases. */
 export function AgentToolAttention(props: ToolMessageProps) {
     return (
         <ToolMessage

@@ -2,18 +2,24 @@
 import React, {useState} from 'react';
 
 import {Gear, Star} from '@gravity-ui/icons';
-import {Icon} from '@gravity-ui/uikit';
+import {Card, Icon, Text} from '@gravity-ui/uikit';
 
 import {ChatContainer} from '../..';
+import {ContentWrapper} from '../../../../../demo/ContentWrapper';
 import type {
     ChatStatus,
     ChatType,
     TAssistantMessage,
     TChatMessage,
+    TMessageContent,
     TSubmitData,
 } from '../../../../../types';
 import {BaseMessageActionType} from '../../../../../types/messages';
 import type {ActionPopupContext, DefaultMessageAction} from '../../../../../types/messages';
+import {
+    createMessageRendererRegistry,
+    registerMessageRenderer,
+} from '../../../../../utils/messageTypeRegistry';
 import {FeedbackForm} from '../../../../molecules/FeedbackForm';
 
 import {type Story, defaultDecorators, mockChatMessages, mockChats, mockMessages} from './shared';
@@ -705,4 +711,90 @@ export const WithActionPopup: Story = {
         );
     },
     decorators: defaultDecorators,
+};
+
+type ExportCardContent = TMessageContent<'export-card', {title: string; description: string}>;
+
+const exportMessageRegistry = createMessageRendererRegistry();
+registerMessageRenderer<ExportCardContent>(exportMessageRegistry, 'export-card', {
+    component: ({part}) => (
+        <Card style={{padding: 'var(--g-spacing-4)'}}>
+            <Text variant="subheader-2">{part.data.title}</Text>
+            <p>{part.data.description}</p>
+        </Card>
+    ),
+});
+
+const exportMessages: TChatMessage<ExportCardContent>[] = [
+    ...mockMessages,
+    {
+        id: 'export-plain-url',
+        role: 'user',
+        content:
+            'See https://example.com and https://example.com/a_b?q=x&b=y#part-1. These URLs should keep their destinations.',
+    },
+    {
+        id: 'export-reference-list',
+        role: 'assistant',
+        content:
+            '- [Docs][ref]\n- Second item must stay separate\n\n[ref]: https://example.com/docs',
+    },
+    {
+        id: 'export-ordered-list',
+        role: 'assistant',
+        content: '1. [Guide][ref]\n2. Another separate item\n\n[ref]: https://example.com/guide',
+    },
+    {
+        id: 'export-plain-fence',
+        role: 'user',
+        content: '```\n**This is plain text, not bold Markdown.**',
+    },
+    {
+        id: 'export-open-fence',
+        role: 'assistant',
+        content: 'An interrupted code example:\n\n```ts\nconst answer = 42;',
+    },
+    {
+        id: 'export-after-fence',
+        role: 'assistant',
+        content: 'This reply must remain outside the previous code block.',
+    },
+    ...[
+        {title: 'Documentation card', description: 'Read the API documentation.'},
+        {title: 'Examples card', description: 'Explore integration examples.'},
+    ].map(
+        (data, index): TChatMessage<ExportCardContent> => ({
+            id: `export-card-${index}`,
+            role: 'assistant',
+            content: {type: 'export-card', data},
+        }),
+    ),
+];
+
+/** Export the full conversation or selected messages from the header menu. */
+export const WithMarkdownExport: Story = {
+    args: {
+        activeChat: mockChats[0],
+        messages: exportMessages as TChatMessage[],
+        status: 'ready',
+        messageListConfig: {messageRendererRegistry: exportMessageRegistry},
+        chatExport: {
+            getContentMarkdown: (part) => {
+                if (part.type !== 'export-card') return undefined;
+                const {title, description} = (part as ExportCardContent).data;
+                return `**${title}**\n\n${description}`;
+            },
+        },
+    },
+    decorators: [
+        (Story) => (
+            <ContentWrapper
+                boxSizing="border-box"
+                height="min(800px, calc(100vh - 32px))"
+                width="min(600px, calc(100vw - 32px))"
+            >
+                <Story />
+            </ContentWrapper>
+        ),
+    ],
 };

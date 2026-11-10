@@ -5,7 +5,9 @@ import type {ToolMessageProps} from '../../../types/tool';
 import {block} from '../../../utils/cn';
 import {ToolFooter} from '../../molecules/ToolFooter';
 import {ToolHeader} from '../../molecules/ToolHeader';
-import {CompactRow} from '../RunActivity/CompactRow';
+import {CompactRow} from '../../internal/CompactRow/CompactRow';
+
+import {i18n} from './i18n';
 
 import './ToolMessage.scss';
 
@@ -32,12 +34,16 @@ export function ToolMessage(props: ToolMessageProps) {
                         <>
                             {toolName}
                             {status === 'error' && (
-                                <span style={{color: 'var(--g-color-text-danger)'}}> · Failed</span>
+                                <span style={{color: 'var(--g-color-text-danger)'}}>
+                                    {' '}
+                                    · {i18n('status-error')}
+                                </span>
                             )}
-                            {status === 'cancelled' && <span> · Cancelled</span>}
+                            {status === 'cancelled' && <span> · {i18n('status-cancelled')}</span>}
                         </>
                     }
                     icon={toolIcon}
+                    showIcon={props.showIcon}
                     context={props.secondaryText}
                     tooltip={props.contextTooltip}
                     active={status === 'loading'}

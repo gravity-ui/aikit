@@ -68,12 +68,4 @@ test.describe('ThinkingMessage', {tag: '@ThinkingMessage'}, () => {
 
         await expectScreenshot();
     });
-    test('should render compact', async ({mount, expectScreenshot}) => {
-        await mount(<ThinkingMessageStories.Compact />);
-        await expectScreenshot();
-    });
-    test('should render compact states', async ({mount, expectScreenshot}) => {
-        await mount(<ThinkingMessageStories.CompactStates />);
-        await expectScreenshot();
-    });
 });
