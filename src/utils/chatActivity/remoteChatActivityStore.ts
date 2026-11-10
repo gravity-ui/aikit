@@ -52,7 +52,9 @@ export interface RemoteChatActivityStore extends ChatActivityStore {
 export function createRemoteChatActivityStore(
     options: RemoteChatActivityStoreOptions,
 ): RemoteChatActivityStore {
-    if (!options.accountId) throw new Error('Chat activity requires an account identifier');
+    if (!options.accountId) {
+        throw new Error('Chat activity requires an account identifier');
+    }
     let activity = EMPTY_CHAT_ACTIVITY;
     let revision: number | undefined;
     let isLoading = false;
@@ -80,7 +82,9 @@ export function createRemoteChatActivityStore(
         if (!Number.isSafeInteger(state.revision) || state.revision < 0) {
             throw new Error('Chat activity revision must be a nonnegative safe integer');
         }
-        if (revision !== undefined && state.revision <= revision) return;
+        if (revision !== undefined && state.revision <= revision) {
+            return;
+        }
         if (Object.values(state.chats).some((chat) => chat.hasUnread && !chat.responseId)) {
             throw new Error('Unread chat activity requires a response identifier');
         }
@@ -92,8 +96,12 @@ export function createRemoteChatActivityStore(
         publish();
     };
     const refresh = (): Promise<void> => {
-        if (loadingPromise) return loadingPromise;
-        if (!options.load) return Promise.resolve();
+        if (loadingPromise) {
+            return loadingPromise;
+        }
+        if (!options.load) {
+            return Promise.resolve();
+        }
         const load = options.load;
         loadingPromise = Promise.resolve()
             .then(load)
@@ -112,7 +120,9 @@ export function createRemoteChatActivityStore(
         publish();
         return loadingPromise;
     };
-    if (options.initialState) applySnapshot(options.initialState);
+    if (options.initialState) {
+        applySnapshot(options.initialState);
+    }
     return {
         getSnapshot: () => snapshot,
         subscribe: (listener) => {
@@ -126,20 +136,30 @@ export function createRemoteChatActivityStore(
         applySnapshot,
         markResponseViewed: (chatId, responseId) => {
             const current = activity.chats[chatId];
-            if (!current?.hasUnread || current.responseId !== responseId) return Promise.resolve();
+            if (!current?.hasUnread || current.responseId !== responseId) {
+                return Promise.resolve();
+            }
             const key = JSON.stringify([chatId, responseId]);
             const pending = acknowledgements.get(key);
-            if (pending) return pending;
+            if (pending) {
+                return pending;
+            }
             const command = Promise.resolve()
                 .then(() => {
-                    if (deletedChats.has(chatId)) return undefined;
+                    if (deletedChats.has(chatId)) {
+                        return undefined;
+                    }
                     return options.markResponseViewed(chatId, responseId);
                 })
                 .then((state) => {
-                    if (state) applySnapshot(state);
+                    if (state) {
+                        applySnapshot(state);
+                    }
                 })
                 .catch((cause: unknown) => {
-                    if (deletedChats.has(chatId)) return;
+                    if (deletedChats.has(chatId)) {
+                        return;
+                    }
                     reportError({operation: 'markResponseViewed', chatId, responseId, cause});
                     throw cause;
                 })

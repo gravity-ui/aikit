@@ -27,7 +27,9 @@ export function useChatActivity(store?: ChatActivityStore, view?: ChatActivityVi
         Promise.resolve(store?.load?.()).catch(ignoreStoreError);
     }, [store]);
     useEffect(() => {
-        if (!view?.isPanelVisible) return undefined;
+        if (!view?.isPanelVisible) {
+            return undefined;
+        }
         const refresh = () => setVisibilityRevision((revision) => revision + 1);
         document.addEventListener('visibilitychange', refresh);
         window.addEventListener('focus', refresh);
