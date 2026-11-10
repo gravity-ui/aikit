@@ -5,5 +5,7 @@
   "action-collapse": "Свернуть",
   "action-expand": "Развернуть",
   "status-waiting-confirmation": "Ожидание подтверждения",
-  "status-waiting-submission": "Ожидание отправки формы"
+  "status-waiting-submission": "Ожидание отправки формы",
+  "status-error": "Ошибка",
+  "status-cancelled": "Отменено"
 }

@@ -1,0 +1,84 @@
+.g-aikit-compact-row {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--g-color-text-primary);
+    &__toggle {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-height: 24px;
+        padding: 2px 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: default;
+        &[type='button'] {
+            cursor: pointer;
+        }
+        max-width: 100%;
+        box-sizing: border-box;
+        &:focus-visible {
+            outline: 2px solid var(--g-color-line-focus);
+            outline-offset: 2px;
+        }
+        > .g-icon {
+            flex-shrink: 0;
+        }
+        > .expanded {
+            transform: rotate(90deg);
+        }
+    }
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 20px;
+        width: 20px;
+        height: 20px;
+        svg {
+            width: 14px;
+            height: 14px;
+        }
+    }
+    &__context {
+        font-size: inherit;
+        line-height: inherit;
+        color: var(--g-color-text-secondary);
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    &__detail {
+        margin: 6px 0 10px 24px;
+        overflow-wrap: anywhere;
+    }
+}
+
+.g-aikit-compact-row__toggle:not(.g-aikit-compact-row__toggle_persistent) > .g-icon {
+    opacity: 0;
+}
+
+.g-aikit-compact-row__toggle:hover > .g-icon,
+.g-aikit-compact-row__toggle:focus-visible > .g-icon,
+.g-aikit-compact-row__toggle[aria-expanded='true'] > .g-icon {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .g-aikit-compact-row .g-aikit-shimmer__container {
+        animation: none;
+        mask-image: none;
+    }
+}
+
+.g-aikit-compact-row__context .g-aikit-diff-stat {
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.g-aikit-compact-row_without-icon > .g-aikit-compact-row__detail {
+    margin-left: 0;
+}

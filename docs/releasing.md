@@ -50,3 +50,7 @@ If cherry-picking fails, the backport workflow fails and the action reports the 
 If a maintenance release was previously marked Latest, edit the intended stable 3.x GitHub release and mark it as Latest. This changes GitHub metadata only, not npm dist-tags. The explicit policy prevents future 2.x releases from taking the badge. If publication stops after draft creation, inspect the draft and its target commit before manually publishing it with the matching Latest policy; then recover npm publication from the resulting tag if necessary.
 
 If a faulty release PR repeats old changelog entries or proposes an older version, close it without merging. Do not delete published releases or their tags. Fix the release workflow before the next run; closing the PR alone does not fix its cause.
+
+## Experimental APIs
+
+The `/experimental` entry may change incompatibly only in minor releases. Patch releases preserve compatibility. Record migrations in release notes and use `feat(experimental):` for incompatible experimental changes. Stable API changes still follow normal major-version rules. See [the experimental API policy](experimental.md).

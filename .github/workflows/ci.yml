@@ -47,6 +47,8 @@ jobs:
           cache: 'npm'
       - name: Install Packages
         run: npm ci
+      - name: Check public API boundaries
+        run: npm run generate:exports:check
       - name: Check Generated Mascot Assets
         run: npm run generate:mascot:check
       - name: Check release script formatting

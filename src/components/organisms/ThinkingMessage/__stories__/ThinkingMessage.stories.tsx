@@ -265,3 +265,27 @@ WithCustomStyle.args = {
     },
     onCopyClick: undefined,
 };
+
+export const Compact: StoryObj<typeof ThinkingMessage> = {
+    render: (args) => <ThinkingMessage {...args} />,
+    args: {...Playground.args, view: 'compact'},
+};
+
+export const CompactStates: StoryObj<typeof ThinkingMessage> = {
+    render: () => (
+        <div style={{width: 430}}>
+            {(['thinking', 'thought'] as const).map((status) => (
+                <ThinkingMessage
+                    key={status}
+                    {...Playground.args}
+                    view="compact"
+                    status={status}
+                    defaultExpanded={false}
+                    title="Inspecting an unusually long implementation name before editing its pagination boundary"
+                    secondaryText="Repository context"
+                    content="Full reasoning remains independently readable."
+                />
+            ))}
+        </div>
+    ),
+};

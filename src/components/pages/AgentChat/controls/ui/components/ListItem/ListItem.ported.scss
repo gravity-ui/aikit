@@ -1,0 +1,62 @@
+.g-aikit-agent-list-item__wrapper {
+    display: flex;
+    align-items: center;
+    transition: 0.15s background;
+    border-radius: var(--g-border-radius-m);
+    min-height: 28px;
+    box-sizing: border-box;
+    padding: var(--g-spacing-1) var(--g-spacing-2) var(--g-spacing-1) var(--g-spacing-1);
+}
+
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__interactive:hover {
+    background: var(--g-color-base-simple-hover);
+}
+
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__active {
+    background: var(--g-color-base-selection);
+}
+
+.g-aikit-agent-list-item__title {
+    color: var(--g-color-text-primary);
+}
+
+.g-aikit-agent-list-item__subtitle {
+    color: var(--g-color-text-secondary);
+}
+
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__disabled .g-aikit-agent-list-item__title,
+.g-aikit-agent-list-item__wrapper.g-aikit-agent-list-item__disabled
+    .g-aikit-agent-list-item__subtitle {
+    color: var(--g-color-text-hint);
+}
+
+.g-aikit-agent-list-item__avatar {
+    padding-right: var(--g-spacing-1);
+}
+
+.g-aikit-agent-list-item__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-left: var(--g-spacing-1);
+}
+
+.g-aikit-agent-list-item__startIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0 var(--g-spacing-1);
+}
+
+.g-aikit-agent-list-item__endContent {
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+}
+
+.g-aikit-agent-list-item__endContent:not(:empty) {
+    padding-left: var(--g-spacing-1);
+}

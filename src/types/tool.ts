@@ -22,11 +22,25 @@ export type ToolFooterProps = {
     content?: React.ReactNode;
     actions: Action[];
     showLoader?: boolean;
+    actionSize?: 's' | 'm';
     className?: string;
     qa?: string;
 };
 
 export type ToolMessageProps = {
+    /** @experimental Compact presentation may change in minor releases. */
+    view?: 'default' | 'compact';
+    /** @experimental Show the compact row icon. Defaults to true. */
+    showIcon?: boolean;
+    /** @experimental Compact presentation API may change in minor releases. */
+    footerActionSize?: 's' | 'm';
+    /** Render attention separately when embedding the tool in a folded trace. */
+    /** @experimental Compact presentation API may change in minor releases. */
+    attentionPlacement?: 'inline' | 'external';
+    /** @experimental Compact presentation API may change in minor releases. */
+    secondaryText?: React.ReactNode;
+    /** @experimental Compact presentation API may change in minor releases. */
+    contextTooltip?: React.ReactNode;
     toolName: string;
     toolIcon?: React.ReactNode;
     footerActions?: Action[];
