@@ -668,6 +668,16 @@
         "default": "./build/cjs/components/pages/ChatContainer/index.js"
       }
     },
+    "./experimental": {
+      "import": {
+        "types": "./build/esm/experimental/index.d.ts",
+        "default": "./build/esm/experimental/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/experimental/index.d.ts",
+        "default": "./build/cjs/experimental/index.js"
+      }
+    },
     "./styles": "./build/esm/styles/styles.css",
     "./themes/common": "./build/esm/themes/common.css",
     "./themes/dark": "./build/esm/themes/dark.css",
@@ -733,7 +743,7 @@
     "test": "npm run test:unit && npm run test:server:unit",
     "generate:llms": "node scripts/generate-llms-full.js",
     "generate:exports": "node scripts/generate-exports.js",
-    "generate:exports:check": "node scripts/generate-exports.js --check",
+    "generate:exports:check": "node scripts/generate-exports.js --check && npm run check:experimental",
     "clean": "gulp clean",
     "build": "gulp && npm run build:server",
     "build:docs": "gulp copy-docs",
@@ -751,7 +761,8 @@
     "playwright:docker:clear-cache": "./playwright/run-docker-command.sh clear-cache",
     "generate:mascot": "node scripts/generate-mascot-assets.js",
     "generate:mascot:check": "node scripts/generate-mascot-assets.js --check",
-    "test:themer": "jest --config=src/demo/Themer/jest.config.js"
+    "test:themer": "jest --config=src/demo/Themer/jest.config.js",
+    "check:experimental": "node scripts/check-experimental.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.5",

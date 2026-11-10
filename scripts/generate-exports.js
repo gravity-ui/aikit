@@ -20,6 +20,7 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const PKG_PATH = path.join(ROOT, 'package.json');
 const COMPONENTS_ROOT = path.join(ROOT, 'src', 'components');
+const STABILITY = require('../src/components/stability.json');
 const LEVELS = ['atoms', 'molecules', 'organisms', 'templates', 'pages'];
 
 function listComponents() {
@@ -32,6 +33,14 @@ function listComponents() {
             .map((e) => e.name)
             .sort();
         for (const name of names) result.push({level, name});
+    }
+    for (const [name, metadata] of Object.entries(STABILITY)) {
+        if (!result.some((component) => component.name === name)) {
+            throw new Error(`Stability metadata references an unknown component: ${name}`);
+        }
+        if (metadata.stability !== 'experimental') {
+            throw new Error(`Invalid stability for ${name}: ${metadata.stability}`);
+        }
     }
     return result;
 }
@@ -53,12 +62,26 @@ function makeEntry(level, name) {
 
 function buildExports(currentExports, components) {
     const generated = {};
-    for (const c of components) generated[`./${c.name}`] = makeEntry(c.level, c.name);
+    for (const c of components) {
+        if (STABILITY[c.name]?.stability !== 'experimental') {
+            generated[`./${c.name}`] = makeEntry(c.level, c.name);
+        }
+    }
+    generated['./experimental'] = {
+        import: {
+            types: './build/esm/experimental/index.d.ts',
+            default: './build/esm/experimental/index.js',
+        },
+        require: {
+            types: './build/cjs/experimental/index.d.ts',
+            default: './build/cjs/experimental/index.js',
+        },
+    };
 
     const next = {};
     let inserted = false;
     for (const [key, value] of Object.entries(currentExports)) {
-        if (/^\.\/[A-Z]/.test(key)) {
+        if (/^\.\/[A-Z]/.test(key) || key === './experimental') {
             if (!inserted) {
                 for (const [gk, gv] of Object.entries(generated)) next[gk] = gv;
                 inserted = true;
@@ -93,7 +116,9 @@ function main() {
     const next = serializePackageJson(pkg);
 
     if (next === raw) {
-        if (check) console.log(`exports in sync (${components.length} components)`);
+        if (check) {
+            console.log(`exports in sync (${components.length} components)`);
+        }
         return;
     }
 

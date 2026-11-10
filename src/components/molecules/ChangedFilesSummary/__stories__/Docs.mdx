@@ -1,0 +1,19 @@
+import {Meta, Canvas, Controls, Markdown} from '@storybook/addon-docs';
+import * as Stories from './ChangedFilesSummary.stories';
+import Readme from '../README.md?raw';
+
+<Meta of={Stories} />
+<Markdown>{Readme}</Markdown>
+
+## Playground
+
+<Canvas of={Stories.Playground} />
+<Controls of={Stories.Playground} />
+
+## Card
+
+<Canvas of={Stories.CardMultipleFiles} />
+
+## Host actions
+
+<Canvas of={Stories.CardActions} />

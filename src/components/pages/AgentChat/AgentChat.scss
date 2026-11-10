@@ -1,0 +1,122 @@
+.agent-chat {
+    --yfm-font-size: 14px;
+    --yfm-font-line-height: 20px;
+    height: 100%;
+    min-height: 0;
+    .g-aikit-header {
+        padding: 12px;
+    }
+    .g-aikit-user-message_format_plain {
+        font-size: 14px;
+        line-height: 20px;
+    }
+    .g-aikit-assistant-message__content {
+        gap: 16px;
+    }
+    .g-aikit-base-message_variant_assistant > .g-aikit-base-message__actions {
+        margin-top: 8px;
+    }
+    .g-aikit-message-list__loader {
+        min-height: 24px;
+        align-items: center;
+        align-self: flex-start;
+    }
+    &__agent-input {
+        background: var(--g-color-base-background);
+        padding: var(--g-spacing-2);
+        border: 1px solid var(--g-color-line-generic);
+        border-radius: var(--g-border-radius-xl);
+
+        transition: border-color 150ms ease;
+
+        &:focus-within {
+            border-color: var(--g-color-line-generic-active);
+        }
+    }
+    &__agent-footer {
+        padding: 0;
+        flex-shrink: 0;
+    }
+}
+
+.agent-chat__agent-autocomplete {
+    position: relative;
+}
+
+.agent-chat .g-aikit-message-list {
+    padding: 8px 20px 0;
+}
+
+.agent-chat .g-aikit-empty-container {
+    margin-inline: 20px;
+}
+
+.agent-chat .g-aikit-assistant-message__content > .g-aikit-markdown-renderer > :first-child {
+    margin-block-start: 0;
+}
+
+@property --agent-confirmation-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.agent-chat__confirmation {
+    position: relative;
+    margin-top: var(--g-spacing-3);
+    padding: var(--g-spacing-3);
+
+    .g-aikit-tool-message__container {
+        gap: var(--g-spacing-4);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        z-index: 1;
+        border-radius: inherit;
+        padding: 2px;
+        pointer-events: none;
+        background: conic-gradient(
+            from var(--agent-confirmation-angle),
+            #ffb347 0deg,
+            #ff7b42 90deg,
+            #b778ff 180deg,
+            #648dff 270deg,
+            #ffb347 360deg
+        );
+        mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        animation: agent-confirmation-border 4s linear infinite;
+    }
+}
+
+@keyframes agent-confirmation-border {
+    to {
+        --agent-confirmation-angle: 360deg;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .agent-chat__confirmation::after {
+        animation: none;
+    }
+}
+
+.agent-chat__confirmation-context {
+    color: var(--g-color-text-secondary);
+}
+
+.agent-chat__tool-error {
+    margin-top: var(--g-spacing-3);
+}
+
+.agent-chat__agent-input {
+    transition: border-color 150ms ease;
+    &:focus-within {
+        border-color: var(--g-color-line-generic-active);
+    }
+}

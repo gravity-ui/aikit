@@ -2,6 +2,10 @@
 
 A checklist for everything that must be wired up when creating a new component inside `src/components/<level>/<Name>/`. Missing any of these makes the component invisible to consumers, breaks tree-shaking, or fails CI.
 
+## Stability
+
+Stable components follow the root barrel and dedicated subpath steps below. Experimental components instead register in `src/components/stability.json`, export only through `src/experimental/index.ts`, and follow [the experimental API policy](../experimental.md). Mark declarations, README, Storybook and catalogs; run `npm run check:experimental`. Do not add experimental components to stable level barrels.
+
 ## 1. Component files
 
 Standard layout under `src/components/<level>/<Name>/`:

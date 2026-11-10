@@ -1,4 +1,4 @@
-import {type HTMLAttributes, memo, useMemo} from 'react';
+import {type HTMLAttributes, type ReactNode, memo, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
@@ -18,6 +18,7 @@ import {
     mergeMessageRendererRegistries,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
+import {MessageMarkdownContext} from '../../internal/MessageMarkdownContext';
 import {BaseMessage} from '../../molecules/BaseMessage';
 import {ThinkingMessageGroup} from '../ThinkingMessageGroup/ThinkingMessageGroup';
 import {groupThinkingMessages, thinkingMessageToStep} from '../ThinkingMessageGroup/utils';
@@ -37,6 +38,8 @@ type AssistantMessagePick<TContent extends TMessageContent> = Pick<
 
 export type AssistantMessageProps<TContent extends TMessageContent = never> = BaseMessagePick &
     AssistantMessagePick<TContent> & {
+        /** Content after message parts and before the actions/timestamp. */
+        footerContent?: ReactNode;
         messageRendererRegistry?: MessageRendererRegistry;
         /** Opt in to grouping adjacent legacy thinking parts. Custom thinking renderers take precedence. */
         thinkingMessageView?: 'default' | 'grouped';
@@ -56,6 +59,7 @@ const b = block('assistant-message');
 
 function AssistantMessageComponent<TContent extends TMessageContent = never>({
     content,
+    footerContent,
     actions,
     extraInfo,
     timestamp,
@@ -102,6 +106,25 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
         markdownExtraProps,
     ]);
 
+    const markdownOptions = useMemo(
+        () => ({
+            transformOptions,
+            mermaidOptions,
+            openMarkdownLinksInNewTab,
+            mdxOptions,
+            mdxContext,
+            markdownExtraProps,
+        }),
+        [
+            transformOptions,
+            mermaidOptions,
+            openMarkdownLinksInNewTab,
+            mdxOptions,
+            mdxContext,
+            markdownExtraProps,
+        ],
+    );
+
     const parts = useMemo(() => normalizeContent<TContent>(content), [content]);
 
     const groupedParts =
@@ -118,7 +141,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
               })
             : undefined;
 
-    if (parts.length === 0) {
+    if (parts.length === 0 && !footerContent) {
         return null;
     }
 
@@ -147,27 +170,30 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             qa={qa}
             onActionPopup={onActionPopup}
         >
-            <div className={b('content')}>
-                {groupedParts
-                    ? groupedParts.map((entry) =>
-                          entry.type === 'item' ? (
-                              renderPart(entry.item, entry.index)
-                          ) : (
-                              <ThinkingMessageGroup
-                                  key={entry.id}
-                                  steps={entry.steps}
-                                  format="markdown"
-                                  transformOptions={transformOptions}
-                                  mermaidOptions={mermaidOptions}
-                                  openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
-                                  mdxOptions={mdxOptions}
-                                  mdxContext={mdxContext}
-                                  markdownExtraProps={markdownExtraProps}
-                              />
-                          ),
-                      )
-                    : parts.map((part, index) => renderPart(part, index))}
-            </div>
+            <MessageMarkdownContext.Provider value={markdownOptions}>
+                <div className={b('content')}>
+                    {groupedParts
+                        ? groupedParts.map((entry) =>
+                              entry.type === 'item' ? (
+                                  renderPart(entry.item, entry.index)
+                              ) : (
+                                  <ThinkingMessageGroup
+                                      key={entry.id}
+                                      steps={entry.steps}
+                                      format="markdown"
+                                      transformOptions={transformOptions}
+                                      mermaidOptions={mermaidOptions}
+                                      openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                                      mdxOptions={mdxOptions}
+                                      mdxContext={mdxContext}
+                                      markdownExtraProps={markdownExtraProps}
+                                  />
+                              ),
+                          )
+                        : parts.map((part, index) => renderPart(part, index))}
+                    {footerContent}
+                </div>
+            </MessageMarkdownContext.Provider>
         </BaseMessage>
     );
 }

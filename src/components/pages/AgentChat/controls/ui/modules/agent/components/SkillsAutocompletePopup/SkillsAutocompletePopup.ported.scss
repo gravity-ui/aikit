@@ -1,0 +1,43 @@
+.g-aikit-agent-skills-autocomplete-popup__item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    text-align: left;
+    padding: var(--g-spacing-1) var(--g-spacing-2);
+    border-radius: var(--g-border-radius-m);
+}
+
+.g-aikit-agent-skills-autocomplete-popup__active {
+    background-color: var(--g-color-base-simple-hover);
+}
+
+.g-aikit-agent-skills-autocomplete-popup__wrapper {
+    max-height: 400px;
+    width: 300px;
+    max-width: calc(100vw - 32px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.g-aikit-agent-skills-autocomplete-popup__search {
+    border-bottom: 1px solid var(--g-color-line-generic);
+    padding: var(--g-spacing-2);
+}
+
+.g-aikit-agent-skills-autocomplete-popup__list {
+    overflow: hidden auto;
+    min-width: 0;
+    flex: 1;
+    min-height: 0;
+    padding: var(--g-spacing-2);
+}
+
+.g-aikit-agent-skills-autocomplete-popup__popup {
+    border-radius: var(--g-border-radius-xl);
+}
+
+.g-aikit-agent-skills-autocomplete-popup__item .g-text {
+    min-width: 0;
+    max-width: 100%;
+}

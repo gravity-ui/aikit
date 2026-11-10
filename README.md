@@ -230,3 +230,9 @@ A React component library for building AI chat interfaces, organized by Atomic D
 ## Documentation for AI agents
 
 Agent-readable documentation for the installed version is located in `node_modules/@gravity-ui/aikit/build/docs/INDEX.md`.
+
+## Experimental components
+
+Agent workspace components are available only from `@gravity-ui/aikit/experimental`.
+Their APIs may change or be removed in minor releases; patch releases preserve compatibility.
+Pin an exact version when adopting an experiment. See [the experimental API policy](docs/experimental.md).

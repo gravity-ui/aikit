@@ -240,6 +240,12 @@ A React component library for building AI chat interfaces, organized by Atomic D
 
 Agent-readable documentation for the installed version is located in `node_modules/@gravity-ui/aikit/build/docs/INDEX.md`.
 
+## Experimental components
+
+Agent workspace components are available only from `@gravity-ui/aikit/experimental`.
+Their APIs may change or be removed in minor releases; patch releases preserve compatibility.
+Pin an exact version when adopting an experiment. See [the experimental API policy](docs/experimental.md).
+
 
 --- file: docs/GETTING_STARTED.md ---
 
@@ -764,83 +770,90 @@ Component tests run under Playwright Component Testing — see [TESTING.md](./TE
 
 # Components
 
-49 components organized by Atomic Design level. Each component lives in `src/components/<level>/<Name>/` and ships with its own README and Storybook stories.
+54 components organized by Atomic Design level. Each component lives in `src/components/<level>/<Name>/` and ships with its own README and Storybook stories.
 
-Each component also has a dedicated subpath export for tree-shaking — `import {ComponentName} from '@gravity-ui/aikit/ComponentName'` — except `AIStudioChat` (use the main entry).
+Stable components have a dedicated subpath export for tree-shaking — `import {ComponentName} from '@gravity-ui/aikit/ComponentName'` — except `AIStudioChat` (use the main entry).
 
-## Atoms (16)
+Experimental entries use `@gravity-ui/aikit/experimental`; see [the compatibility policy](experimental.md).
 
-| Component                                                                        | Description                                                                |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [ActionButton](../src/components/atoms/ActionButton/README.md)                   | Button with integrated tooltip (Button + ActionTooltip from Gravity UI).   |
-| [Alert](../src/components/atoms/Alert/README.md)                                 | Alert message with type indicator and optional button.                     |
-| [ChatDate](../src/components/atoms/ChatDate/README.md)                           | Formatted date with time and locale support.                               |
-| [ContextIndicator](../src/components/atoms/ContextIndicator/README.md)           | Circular progress indicator for context usage (0–100%).                    |
-| [ContextItem](../src/components/atoms/ContextItem/README.md)                     | Label for rendering a context chip.                                        |
-| [DiffStat](../src/components/atoms/DiffStat/README.md)                           | Diff statistics — added/deleted line counts.                               |
-| [Disclaimer](../src/components/atoms/Disclaimer/README.md)                       | Informational or warning message block.                                    |
-| [FileIcon](../src/components/atoms/FileIcon/README.md)                           | Icon for a file based on MIME type or extension.                           |
-| [InlineCitation](../src/components/atoms/InlineCitation/README.md)               | Inline source badge with an interactive preview and source navigation.     |
-| [IntersectionContainer](../src/components/atoms/IntersectionContainer/README.md) | Intersection Observer wrapper (used by `MessageList` for infinite scroll). |
-| [Loader](../src/components/atoms/Loader/README.md)                               | Loading-state indicator.                                                   |
-| [MarkdownRenderer](../src/components/atoms/MarkdownRenderer/README.md)           | Yandex Flavored Markdown (YFM) → HTML renderer.                            |
-| [MessageBalloon](../src/components/atoms/MessageBalloon/README.md)               | Visual wrapper for a user message.                                         |
-| [Shimmer](../src/components/atoms/Shimmer/README.md)                             | Shimmer animation overlay for loading state.                               |
-| [SubmitButton](../src/components/atoms/SubmitButton/README.md)                   | Submit button with send/cancel state switching.                            |
-| [ToolIndicator](../src/components/atoms/ToolIndicator/README.md)                 | Tool-execution status icon.                                                |
+## Atoms (17)
+
+| Component                                                                        | Description                                                                         |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [ActionButton](../src/components/atoms/ActionButton/README.md)                   | Button with integrated tooltip (Button + ActionTooltip from Gravity UI).            |
+| [Alert](../src/components/atoms/Alert/README.md)                                 | Alert message with type indicator and optional button.                              |
+| [ChatDate](../src/components/atoms/ChatDate/README.md)                           | Formatted date with time and locale support.                                        |
+| [ContextIndicator](../src/components/atoms/ContextIndicator/README.md)           | Circular progress indicator for context usage (0–100%).                             |
+| [ContextItem](../src/components/atoms/ContextItem/README.md)                     | Label for rendering a context chip.                                                 |
+| [DiffStat](../src/components/atoms/DiffStat/README.md)                           | Diff statistics — added/deleted line counts.                                        |
+| [Disclaimer](../src/components/atoms/Disclaimer/README.md)                       | Informational or warning message block.                                             |
+| [FileIcon](../src/components/atoms/FileIcon/README.md)                           | Icon for a file based on MIME type or extension.                                    |
+| [InlineCitation](../src/components/atoms/InlineCitation/README.md)               | Inline source badge with an interactive preview and source navigation.              |
+| [IntersectionContainer](../src/components/atoms/IntersectionContainer/README.md) | Intersection Observer wrapper (used by `MessageList` for infinite scroll).          |
+| [Loader](../src/components/atoms/Loader/README.md)                               | Loading-state indicator.                                                            |
+| [MarkdownRenderer](../src/components/atoms/MarkdownRenderer/README.md)           | Yandex Flavored Markdown (YFM) → HTML renderer.                                     |
+| [MessageBalloon](../src/components/atoms/MessageBalloon/README.md)               | Visual wrapper for a user message.                                                  |
+| [Shimmer](../src/components/atoms/Shimmer/README.md)                             | Shimmer animation overlay for loading state.                                        |
+| [SubmitButton](../src/components/atoms/SubmitButton/README.md)                   | Submit button with send/cancel state switching.                                     |
+| [ToolIndicator](../src/components/atoms/ToolIndicator/README.md)                 | Tool-execution status icon.                                                         |
+| [ScrollToBottomButton](../src/components/atoms/ScrollToBottomButton/README.md)   | **Experimental.** Circular scroll-to-latest button with a streaming activity state. |
 
 ## Molecules (19)
 
-| Component                                                                    | Description                                                 |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| [ActionPopup](../src/components/molecules/ActionPopup/README.md)             | Anchored popup container for action-button content.         |
-| [BaseMessage](../src/components/molecules/BaseMessage/README.md)             | Base wrapper with support for action buttons.               |
-| [ButtonGroup](../src/components/molecules/ButtonGroup/README.md)             | Wrapper for a button group with orientation support.        |
-| [FeedbackForm](../src/components/molecules/FeedbackForm/README.md)           | Reusable feedback form with reason selection and comment.   |
-| [FileDropZone](../src/components/molecules/FileDropZone/README.md)           | Drag-and-drop area with hidden file input (native HTML5).   |
-| [FileItem](../src/components/molecules/FileItem/README.md)                   | File row: icon, name, size, status, remove button.          |
-| [InputContext](../src/components/molecules/InputContext/README.md)           | React context for prompt-input attachments and chips.       |
-| [PromptInputBody](../src/components/molecules/PromptInputBody/README.md)     | Textarea body for prompt input with auto-grow.              |
-| [PromptInputFooter](../src/components/molecules/PromptInputFooter/README.md) | Footer with action icons and submit button.                 |
-| [PromptInputHeader](../src/components/molecules/PromptInputHeader/README.md) | Header with context items / context indicator.              |
-| [PromptInputPanel](../src/components/molecules/PromptInputPanel/README.md)   | Panel container for custom prompt content.                  |
-| [RatingBlock](../src/components/molecules/RatingBlock/README.md)             | Rating block with title and star rating.                    |
-| [StarRating](../src/components/molecules/StarRating/README.md)               | 1–5 star rating component.                                  |
-| [Suggestions](../src/components/molecules/Suggestions/README.md)             | Clickable suggestion buttons in grid or list layout.        |
-| [Tabs](../src/components/molecules/Tabs/README.md)                           | Section tabs with optional delete (built on uikit `Label`). |
-| [ToolFooter](../src/components/molecules/ToolFooter/README.md)               | Tool-message footer with action buttons and status.         |
-| [ToolHeader](../src/components/molecules/ToolHeader/README.md)               | Tool-message header with icon, name, actions, indicators.   |
-| [ToolStatus](../src/components/molecules/ToolStatus/README.md)               | Tool-status indicator with localized text.                  |
+| Component                                                                        | Description                                                                                   |
+| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [ActionPopup](../src/components/molecules/ActionPopup/README.md)                 | Anchored popup container for action-button content.                                           |
+| [BaseMessage](../src/components/molecules/BaseMessage/README.md)                 | Base wrapper with support for action buttons.                                                 |
+| [ButtonGroup](../src/components/molecules/ButtonGroup/README.md)                 | Wrapper for a button group with orientation support.                                          |
+| [FeedbackForm](../src/components/molecules/FeedbackForm/README.md)               | Reusable feedback form with reason selection and comment.                                     |
+| [FileDropZone](../src/components/molecules/FileDropZone/README.md)               | Drag-and-drop area with hidden file input (native HTML5).                                     |
+| [FileItem](../src/components/molecules/FileItem/README.md)                       | File row: icon, name, size, status, remove button.                                            |
+| [InputContext](../src/components/molecules/InputContext/README.md)               | React context for prompt-input attachments and chips.                                         |
+| [PromptInputBody](../src/components/molecules/PromptInputBody/README.md)         | Textarea body for prompt input with auto-grow.                                                |
+| [PromptInputFooter](../src/components/molecules/PromptInputFooter/README.md)     | Footer with action icons and submit button.                                                   |
+| [PromptInputHeader](../src/components/molecules/PromptInputHeader/README.md)     | Header with context items / context indicator.                                                |
+| [PromptInputPanel](../src/components/molecules/PromptInputPanel/README.md)       | Panel container for custom prompt content.                                                    |
+| [RatingBlock](../src/components/molecules/RatingBlock/README.md)                 | Rating block with title and star rating.                                                      |
+| [StarRating](../src/components/molecules/StarRating/README.md)                   | 1–5 star rating component.                                                                    |
+| [Suggestions](../src/components/molecules/Suggestions/README.md)                 | Clickable suggestion buttons in grid or list layout.                                          |
+| [Tabs](../src/components/molecules/Tabs/README.md)                               | Section tabs with optional delete (built on uikit `Label`).                                   |
+| [ToolFooter](../src/components/molecules/ToolFooter/README.md)                   | Tool-message footer with action buttons and status.                                           |
+| [ToolHeader](../src/components/molecules/ToolHeader/README.md)                   | Tool-message header with icon, name, actions, indicators.                                     |
+| [ToolStatus](../src/components/molecules/ToolStatus/README.md)                   | Tool-status indicator with localized text.                                                    |
+| [ChangedFilesSummary](../src/components/molecules/ChangedFilesSummary/README.md) | **Experimental.** Changed-files pill/card with baseline DiffStat and an accessible file list. |
 
-## Organisms (10)
+## Organisms (11)
 
-| Component                                                                          | Description                                                                 |
-| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md)         | Assistant message with multi-part content and custom renderers.             |
-| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md)         | Paperclip button that opens the file upload dialog.                         |
-| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md)         | Dialog with drag-and-drop and queued/uploaded files list.                   |
-| [Header](../src/components/organisms/Header/README.md)                             | Chat header with navigation and actions.                                    |
-| [MessageList](../src/components/organisms/MessageList/README.md)                   | Message list with custom renderer registry support.                         |
-| [PromptInput](../src/components/organisms/PromptInput/README.md)                   | Flexible chat input — simple/full views, panels, suggestions, attachments.  |
-| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md)           | AI thinking process with collapsible content and status.                    |
-| [ThinkingMessageGroup](../src/components/organisms/ThinkingMessageGroup/README.md) | Compact progress and expandable step history with legacy migration helpers. |
-| [ToolMessage](../src/components/organisms/ToolMessage/README.md)                   | Tool message with automatic expand/collapse and status behavior.            |
-| [UserMessage](../src/components/organisms/UserMessage/README.md)                   | User message renderer.                                                      |
+| Component                                                                          | Description                                                                           |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md)         | Assistant message with multi-part content and custom renderers.                       |
+| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md)         | Paperclip button that opens the file upload dialog.                                   |
+| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md)         | Dialog with drag-and-drop and queued/uploaded files list.                             |
+| [Header](../src/components/organisms/Header/README.md)                             | Chat header with navigation and actions.                                              |
+| [MessageList](../src/components/organisms/MessageList/README.md)                   | Message list with custom renderer registry support.                                   |
+| [PromptInput](../src/components/organisms/PromptInput/README.md)                   | Flexible chat input — simple/full views, panels, suggestions, attachments.            |
+| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md)           | AI thinking process with collapsible content and status.                              |
+| [ThinkingMessageGroup](../src/components/organisms/ThinkingMessageGroup/README.md) | Compact progress and expandable step history with legacy migration helpers.           |
+| [ToolMessage](../src/components/organisms/ToolMessage/README.md)                   | Tool message with automatic expand/collapse and status behavior.                      |
+| [UserMessage](../src/components/organisms/UserMessage/README.md)                   | User message renderer.                                                                |
+| [RunActivity](../src/components/organisms/RunActivity/README.md)                   | **Experimental.** Ordered activity history with explicit lifecycle and compact steps. |
 
-## Templates (3)
+## Templates (4)
 
-| Component                                                              | Description                                                     |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [ChatContent](../src/components/templates/ChatContent/README.md)       | Chat content container — empty state vs message list switching. |
-| [EmptyContainer](../src/components/templates/EmptyContainer/README.md) | Welcome screen with image, title, description, suggestions.     |
-| [History](../src/components/templates/History/README.md)               | Chat history popup — list, search, grouping, actions.           |
+| Component                                                              | Description                                                                          |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [ChatContent](../src/components/templates/ChatContent/README.md)       | Chat content container — empty state vs message list switching.                      |
+| [EmptyContainer](../src/components/templates/EmptyContainer/README.md) | Welcome screen with image, title, description, suggestions.                          |
+| [History](../src/components/templates/History/README.md)               | Chat history popup — list, search, grouping, actions.                                |
+| [ChatContentV2](../src/components/templates/ChatContentV2/README.md)   | **Experimental.** Transcript layout with an overlay composer and scroll cooperation. |
 
-## Pages (2)
+## Pages (3)
 
-| Component                                                        | Description                                                               |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| [AIStudioChat](../src/components/pages/AIStudioChat/README.md)   | Ready-to-use chat with built-in OpenAI streaming — needs only an API URL. |
-| [ChatContainer](../src/components/pages/ChatContainer/README.md) | Fully assembled chat — integrates Header, ChatContent, and History.       |
+| Component                                                        | Description                                                                |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [AIStudioChat](../src/components/pages/AIStudioChat/README.md)   | Ready-to-use chat with built-in OpenAI streaming — needs only an API URL.  |
+| [ChatContainer](../src/components/pages/ChatContainer/README.md) | Fully assembled chat — integrates Header, ChatContent, and History.        |
+| [AgentChat](../src/components/pages/AgentChat/README.md)         | **Experimental.** Agent chat composition with host-provided configuration. |
 
 
 --- file: docs/THEMING.md ---
@@ -2016,33 +2029,34 @@ aikit/
 │   │   └── openai/
 │   │
 │   ├── components/
-│   │   ├── atoms/           # 16 atoms
+│   │   ├── atoms/           # 17 atoms
 │   │   │   ├── ActionButton/   ChatDate/         ContextItem/
 │   │   │   ├── Alert/          ContextIndicator/ DiffStat/
 │   │   │   ├── Disclaimer/     FileIcon/         InlineCitation/
 │   │   │   ├── IntersectionContainer/  Loader/   MarkdownRenderer/
-│   │   │   ├── MessageBalloon/ Shimmer/          SubmitButton/
+│   │   │   ├── MessageBalloon/ ScrollToBottomButton/ Shimmer/          SubmitButton/
 │   │   │   └── ToolIndicator/
 │   │   │
 │   │   ├── molecules/       # 19 molecules
 │   │   │   ├── ActionPopup/    BaseMessage/      ButtonGroup/
 │   │   │   ├── FeedbackForm/   FileDropZone/     FileItem/
+│   │   │   ├── ChangedFilesSummary/
 │   │   │   ├── InputContext/   PromptInputBody/  PromptInputFooter/
 │   │   │   ├── PromptInputHeader/  PromptInputPanel/   RatingBlock/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/
 │   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
 │   │   │
-│   │   ├── organisms/       # 9 organisms
+│   │   ├── organisms/       # 11 organisms
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
 │   │   │   ├── PromptInput/        ThinkingMessage/  ThinkingMessageGroup/
-│   │   │   ├── ToolMessage/        UserMessage/
+│   │   │   ├── RunActivity/        ToolMessage/      UserMessage/
 │   │   │
-│   │   ├── templates/       # 3 templates
-│   │   │   ├── ChatContent/        EmptyContainer/   History/
+│   │   ├── templates/       # 4 templates
+│   │   │   ├── ChatContent/        ChatContentV2/    EmptyContainer/   History/
 │   │   │
-│   │   └── pages/           # 2 pages
-│   │       ├── AIStudioChat/       ChatContainer/
+│   │   └── pages/           # 3 pages
+│   │       ├── AIStudioChat/       ChatContainer/    AgentChat/
 │   │
 │   ├── hooks/               # 7 public hooks (see docs/HOOKS.md)
 │   │   ├── useDateFormatter/
@@ -2181,4 +2195,6 @@ Each component additionally has a dedicated subpath in `package.json#exports` (`
 - [AI Agent Integration](./AI_AGENTS.md)
 - [Testing Guide](./TESTING.md)
 - [Contributor Guidelines](./guidelines/)
+
+Experimental component directories are registered in `src/components/stability.json` and exported through `src/experimental/index.ts`. Shared private renderers live in `src/components/internal/`.
 
