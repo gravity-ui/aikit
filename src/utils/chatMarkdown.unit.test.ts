@@ -1,3 +1,5 @@
+import {marked} from 'marked';
+
 import type {TChatMessage} from '../types/messages';
 
 import {downloadChatMarkdown, getMessageMarkdown, serializeChatMarkdown} from './chatMarkdown';
@@ -9,6 +11,7 @@ describe('chat Markdown export', () => {
         const messages: TChatMessage[] = Array.from({length: 1000}, (_, index) => ({
             role: index % 2 ? 'assistant' : 'user',
             content: `${index}\n${text}`,
+            format: 'markdown',
         }));
         const result = serializeChatMarkdown(messages, {
             roleLabels: {user: 'Пользователь', assistant: 'Ассистент'},
@@ -97,3 +100,94 @@ describe('chat Markdown export', () => {
         jest.useRealTimers();
     });
 });
+
+it('escapes plain user text while preserving explicitly requested Markdown', () => {
+    const content = '```\n**bold** &copy; <em>hello</em>\n# heading';
+    const output = serializeChatMarkdown([
+        {role: 'user', content},
+        {role: 'user', content: '**markdown**', format: 'markdown'},
+        {role: 'assistant', content: 'answer'},
+    ]);
+    const html = marked.parse(output) as string;
+    expect(html).not.toContain('<pre>');
+    expect(html).not.toContain('<em>');
+    expect(html).toContain('<strong>markdown</strong>');
+    expect(html).toContain('&amp;copy;');
+    expect(html).toContain('<h2>Assistant</h2>');
+});
+
+it.each(['```js\nconst x = 1;', '~~~~text\n```\ntext', '```'])(
+    'isolates an unfinished fence: %s',
+    (content) => {
+        const html = marked.parse(
+            serializeChatMarkdown([
+                {role: 'assistant', content},
+                {role: 'assistant', content: 'next answer'},
+            ]),
+        ) as string;
+        expect(html.match(/<h2>Assistant<\/h2>/g)).toHaveLength(2);
+        expect(html).toContain('<p>next answer</p>');
+    },
+);
+
+it('resolves full, collapsed, shortcut and image references within each message', () => {
+    const messages = ['first', 'second'].map((name) => ({
+        role: 'assistant' as const,
+        content: `[link][ref] [ref][] [ref] ![image][ref]\n\n[ref]: https://${name}.example "${name}"`,
+    }));
+    const html = marked.parse(serializeChatMarkdown(messages)) as string;
+    for (const name of ['first', 'second']) {
+        expect(html.match(new RegExp(`href="https://${name}.example"`, 'g'))).toHaveLength(3);
+        expect(html).toContain(`src="https://${name}.example"`);
+    }
+});
+
+it('preserves reference destinations in lists, quotes and tables without rewriting code', () => {
+    const content =
+        '> [link][ref]\n\n- [link][ref]\n\n| Link |\n| --- |\n| [link][ref] |\n\n`[link][ref]`\n\n```\n[link][ref]\n```\n\n[ref]: https://first.example';
+    const output = serializeChatMarkdown([
+        {role: 'assistant', content},
+        {role: 'assistant', content: '[link][ref]\n\n[ref]: https://second.example'},
+    ]);
+    const html = marked.parse(output) as string;
+    expect(html.match(/href="https:\/\/first.example"/g)).toHaveLength(3);
+    expect(html).toContain('href="https://second.example"');
+    expect(output).toContain('`[link][ref]`');
+    expect(output).toContain('```\n[link][ref]\n```');
+});
+
+it.each(['- ', '1. ', '- [x] '])(
+    'keeps adjacent %s list items separate after resolving references',
+    (prefix) => {
+        for (const separator of ['\n', '\n\n']) {
+            const markdown = serializeChatMarkdown([
+                {
+                    role: 'assistant',
+                    content: `${prefix}[Docs][ref]${separator}${prefix}Second\n\n[ref]: https://example.com`,
+                },
+            ]);
+            const html = marked.parse(markdown) as string;
+            const container = document.createElement('div');
+            container.innerHTML = html;
+            expect(container.querySelectorAll('li')).toHaveLength(2);
+            expect(container.querySelector('a')?.getAttribute('href')).toBe('https://example.com');
+            expect(container.querySelectorAll('li')[1].textContent).toContain('Second');
+        }
+    },
+);
+
+it.each(['https://example.com', 'https://example.com/a_b?q=x&b=y#part-1', 'www.example.com/a_b'])(
+    'preserves the destination of a plain-text URL: %s',
+    (url) => {
+        const markdown = serializeChatMarkdown([
+            {role: 'user', content: `See ${url}.\n\n\x60\x60\x60\n**plain**`},
+        ]);
+        const container = document.createElement('div');
+        container.innerHTML = marked.parse(markdown) as string;
+        expect(container.querySelector('a')?.getAttribute('href')).toBe(
+            url.startsWith('www.') ? `http://${url}` : url,
+        );
+        expect(container.querySelector('a')?.textContent).toBe(url);
+        expect(container.querySelector('strong, pre')).toBeNull();
+    },
+);
