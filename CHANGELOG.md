@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.31.0](https://github.com/gravity-ui/aikit/compare/v2.30.1...v2.31.0) (2026-11-10)
+
+
+### Features
+
+* **experimental:** port agent workspace to UIKit 7 ([#321](https://github.com/gravity-ui/aikit/issues/321)) ([7810ce7](https://github.com/gravity-ui/aikit/commit/7810ce71889acfab7fcb4636f18ddb6a71901e67))
+
 ## [2.30.1](https://github.com/gravity-ui/aikit/compare/v2.30.0...v2.30.1) (2026-11-10)
 
 
