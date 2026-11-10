@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/gravity-ui/aikit/compare/v3.2.1...v3.3.0) (2026-11-10)
+
+
+### Features
+
+* **experimental:** add an agent workspace ([#297](https://github.com/gravity-ui/aikit/issues/297)) ([7de435d](https://github.com/gravity-ui/aikit/commit/7de435d640faa938f1025fdfbd97e0928bf06bd4))
+
 ## [3.2.1](https://github.com/gravity-ui/aikit/compare/v3.2.0...v3.2.1) (2026-11-09)
 
 
