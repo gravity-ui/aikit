@@ -130,10 +130,17 @@ export function ChatContentV2({
                             className="g-aikit-chat-content-v2__down"
                             style={{bottom: height + 12}}
                             onClick={() => {
-                                following.current = true;
+                                following.current = false;
                                 const el = viewport.current;
                                 if (el) {
-                                    el.scrollTop = el.scrollHeight;
+                                    el.scrollTo({
+                                        top: el.scrollHeight,
+                                        behavior: window.matchMedia(
+                                            '(prefers-reduced-motion: reduce)',
+                                        ).matches
+                                            ? 'auto'
+                                            : 'smooth',
+                                    });
                                 }
                                 update();
                             }}

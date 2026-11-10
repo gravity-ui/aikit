@@ -9,6 +9,7 @@ import {
     AgentComposer,
     type AgentComposerProps,
     ChangedFilesSummary,
+    ChatContentV2,
     RunActivity,
     ScrollToBottomButton,
 } from '..';
@@ -404,4 +405,36 @@ it('updates experimental labels when the provider language changes', () => {
     rerender(<View lang="en" />);
     expect(screen.getByRole('button', {name: 'Worked for 1 s'})).toBeVisible();
     expect(screen.getByRole('button', {name: 'Undo'})).toBeVisible();
+});
+
+it.each([false, true])('scrolls to the latest message with reduced motion=%s', (reducedMotion) => {
+    const media = window.matchMedia('');
+    const matchMedia = jest
+        .spyOn(window, 'matchMedia')
+        .mockReturnValue({...media, matches: reducedMotion});
+    const {container, rerender} = render(
+        <ChatContentV2>
+            <p>Messages</p>
+        </ChatContentV2>,
+    );
+    const viewport = container.querySelector(
+        '.g-aikit-chat-content-v2__viewport',
+    ) as HTMLDivElement;
+    Object.defineProperties(viewport, {
+        scrollHeight: {value: 1200, configurable: true},
+        clientHeight: {value: 400, configurable: true},
+    });
+    viewport.scrollTop = 100;
+    const scrollTo = jest.fn();
+    viewport.scrollTo = scrollTo;
+    fireEvent.scroll(viewport);
+    fireEvent.click(screen.getByRole('button', {name: 'Scroll to bottom'}));
+    expect(scrollTo).toHaveBeenCalledWith({top: 1200, behavior: reducedMotion ? 'auto' : 'smooth'});
+    rerender(
+        <ChatContentV2>
+            <p>Messages continue streaming</p>
+        </ChatContentV2>,
+    );
+    expect(viewport.scrollTop).toBe(100);
+    matchMedia.mockRestore();
 });
