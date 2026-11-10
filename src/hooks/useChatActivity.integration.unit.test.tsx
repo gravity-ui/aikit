@@ -167,3 +167,48 @@ test('switching accounts disconnects pending server results from the displayed s
     expect(result.current.chats.b.hasUnread).toBe(true);
     expect(result.current.isGenerating).toBe(false);
 });
+
+test('class stores retain their receiver and stable subscriptions across renders and account changes', () => {
+    class ExternalStore {
+        snapshot = {chats: {}, isGenerating: false, hasUnread: false};
+        listeners = new Set<() => void>();
+        subscriptions = 0;
+        getSnapshot() {
+            return this.snapshot;
+        }
+        subscribe(listener: () => void) {
+            this.subscriptions++;
+            this.listeners.add(listener);
+            return () => {
+                this.listeners.delete(listener);
+            };
+        }
+        markResponseViewed() {}
+        deleteChat() {}
+        publish() {
+            this.snapshot = {...this.snapshot, hasUnread: true};
+            this.listeners.forEach((listener) => listener());
+        }
+    }
+    const first = new ExternalStore();
+    const second = new ExternalStore();
+    const {result, rerender, unmount} = renderHook((store) => useChatActivity(store), {
+        initialProps: first,
+    });
+    rerender(first);
+    expect(first.subscriptions).toBe(1);
+    act(() => {
+        first.publish();
+    });
+    expect(result.current.hasUnread).toBe(true);
+    rerender(second);
+    expect(first.listeners.size).toBe(0);
+    expect(second.listeners.size).toBe(1);
+    expect(result.current.hasUnread).toBe(false);
+    act(() => {
+        first.publish();
+    });
+    expect(result.current.hasUnread).toBe(false);
+    unmount();
+    expect(second.listeners.size).toBe(0);
+});

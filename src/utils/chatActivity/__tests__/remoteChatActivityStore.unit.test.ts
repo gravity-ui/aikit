@@ -190,3 +190,41 @@ test('rejects unordered revision values and unread rows without response identif
     ).toThrow('response identifier');
     expect(store.getSnapshot()).toBe(previous);
 });
+
+test('a server-confirmed acknowledgement ignores a late failure even after a newer reply', async () => {
+    const pending = deferred<void>();
+    const onError = jest.fn();
+    const store = setup({
+        initialState: state(1),
+        markResponseViewed: () => pending.promise,
+        onError,
+    });
+    const acknowledgement = store.markResponseViewed('a', 'a1');
+    await Promise.resolve();
+    store.applySnapshot(state(2, 'a1', false));
+    store.applySnapshot(state(3, 'a2'));
+    pending.reject(new Error('timeout'));
+    await expect(acknowledgement).resolves.toBeUndefined();
+    expect(onError).not.toHaveBeenCalled();
+    expect(store.getSnapshot()).toMatchObject({revision: 3, hasUnread: true, error: undefined});
+});
+
+test('a later authoritative read clears only the matching acknowledgement error', async () => {
+    const store = setup({
+        initialState: state(1),
+        markResponseViewed: () => Promise.reject(new Error('timeout')),
+    });
+    await expect(store.markResponseViewed('a', 'a1')).rejects.toThrow('timeout');
+    store.applySnapshot(state(2, 'a2'));
+    expect(store.getSnapshot().error?.responseId).toBe('a1');
+    store.applySnapshot(state(3, 'a1', false));
+    expect(store.getSnapshot().error).toBeUndefined();
+});
+
+test('a read confirmation does not clear an unrelated load error', async () => {
+    const failure = new Error('load failed');
+    const store = setup({initialState: state(1), load: () => Promise.reject(failure)});
+    await expect(store.refresh()).rejects.toBe(failure);
+    store.applySnapshot(state(2, 'a1', false));
+    expect(store.getSnapshot().error).toMatchObject({operation: 'load', cause: failure});
+});

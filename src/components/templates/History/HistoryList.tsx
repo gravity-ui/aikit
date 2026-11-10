@@ -14,6 +14,7 @@ import {Loader} from '../../atoms/Loader';
 
 import {ChatItem} from './ChatItem';
 import {DateHeaderItem} from './DateHeaderItem';
+import {orderHistoryChats} from './historyOrdering';
 import {i18n} from './i18n';
 
 import './History.scss';
@@ -39,7 +40,7 @@ export interface HistoryListProps extends QAProps, DOMProps {
     chats: ChatType[];
     /** Shared account-scoped activity store. Opening history never acknowledges responses. */
     activityStore?: ChatActivityStore;
-    /** Keep existing chat order stable while a popup is open. */
+    /** Keep existing rows stable within their pin/date group while a popup is open. */
     preserveOrder?: boolean;
     /** Controlled pinned identifiers. Omit to disable pinning. */
     pinnedChatIds?: readonly string[];
@@ -150,15 +151,12 @@ export function HistoryList(props: HistoryListProps) {
 
         const filteredChats = totalChats.filter((chat) => !deletedChats.has(chat.id));
 
-        if (!preserveOrder) {
-            return filteredChats;
-        }
-        const positions = new Map(orderRef.current.map((id, index) => [id, index]));
-        return filteredChats.sort(
-            (first, second) =>
-                (positions.get(first.id) ?? Infinity) - (positions.get(second.id) ?? Infinity),
-        );
-    }, [loadMode, chats, loadedChats, deletedChats, preserveOrder]);
+        return orderHistoryChats(filteredChats, orderRef.current, {
+            preserveOrder,
+            groupBy,
+            pinnedChatIds,
+        });
+    }, [loadMode, chats, loadedChats, deletedChats, preserveOrder, groupBy, pinnedChatIds]);
 
     useEffect(() => {
         orderRef.current = displayChats.map((chat) => chat.id);
