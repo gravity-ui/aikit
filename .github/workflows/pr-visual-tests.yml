@@ -13,6 +13,6 @@ jobs:
     steps:
       - uses: gravity-ui/component-tests-run-action@v1
         with:
-          command: npm run playwright
+          command: npm run playwright -- --workers=2
           report-path: ./playwright/report
           node-version-file: '.nvmrc'
