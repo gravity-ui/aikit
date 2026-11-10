@@ -12,9 +12,8 @@ import type {ThinkingMessageContentData} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 import {Loader} from '../../atoms/Loader';
-import {CompactRow} from '../CompactRow/CompactRow';
-
 import {useThinkingMessage} from '../../organisms/ThinkingMessage/useThinkingMessage';
+import {CompactRow} from '../CompactRow/CompactRow';
 
 import '../../organisms/ThinkingMessage/ThinkingMessage.scss';
 

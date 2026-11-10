@@ -1,10 +1,9 @@
+import type {ReactElement} from 'react';
+
+import {ThemeProvider, configure} from '@gravity-ui/uikit';
 import '@testing-library/jest-dom';
 import {act, fireEvent, render as renderView, screen, waitFor} from '@testing-library/react';
-import type {ReactElement} from 'react';
-import {configure, ThemeProvider} from '@gravity-ui/uikit';
 
-import {MarkdownProvider} from '../../markdown/MarkdownProvider';
-import type {MarkdownRendererProps} from '../../markdown/types';
 import {
     AgentChat,
     AgentComposer,
@@ -12,6 +11,8 @@ import {
     ChangedFilesSummary,
     RunActivity,
 } from '..';
+import {MarkdownProvider} from '../../markdown/MarkdownProvider';
+import type {MarkdownRendererProps} from '../../markdown/types';
 
 // The host renderer boundary is independent of the bundled Markdown engine.
 jest.mock('../../components/atoms/MarkdownRenderer', () => ({

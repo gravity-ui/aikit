@@ -13,8 +13,8 @@ import {
 } from '@gravity-ui/uikit';
 import {Icon} from '@gravity-ui/uikit';
 
-import {cn} from '../../../classNames';
 import {i18n} from '../../../../i18n';
+import {cn} from '../../../classNames';
 import {ListItem} from '../ListItem/index';
 
 import './SelectPopup.ported.scss';

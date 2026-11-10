@@ -5,15 +5,14 @@ import {type ReactNode, useState} from 'react';
 import {CircleCheck, CircleExclamation, CircleStop, Hand, Pause} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
 
-import type {ToolMessageProps} from '../../../types/tool';
-import type {ThinkingMessageProps} from '../ThinkingMessage';
 import {withDefaultMarkdown} from '../../../markdown/withDefaultMarkdown';
+import type {ToolMessageProps} from '../../../types/tool';
+import {CompactRow} from '../../internal/CompactRow/CompactRow';
 import {ThinkingMessageView} from '../../internal/ThinkingMessage/ThinkingMessageView';
+import type {ThinkingMessageProps} from '../ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
 
 import {i18n} from './i18n';
-
-import {CompactRow} from '../../internal/CompactRow/CompactRow';
 
 const ThinkingStep = withDefaultMarkdown(ThinkingMessageView);
 

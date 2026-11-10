@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 const fs = require('node:fs');
 const path = require('node:path');
+
 const ts = require('typescript');
 
 const root = path.resolve(__dirname, '..');
-const stability = require('../src/components/stability.json');
 const pkg = require('../package.json');
+const stability = require('../src/components/stability.json');
 const levels = ['atoms', 'molecules', 'organisms', 'templates', 'pages'];
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const entry = read('src/experimental/index.ts');

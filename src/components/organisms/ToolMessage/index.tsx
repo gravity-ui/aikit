@@ -3,9 +3,9 @@ import {Card} from '@gravity-ui/uikit';
 import {useToolMessage} from '../../../hooks/useToolMessage';
 import type {ToolMessageProps} from '../../../types/tool';
 import {block} from '../../../utils/cn';
+import {CompactRow} from '../../internal/CompactRow/CompactRow';
 import {ToolFooter} from '../../molecules/ToolFooter';
 import {ToolHeader} from '../../molecules/ToolHeader';
-import {CompactRow} from '../../internal/CompactRow/CompactRow';
 
 import {i18n} from './i18n';
 

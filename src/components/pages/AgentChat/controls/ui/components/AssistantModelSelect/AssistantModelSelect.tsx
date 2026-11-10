@@ -3,8 +3,8 @@ import React, {useCallback, useState} from 'react';
 import {ChevronDown} from '@gravity-ui/icons';
 import {Button, Icon} from '@gravity-ui/uikit';
 
-import {cn} from '../../../classNames';
 import type {AgentModelOption} from '../../../../types';
+import {cn} from '../../../classNames';
 import {getAssistantModelIcon} from '../../lib/utils/getAssistantModelIcon';
 
 import {AssistantModelSelectMenu} from './AssistantModelSelectMenu';

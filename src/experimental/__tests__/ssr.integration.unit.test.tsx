@@ -1,6 +1,6 @@
 /** @jest-environment node */
+import {ThemeProvider, configure} from '@gravity-ui/uikit';
 import {renderToString} from 'react-dom/server';
-import {configure, ThemeProvider} from '@gravity-ui/uikit';
 
 import {AgentComposer} from '../../components/pages/AgentChat/AgentComposer';
 

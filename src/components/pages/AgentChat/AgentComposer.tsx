@@ -6,12 +6,12 @@ import type {ChatStatus, TSubmitData} from '../../../types';
 import {PromptInputFull} from '../../organisms/PromptInput/PromptInputFull';
 import {usePromptInput} from '../../organisms/PromptInput/usePromptInput';
 
-import type {AgentModelOption} from './types';
-import {i18n} from './i18n';
 import {AssistantModelSelect} from './controls/ui/components/AssistantModelSelect/AssistantModelSelect';
 import {SelectPopup} from './controls/ui/components/SelectPopup/SelectPopup';
 import {AgentRepoSelect} from './controls/ui/modules/agent/components/AgentRepoSelect/AgentRepoSelect';
 import {SkillsAutocompletePopup} from './controls/ui/modules/agent/components/SkillsAutocompletePopup/SkillsAutocompletePopup';
+import {i18n} from './i18n';
+import type {AgentModelOption} from './types';
 
 const slashIcon =
     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path d="M10.5 1.25C12.8472 1.25 14.75 3.15279 14.75 5.5V10.5C14.75 12.8472 12.8472 14.75 10.5 14.75H5.5C3.15279 14.75 1.25 12.8472 1.25 10.5V5.5C1.25 3.15279 3.15279 1.25 5.5 1.25H10.5ZM5.5 2.75C3.98122 2.75 2.75 3.98122 2.75 5.5V10.5C2.75 12.0188 3.98122 13.25 5.5 13.25H10.5C12.0188 13.25 13.25 12.0188 13.25 10.5V5.5C13.25 3.98122 12.0188 2.75 10.5 2.75H5.5ZM8.07129 5.12891C8.27636 4.61624 8.85839 4.36642 9.37109 4.57129C9.88377 4.77636 10.1336 5.35839 9.92871 5.87109L7.92871 10.8711C7.72364 11.3838 7.14161 11.6336 6.62891 11.4287C6.11623 11.2236 5.86642 10.6416 6.07129 10.1289L8.07129 5.12891Z" fill="currentColor"/>\n</svg>\n\n';

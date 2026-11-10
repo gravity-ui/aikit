@@ -2,8 +2,8 @@ import {type CSSProperties, type PropsWithChildren, type Ref} from 'react';
 
 import {List as GList, type ListProps, Text} from '@gravity-ui/uikit';
 
-import {cn} from '../../../classNames';
 import {i18n as i18nGlobal} from '../../../../i18n';
+import {cn} from '../../../classNames';
 
 import './List.ported.scss';
 const css = {

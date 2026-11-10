@@ -3,7 +3,6 @@
 import {type ReactNode, useCallback, useRef, useState} from 'react';
 
 import {useLayoutEffect} from '@gravity-ui/uikit';
-
 import {flushSync} from 'react-dom';
 
 import {LayoutChangeContext} from '../../../utils/chatLayoutChange';

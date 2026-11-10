@@ -1,4 +1,5 @@
 import type {ReactNode} from 'react';
+
 import type {IconProps} from '@gravity-ui/uikit';
 
 /** @experimental Presentation data for a model option. May change in minor releases. */
