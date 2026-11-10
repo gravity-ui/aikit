@@ -13,7 +13,14 @@ import './ToolFooter.scss';
 
 const b = block('tool-footer');
 
-export function ToolFooter({actions, content, showLoader = true, className, qa}: ToolFooterProps) {
+export function ToolFooter({
+    actions,
+    content,
+    showLoader = true,
+    actionSize = 's',
+    className,
+    qa,
+}: ToolFooterProps) {
     return (
         <div className={b('', className)} data-qa={qa}>
             <div className={b('left')}>
@@ -31,7 +38,12 @@ export function ToolFooter({actions, content, showLoader = true, className, qa}:
                     }
 
                     return (
-                        <Button view={action.view} key={index} onClick={action.onClick} size="s">
+                        <Button
+                            view={action.view}
+                            key={index}
+                            onClick={action.onClick}
+                            size={actionSize}
+                        >
                             {action.label}
                         </Button>
                     );

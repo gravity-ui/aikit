@@ -1,0 +1,8 @@
+{
+  "running": "Thinking",
+  "completed": "Worked for {{seconds}} s",
+  "cancelled": "Stopped after {{seconds}} s",
+  "error": "Work interrupted · {{seconds}} s",
+  "needs-input": "Waiting for your approval",
+  "paused": "Paused · {{seconds}} s"
+}

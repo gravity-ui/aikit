@@ -1,0 +1,7 @@
+{
+  "view": "View changes",
+  "undo": "Undo",
+  "title": "Changed files",
+  "one-file": "{{count}} file changed",
+  "files": "{{count}} files changed"
+}

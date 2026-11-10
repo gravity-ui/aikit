@@ -1,0 +1,17 @@
+{
+  "ScrollToBottomButton": {
+    "stability": "experimental"
+  },
+  "ChangedFilesSummary": {
+    "stability": "experimental"
+  },
+  "RunActivity": {
+    "stability": "experimental"
+  },
+  "ChatContentV2": {
+    "stability": "experimental"
+  },
+  "AgentChat": {
+    "stability": "experimental"
+  }
+}

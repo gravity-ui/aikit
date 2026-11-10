@@ -155,3 +155,37 @@ export const Error: StoryObj<ToolMessageProps> = {
     ),
     decorators: defaultDecorators,
 };
+
+export const Compact: StoryObj<typeof ToolMessage> = {
+    render: (args) => <ToolMessage {...args} />,
+    args: {...Playground.args, view: 'compact'},
+};
+
+export const CompactStates: StoryObj<typeof ToolMessage> = {
+    render: () => (
+        <div style={{width: 430}}>
+            {(
+                [
+                    'loading',
+                    'success',
+                    'error',
+                    'cancelled',
+                    'waitingConfirmation',
+                    'waitingSubmission',
+                ] as const
+            ).map((status) => (
+                <ToolMessage
+                    key={status}
+                    {...Playground.args}
+                    view="compact"
+                    toolName={`Read · ${status}`}
+                    toolIcon={undefined}
+                    secondaryText="products.ts"
+                    contextTooltip="src/api/products.ts · lines 18–24"
+                    status={status}
+                    bodyContent={<p>Full file contents and result details</p>}
+                />
+            ))}
+        </div>
+    ),
+};

@@ -1,4 +1,4 @@
-import {type HTMLAttributes, memo, useMemo} from 'react';
+import {type HTMLAttributes, type ReactNode, memo, useMemo} from 'react';
 
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 
@@ -29,6 +29,7 @@ import {UserMessage} from '../UserMessage/UserMessage';
  * `MessageItem` only re-renders when the `message` itself changes.
  */
 export type MessageItemConfig<TContent extends TMessageContent = never> = {
+    renderAssistantFooter?: (message: TAssistantMessage<TContent, TMessageMetadata>) => ReactNode;
     messageRendererRegistry?: MessageRendererRegistry;
     thinkingMessageView?: 'default' | 'grouped';
     transformOptions?: OptionsType;
@@ -86,6 +87,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
     showAvatar,
     userActions,
     assistantActions,
+    renderAssistantFooter,
     userExtraInfo: UserExtraInfo,
     assistantExtraInfo: AssistantExtraInfo,
     onActionPopup,
@@ -138,6 +140,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
         return (
             <AssistantMessage<TContent>
                 content={message.content}
+                footerContent={renderAssistantFooter?.(message)}
                 actions={actions}
                 extraInfo={
                     AssistantExtraInfo ? <AssistantExtraInfo message={message} /> : undefined

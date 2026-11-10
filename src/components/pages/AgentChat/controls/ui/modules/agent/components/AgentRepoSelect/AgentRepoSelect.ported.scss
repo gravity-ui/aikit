@@ -1,0 +1,49 @@
+.g-aikit-agent-agent-repo-select__select {
+    max-width: min(260px, 100%);
+    min-width: 0;
+}
+
+.g-aikit-agent-agent-repo-select__selectedOption {
+    display: flex;
+    align-items: center;
+    gap: var(--g-spacing-1);
+    min-width: 0;
+}
+
+.g-aikit-agent-agent-repo-select__filter {
+    padding: var(--g-spacing-1);
+}
+
+.g-aikit-agent-agent-repo-select__list .g-select-list {
+    max-height: calc(5 * 28px);
+}
+
+.g-aikit-agent-agent-repo-select__list .g-select-list_mobile {
+    max-height: calc(5 * 32px);
+}
+
+.g-aikit-agent-agent-repo-select__repoIcon {
+    flex-shrink: 0;
+}
+
+.g-aikit-agent-agent-repo-select__selectedLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.g-aikit-context-item:has(.g-aikit-agent-agent-repo-select__select) {
+    max-width: min(260px, 100%);
+    box-shadow: none;
+}
+
+.g-aikit-context-item:has(.g-aikit-agent-agent-repo-select__select) .g-label__text {
+    margin: 0;
+    text-align: start;
+}
+
+.g-aikit-agent-agent-repo-select__skeleton {
+    display: block;
+    width: 120px;
+    height: 16px;
+}
