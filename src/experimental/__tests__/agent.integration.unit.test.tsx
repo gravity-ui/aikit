@@ -9,7 +9,6 @@ import {
     AgentComposer,
     type AgentComposerProps,
     ChangedFilesSummary,
-    ChatContentV2,
     RunActivity,
     ScrollToBottomButton,
 } from '..';
@@ -407,34 +406,124 @@ it('updates experimental labels when the provider language changes', () => {
     expect(screen.getByRole('button', {name: 'Undo'})).toBeVisible();
 });
 
-it.each([false, true])('scrolls to the latest message with reduced motion=%s', (reducedMotion) => {
-    const media = window.matchMedia('');
-    const matchMedia = jest
-        .spyOn(window, 'matchMedia')
-        .mockReturnValue({...media, matches: reducedMotion});
-    const {container, rerender} = render(
-        <ChatContentV2>
-            <p>Messages</p>
-        </ChatContentV2>,
+function renderStreamingChat() {
+    const view = (content: string, historyKey?: string) => (
+        <AgentChat
+            messages={[{id: 'answer', role: 'assistant', content}]}
+            composer={null}
+            status="streaming"
+            historyKey={historyKey}
+        />
     );
+    const {container, rerender} = render(view('Initial response'));
     const viewport = container.querySelector(
         '.g-aikit-chat-content-v2__viewport',
     ) as HTMLDivElement;
+    let height = 1200;
+    let top = 100;
+    let animationTarget = 0;
+    const clamp = (value: number) => Math.max(0, Math.min(value, height - 400));
     Object.defineProperties(viewport, {
-        scrollHeight: {value: 1200, configurable: true},
+        scrollHeight: {get: () => height, configurable: true},
         clientHeight: {value: 400, configurable: true},
+        scrollTop: {
+            get: () => top,
+            set: (value: number) => {
+                top = clamp(value);
+            },
+            configurable: true,
+        },
     });
-    viewport.scrollTop = 100;
-    const scrollTo = jest.fn();
+    const scrollTo = jest.fn((options?: ScrollToOptions | number, y?: number) => {
+        const {top: destination, behavior} =
+            typeof options === 'number' ? {top: y} : (options ?? {});
+        if (behavior === 'smooth') {
+            animationTarget = clamp(destination ?? 0);
+        } else {
+            viewport.scrollTop = destination ?? 0;
+        }
+    });
     viewport.scrollTo = scrollTo;
     fireEvent.scroll(viewport);
+    rerender(view('Initial response'));
+    return {
+        viewport,
+        scrollTo,
+        append(content: string, nextHeight: number, historyKey?: string) {
+            height = nextHeight;
+            rerender(view(content, historyKey));
+        },
+        finishAnimation() {
+            viewport.scrollTop = animationTarget;
+            fireEvent.scroll(viewport);
+        },
+    };
+}
+
+it.each([false, true])(
+    'resumes following streamed content with reduced motion=%s',
+    (reducedMotion) => {
+        const previousMatchMedia = window.matchMedia;
+        const media = window.matchMedia('');
+        window.matchMedia = jest.fn().mockReturnValue({...media, matches: reducedMotion});
+        try {
+            const chat = renderStreamingChat();
+            fireEvent.click(screen.getByRole('button', {name: 'Scroll to bottom'}));
+            expect(chat.scrollTo).toHaveBeenCalledWith({
+                top: 1200,
+                behavior: reducedMotion ? 'auto' : 'smooth',
+            });
+            chat.append('More content during scrolling', 1600);
+            if (!reducedMotion) {
+                expect(chat.viewport.scrollTop).toBe(100);
+                chat.finishAnimation();
+            }
+            expect(chat.viewport.scrollTop).toBe(1200);
+            expect(
+                screen.queryByRole('button', {name: 'Scroll to bottom'}),
+            ).not.toBeInTheDocument();
+            chat.append('Response keeps streaming after arrival', 1700);
+            expect(chat.viewport.scrollTop).toBe(1300);
+        } finally {
+            window.matchMedia = previousMatchMedia;
+        }
+    },
+);
+
+it.each(['wheel', 'touch', 'pointer', 'keyboard'])(
+    'allows %s input to interrupt scrolling to latest',
+    (input) => {
+        const chat = renderStreamingChat();
+        fireEvent.click(screen.getByRole('button', {name: 'Scroll to bottom'}));
+        chat.viewport.scrollTop = 400;
+        fireEvent.scroll(chat.viewport);
+        switch (input) {
+            case 'wheel':
+                fireEvent.wheel(chat.viewport, {deltaY: -100});
+                break;
+            case 'touch':
+                fireEvent.touchStart(chat.viewport);
+                break;
+            case 'pointer':
+                fireEvent.pointerDown(chat.viewport);
+                break;
+            case 'keyboard':
+                fireEvent.keyDown(chat.viewport, {key: 'PageUp'});
+                break;
+        }
+        expect(chat.scrollTo).toHaveBeenLastCalledWith({top: 400, behavior: 'auto'});
+        chat.append('New content after user interruption', 1600);
+        expect(chat.viewport.scrollTop).toBe(400);
+        expect(screen.getByRole('button', {name: 'Scroll to bottom'})).toBeVisible();
+    },
+);
+
+it('preserves history position when older messages arrive during scrolling to latest', () => {
+    const chat = renderStreamingChat();
     fireEvent.click(screen.getByRole('button', {name: 'Scroll to bottom'}));
-    expect(scrollTo).toHaveBeenCalledWith({top: 1200, behavior: reducedMotion ? 'auto' : 'smooth'});
-    rerender(
-        <ChatContentV2>
-            <p>Messages continue streaming</p>
-        </ChatContentV2>,
-    );
-    expect(viewport.scrollTop).toBe(100);
-    matchMedia.mockRestore();
+    chat.append('Older messages prepended', 1600, 'older');
+    expect(chat.scrollTo).toHaveBeenLastCalledWith({top: 100, behavior: 'auto'});
+    expect(chat.viewport.scrollTop).toBe(500);
+    chat.append('More streamed content', 1700, 'older');
+    expect(chat.viewport.scrollTop).toBe(500);
 });

@@ -36,6 +36,7 @@ export function ChatContentV2({
     const content = useRef<HTMLDivElement>(null);
     const footer = useRef<HTMLDivElement>(null);
     const following = useRef(true);
+    const scrollTarget = useRef<number>();
     const previous = useRef({historyKey, height: 0});
     const [scrolled, setScrolled] = useState(false);
     const [away, setAway] = useState(false);
@@ -48,10 +49,40 @@ export function ChatContentV2({
         setScrolled(el.scrollTop > 0);
         setAway(el.scrollHeight - el.clientHeight - el.scrollTop > 24);
     }, []);
+    const followToBottom = useCallback(() => {
+        const el = viewport.current;
+        if (!el) {
+            return;
+        }
+        // Keep the follow intent until the native animation reaches its original target.
+        // Content may have grown in the meantime; reconcile to the latest bottom on arrival.
+        if (
+            scrollTarget.current !== undefined &&
+            el.scrollTop >= Math.min(scrollTarget.current, el.scrollHeight - el.clientHeight) - 1
+        ) {
+            scrollTarget.current = undefined;
+            following.current = true;
+        }
+        if (following.current) {
+            el.scrollTop = el.scrollHeight;
+        }
+    }, []);
+    const cancelScrollToBottom = useCallback(() => {
+        if (scrollTarget.current === undefined) {
+            return;
+        }
+        scrollTarget.current = undefined;
+        following.current = false;
+        const el = viewport.current;
+        if (el) {
+            el.scrollTo({top: el.scrollTop, behavior: 'auto'});
+        }
+    }, []);
     const preserve = useCallback(
         (change: () => void) => {
             const el = viewport.current;
             const top = el?.scrollTop ?? 0;
+            cancelScrollToBottom();
             following.current = false;
             flushSync(change);
             if (el) {
@@ -59,7 +90,7 @@ export function ChatContentV2({
             }
             update();
         },
-        [update],
+        [cancelScrollToBottom, update],
     );
     useLayoutEffect(() => {
         const el = viewport.current;
@@ -67,20 +98,19 @@ export function ChatContentV2({
             return;
         }
         if (previous.current.historyKey !== historyKey) {
+            cancelScrollToBottom();
             el.scrollTop += el.scrollHeight - previous.current.height;
-        } else if (following.current) {
-            el.scrollTop = el.scrollHeight;
+        } else {
+            followToBottom();
         }
         previous.current = {historyKey, height: el.scrollHeight};
         update();
-    }, [children, historyKey, height, update]);
+    }, [children, historyKey, height, cancelScrollToBottom, followToBottom, update]);
     useLayoutEffect(() => {
         const observer = new ResizeObserver(() => {
             setHeight(footer.current?.offsetHeight ?? 0);
             const el = viewport.current;
-            if (el && following.current) {
-                el.scrollTop = el.scrollHeight;
-            }
+            followToBottom();
             if (el) {
                 previous.current.height = el.scrollHeight;
             }
@@ -96,7 +126,7 @@ export function ChatContentV2({
             observer.observe(footer.current);
         }
         return () => observer.disconnect();
-    }, [update]);
+    }, [followToBottom, update]);
     return (
         <LayoutChangeContext.Provider value={preserve}>
             <div className={`g-aikit-chat-content-v2 ${className ?? ''}`}>
@@ -106,13 +136,35 @@ export function ChatContentV2({
                     <div
                         ref={viewport}
                         className="g-aikit-chat-content-v2__viewport"
+                        onWheel={cancelScrollToBottom}
+                        onTouchStart={cancelScrollToBottom}
+                        onPointerDown={cancelScrollToBottom}
+                        onKeyDown={(event) => {
+                            if (
+                                [
+                                    'ArrowUp',
+                                    'ArrowDown',
+                                    'PageUp',
+                                    'PageDown',
+                                    'Home',
+                                    'End',
+                                    ' ',
+                                ].includes(event.key)
+                            ) {
+                                cancelScrollToBottom();
+                            }
+                        }}
                         onScroll={() => {
                             const el = viewport.current;
                             if (!el) {
                                 return;
                             }
-                            following.current =
-                                el.scrollHeight - el.clientHeight - el.scrollTop <= 24;
+                            if (scrollTarget.current === undefined) {
+                                following.current =
+                                    el.scrollHeight - el.clientHeight - el.scrollTop <= 24;
+                            } else {
+                                followToBottom();
+                            }
                             update();
                         }}
                     >
@@ -130,9 +182,10 @@ export function ChatContentV2({
                             className="g-aikit-chat-content-v2__down"
                             style={{bottom: height + 12}}
                             onClick={() => {
-                                following.current = false;
                                 const el = viewport.current;
                                 if (el) {
+                                    following.current = false;
+                                    scrollTarget.current = el.scrollHeight - el.clientHeight;
                                     el.scrollTo({
                                         top: el.scrollHeight,
                                         behavior: window.matchMedia(
@@ -141,6 +194,7 @@ export function ChatContentV2({
                                             ? 'auto'
                                             : 'smooth',
                                     });
+                                    followToBottom();
                                 }
                                 update();
                             }}
