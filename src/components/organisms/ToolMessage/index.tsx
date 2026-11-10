@@ -14,6 +14,7 @@ import './ToolMessage.scss';
 const b = block('tool-message');
 
 export function ToolMessage(props: ToolMessageProps) {
+    const {t} = i18n.useTranslation();
     const {toolName, className, qa, bodyContent, status, toolIcon, headerContent} = props;
 
     const {
@@ -36,10 +37,10 @@ export function ToolMessage(props: ToolMessageProps) {
                             {status === 'error' && (
                                 <span style={{color: 'var(--g-color-text-danger)'}}>
                                     {' '}
-                                    · {i18n('status-error')}
+                                    · {t('status-error')}
                                 </span>
                             )}
-                            {status === 'cancelled' && <span> · {i18n('status-cancelled')}</span>}
+                            {status === 'cancelled' && <span> · {t('status-cancelled')}</span>}
                         </>
                     }
                     icon={toolIcon}
@@ -48,7 +49,9 @@ export function ToolMessage(props: ToolMessageProps) {
                     tooltip={props.contextTooltip}
                     active={status === 'loading'}
                     expanded={isExpanded}
-                    onToggle={toggleExpanded}
+                    onToggle={
+                        (props.expandable ?? Boolean(bodyContent)) ? toggleExpanded : undefined
+                    }
                 >
                     {headerContent}
                     {bodyContent}

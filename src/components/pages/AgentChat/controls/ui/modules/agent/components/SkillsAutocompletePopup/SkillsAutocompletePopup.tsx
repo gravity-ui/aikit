@@ -22,6 +22,7 @@ const css = {
 interface SkillsAutocompletePopupProps {
     skills: readonly AgentSkill[];
     selectedIndex?: number;
+    onSelectedIndexChange?: (index: number) => void;
     anchorElement: HTMLElement | null;
     onSelect: (skill: AgentSkill) => void;
     onClose: () => void;
@@ -32,12 +33,14 @@ interface SkillsAutocompletePopupProps {
 export function SkillsAutocompletePopup({
     skills,
     selectedIndex,
+    onSelectedIndexChange,
     anchorElement,
     placement = 'top-start',
     onSelect,
     onClose,
     withSearch = false,
 }: SkillsAutocompletePopupProps) {
+    const {t} = i18n.useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredSkills = useMemo(() => {
@@ -84,7 +87,7 @@ export function SkillsAutocompletePopup({
                         <TextInput
                             value={searchQuery}
                             onUpdate={setSearchQuery}
-                            placeholder={i18n('placeholder_search')}
+                            placeholder={t('placeholder_search')}
                             hasClear
                             startContent={<InputIcon.Start data={Magnifier} />}
                             size="m"
@@ -97,7 +100,17 @@ export function SkillsAutocompletePopup({
                         items={filteredSkills}
                         getItemId={(item) => item.value}
                         getItemTextValue={(item) => item.value}
-                        activeItemId={filteredSkills[selectedIndex ?? 0]?.value ?? null}
+                        activeItemId={
+                            selectedIndex === undefined
+                                ? undefined
+                                : (filteredSkills[selectedIndex]?.value ?? null)
+                        }
+                        onActiveItemUpdate={(id) => {
+                            const index = filteredSkills.findIndex((item) => item.value === id);
+                            if (index >= 0) {
+                                onSelectedIndexChange?.(index);
+                            }
+                        }}
                         onItemAction={(_id, item) => onSelect(item.data)}
                         renderItem={({item, state}, helpers) => (
                             <ListItemView

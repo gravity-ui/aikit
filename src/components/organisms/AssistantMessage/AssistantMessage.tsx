@@ -18,6 +18,7 @@ import {
     mergeMessageRendererRegistries,
 } from '../../../utils/messageTypeRegistry';
 import {normalizeContent} from '../../../utils/messageUtils';
+import {MessageMarkdownContext} from '../../internal/MessageMarkdownContext';
 import {BaseMessage} from '../../molecules/BaseMessage';
 import {ThinkingMessageGroup} from '../ThinkingMessageGroup/ThinkingMessageGroup';
 import {groupThinkingMessages, thinkingMessageToStep} from '../ThinkingMessageGroup/utils';
@@ -105,6 +106,25 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
         markdownExtraProps,
     ]);
 
+    const markdownOptions = useMemo(
+        () => ({
+            transformOptions,
+            mermaidOptions,
+            openMarkdownLinksInNewTab,
+            mdxOptions,
+            mdxContext,
+            markdownExtraProps,
+        }),
+        [
+            transformOptions,
+            mermaidOptions,
+            openMarkdownLinksInNewTab,
+            mdxOptions,
+            mdxContext,
+            markdownExtraProps,
+        ],
+    );
+
     const parts = useMemo(() => normalizeContent<TContent>(content), [content]);
 
     const groupedParts =
@@ -150,28 +170,30 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             qa={qa}
             onActionPopup={onActionPopup}
         >
-            <div className={b('content')}>
-                {groupedParts
-                    ? groupedParts.map((entry) =>
-                          entry.type === 'item' ? (
-                              renderPart(entry.item, entry.index)
-                          ) : (
-                              <ThinkingMessageGroup
-                                  key={entry.id}
-                                  steps={entry.steps}
-                                  format="markdown"
-                                  transformOptions={transformOptions}
-                                  mermaidOptions={mermaidOptions}
-                                  openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
-                                  mdxOptions={mdxOptions}
-                                  mdxContext={mdxContext}
-                                  markdownExtraProps={markdownExtraProps}
-                              />
-                          ),
-                      )
-                    : parts.map((part, index) => renderPart(part, index))}
-                {footerContent}
-            </div>
+            <MessageMarkdownContext.Provider value={markdownOptions}>
+                <div className={b('content')}>
+                    {groupedParts
+                        ? groupedParts.map((entry) =>
+                              entry.type === 'item' ? (
+                                  renderPart(entry.item, entry.index)
+                              ) : (
+                                  <ThinkingMessageGroup
+                                      key={entry.id}
+                                      steps={entry.steps}
+                                      format="markdown"
+                                      transformOptions={transformOptions}
+                                      mermaidOptions={mermaidOptions}
+                                      openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                                      mdxOptions={mdxOptions}
+                                      mdxContext={mdxContext}
+                                      markdownExtraProps={markdownExtraProps}
+                                  />
+                              ),
+                          )
+                        : parts.map((part, index) => renderPart(part, index))}
+                    {footerContent}
+                </div>
+            </MessageMarkdownContext.Provider>
         </BaseMessage>
     );
 }

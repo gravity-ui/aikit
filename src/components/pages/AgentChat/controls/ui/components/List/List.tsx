@@ -17,12 +17,13 @@ export interface IListProps<Item> extends ListProps<Item> {
 }
 
 export function List<Item>(props: IListProps<Item>) {
+    const {t} = i18nGlobal.useTranslation();
     const {containerRef, containerStyle, className, ...listProps} = props;
 
     const list = props.items.length ? (
         <GList {...listProps} className={cn(css.wrapper, className)} />
     ) : (
-        <Text color="secondary">{i18nGlobal('nothing-found')}</Text>
+        <Text color="secondary">{t('nothing-found')}</Text>
     );
 
     if (!containerRef && !containerStyle) {

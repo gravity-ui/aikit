@@ -13,7 +13,10 @@
         color: inherit;
         font: inherit;
         text-align: left;
-        cursor: pointer;
+        cursor: default;
+        &[type='button'] {
+            cursor: pointer;
+        }
         max-width: 100%;
         box-sizing: border-box;
         &:focus-visible {

@@ -1,6 +1,6 @@
 import type {ReactElement} from 'react';
 
-import {ThemeProvider, configure} from '@gravity-ui/uikit';
+import {Provider, ThemeProvider, configure} from '@gravity-ui/uikit';
 import '@testing-library/jest-dom';
 import {act, fireEvent, render as renderView, screen, waitFor} from '@testing-library/react';
 
@@ -10,6 +10,7 @@ import {
     type AgentComposerProps,
     ChangedFilesSummary,
     RunActivity,
+    ScrollToBottomButton,
 } from '..';
 import {MarkdownProvider} from '../../markdown/MarkdownProvider';
 import type {MarkdownRendererProps} from '../../markdown/types';
@@ -198,4 +199,209 @@ it('keeps file actions attached to their assistant response and delegates undo t
     fireEvent.click(await screen.findByRole('button', {name: /src\/App.tsx/}));
     expect(openFile).toHaveBeenCalledWith(file);
     expect(screen.getByText('Updated the app')).toBeVisible();
+});
+
+it('keeps the draft intact when the caret leaves a slash command', () => {
+    const onSend = jest.fn().mockResolvedValue(undefined);
+    render(<AgentChat messages={[]} composer={<AgentComposer {...composerProps({onSend})} />} />);
+    const input = screen.getByRole('textbox') as HTMLTextAreaElement;
+    fireEvent.change(input, {target: {value: 'Please /rev'}});
+    input.setSelectionRange(0, 0);
+    fireEvent.keyDown(input, {key: 'Tab'});
+    expect(input).toHaveValue('Please /rev');
+    expect(onSend).not.toHaveBeenCalled();
+    input.setSelectionRange(11, 11);
+    fireEvent.select(input);
+    fireEvent.keyDown(input, {key: 'Tab'});
+    expect(input).toHaveValue('Please /review ');
+    expect(input.selectionStart).toBe('Please /review '.length);
+
+    fireEvent.change(input, {target: {value: 'Please /rev after this'}});
+    fireEvent.select(input);
+    input.setSelectionRange(11, 11);
+    fireEvent.select(input);
+    fireEvent.keyDown(input, {key: 'Tab'});
+    expect(input).toHaveValue('Please /review  after this');
+
+    fireEvent.change(input, {target: {value: 'Please /rev'}});
+    input.setSelectionRange(7, 11);
+    fireEvent.keyDown(input, {key: 'Tab'});
+    expect(input).toHaveValue('Please /rev');
+});
+
+it('selects the navigated skill from the button menu and from slash autocomplete', async () => {
+    const props = composerProps({skills: [{slug: 'review'}, {slug: 'release'}]});
+    render(<AgentChat messages={[]} composer={<AgentComposer {...props} />} />);
+    const input = screen.getByRole('textbox') as HTMLTextAreaElement;
+    fireEvent.click(screen.getByRole('button', {name: 'Select skill'}));
+    const first = await screen.findByRole('option', {name: /review/});
+    act(() => first.focus());
+    fireEvent.keyDown(first, {key: 'ArrowDown'});
+    const second = screen.getByRole('option', {name: /release/});
+    expect(second).toHaveFocus();
+    fireEvent.keyDown(second, {key: 'Enter'});
+    expect(input).toHaveValue('/release ');
+    expect(input).toHaveFocus();
+
+    fireEvent.change(input, {target: {value: '/re'}});
+    fireEvent.keyDown(input, {key: 'ArrowDown'});
+    fireEvent.keyDown(input, {key: 'Tab'});
+    expect(input).toHaveValue('/release ');
+
+    input.setSelectionRange(0, input.value.length);
+    fireEvent.select(input);
+    fireEvent.click(screen.getByRole('button', {name: 'Select skill'}));
+    fireEvent.click(await screen.findByRole('option', {name: /release/}));
+    expect(input).toHaveValue('/release ');
+    expect(input).toHaveFocus();
+    expect(input.selectionStart).toBe(input.value.length);
+    expect(input.selectionEnd).toBe(input.value.length);
+});
+
+it('inherits message Markdown settings in run steps and keeps step overrides', () => {
+    const renderer = jest.fn((props: MarkdownRendererProps) => <p>{props.content}</p>);
+    const mdxOptions = {components: {}};
+    const stepContext = {scope: 'step'};
+    const transformOptions = {breaks: false};
+    const mermaidOptions = {load: jest.fn()};
+    const extraProps = {title: 'Message Markdown'};
+    const messages = [{id: 'first', role: 'assistant' as const, content: 'Final answer'}];
+    function View({newTab}: {newTab: boolean}) {
+        return (
+            <MarkdownProvider renderer={renderer}>
+                <AgentChat
+                    messages={messages}
+                    composer={null}
+                    openMarkdownLinksInNewTab={newTab}
+                    transformOptions={transformOptions}
+                    mermaidOptions={mermaidOptions}
+                    mdxProps={{
+                        mdxOptions,
+                        getMdxContext: (message) => ({messageId: message.id}),
+                        getMarkdownExtraProps: () => extraProps,
+                    }}
+                    runs={[
+                        {
+                            messageId: 'first',
+                            activity: {
+                                id: 'run',
+                                state: 'completed',
+                                durationMs: 1000,
+                                defaultExpanded: true,
+                                steps: [
+                                    {
+                                        id: 'inherited',
+                                        kind: 'thinking',
+                                        props: {content: 'Inherited thinking', status: 'thought'},
+                                    },
+                                    {
+                                        id: 'override',
+                                        kind: 'thinking',
+                                        props: {
+                                            content: 'Overridden thinking',
+                                            status: 'thought',
+                                            mdxContext: stepContext,
+                                            openMarkdownLinksInNewTab: false,
+                                        },
+                                    },
+                                    {
+                                        id: 'plain',
+                                        kind: 'thinking',
+                                        props: {
+                                            content: 'Plain thinking',
+                                            status: 'thought',
+                                            format: 'plain',
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ]}
+                />
+            </MarkdownProvider>
+        );
+    }
+    const {rerender} = render(<View newTab />);
+    const expectContent = (content: string, props: Partial<MarkdownRendererProps>) => {
+        expect(renderer).toHaveBeenCalledWith(
+            expect.objectContaining({content, ...props}),
+            expect.anything(),
+        );
+    };
+    expectContent('Final answer', {openLinksInNewTab: true, mdxContext: {messageId: 'first'}});
+    expectContent('Inherited thinking', {
+        openLinksInNewTab: true,
+        mdxContext: {messageId: 'first'},
+        mdxOptions,
+        mermaidOptions,
+        extraProps,
+        transformOptions: expect.objectContaining(transformOptions),
+    });
+    expectContent('Overridden thinking', {openLinksInNewTab: false, mdxContext: stepContext});
+    expect(renderer.mock.calls.some(([props]) => props.content === 'Plain thinking')).toBe(false);
+    renderer.mockClear();
+    rerender(<View newTab={false} />);
+    expectContent('Inherited thinking', {
+        openLinksInNewTab: false,
+        mdxContext: {messageId: 'first'},
+    });
+});
+
+it('keeps non-expandable tool content visible inside activity', () => {
+    render(
+        <AgentChat
+            messages={[{id: 'answer', role: 'assistant', content: 'Done'}]}
+            composer={null}
+            runs={[
+                {
+                    messageId: 'answer',
+                    activity: {
+                        id: 'run',
+                        state: 'completed',
+                        durationMs: 1000,
+                        defaultExpanded: true,
+                        steps: [
+                            {
+                                id: 'tool',
+                                kind: 'tool',
+                                props: {
+                                    toolName: 'Fixed result',
+                                    expandable: false,
+                                    initialExpanded: true,
+                                    bodyContent: <p>Always visible result</p>,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]}
+        />,
+    );
+    expect(screen.queryByRole('button', {name: 'Fixed result'})).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('Fixed result'));
+    expect(screen.getByText('Always visible result')).toBeVisible();
+});
+
+it('updates experimental labels when the provider language changes', () => {
+    function View({lang}: {lang: 'en' | 'ru'}) {
+        return (
+            <Provider lang={lang}>
+                <AgentChat messages={[]} composer={<AgentComposer {...composerProps()} />} />
+                <RunActivity id="locale" steps={[]} state="completed" durationMs={1000} />
+                <ChangedFilesSummary
+                    files={[{id: 'file', path: 'app.ts', added: 1, deleted: 0}]}
+                    view="card"
+                    onUndo={() => {}}
+                />
+                <ScrollToBottomButton />
+            </Provider>
+        );
+    }
+    const {rerender} = render(<View lang="ru" />);
+    expect(screen.getByRole('button', {name: 'Работа заняла 1 с'})).toBeVisible();
+    expect(screen.getByPlaceholderText(/Планируйте/)).toBeVisible();
+    expect(screen.queryByRole('button', {name: 'Undo'})).not.toBeInTheDocument();
+    rerender(<View lang="en" />);
+    expect(screen.getByRole('button', {name: 'Worked for 1 s'})).toBeVisible();
+    expect(screen.getByRole('button', {name: 'Undo'})).toBeVisible();
 });

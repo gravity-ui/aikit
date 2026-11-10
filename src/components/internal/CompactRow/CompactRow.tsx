@@ -28,21 +28,22 @@ export function CompactRow({
     context?: ReactNode;
     active?: boolean;
     expanded: boolean;
-    onToggle: () => void;
+    onToggle?: () => void;
     children?: ReactNode;
 }) {
     const preserve = useContext(LayoutChangeContext);
+    const Heading = onToggle ? 'button' : 'div';
     return (
         <div
             className={`g-aikit-compact-row ${showIcon ? '' : 'g-aikit-compact-row_without-icon'}`}
         >
             <Tooltip placement="top" content={tooltip} disabled={!tooltip}>
-                <button
-                    type="button"
+                <Heading
+                    type={onToggle ? 'button' : undefined}
                     className={`g-aikit-compact-row__toggle ${persistentChevron ? 'g-aikit-compact-row__toggle_persistent' : ''}`}
                     aria-label={typeof label === 'string' ? label : undefined}
-                    aria-expanded={expanded}
-                    onClick={() => preserve(onToggle)}
+                    aria-expanded={onToggle ? expanded : undefined}
+                    onClick={onToggle ? () => preserve(onToggle) : undefined}
                 >
                     {showIcon && (
                         <span className="g-aikit-compact-row__icon" aria-hidden="true">
@@ -51,8 +52,14 @@ export function CompactRow({
                     )}
                     {active ? <Shimmer>{label}</Shimmer> : <span>{label}</span>}
                     {context && <span className="g-aikit-compact-row__context">{context}</span>}
-                    <Icon data={ChevronRight} size={12} className={expanded ? 'expanded' : ''} />
-                </button>
+                    {onToggle && (
+                        <Icon
+                            data={ChevronRight}
+                            size={12}
+                            className={expanded ? 'expanded' : ''}
+                        />
+                    )}
+                </Heading>
             </Tooltip>
             <div hidden={!expanded} className="g-aikit-compact-row__detail">
                 {children}

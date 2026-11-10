@@ -49,10 +49,10 @@ export function ChangedFilesSummary({
     view = 'pill',
     onViewChanges,
     onUndo,
-    viewChangesLabel = i18n('view'),
-    undoLabel = i18n('undo'),
+    viewChangesLabel,
+    undoLabel,
     label,
-    title = i18n('title'),
+    title,
     disabled = false,
     defaultOpen = false,
     open: controlledOpen,
@@ -61,6 +61,7 @@ export function ChangedFilesSummary({
     className,
     qa,
 }: ChangedFilesSummaryProps) {
+    const {t} = i18n.useTranslation();
     const [localOpen, setLocalOpen] = useState(defaultOpen);
     const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
     const popupId = useUniqId();
@@ -88,8 +89,7 @@ export function ChangedFilesSummary({
                 onClick={() => changeOpen(!open)}
             >
                 <span className={b('label')}>
-                    {label ??
-                        i18n(files.length === 1 ? 'one-file' : 'files', {count: files.length})}
+                    {label ?? t(files.length === 1 ? 'one-file' : 'files', {count: files.length})}
                 </span>
                 <DiffStat {...totals} />
             </Button>
@@ -103,7 +103,7 @@ export function ChangedFilesSummary({
                             onClick={onUndo}
                         >
                             <Icon data={ArrowRotateLeft} size={16} aria-hidden />
-                            {undoLabel}
+                            {undoLabel ?? t('undo')}
                         </Button>
                     )}
                     {onViewChanges && (
@@ -114,7 +114,7 @@ export function ChangedFilesSummary({
                             onClick={onViewChanges}
                         >
                             <Icon data={Eye} size={16} aria-hidden />
-                            {viewChangesLabel}
+                            {viewChangesLabel ?? t('view')}
                         </Button>
                     )}
                 </div>
@@ -127,11 +127,11 @@ export function ChangedFilesSummary({
                 placement="top"
                 offset={8}
                 modal
-                floatingRef={(node) => node?.setAttribute('aria-label', title)}
+                floatingRef={(node) => node?.setAttribute('aria-label', title ?? t('title'))}
                 role="dialog"
                 className={b('popup')}
             >
-                <div className={b('content')} tabIndex={0} aria-label={title}>
+                <div className={b('content')} tabIndex={0} aria-label={title ?? t('title')}>
                     <ul>
                         {files.map((file) => (
                             <li

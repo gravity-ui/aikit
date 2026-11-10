@@ -1,14 +1,14 @@
 /** @jest-environment node */
-import {ThemeProvider, configure} from '@gravity-ui/uikit';
+import {Provider, configure} from '@gravity-ui/uikit';
 import {renderToString} from 'react-dom/server';
 
 import {AgentComposer} from '../../components/pages/AgentChat/AgentComposer';
 
-it('renders the experimental composer without a DOM using the configured locale', () => {
-    configure({lang: 'ru'});
+it('renders the experimental composer without a DOM using the provider locale', () => {
+    configure({lang: 'en'});
     try {
         const html = renderToString(
-            <ThemeProvider>
+            <Provider lang="ru">
                 <AgentComposer
                     models={[{id: 'default', name: 'Default model'}]}
                     model="default"
@@ -21,7 +21,7 @@ it('renders the experimental composer without a DOM using the configured locale'
                     onSend={async () => {}}
                     onStop={() => {}}
                 />
-            </ThemeProvider>,
+            </Provider>,
         );
         expect(html).toContain('Планируйте');
         expect(html).toContain('Репозиторий');

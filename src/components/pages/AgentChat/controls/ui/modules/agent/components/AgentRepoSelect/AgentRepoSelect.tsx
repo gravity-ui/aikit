@@ -51,6 +51,7 @@ function AgentRepoSelectControl({
     onRepoSelectionChange,
     disabled,
 }: Omit<IAgentRepoSelectProps, 'status'> & {disabled: boolean}) {
+    const {t} = i18n.useTranslation();
     const [filter, setFilter] = useState('');
     const [open, setOpen] = useState(false);
     const options = useMemo(
@@ -115,10 +116,10 @@ function AgentRepoSelectControl({
             filterable
             filter={filter}
             filterOption={() => true}
-            filterPlaceholder={i18n('placeholder_search')}
-            placeholder={i18n('placeholder_repository')}
-            aria-label={i18n('label_repository')}
-            title={repoSlug || i18n('placeholder_repository')}
+            filterPlaceholder={t('placeholder_search')}
+            placeholder={t('placeholder_repository')}
+            aria-label={t('label_repository')}
+            title={repoSlug || t('placeholder_repository')}
             renderSelectedOptions={() => (
                 <span className={css.selectedOption}>
                     <Icon data={Archive} size={16} className={css.repoIcon} aria-hidden />
@@ -126,7 +127,7 @@ function AgentRepoSelectControl({
                 </span>
             )}
             renderEmptyOptions={() => (
-                <SelectPopup.EmptyOptions>{i18n('empty_repositories')}</SelectPopup.EmptyOptions>
+                <SelectPopup.EmptyOptions>{t('empty_repositories')}</SelectPopup.EmptyOptions>
             )}
             renderPopup={({renderFilter, renderList}) => (
                 <>
@@ -138,7 +139,7 @@ function AgentRepoSelectControl({
                             onClick={handleClear}
                         >
                             <Icon data={Xmark} size={16} aria-hidden />
-                            {i18n('action_no_repository')}
+                            {t('action_no_repository')}
                         </SelectPopup.FooterButton>
                     </SelectPopup.Footer>
                 </>

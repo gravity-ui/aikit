@@ -1,6 +1,6 @@
 'use client';
 
-import {type ReactNode, useState} from 'react';
+import {type ReactNode, useContext, useState} from 'react';
 
 import {CircleCheck, CircleExclamation, CircleStop, Hand, Pause} from '@gravity-ui/icons';
 import {Icon} from '@gravity-ui/uikit';
@@ -8,6 +8,7 @@ import {Icon} from '@gravity-ui/uikit';
 import {withDefaultMarkdown} from '../../../markdown/withDefaultMarkdown';
 import type {ToolMessageProps} from '../../../types/tool';
 import {CompactRow} from '../../internal/CompactRow/CompactRow';
+import {MessageMarkdownContext} from '../../internal/MessageMarkdownContext';
 import {ThinkingMessageView} from '../../internal/ThinkingMessage/ThinkingMessageView';
 import type {ThinkingMessageProps} from '../ThinkingMessage';
 import {ToolMessage} from '../ToolMessage';
@@ -74,6 +75,8 @@ export function RunActivity({
     attention,
     className,
 }: RunActivityProps) {
+    const {t} = i18n.useTranslation();
+    const markdownOptions = useContext(MessageMarkdownContext);
     const [localExpanded, setExpanded] = useState(defaultExpanded);
     const expanded = controlled ?? localExpanded;
     const seconds = Math.max(0, Math.round(durationMs / 1000));
@@ -90,7 +93,21 @@ export function RunActivity({
         if (step.kind === 'thinking') {
             return (
                 <ThinkingStep
+                    format={markdownOptions ? 'markdown' : undefined}
                     {...step.props}
+                    transformOptions={
+                        step.props.transformOptions ?? markdownOptions?.transformOptions
+                    }
+                    mermaidOptions={step.props.mermaidOptions ?? markdownOptions?.mermaidOptions}
+                    openMarkdownLinksInNewTab={
+                        step.props.openMarkdownLinksInNewTab ??
+                        markdownOptions?.openMarkdownLinksInNewTab
+                    }
+                    mdxOptions={step.props.mdxOptions ?? markdownOptions?.mdxOptions}
+                    mdxContext={step.props.mdxContext ?? markdownOptions?.mdxContext}
+                    markdownExtraProps={
+                        step.props.markdownExtraProps ?? markdownOptions?.markdownExtraProps
+                    }
                     showIcon={step.props.showIcon ?? showIcon}
                     view="compact"
                 />
@@ -114,8 +131,8 @@ export function RunActivity({
                 label={
                     label ??
                     (state === 'running'
-                        ? (currentAction?.label ?? i18n('running'))
-                        : i18n(state, {seconds}))
+                        ? (currentAction?.label ?? t('running'))
+                        : t(state, {seconds}))
                 }
                 icon={icon}
                 showIcon={showIcon}

@@ -59,9 +59,10 @@ SelectPopup.ListCount = function SelectPopupListCount({
     color = 'secondary',
     ...props
 }: TextProps & {count: number}) {
+    const {t} = i18n.useTranslation();
     return (
         <Text {...props} color={color} className={cn(css.listCount, props.className)}>
-            {i18n('items-found', {items: count})}
+            {t('items-found', {items: count})}
         </Text>
     );
 };
@@ -80,6 +81,7 @@ SelectPopup.Search = forwardRef<
         debounced?: boolean;
     }
 >(function SelectPopupSearch({debounced, ...props}, ref) {
+    const {t} = i18n.useTranslation();
     const Component = debounced ? DebounceTextInput : TextInput;
 
     return (
@@ -90,7 +92,7 @@ SelectPopup.Search = forwardRef<
                 </div>
             }
             {...props}
-            placeholder={i18n('search')}
+            placeholder={t('search')}
             className={cn(css.search, props.className)}
             ref={ref}
         />
@@ -103,10 +105,11 @@ SelectPopup.EmptyOptions = function SelectPopupEmptyOptions({
     children,
     ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+    const {t} = i18n.useTranslation();
     return (
         <div {...props} className={cn(css.emptyOptions, props.className)}>
             {children ?? (
-                <SelectPopup.EmptyPlaceholder>{i18n('nothing-found')}</SelectPopup.EmptyPlaceholder>
+                <SelectPopup.EmptyPlaceholder>{t('nothing-found')}</SelectPopup.EmptyPlaceholder>
             )}
         </div>
     );

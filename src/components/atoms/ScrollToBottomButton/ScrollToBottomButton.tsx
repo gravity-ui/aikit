@@ -31,34 +31,37 @@ export const ScrollToBottomButton = forwardRef<HTMLButtonElement, ScrollToBottom
             className,
             qa,
             type = 'button',
-            'aria-label': label = i18n('scroll'),
+            'aria-label': label,
             ...props
         },
         ref,
-    ) => (
-        <button
-            {...props}
-            ref={ref}
-            type={type}
-            aria-label={label}
-            className={b({streaming: streaming || waitingForApproval}, className)}
-            data-qa={qa}
-        >
-            <span className={b('arrow')} aria-hidden="true">
-                <Icon data={ArrowDown} size={14} />
-            </span>
-            {waitingForApproval ? (
-                <span className={b('activity')} aria-hidden="true">
-                    <Icon data={Hand} size={16} />
+    ) => {
+        const {t} = i18n.useTranslation();
+        return (
+            <button
+                {...props}
+                ref={ref}
+                type={type}
+                aria-label={label ?? t('scroll')}
+                className={b({streaming: streaming || waitingForApproval}, className)}
+                data-qa={qa}
+            >
+                <span className={b('arrow')} aria-hidden="true">
+                    <Icon data={ArrowDown} size={14} />
                 </span>
-            ) : streaming ? (
-                <span className={b('activity')} aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                </span>
-            ) : null}
-        </button>
-    ),
+                {waitingForApproval ? (
+                    <span className={b('activity')} aria-hidden="true">
+                        <Icon data={Hand} size={16} />
+                    </span>
+                ) : streaming ? (
+                    <span className={b('activity')} aria-hidden="true">
+                        <span />
+                        <span />
+                        <span />
+                    </span>
+                ) : null}
+            </button>
+        );
+    },
 );
 ScrollToBottomButton.displayName = 'ScrollToBottomButton';

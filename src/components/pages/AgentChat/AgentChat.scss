@@ -43,16 +43,6 @@
     position: relative;
 }
 
-:where([class*='agent-ui-']) {
-    --base-width-160: 160px;
-    --base-width-320: 320px;
-    --dropdown-padding-m: var(--g-spacing-2);
-    --dropdown-item-gap-m: var(--g-spacing-half);
-    --dropdown-item-border-radius-m: var(--g-border-radius-l);
-    --dropdown-popup-border-radius: var(--g-border-radius-xl);
-    --spacing-1-and-half: 6px;
-}
-
 .agent-chat .g-aikit-message-list {
     padding: 8px 20px 0;
 }

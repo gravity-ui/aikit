@@ -1,5 +1,5 @@
 .g-aikit-agent-model-select__switcher {
-    max-width: var(--base-width-160);
+    max-width: var(--base-width-160, 160px);
 }
 
 .g-aikit-agent-model-select__switcherWidthMax {
@@ -48,10 +48,7 @@
 }
 
 .g-aikit-agent-model-select__popup {
-    --g-popup-border-radius: var(--dropdown-popup-border-radius);
-}
-
-.popup.g-select-popup {
+    --g-popup-border-radius: var(--dropdown-popup-border-radius, var(--g-border-radius-xl));
     max-width: calc(100vw - 24px);
 }
 
@@ -61,7 +58,7 @@
     overflow: hidden;
     /* Reduce the list by one 32px model row and its spacing. */
     --select-popup-list-max-height: calc(
-        min(448px, calc(100dvh - 128px)) - 32px - var(--dropdown-item-gap-m)
+        min(448px, calc(100dvh - 128px)) - 32px - var(--dropdown-item-gap-m, var(--g-spacing-half))
     );
 }
 
