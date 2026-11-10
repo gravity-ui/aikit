@@ -5,5 +5,8 @@
   "action-tooltip-folding-opened": "Свернуть",
   "action-tooltip-close": "Закрыть",
   "action-tooltip-menu": "Дополнительные действия",
-  "menu-sheet-title": "Дополнительные действия"
+  "menu-sheet-title": "Дополнительные действия",
+  "activity-generating": "Формируется ответ",
+  "activity-unread": "Есть новые ответы",
+  "activity-generating-unread": "Формируются ответы. Есть новые ответы"
 }

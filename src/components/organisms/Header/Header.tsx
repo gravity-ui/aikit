@@ -9,7 +9,7 @@ import {
     Sparkles,
     Xmark,
 } from '@gravity-ui/icons';
-import {Icon, Menu, MenuItem, Sheet, Text, useUniqId} from '@gravity-ui/uikit';
+import {Button, Icon, Menu, MenuItem, Sheet, Spin, Text, useUniqId} from '@gravity-ui/uikit';
 
 import {Action} from 'src/types';
 
@@ -91,6 +91,7 @@ export function Header(props: HeaderProps) {
         actionTooltipTexts,
     } = useHeader(props);
 
+    const historyActivity = props.historyActivity;
     const [isMenuSheetVisible, setIsMenuSheetVisible] = useState(false);
     const menuSheetId = useUniqId();
 
@@ -133,22 +134,56 @@ export function Header(props: HeaderProps) {
             // Determine ref for history button
             const buttonRef = action.id === HeaderAction.History ? ref : undefined;
 
+            const isHistory = actionId === HeaderAction.History;
+            let activityText: string | undefined;
+            if (isHistory && historyActivity) {
+                if (historyActivity.isGenerating) {
+                    activityText = t('activity-generating');
+                    if (historyActivity.hasUnread) {
+                        activityText = t('activity-generating-unread');
+                    }
+                } else if (historyActivity.hasUnread) {
+                    activityText = t('activity-unread');
+                }
+            }
+            const label = [
+                tooltipOverride ?? t(tooltipKey as Parameters<typeof i18n>[0]),
+                activityText,
+            ]
+                .filter(Boolean)
+                .join('. ');
+
             return (
                 <ActionButton
                     key={action.id}
                     ref={buttonRef as React.Ref<HTMLButtonElement>}
-                    tooltipTitle={tooltipOverride ?? t(tooltipKey as Parameters<typeof i18n>[0])}
+                    tooltipTitle={label}
+                    aria-label={label}
                     size={actionSize}
                     view="flat"
                     onClick={action.onClick}
                     className={b('action-button')}
                     qa={actionQa?.[action.id as HeaderAction] ?? `header-action-${action.id}`}
                 >
-                    <Icon data={IconComponent} size={iconSize} />
+                    <Button.Icon>
+                        <span className={b('action-icon')}>
+                            <Icon data={IconComponent} size={iconSize} />
+                            {isHistory && historyActivity && (
+                                <span className={b('activity')} aria-hidden>
+                                    {historyActivity.isGenerating && (
+                                        <Spin size="xs" className={b('activity-spinner')} />
+                                    )}
+                                    {!historyActivity.isGenerating && historyActivity.hasUnread && (
+                                        <span className={b('unread-dot')} />
+                                    )}
+                                </span>
+                            )}
+                        </span>
+                    </Button.Icon>
                 </ActionButton>
             );
         },
-        [actionIcons, actionQa, actionSize, actionTooltipTexts, iconSize, t],
+        [actionIcons, actionQa, actionSize, actionTooltipTexts, historyActivity, iconSize, t],
     );
 
     // Render additional action

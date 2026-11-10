@@ -12,8 +12,10 @@ import {
 } from '@gravity-ui/uikit';
 
 import {DateLocaleConfig} from '../../../hooks';
+import {useChatActivity} from '../../../hooks/useChatActivity';
 import {useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {ChatType, ListItemChatData} from '../../../types';
+import type {ChatActivityStore} from '../../../utils/chatActivity';
 import {ChatFilterFunction, defaultChatFilter, groupChatsByDate} from '../../../utils/chatUtils';
 import {block} from '../../../utils/cn';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
@@ -21,6 +23,7 @@ import {Loader} from '../../atoms/Loader';
 
 import {ChatItem} from './ChatItem';
 import {DateHeaderItem} from './DateHeaderItem';
+import {orderHistoryChats} from './historyOrdering';
 import {i18n} from './i18n';
 
 import './History.scss';
@@ -44,6 +47,10 @@ export type HistoryLoadMode = 'full' | 'lazy';
 export interface HistoryListProps extends QAProps, DOMProps {
     /** Array of chat items */
     chats: ChatType[];
+    /** Shared account-scoped activity store. Opening history never acknowledges responses. */
+    activityStore?: ChatActivityStore;
+    /** Keep existing rows stable within their pin/date group while a popup is open. */
+    preserveOrder?: boolean;
     /** Controlled pinned identifiers. Omit to disable pinning. */
     pinnedChatIds?: readonly string[];
     /** Requests a pin state change; the application updates pinnedChatIds. */
@@ -109,6 +116,8 @@ export function HistoryList(props: HistoryListProps) {
     const {t} = i18n.useTranslation();
     const {
         chats,
+        activityStore,
+        preserveOrder = false,
         selectedChat,
         pinnedChatIds,
         onPinnedChange,
@@ -136,6 +145,8 @@ export function HistoryList(props: HistoryListProps) {
         size: sizeProp,
     } = props;
 
+    const activity = useChatActivity(activityStore);
+    const orderRef = useRef<string[]>([]);
     const size = useMobileControlSize(sizeProp, 'm', 'xl');
 
     const [filter, setFilter] = useState('');
@@ -157,8 +168,16 @@ export function HistoryList(props: HistoryListProps) {
 
         const filteredChats = totalChats.filter((chat) => !deletedChats.has(chat.id));
 
-        return filteredChats;
-    }, [loadMode, chats, loadedChats, deletedChats]);
+        return orderHistoryChats(filteredChats, orderRef.current, {
+            preserveOrder,
+            groupBy,
+            pinnedChatIds,
+        });
+    }, [loadMode, chats, loadedChats, deletedChats, preserveOrder, groupBy, pinnedChatIds]);
+
+    useEffect(() => {
+        orderRef.current = displayChats.map((chat) => chat.id);
+    }, [displayChats]);
 
     const displayChatsLengthRef = useRef(displayChats.length);
     displayChatsLengthRef.current = displayChats.length;
@@ -212,7 +231,9 @@ export function HistoryList(props: HistoryListProps) {
         }
 
         const sortedGroups = Array.from(groupedChats.entries()).sort(([dateA], [dateB]) => {
-            if (dateA === 'all') return 0;
+            if (dateA === 'all') {
+                return 0;
+            }
             return new Date(dateB).getTime() - new Date(dateA).getTime();
         });
 
@@ -291,6 +312,7 @@ export function HistoryList(props: HistoryListProps) {
         e.stopPropagation();
         try {
             await onDeleteChat?.(chat);
+            activityStore?.deleteChat(chat.id);
             setDeletedChats((prevDeletedChats) => new Set([...prevDeletedChats, chat.id]));
         } catch (error) {
             // eslint-disable-next-line no-console
@@ -328,6 +350,8 @@ export function HistoryList(props: HistoryListProps) {
             <ChatItem
                 key={item.id}
                 chat={item}
+                activity={activity.chats[item.id]}
+                showActivity={Boolean(activityStore)}
                 showActions={showActions}
                 pinned={pinnedChatIds?.includes(item.id)}
                 onPinnedChange={pinnedChatIds === undefined ? undefined : onPinnedChange}

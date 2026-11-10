@@ -385,6 +385,7 @@ In mobile mode additional actions open in a `Sheet`. Its metrics are variables,
 | `actionQa`            | `Partial<Record<HeaderAction, string>>`    | -        | -                            | Overrides `data-qa` for base actions (default `header-action-${id}`)                                                                       |
 | `actionTooltipTexts`  | `HeaderActionTooltipTexts`                 | -        | -                            | Overrides tooltip texts for base actions                                                                                                   |
 | `className`           | `string`                                   | -        | -                            | Additional CSS class                                                                                                                       |
+| `historyActivity`     | `ChatActivitySnapshot`                     | -        | -                            | Shared activity summary for the history action.                                                                                            |
 
 ### HeaderAction
 
@@ -423,3 +424,7 @@ Built-in actions, the menu, and additional actions can be placed on either side 
 ```
 
 Unspecified groups and actions remain on the right.
+
+## Chat activity
+
+See the [chat activity integration guide](../../../../docs/chat-activity.md) for request lifecycle, persistence and visibility handling.

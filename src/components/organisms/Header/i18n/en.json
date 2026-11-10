@@ -5,5 +5,8 @@
   "action-tooltip-folding-opened": "Collapse",
   "action-tooltip-close": "Close",
   "action-tooltip-menu": "More actions",
-  "menu-sheet-title": "More actions"
+  "menu-sheet-title": "More actions",
+  "activity-generating": "Generating a response",
+  "activity-unread": "New responses available",
+  "activity-generating-unread": "Generating responses. New responses available"
 }

@@ -8,5 +8,7 @@
   "tooltip-delete": "Удалить",
   "pinned": "Закреплённый чат",
   "action-pin": "Закрепить чат",
-  "action-unpin": "Открепить чат"
+  "action-unpin": "Открепить чат",
+  "activity-generating": "Формируется ответ",
+  "activity-unread": "Есть новые ответы"
 }
