@@ -21,4 +21,5 @@ type Story = StoryObj<typeof ScrollToBottomButton>;
 
 export const Playground: Story = {args: {streaming: false}};
 export const Streaming: Story = {args: {streaming: true}};
+export const WaitingForApproval: Story = {args: {waitingForApproval: true}};
 export const Disabled: Story = {args: {disabled: true}};

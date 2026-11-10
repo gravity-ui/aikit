@@ -44,7 +44,7 @@
             display: flex;
             align-items: baseline;
             gap: 12px;
-            padding: 6px 0;
+            padding: 6px var(--g-spacing-3);
         }
         .g-aikit-diff-stat {
             flex-shrink: 0;
