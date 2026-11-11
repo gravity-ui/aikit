@@ -16,3 +16,12 @@ export type {
     MessageListConfig,
     MascotConfig,
 } from './types';
+
+export type {
+    ChatScreenDefinition,
+    ChatScreenContext,
+    ChatScreenChangeDetails,
+    ChatScreenChangeReason,
+    ChatScreenLeaveIntent,
+    ChatScreenNavigationProps,
+} from './screenTypes';

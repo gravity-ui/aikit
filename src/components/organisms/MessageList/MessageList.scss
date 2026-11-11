@@ -16,6 +16,12 @@ $block: '.#{variables.$ns}message-list';
     flex: 1;
     align-self: stretch;
 
+    &__screen-anchor {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
     &__messages {
         display: flex;
         flex-direction: column;

@@ -14,6 +14,61 @@ A fully assembled chat component - the main exportable component of the library 
 - **Input Autofocus**: Opt-in autofocus for the prompt input when a new chat is opened or a chat is selected from history
 - **Mascot Lifecycle**: Optional welcome/chat slots with derived reveal, thinking, done, error, stopped, reading, sleeping, and idle states
 
+## Screen navigation
+
+`ChatContainer` owns a small screen controller with no routing dependency. The built-in `chat` screen contains both welcome and conversation states and keeps its prompt input mounted while a secondary screen is open. Sending the first message changes the chat content without creating a navigation entry.
+
+```tsx
+<ChatContainer
+  messages={messages}
+  onSendMessage={sendMessage}
+  screens={[
+    {
+      id: 'help',
+      title: 'Help',
+      enabled: canShowHelp,
+      menu: {label: 'Help'},
+      render: () => <HelpContent />,
+      footer: ({back}) => <Button onClick={back}>Back to chat</Button>,
+    },
+  ]}
+/>
+```
+
+The header menu entry is optional. For external entry points or application routing, control the selection with `activeScreen` and `onScreenChange`:
+
+```tsx
+const [activeScreen, setActiveScreen] = useState('chat');
+
+<ChatContainer
+  messages={messages}
+  onSendMessage={sendMessage}
+  screens={screens}
+  activeScreen={activeScreen}
+  onScreenChange={setActiveScreen}
+/>;
+```
+
+| Prop                      | Type                              | Required | Default      | Description                                                                     |
+| ------------------------- | --------------------------------- | -------- | ------------ | ------------------------------------------------------------------------------- |
+| `screens`                 | `readonly ChatScreenDefinition[]` | -        | `[]`         | Secondary screens; IDs must be unique and `chat` is reserved                    |
+| `activeScreen`            | `string`                          | -        | Uncontrolled | Consumer-owned selection; pair with `onScreenChange` to accept requests         |
+| `defaultActiveScreen`     | `string`                          | -        | `'chat'`     | Initial uncontrolled selection                                                  |
+| `onScreenChange`          | `(id, details) => void`           | -        | -            | Accepted request in controlled mode; committed change in uncontrolled mode      |
+| `onScreenNavigationError` | `(error: unknown) => void`        | -        | -            | Reports a rejected asynchronous leave check; the current screen remains visible |
+
+A `ChatScreenDefinition` contains `id`, `title`, and `render(context)`, plus optional `enabled`, `menu`, `footer(context)`, and `beforeLeave(intent)`. Render callbacks return React nodes; render a component inside them when hooks are needed. Form state shared by content, footer, and the leave check belongs to their common owner. Secondary content unmounts on exit; consumer-owned state persists until the consumer clears it.
+
+The render context exposes `open(id)`, `back()`, `requestClose()`, and `pending`. Back always returns to `chat`; opening a secondary screen replaces the current secondary screen without building a stack. `beforeLeave` receives `{action: 'open' | 'back' | 'close', nextScreen?: string}`. Returning false or rejecting keeps the current screen; while it is pending, repeated controller requests are ignored. Returning true permits the action. Close invokes the existing `onClose` callback and does not reset the chat.
+
+`onScreenChange` receives `{previousScreen, reason}`. `open` means explicit navigation to another screen, `back` means a voluntary return to chat, and `unavailable` means forced fallback because the selected screen is disabled, removed, or unknown. An unavailable controlled selection renders chat immediately and requests reconciliation once per invalid-selection episode. Forced fallback bypasses leave checks and never saves a form automatically.
+
+External assignments to `activeScreen` are authoritative and bypass leave checks; consumers must handle any required confirmation first. Valid external assignments do not echo `onScreenChange`. This is also useful after successful Save or explicit Cancel, when the consumer has already resolved the draft. A normal container unmount still destroys local UI state.
+
+Welcome, conversation, and secondary screens share header/content/footer layout. Chat input and disclaimer are hidden on secondary screens; their own footer actions remain visible. Screen changes preserve the chat draft, command selections, and mounted message UI, suspend visibility-sensitive scroll effects, close built-in transient surfaces, and update chat activity visibility. Consumers must manage portals created by their custom content themselves. Streaming and persistence remain with the consumer or adapter.
+
+See the [architecture and extension notes](../../../../docs/CHAT_SCREEN_NAVIGATION.md). If requirements grow to nested stacks, multiple instances of one screen, animated transitions, or swipe-back gestures, evaluate [Stackflow](https://github.com/daangn/stackflow) before extending the custom controller into a general-purpose navigator.
+
 ## Usage
 
 ```tsx

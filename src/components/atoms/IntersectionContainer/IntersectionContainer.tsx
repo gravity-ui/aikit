@@ -2,6 +2,7 @@ import React from 'react';
 
 import {useIntersection} from '@gravity-ui/uikit';
 
+import {useChatViewActivity} from '../../../hooks/ChatViewActivity';
 import {block} from '../../../utils/cn';
 
 import './IntersectionContainer.scss';
@@ -21,9 +22,14 @@ export const IntersectionContainer = ({
     options,
     className,
 }: IIntersectionContainerProps) => {
+    const {active} = useChatViewActivity();
     const [ref, setRef] = React.useState<Element | null>(null);
 
-    useIntersection({element: ref, onIntersect, options});
+    useIntersection({
+        element: active ? ref : null,
+        onIntersect: active ? onIntersect : undefined,
+        options,
+    });
 
     if (onIntersect) {
         return (

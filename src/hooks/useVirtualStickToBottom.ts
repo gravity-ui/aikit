@@ -5,6 +5,8 @@ import {useListCallbackRef} from 'react-window-v2';
 import type {ChatStatus} from '../types';
 import {observeScrollContent} from '../utils/observeScrollContent';
 
+import {useChatScrollActivity} from './useChatScrollActivity';
+
 const SCROLL_THRESHOLD = 10;
 // Number of animation frames over which a scroll correction is re-applied. react-window measures
 // rows after paint (ResizeObserver -> state update -> re-render) and keys heights by row index, so
@@ -67,6 +69,11 @@ export function useVirtualStickToBottom({
     // Drives a shimmer overlay while older messages are being prepended and the scroll is restored.
     const [isPrepending, setIsPrepending] = useState(false);
     const userScrolledUpRef = useRef(false);
+    const elementRef = useRef<HTMLElement | null>(null);
+    elementRef.current = listApi?.element ?? null;
+    const active = useChatScrollActivity(elementRef, userScrolledUpRef, listApi);
+    const activeRef = useRef(active);
+    activeRef.current = active;
     const prependingRef = useRef(false);
     const shimmerTimerRef = useRef<ReturnType<typeof setTimeout>>();
     const prevFirstIdRef = useRef(firstMessageId);
@@ -107,14 +114,19 @@ export function useVirtualStickToBottom({
     // position computed from (partly estimated) row heights, so a single call lands short; once the
     // bottom rows render and are measured, the next frame re-targets the now-lower bottom.
     const pinToBottom = useCallback(() => {
-        if (userScrolledUpRef.current || prependingRef.current || rowCountRef.current <= 0) {
+        if (
+            !activeRef.current ||
+            userScrolledUpRef.current ||
+            prependingRef.current ||
+            rowCountRef.current <= 0
+        ) {
             return;
         }
         cancelPendingScroll();
         let frame = 0;
         const step = () => {
             const api = listApiRef.current;
-            if (userScrolledUpRef.current || prependingRef.current || !api) {
+            if (!activeRef.current || userScrolledUpRef.current || prependingRef.current || !api) {
                 return;
             }
             api.scrollToRow({index: rowCountRef.current - 1, align: 'end', behavior: 'instant'});
@@ -147,7 +159,7 @@ export function useVirtualStickToBottom({
     // undershoots the still-estimated bottom.
     useEffect(() => {
         const element = listApi?.element;
-        if (!element) {
+        if (!element || !active) {
             return undefined;
         }
 
@@ -188,7 +200,7 @@ export function useVirtualStickToBottom({
             element.removeEventListener('scroll', handleScroll);
             clearTimeout(captureTimerRef.current);
         };
-    }, [listApi, captureFirstOffset]);
+    }, [listApi, captureFirstOffset, active]);
 
     // Initial scroll to bottom once the list element is mounted.
     useEffect(() => {
@@ -196,18 +208,18 @@ export function useVirtualStickToBottom({
             pinToBottom();
         }
         return cancelPendingScroll;
-    }, [listApi, pinToBottom, cancelPendingScroll]);
+    }, [listApi, pinToBottom, cancelPendingScroll, active]);
 
     // Re-pin after delayed row measurements (including diagrams) and viewport changes.
     // pinToBottom preserves user scroll intent and the existing prepend guard.
     useEffect(() => {
         const element = listApi?.element;
-        if (!element || typeof ResizeObserver === 'undefined') {
+        if (!element || !active || typeof ResizeObserver === 'undefined') {
             return undefined;
         }
 
         return observeScrollContent(element, pinToBottom);
-    }, [listApi, pinToBottom]);
+    }, [listApi, pinToBottom, active]);
 
     // Preserve the viewport when older messages are prepended (load previous) so the list doesn't
     // jump. A prepend is detected by a change of the first message id together with a growing count
@@ -229,7 +241,7 @@ export function useVirtualStickToBottom({
         prevMessagesCountRef.current = messagesCount;
 
         const element = listApi?.element;
-        if (!element) {
+        if (!element || !active) {
             return undefined;
         }
 
@@ -277,7 +289,7 @@ export function useVirtualStickToBottom({
         let stableFrames = 0;
         const step = () => {
             const api = listApiRef.current;
-            if (!api) {
+            if (!api || !activeRef.current) {
                 finish();
                 return;
             }
@@ -320,7 +332,7 @@ export function useVirtualStickToBottom({
             element.style.visibility = '';
             setIsPrepending(false);
         };
-    }, [messagesCount, firstMessageId, headerOffset, listApi, cancelPendingScroll]);
+    }, [messagesCount, firstMessageId, headerOffset, listApi, cancelPendingScroll, active]);
 
     // Scroll to bottom on status changes (mirrors useSmartScroll).
     useEffect(() => {
