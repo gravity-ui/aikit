@@ -20,8 +20,8 @@ import {
 import {normalizeContent} from '../../../utils/messageUtils';
 import {MessageMarkdownContext} from '../../internal/MessageMarkdownContext';
 import {BaseMessage} from '../../molecules/BaseMessage';
-import {ThinkingMessageGroup} from '../ThinkingMessageGroup/ThinkingMessageGroup';
-import {groupThinkingMessages, thinkingMessageToStep} from '../ThinkingMessageGroup/utils';
+import {ActivityList} from '../ActivityList/ActivityList';
+import {groupThinkingMessages, thinkingMessageToStep} from '../ActivityList/utils';
 
 import {createDefaultMessageRegistry} from './defaultMessageTypeRegistry';
 
@@ -177,7 +177,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
                               entry.type === 'item' ? (
                                   renderPart(entry.item, entry.index)
                               ) : (
-                                  <ThinkingMessageGroup
+                                  <ActivityList
                                       key={entry.id}
                                       steps={entry.steps}
                                       format="markdown"
