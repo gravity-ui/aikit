@@ -5,14 +5,81 @@ on:
   merge_group:
 
 jobs:
-  visual_tests:
-    name: Visual Tests
+  visual_test_shards:
+    name: Visual Tests (${{ matrix.shard }}/4)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     container:
       image: mcr.microsoft.com/playwright:v1.56.1-jammy
     steps:
-      - uses: gravity-ui/component-tests-run-action@v1
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
         with:
-          command: npm run playwright
-          report-path: ./playwright/report
           node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Install Packages
+        run: npm ci
+      - name: Run Tests
+        run: npm run playwright -- --workers=2 --shard=${{ matrix.shard }}/4 --reporter=line,blob
+        env:
+          CI: 'true'
+      - name: Upload Blob Report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shard }}
+          path: blob-report
+          if-no-files-found: error
+          retention-days: 1
+
+  visual_tests:
+    name: Visual Tests
+    needs: visual_test_shards
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Install Packages
+        run: npm ci
+      - name: Download Blob Reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: blob-report-*
+          path: all-blob-reports
+          merge-multiple: true
+      - name: Merge Reports
+        run: npx --no-install playwright merge-reports --reporter=html ./all-blob-reports
+        env:
+          PLAYWRIGHT_HTML_OPEN: never
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright/report
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright/report
+          if-no-files-found: error
+          retention-days: 1
+      - name: Save PR ID
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        run: printf '%s\n' "$PR_NUMBER" > pr-id.txt
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+      - name: Create PR Artifact
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr
+          path: pr-id.txt
+          if-no-files-found: error
+      - name: Verify Shard Results
+        if: ${{ always() }}
+        run: test "$SHARD_RESULT" = success
+        env:
+          SHARD_RESULT: ${{ needs.visual_test_shards.result }}
