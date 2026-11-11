@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.34.0](https://github.com/gravity-ui/aikit/compare/v2.33.0...v2.34.0) (2026-11-11)
+
+
+### Features
+
+* **ActivityList:** backport grouped activity presentation to v2 ([#334](https://github.com/gravity-ui/aikit/issues/334)) ([7fe82d6](https://github.com/gravity-ui/aikit/commit/7fe82d613e379d1db16772799930dca02ce91533))
+
 ## [2.33.0](https://github.com/gravity-ui/aikit/compare/v2.32.0...v2.33.0) (2026-11-11)
 
 
