@@ -82,10 +82,8 @@ export function useVirtualStickToBottom({
     // A prepend restores this offset for the same message so the viewport doesn't jump. Null until
     // the first message has been seen in the DOM.
     const firstMsgOffsetRef = useRef<number | null>(null);
-    // Last observed scrollTop - lets the scroll listener tell a user scroll-up (scrollTop decreases)
-    // from our own pin-to-bottom (scrollTop only ever increases toward the bottom). This direction
-    // check replaces a "programmatic scroll" flag, which during streaming was set almost every frame
-    // by the multi-frame pin and so swallowed the user's scroll-up, breaking auto-stick interruption.
+    // Track the latest observed or programmatically assigned position. A subsequent decrease
+    // indicates that the reader moved away from the response, rather than a virtual-row correction.
     const lastScrollTopRef = useRef(0);
     // Handle of the in-flight multi-frame correction so a new one cancels the previous.
     const rafRef = useRef(0);
@@ -130,6 +128,9 @@ export function useVirtualStickToBottom({
                 return;
             }
             api.scrollToRow({index: rowCountRef.current - 1, align: 'end', behavior: 'instant'});
+            // Remeasuring virtual rows can move a programmatic pin upward. Do not mistake
+            // that correction for a reader scrolling away from the response.
+            lastScrollTopRef.current = api.element?.scrollTop ?? lastScrollTopRef.current;
             frame += 1;
             if (frame < REANCHOR_FRAMES) {
                 rafRef.current = requestAnimationFrame(step);
@@ -153,10 +154,8 @@ export function useVirtualStickToBottom({
         }
     }, []);
 
-    // Track scroll direction to decide whether auto-stick should pause. A user scroll-up moves the
-    // content down (scrollTop decreases); our pin-to-bottom only ever moves toward the bottom
-    // (scrollTop increases), so it never trips the "scrolled up" branch even when it momentarily
-    // undershoots the still-estimated bottom.
+    // Track scroll direction to decide whether auto-stick should pause. Programmatic pins update
+    // the baseline themselves, including upward corrections caused by virtual-row measurements.
     useEffect(() => {
         const element = listApi?.element;
         if (!element || !active) {

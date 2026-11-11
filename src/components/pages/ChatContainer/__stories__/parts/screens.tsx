@@ -39,7 +39,7 @@ export const ScreenNavigation: Story = {
                     });
                 },
                 render: () => (
-                    <Flex direction="column" gap="3">
+                    <Flex direction="column" gap="3" style={{width: '100%'}}>
                         <TextArea
                             value={draft}
                             onUpdate={setDraft}
@@ -141,7 +141,7 @@ export const MobileScreenNavigation: Story = {
     ...ScreenNavigation,
     decorators: [
         (Story) => (
-            <ContentWrapper height="760px" width="360px">
+            <ContentWrapper height="760px" width="360px" maxWidth="100%" boxSizing="border-box">
                 <Story />
             </ContentWrapper>
         ),

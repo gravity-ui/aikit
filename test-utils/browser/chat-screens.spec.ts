@@ -12,9 +12,16 @@ for (const mobile of [false, true]) {
         );
         const prompt = page.getByPlaceholder('Write a message');
         await prompt.fill('Unsent question');
-        await page.getByRole('button', {name: 'More actions', exact: true}).click();
+        await page.locator('[data-qa="header-menu-button"]').click();
         await page.getByText('User instructions', {exact: true}).click();
         await expect(prompt).toBeHidden();
+        if (mobile) {
+            expect(
+                await page.evaluate(
+                    () => document.documentElement.scrollWidth <= window.innerWidth,
+                ),
+            ).toBe(true);
+        }
         const instructions = page.getByPlaceholder('How should the assistant respond?');
         await expect(page.getByRole('region', {name: 'User instructions'})).toBeFocused();
         await page.screenshot({path: testInfo.outputPath('instructions.png')});
@@ -27,13 +34,13 @@ for (const mobile of [false, true]) {
         await prompt.press('Enter');
         await expect(page.getByText('Unsent question', {exact: true})).toBeVisible();
         await prompt.fill('Another draft');
-        await page.getByRole('button', {name: 'More actions', exact: true}).click();
+        await page.locator('[data-qa="header-menu-button"]').click();
         await page.getByText('User instructions', {exact: true}).click();
         await expect(instructions).toHaveValue('Be concise');
         await page.getByRole('button', {name: 'Toggle instructions availability'}).click();
         await expect(instructions).toBeHidden();
         await expect(prompt).toHaveValue('Another draft');
-        await expect(page.getByRole('button', {name: 'More actions', exact: true})).toBeHidden();
+        await expect(page.locator('[data-qa="header-menu-button"]')).toBeHidden();
     });
 }
 
@@ -67,7 +74,7 @@ for (const virtualized of [false, true]) {
             )!;
             return {id: row.dataset.messageId, offset: row.getBoundingClientRect().top - top};
         });
-        await page.getByRole('button', {name: 'More actions', exact: true}).click();
+        await page.locator('[data-qa="header-menu-button"]').click();
         await page.getByText('User instructions', {exact: true}).click();
         await expect(scroller).toBeHidden();
         await page.getByRole('button', {name: 'Receive response chunk'}).click();
@@ -94,7 +101,7 @@ for (const virtualized of [false, true]) {
             element.scrollTop = element.scrollHeight;
             element.dispatchEvent(new Event('scroll'));
         });
-        await page.getByRole('button', {name: 'More actions', exact: true}).click();
+        await page.locator('[data-qa="header-menu-button"]').click();
         await page.getByText('User instructions', {exact: true}).click();
         await page.getByRole('button', {name: 'Receive response chunk'}).click();
         await page.getByRole('button', {name: 'Back', exact: true}).click();

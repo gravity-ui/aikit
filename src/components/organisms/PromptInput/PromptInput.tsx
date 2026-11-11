@@ -80,7 +80,6 @@ export type PromptInputProps = {
  * @returns React component
  */
 export function PromptInput(props: PromptInputProps) {
-    const {active} = useChatViewActivity();
     const {t} = i18n.useTranslation();
     const {
         apiRef,
@@ -104,6 +103,7 @@ export function PromptInput(props: PromptInputProps) {
         qa,
     } = props;
 
+    const {active} = useChatViewActivity();
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const mergedInputRef = useForkRef(inputRef, bodyProps?.inputRef);
     const commandsRef = useRef<ReturnType<typeof usePromptCommands> | null>(null);

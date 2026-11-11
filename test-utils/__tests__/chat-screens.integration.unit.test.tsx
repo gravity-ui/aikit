@@ -1,11 +1,13 @@
-import {Button, Provider} from '@gravity-ui/uikit';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {Button, ThemeProvider} from '@gravity-ui/uikit';
+import {configure, fireEvent, render, screen, waitFor} from '@testing-library/react';
 
 import {ChatContainer} from '../../src/components/pages/ChatContainer/ChatContainer';
 import type {ChatContainerProps} from '../../src/components/pages/ChatContainer/types';
 
 jest.mock('uuid', () => ({v4: () => 'screen-test'}));
 jest.mock('@diplodoc/transform', () => ({__esModule: true, default: jest.fn()}));
+
+configure({testIdAttribute: 'data-qa'});
 
 const originalMatchMedia = window.matchMedia;
 const originalResizeObserver = global.ResizeObserver;
@@ -48,16 +50,16 @@ const props: ChatContainerProps = {
     texts: {promptPlaceholder: 'Write a message', emptyStateTitle: 'Welcome screen'},
 };
 const chat = (overrides: Partial<ChatContainerProps> = {}) => (
-    <Provider lang="en">
+    <ThemeProvider theme="light">
         <ChatContainer {...props} {...overrides} />
-    </Provider>
+    </ThemeProvider>
 );
 
 it('uses the screen menu on welcome and preserves the same prompt instance and draft on Back', async () => {
     render(chat());
     const input = screen.getByPlaceholderText('Write a message');
     fireEvent.change(input, {target: {value: 'Keep this draft'}});
-    fireEvent.click(screen.getByRole('button', {name: 'More actions'}));
+    fireEvent.click(screen.getByTestId('header-menu-button'));
     fireEvent.click(await screen.findByText('Edit instructions'));
     await screen.findByText('Instructions form');
     expect(input.closest('[hidden]')).not.toBeNull();
@@ -92,7 +94,7 @@ it('removes disabled screens from the menu and immediately falls back when the a
     view.rerender(chat({activeScreen: 'instructions', screens: [], onScreenChange}));
     expect(screen.queryByText('Instructions form')).toBeNull();
     expect(screen.getByRole('textbox')).toBeTruthy();
-    expect(screen.queryByRole('button', {name: 'More actions'})).toBeNull();
+    expect(screen.queryByTestId('header-menu-button')).toBeNull();
     expect(onScreenChange).toHaveBeenCalledWith('chat', {
         previousScreen: 'instructions',
         reason: 'unavailable',
