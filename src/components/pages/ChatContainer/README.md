@@ -1378,7 +1378,7 @@ The footer section contains:
 Set `messageListConfig={{thinkingMessageView: 'grouped'}}` to opt in to compact thinking history
 without changing existing message data. Merge this property with your existing config.
 Adjacent thinking parts inside one assistant message are grouped; custom thinking renderers
-take precedence. See [ThinkingMessageGroup](../../organisms/ThinkingMessageGroup/README.md)
+take precedence. See [ActivityList](../../organisms/ActivityList/README.md)
 for migration and explicit cross-message grouping.
 
 ### Markdown export

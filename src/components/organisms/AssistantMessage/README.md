@@ -191,7 +191,7 @@ The component uses CSS variables for theming:
 ## Compact thinking history
 
 Set `thinkingMessageView="grouped"` to display adjacent legacy thinking parts inside each assistant
-message with [ThinkingMessageGroup](../ThinkingMessageGroup/README.md). The default remains
+message with [ActivityList](../ActivityList/README.md). The default remains
 `"default"`. Existing custom thinking renderers take precedence. Separate messages are not
 automatically grouped across run boundaries.
 

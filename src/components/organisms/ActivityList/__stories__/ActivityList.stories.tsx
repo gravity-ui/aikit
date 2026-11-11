@@ -5,9 +5,10 @@ import {Button, Icon, ThemeProvider} from '@gravity-ui/uikit';
 import type {Decorator, Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {
-    ThinkingMessageGroup,
-    type ThinkingStep,
-    type ThinkingStepStatus,
+    ActivityList,
+    type ActivityListProps,
+    type ActivityStep,
+    type ActivityStepStatus,
     thinkingMessageToStep,
 } from '..';
 import {ContentWrapper} from '../../../../demo/ContentWrapper';
@@ -16,7 +17,7 @@ import {ShowcaseItem} from '../../../../demo/ShowcaseItem';
 
 import MDXDocs from './Docs.mdx';
 
-type Story = StoryObj<typeof ThinkingMessageGroup>;
+type Story = StoryObj<typeof ActivityList>;
 
 const frameDecorator: Decorator = (Story, context) => {
     const showcase = (
@@ -49,8 +50,8 @@ const frameDecorator: Decorator = (Story, context) => {
 const defaultDecorators = [frameDecorator] satisfies Story['decorators'];
 
 export default {
-    title: 'organisms/ThinkingMessageGroup',
-    component: ThinkingMessageGroup,
+    title: 'organisms/ActivityList',
+    component: ActivityList,
     decorators: defaultDecorators,
     parameters: {docs: {page: MDXDocs}},
     argTypes: {
@@ -59,6 +60,8 @@ export default {
             options: ['thinking', 'thought', 'error', 'cancelled', 'paused'],
         },
         format: {control: 'select', options: ['plain', 'markdown']},
+        iconMode: {control: 'select', options: ['type', 'status', 'none']},
+        activeStepLabel: {control: 'text'},
         maxHistoryHeight: {
             control: 'text',
             description: 'Maximum expanded history height (default: 480px). Use none for no limit.',
@@ -68,9 +71,9 @@ export default {
         renderSummary: {control: false},
         renderStepContent: {control: false},
     },
-} satisfies Meta<typeof ThinkingMessageGroup>;
+} satisfies Meta<typeof ActivityList>;
 
-const compactSteps: ThinkingStep[] = [
+const compactSteps: ActivityStep[] = [
     {
         id: 'analyze',
         type: 'reasoning',
@@ -130,10 +133,10 @@ export const CompactCustomRendering: Story = {
     name: 'Custom Rendering',
     args: {...compactData, defaultExpanded: true},
     render: (args) => (
-        <ThinkingMessageGroup
+        <ActivityList
             {...args}
-            renderSummary={(completed: ThinkingStep[]) => `${completed.length} sources checked`}
-            renderStepContent={(step: ThinkingStep) => (
+            renderSummary={(completed: ActivityStep[]) => `${completed.length} sources checked`}
+            renderStepContent={(step: ActivityStep) => (
                 <TextContent title={step.title ?? step.id} />
             )}
         />
@@ -150,7 +153,7 @@ export const CompactTerminalStates: Story = {
         <Showcase direction="column">
             {(['thought', 'error', 'cancelled', 'paused'] as const).map((status) => (
                 <ShowcaseItem title={status} key={status}>
-                    <ThinkingMessageGroup
+                    <ActivityList
                         {...compactData}
                         steps={compactSteps.map((step) =>
                             step.status === 'thinking' ? {...step, status} : step,
@@ -213,6 +216,8 @@ export const CustomHistoryHeight: Story = {
 };
 
 function ProgressUpdatesExample({
+    iconMode,
+    activeStepLabel,
     controlled = false,
     defaultExpanded = true,
     initialExpanded = defaultExpanded,
@@ -220,9 +225,9 @@ function ProgressUpdatesExample({
     controlled?: boolean;
     defaultExpanded?: boolean;
     initialExpanded?: boolean;
-}) {
+} & Pick<ActivityListProps, 'iconMode' | 'activeStepLabel'>) {
     const [steps, setSteps] = useState(compactSteps);
-    const [status, setStatus] = useState<ThinkingStepStatus>('thinking');
+    const [status, setStatus] = useState<ActivityStepStatus>('thinking');
     const [expanded, setExpanded] = useState(initialExpanded);
     const [fragmentCount, setFragmentCount] = useState(0);
     const [demoVersion, setDemoVersion] = useState(0);
@@ -320,8 +325,10 @@ function ProgressUpdatesExample({
                     {controlled && ` · application expanded = ${expanded}`}
                 </p>
             </div>
-            <ThinkingMessageGroup
+            <ActivityList
                 key={demoVersion}
+                iconMode={iconMode}
+                activeStepLabel={activeStepLabel}
                 format="markdown"
                 stepTypes={compactData.stepTypes}
                 steps={steps}
@@ -336,13 +343,14 @@ function ProgressUpdatesExample({
 
 export const CompactStreaming: Story = {
     name: 'Progress Updates',
-    render: (args) => <ProgressUpdatesExample defaultExpanded={args.defaultExpanded} />,
+    render: (args) => <ProgressUpdatesExample {...args} />,
 };
 
 export const CompactControlled: Story = {
     name: 'Controlled Expansion',
     render: (args) => (
         <ProgressUpdatesExample
+            {...args}
             controlled
             defaultExpanded={args.defaultExpanded}
             initialExpanded={args.expanded}
@@ -359,17 +367,17 @@ export const Completed: Story = {
     render: () => (
         <Showcase direction="column">
             <ShowcaseItem title="Several completed steps">
-                <ThinkingMessageGroup
+                <ActivityList
                     steps={compactSteps.map((step) => ({...step, status: 'thought'}))}
                     stepTypes={compactData.stepTypes}
                     format="markdown"
                 />
             </ShowcaseItem>
             <ShowcaseItem title="One completed step with details">
-                <ThinkingMessageGroup steps={[{...compactSteps[0], status: 'thought'}]} />
+                <ActivityList steps={[{...compactSteps[0], status: 'thought'}]} />
             </ShowcaseItem>
             <ShowcaseItem title="One completed step without details">
-                <ThinkingMessageGroup
+                <ActivityList
                     steps={[
                         {
                             id: 'one',
@@ -388,17 +396,70 @@ export const Legacy: Story = {
     name: 'Legacy Data Migration',
     parameters: {
         description:
-            'The new ThinkingMessageGroup renders an existing ThinkingMessage payload through thinkingMessageToStep. Two paragraphs remain one step.',
+            'The new ActivityList renders an existing ThinkingMessage payload through thinkingMessageToStep. Two paragraphs remain one step.',
     },
     args: {
         defaultExpanded: true,
         format: 'markdown',
         steps: [
             thinkingMessageToStep('legacy', {
-                content: ['**First paragraph**', 'Second paragraph'],
+                content: [
+                    'Selecting tools to inspect **database clusters**.',
+                    'Checking which database engines are available.',
+                ],
                 status: 'thought',
-                enabledCopy: true,
             }),
         ],
     },
+};
+
+export const Presentation: Story = {
+    name: 'Presentation Options',
+    parameters: {
+        description:
+            'Compare status icons, application-provided operation icons and a history without icons. The heading and step titles use primary text; titles use body-1 accent and descriptions use secondary. The first step has no title; the second has an application-provided title. Switch status in Controls to inspect completion, errors and pauses.',
+    },
+    args: {
+        status: 'thinking',
+        activeStepLabel: 'Checking database clusters',
+        format: 'markdown',
+    },
+    render: (args) => (
+        <Showcase direction="column">
+            {(
+                [
+                    {title: 'Default · supplied icons', iconMode: undefined},
+                    {title: 'Status icons', iconMode: 'status'},
+                    {title: 'Operation icons', iconMode: 'type'},
+                    {title: 'Without icons', iconMode: 'none'},
+                ] as const
+            ).map(({title, iconMode}) => (
+                <ShowcaseItem key={title} title={title} width="100%">
+                    <ActivityList
+                        {...args}
+                        iconMode={iconMode}
+                        defaultExpanded
+                        stepTypes={{search: {icon: <Icon data={Magnifier} size={16} />}}}
+                        steps={[
+                            {
+                                id: 'tools',
+                                type: 'search',
+                                status: 'thought',
+                                content:
+                                    'Selecting tools to inspect **PostgreSQL, MySQL and ClickHouse** clusters.',
+                            },
+                            {
+                                id: 'clusters',
+                                type: 'search',
+                                title: 'Checking database clusters',
+                                status: args.status ?? 'thinking',
+                                content:
+                                    'Checking which database engines are available in the folder.',
+                            },
+                        ]}
+                    />
+                </ShowcaseItem>
+            ))}
+        </Showcase>
+    ),
 };

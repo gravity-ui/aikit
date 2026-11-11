@@ -10,6 +10,8 @@ export type {
 // renderer and would pull Diplodoc into the custom-markdown entry's dependency graph.
 export * from '../components/organisms/UserMessage/UserMessage';
 export * from '../components/organisms/ThinkingMessage/ThinkingMessage';
+export * from '../components/organisms/ActivityList/ActivityList';
+export type * from '../components/organisms/ActivityList/types';
 export * from '../components/organisms/ThinkingMessageGroup/ThinkingMessageGroup';
 export * from '../components/organisms/AssistantMessage/AssistantMessage';
 export * from '../components/organisms/MessageList/MessageList';
@@ -19,7 +21,7 @@ export * from '../components/pages/AIStudioChat/AIStudioChat';
 export type * from '../components/pages/ChatContainer/types';
 export type * from '../components/pages/AIStudioChat/types';
 export type * from '../components/organisms/ThinkingMessageGroup/types';
-export * from '../components/organisms/ThinkingMessageGroup/utils';
+export * from '../components/organisms/ActivityList/utils';
 export * from '../types';
 export * from '../adapters';
 export * from '../hooks';
