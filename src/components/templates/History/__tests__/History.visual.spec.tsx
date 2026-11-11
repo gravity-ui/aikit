@@ -273,12 +273,68 @@ test.describe('History mobile', {tag: '@History'}, () => {
         await expectScreenshot({component: page});
     });
 
-    test('should always show delete buttons in mobile mode', async ({mount, page}) => {
+    test('should delete without confirmation by default in mobile mode', async ({mount, page}) => {
         await mount(<HistoryStories.MobileSheet />);
 
-        await expect(page.locator('[data-qa="history-sheet"]')).toBeVisible();
+        const history = page.getByRole('dialog', {name: 'Chat history'});
+        const deleteButtons = history.getByRole('button', {name: 'Delete'});
+        await expect(deleteButtons.first()).toBeVisible();
+        const initialChatCount = await deleteButtons.count();
+        await deleteButtons.first().click();
+        await expect(deleteButtons).toHaveCount(initialChatCount - 1);
+        await expect(page.getByRole('dialog', {name: 'Delete chat'})).toBeHidden();
+    });
 
-        await expect(page.locator('.g-aikit-history__delete-button').first()).toBeVisible();
+    test('should confirm chat deletion in a sheet on mobile', async ({
+        mount,
+        page,
+        expectScreenshot,
+    }) => {
+        await mount(<HistoryStories.MobileSheet confirmDeleteOnMobile />);
+
+        const history = page.getByRole('dialog', {name: 'Chat history'});
+        const deleteButtons = history.getByRole('button', {name: 'Delete'});
+        const initialChatCount = await deleteButtons.count();
+        await deleteButtons.first().click();
+
+        const confirmation = page.getByRole('dialog', {name: 'Delete chat'});
+        await expect(confirmation).toBeVisible();
+        await expectScreenshot({component: page});
+
+        await confirmation.getByRole('button', {name: 'Cancel'}).click();
+        await expect(confirmation).toBeHidden();
+        await expect(deleteButtons).toHaveCount(initialChatCount);
+
+        await deleteButtons.first().click();
+        await confirmation.getByRole('button', {name: 'Delete'}).click();
+        await expect(confirmation).toBeHidden();
+        await expect(deleteButtons).toHaveCount(initialChatCount - 1);
+    });
+
+    test('should keep history open when swiping away the delete confirmation', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<HistoryStories.MobileSheet confirmDeleteOnMobile />);
+
+        const history = page.getByRole('dialog', {name: 'Chat history'});
+        await history.getByRole('button', {name: 'Delete'}).first().click();
+
+        const confirmation = page.getByRole('dialog', {name: 'Delete chat'});
+        const swipeArea = confirmation.locator('[data-qa="sheet-swipe-area"]');
+        await expect(swipeArea).toBeVisible();
+        await swipeArea.evaluate((target) => {
+            const start = new Touch({identifier: 0, target, clientX: 180, clientY: 480});
+            const end = new Touch({identifier: 0, target, clientX: 180, clientY: 620});
+            target.dispatchEvent(new TouchEvent('touchstart', {bubbles: true, touches: [start]}));
+            target.dispatchEvent(new TouchEvent('touchmove', {bubbles: true, touches: [end]}));
+            target.dispatchEvent(
+                new TouchEvent('touchend', {bubbles: true, changedTouches: [end]}),
+            );
+        });
+
+        await expect(confirmation).toBeHidden();
+        await expect(history).toBeVisible();
     });
 
     test('should close the sheet after a chat click', async ({mount, page}) => {

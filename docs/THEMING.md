@@ -44,6 +44,13 @@ Defined under `.g-root`, applied regardless of theme.
 | --------------------------------- | ------- | ------------------- |
 | `--g-aikit-layout-base-padding-m` | `12px`  | Base medium padding |
 
+### Mobile Sheets
+
+| Variable                         | Default              | Description                                                                 |
+| -------------------------------- | -------------------- | --------------------------------------------------------------------------- |
+| `--g-aikit-sheet-inline-padding` | `var(--g-spacing-5)` | Side padding for the header menu and chat deletion confirmation             |
+| `--g-aikit-sheet-bottom-padding` | `var(--g-spacing-5)` | Bottom padding for the header menu, chat history, and deletion confirmation |
+
 ### Scrolling
 
 | Variable                               | Default | Description                                                                                                                                                                                                                                                 |

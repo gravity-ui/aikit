@@ -26,10 +26,13 @@
     /* === Button Group === */
     --g-aikit-button-group-gap: var(--g-spacing-1);
 
+    --g-aikit-sheet-inline-padding: var(--g-spacing-5);
+    --g-aikit-sheet-bottom-padding: var(--g-spacing-5);
+
     /* === Header === */
     --g-aikit-header-background: none;
-    --g-aikit-header-menu-sheet-inline-padding: var(--g-spacing-5);
-    --g-aikit-header-menu-sheet-bottom-padding: var(--g-spacing-5);
+    --g-aikit-header-menu-sheet-inline-padding: var(--g-aikit-sheet-inline-padding);
+    --g-aikit-header-menu-sheet-bottom-padding: var(--g-aikit-sheet-bottom-padding);
     --g-aikit-header-menu-item-min-height: 44px;
     --g-aikit-header-menu-item-inline-padding: 6px;
     --g-aikit-header-menu-item-icon-gap: var(--g-spacing-4);
@@ -60,7 +63,7 @@
     --g-aikit-history-max-height: 605px;
     --g-aikit-history-item-height: 24px;
     --g-aikit-history-sheet-inline-padding: var(--g-spacing-3);
-    --g-aikit-history-sheet-bottom-padding: var(--g-spacing-5);
+    --g-aikit-history-sheet-bottom-padding: var(--g-aikit-sheet-bottom-padding);
     --g-aikit-history-sheet-list-padding: 0;
     --g-aikit-history-sheet-filter-inline-padding: 0;
     --g-aikit-history-sheet-filter-border-bottom: none;
