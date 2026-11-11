@@ -175,6 +175,7 @@ are independent, so results from an old account cannot update the new store.
 | `selectedChat`             | `ChatType \| null`                          | -        | -                   | Currently selected chat                                                                                                            |
 | `onSelectChat`             | `(chat) => void`                            | -        | -                   | Callback when a chat is selected                                                                                                   |
 | `onDeleteChat`             | `(chat) => void`                            | -        | -                   | Callback when a chat is deleted                                                                                                    |
+| `confirmDeleteOnMobile`    | `boolean`                                   | -        | `false`             | Ask for confirmation before deleting on mobile                                                                                     |
 | `onLoadMore`               | `() => void` or `OnLoadMoreLazy`            | -        | -                   | Callback to load more chats (see Load modes)                                                                                       |
 | `hasMore`                  | `boolean`                                   | -        | `false`             | Whether there are more chats to load                                                                                               |
 | `loadMode`                 | `'full' \| 'lazy'`                          | -        | `'full'`            | Load mode: button (full) or scroll (lazy)                                                                                          |
@@ -333,6 +334,10 @@ Show delete buttons on individual chat items (visible on hover):
 ```
 
 To hide delete buttons, set `showActions={false}`.
+
+Set `confirmDeleteOnMobile` on `History`, `HistoryList`, or `ChatContainer.historyProps`
+to show a confirmation sheet in mobile mode. Cancel leaves the chat in the list.
+Confirm calls `onDeleteChat` and removes the chat from the list once the callback resolves.
 
 ## Empty State
 
