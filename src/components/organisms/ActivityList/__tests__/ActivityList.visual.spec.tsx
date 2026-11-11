@@ -335,6 +335,60 @@ test.describe('ActivityList presentation', {tag: '@ActivityList'}, () => {
         ).toBe('none');
     });
 
+    for (const expanded of [undefined, true]) {
+        test(`reveals a title-only step hidden by activeStepLabel (expanded: ${expanded})`, async ({
+            mount,
+        }) => {
+            const component = await mount(
+                <ActivityList
+                    steps={[
+                        {
+                            id: 'search',
+                            type: 'search',
+                            status: 'thinking',
+                            title: 'Searching documentation',
+                        },
+                    ]}
+                    activeStepLabel="Checking the quota"
+                    expanded={expanded}
+                />,
+            );
+            const toggle = component.getByRole('button', {name: 'Checking the quota'});
+            await expect(toggle).toHaveAttribute('aria-expanded', String(expanded ?? false));
+            if (!expanded) {
+                await expect(component.getByRole('list')).toHaveCount(0);
+                await toggle.click();
+            }
+            await expect(
+                component.getByRole('listitem').getByText('Searching documentation'),
+            ).toBeVisible();
+        });
+    }
+
+    for (const activeStepLabel of ['Searching documentation', '']) {
+        test(`does not offer redundant title-only details for activeStepLabel="${activeStepLabel}"`, async ({
+            mount,
+        }) => {
+            const component = await mount(
+                <ActivityList
+                    steps={[
+                        {
+                            id: 'search',
+                            type: 'search',
+                            status: 'thinking',
+                            title: 'Searching documentation',
+                        },
+                    ]}
+                    activeStepLabel={activeStepLabel}
+                    expanded
+                />,
+            );
+            await expect(component.getByText('Searching documentation')).toBeVisible();
+            await expect(component.getByRole('button')).toHaveCount(0);
+            await expect(component.getByRole('list')).toHaveCount(0);
+        });
+    }
+
     test('activeStepLabel changes only the running heading and stops applying on completion', async ({
         mount,
     }) => {

@@ -68,6 +68,7 @@ export function ActivityList(props: ActivityListProps) {
     const hasDetails =
         !isThinking ||
         steps.length > 1 ||
+        Boolean(activeStepLabel && activeStep?.title && activeStepLabel !== activeStep.title) ||
         Boolean(renderStepContent) ||
         steps.some((step) => {
             const content = Array.isArray(step.content) ? step.content : [step.content];
