@@ -1524,3 +1524,5 @@ outcome or leave the action pending.
 ## Chat activity
 
 See the [chat activity integration guide](../../../../docs/chat-activity.md) for request lifecycle, persistence and visibility handling.
+
+For a ready-made instructions form, use [UserInstructionsScreen](../../templates/UserInstructionsScreen/README.md) with `value`, `maxLength`, and `onSave`. It supplies the field, character counter, Save/Cancel actions, and persistence states; ChatContainer supplies Back/Close and the shared header. See the ScreenNavigation story for composition.

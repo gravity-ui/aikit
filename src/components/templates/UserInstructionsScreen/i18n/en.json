@@ -1,0 +1,9 @@
+{
+  "description": "You can set rules for the assistant to follow in all chats. For example, response style, project context, service and technology restrictions.",
+  "label": "User instructions",
+  "placeholder": "Enter instructions for the assistant",
+  "save": "Save",
+  "cancel": "Cancel",
+  "save-error": "Could not save instructions. Try again.",
+  "limit-error": "Maximum length exceeded. Shorten the instructions before saving."
+}

@@ -29,6 +29,12 @@ for (const mobile of [false, true]) {
         await page.getByRole('button', {name: 'Back', exact: true}).click();
         await page.getByRole('button', {name: 'Keep editing'}).click();
         await expect(instructions).toHaveValue('Be concise');
+        await expect(page.getByText('10 / 2000', {exact: true})).toBeVisible();
+        await page.getByRole('button', {name: 'Fail next save', exact: true}).click();
+        await page.getByRole('button', {name: 'Save', exact: true}).click();
+        await expect(instructions).toBeDisabled();
+        await expect(page.getByRole('alert')).toHaveText('Could not save instructions. Try again.');
+        await expect(instructions).toHaveValue('Be concise');
         await page.getByRole('button', {name: 'Save', exact: true}).click();
         await expect(prompt).toHaveValue('Unsent question');
         await prompt.press('Enter');

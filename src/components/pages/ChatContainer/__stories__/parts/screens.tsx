@@ -1,10 +1,14 @@
 import {useRef, useState} from 'react';
 
-import {Button, Flex, TextArea} from '@gravity-ui/uikit';
+import {Button, Flex} from '@gravity-ui/uikit';
 
 import {ChatContainer} from '../..';
 import {ContentWrapper} from '../../../../../demo/ContentWrapper';
 import type {TChatMessage} from '../../../../../types';
+import {
+    UserInstructionsScreen,
+    type UserInstructionsScreenState,
+} from '../../../../templates/UserInstructionsScreen';
 import type {ChatScreenDefinition} from '../../screenTypes';
 
 import {type Story, defaultDecorators} from './shared';
@@ -18,7 +22,8 @@ export const ScreenNavigation: Story = {
     render: (args) => {
         const [activeScreen, setActiveScreen] = useState('chat');
         const [instructions, setInstructions] = useState('');
-        const [draft, setDraft] = useState('');
+        const formState = useRef<UserInstructionsScreenState>({dirty: false, saving: false});
+        const [failNextSave, setFailNextSave] = useState(false);
         const [messages, setMessages] = useState<TChatMessage[]>(args.messages ?? []);
         const [enabled, setEnabled] = useState(true);
         const [confirmLeave, setConfirmLeave] = useState(false);
@@ -30,7 +35,10 @@ export const ScreenNavigation: Story = {
                 enabled,
                 menu: {label: 'User instructions'},
                 beforeLeave: () => {
-                    if (draft === instructions) {
+                    if (formState.current.saving) {
+                        return false;
+                    }
+                    if (!formState.current.dirty) {
                         return true;
                     }
                     setConfirmLeave(true);
@@ -38,58 +46,48 @@ export const ScreenNavigation: Story = {
                         resolveLeave.current = resolve;
                     });
                 },
-                render: () => (
-                    <Flex direction="column" gap="3" style={{width: '100%'}}>
-                        <TextArea
-                            value={draft}
-                            onUpdate={setDraft}
-                            placeholder="How should the assistant respond?"
-                        />
-                        {confirmLeave && (
-                            <Flex gap="2">
-                                <Button
-                                    onClick={() => {
-                                        setConfirmLeave(false);
-                                        resolveLeave.current?.(false);
-                                    }}
-                                >
-                                    Keep editing
-                                </Button>
-                                <Button
-                                    onClick={() => {
-                                        setConfirmLeave(false);
-                                        resolveLeave.current?.(true);
-                                    }}
-                                >
-                                    Discard changes
-                                </Button>
-                            </Flex>
-                        )}
-                    </Flex>
+                render: ({pending}) => (
+                    <UserInstructionsScreen
+                        value={instructions}
+                        maxLength={2000}
+                        disabled={pending}
+                        texts={{placeholder: 'How should the assistant respond?'}}
+                        onStateChange={(state) => {
+                            formState.current = state;
+                        }}
+                        onSave={async (next) => {
+                            await new Promise((resolve) => setTimeout(resolve, 300));
+                            if (failNextSave) {
+                                setFailNextSave(false);
+                                throw new Error('Example persistence failure');
+                            }
+                            setInstructions(next);
+                        }}
+                        onSaved={() => setActiveScreen('chat')}
+                        onCancel={() => setActiveScreen('chat')}
+                    />
                 ),
-                footer: ({pending}) => (
-                    <Flex gap="2">
-                        <Button
-                            view="action"
-                            disabled={pending}
-                            onClick={() => {
-                                setInstructions(draft);
-                                setActiveScreen('chat');
-                            }}
-                        >
-                            Save
-                        </Button>
-                        <Button
-                            disabled={pending}
-                            onClick={() => {
-                                setDraft(instructions);
-                                setActiveScreen('chat');
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                    </Flex>
-                ),
+                footer: () =>
+                    confirmLeave && (
+                        <Flex gap="2">
+                            <Button
+                                onClick={() => {
+                                    setConfirmLeave(false);
+                                    resolveLeave.current?.(false);
+                                }}
+                            >
+                                Keep editing
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    setConfirmLeave(false);
+                                    resolveLeave.current?.(true);
+                                }}
+                            >
+                                Discard changes
+                            </Button>
+                        </Flex>
+                    ),
             },
         ];
         return (
@@ -97,6 +95,7 @@ export const ScreenNavigation: Story = {
                 <Button onClick={() => setEnabled((value) => !value)}>
                     Toggle instructions availability
                 </Button>
+                <Button onClick={() => setFailNextSave(true)}>Fail next save</Button>
                 {args.status === 'streaming' && (
                     <Button
                         onClick={() =>
@@ -120,7 +119,8 @@ export const ScreenNavigation: Story = {
                     screens={screens}
                     activeScreen={activeScreen}
                     onScreenChange={(next) => {
-                        setDraft(instructions);
+                        formState.current = {dirty: false, saving: false};
+                        resolveLeave.current?.(false);
                         setConfirmLeave(false);
                         setActiveScreen(next);
                     }}

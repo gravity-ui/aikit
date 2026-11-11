@@ -51,9 +51,9 @@ The layout continues to handle the mobile keyboard viewport, while prompt-specif
 
 ## Forms and examples
 
-The Storybook instructions example demonstrates controlled state, shared footer actions, a dirty-form leave check, and availability toggling. Save and Cancel are authoritative assignments after the consumer has resolved the draft. Persistence is deliberately external; the example does not save application settings.
+The exported [UserInstructionsScreen](../src/components/templates/UserInstructionsScreen/README.md) owns the instructions draft, description, field, character counter, and Save/Cancel actions. It accepts saved `value`, `maxLength`, and asynchronous `onSave`; it reports dirty/saving state for the screen definition’s leave check. The Storybook example uses this template with controlled navigation, a discard confirmation, availability toggling, and a simulated persistence failure. Back/Close and the title come from the shared Header. Save and Cancel use authoritative assignments after resolving the draft. Application settings persistence remains external.
 
-A production asynchronous save must retain its draft on failure and be scoped to the screen visit/request. After forced navigation or unmount, a late result must not navigate the user back from another screen. Consumers can block voluntary exit while saving. Incoming saved values must not silently replace a dirty draft. These form-specific policies remain outside the navigation controller.
+The template retains its draft on failure and scopes completion to its mounted visit. A late save does not call `onSaved` after unmount. Incoming saved values update only a clean form. The consumer uses `onStateChange` to block voluntary exit while saving and to confirm discarding dirty edits; persistence conflict resolution remains consumer-owned.
 
 ## Verification
 
