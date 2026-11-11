@@ -1,9 +1,9 @@
 import type {ThinkingMessageContentData} from '../../../types/messages';
 
-import type {ThinkingStep} from './types';
+import type {ActivityStep} from './types';
 
 /** Convert one legacy message to one step; content arrays remain paragraphs. */
-export function thinkingMessageToStep(id: string, data: ThinkingMessageContentData): ThinkingStep {
+export function thinkingMessageToStep(id: string, data: ThinkingMessageContentData): ActivityStep {
     return {
         id,
         type: 'reasoning',
@@ -22,12 +22,12 @@ export type ThinkingGroupEntry<T> =
           id: string;
           groupKey: string | undefined;
           items: T[];
-          steps: ThinkingStep[];
+          steps: ActivityStep[];
       };
 
 export interface GroupThinkingMessagesOptions<T> {
     /** Return undefined for text, tools, users, or any other grouping boundary. */
-    getStep: (item: T, index: number) => ThinkingStep | undefined;
+    getStep: (item: T, index: number) => ActivityStep | undefined;
     /** Explicit response/run scope. Undefined keeps this item in its own group. */
     getGroupKey: (item: T, index: number) => string | undefined;
 }
