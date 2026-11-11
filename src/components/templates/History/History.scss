@@ -172,6 +172,14 @@ $block: '.#{variables.$ns}history';
         }
     }
 
+    &__delete-sheet-content {
+        @include mixins.sheet-content-padding(
+            var(--g-aikit-sheet-inline-padding),
+            var(--g-aikit-sheet-bottom-padding)
+        );
+        @include mixins.sheet-hidden-title;
+    }
+
     &__sheet-content {
         @include mixins.sheet-content-padding(
             var(--g-aikit-history-sheet-inline-padding),
