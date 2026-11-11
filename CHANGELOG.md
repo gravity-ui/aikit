@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/gravity-ui/aikit/compare/v3.5.0...v3.6.0) (2026-11-11)
+
+
+### Features
+
+* **ActivityList:** rename grouped thinking and refine presentation ([#289](https://github.com/gravity-ui/aikit/issues/289)) ([9759e70](https://github.com/gravity-ui/aikit/commit/9759e70a454c835b06b6a719464bb6e35cd70b0c))
+
 ## [3.5.0](https://github.com/gravity-ui/aikit/compare/v3.4.0...v3.5.0) (2026-11-11)
 
 
