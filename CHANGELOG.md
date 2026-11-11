@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/gravity-ui/aikit/compare/v3.4.0...v3.5.0) (2026-11-11)
+
+
+### Features
+
+* **History:** confirm chat deletion on mobile ([#327](https://github.com/gravity-ui/aikit/issues/327)) ([79b6710](https://github.com/gravity-ui/aikit/commit/79b6710a2344eb2ddad9cc20eeaf79471978979d))
+
 ## [3.4.0](https://github.com/gravity-ui/aikit/compare/v3.3.0...v3.4.0) (2026-11-10)
 
 
