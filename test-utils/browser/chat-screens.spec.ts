@@ -113,6 +113,7 @@ for (const virtualized of [false, true]) {
         await page.locator('[data-qa="header-menu-button"]').click();
         await page.getByText('User instructions', {exact: true}).click();
         await expect(scroller).toBeHidden();
+        await page.getByRole('button', {name: 'Receive older messages', exact: true}).click();
         await page.getByRole('button', {name: 'Receive response chunk'}).click();
         await page.getByRole('button', {name: 'Back', exact: true}).click();
         await expect(scroller).toBeVisible();

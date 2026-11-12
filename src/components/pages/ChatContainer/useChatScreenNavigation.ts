@@ -29,7 +29,7 @@ export function useChatScreenNavigation({
     const revision = useRef(0);
     const busy = useRef(false);
     const mounted = useRef(false);
-    const previous = useRef(requested);
+    const previous = useRef({requested, current});
     const notifiedInvalid = useRef<string>();
     const latest = useRef({
         screens,
@@ -52,12 +52,12 @@ export function useChatScreenNavigation({
             onScreenNavigationError,
             onClose,
         };
-        if (previous.current !== requested || (requested !== 'chat' && !selected)) {
+        if (previous.current.requested !== requested || previous.current.current !== current) {
             revision.current += 1;
             busy.current = false;
             setPending(false);
         }
-        previous.current = requested;
+        previous.current = {requested, current};
     });
     useLayoutEffect(() => {
         mounted.current = true;

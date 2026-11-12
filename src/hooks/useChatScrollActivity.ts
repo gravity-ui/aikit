@@ -7,8 +7,11 @@ export function useChatScrollActivity(
     containerRef: RefObject<HTMLElement | null>,
     userScrolledUpRef: MutableRefObject<boolean>,
     instance?: unknown,
+    revealAnchor?: (id: string) => void,
 ) {
     const {active, conversationKey} = useChatViewActivity();
+    const revealAnchorRef = useRef(revealAnchor);
+    revealAnchorRef.current = revealAnchor;
     const previous = useRef({active, conversationKey});
     const snapshot = useRef<{top: number; id?: string; offset: number}>();
     useLayoutEffect(() => {
@@ -46,6 +49,7 @@ export function useChatScrollActivity(
             restoring = true;
             container.scrollTop = saved.top;
             let frame = 0;
+            let stableFrames = 0;
             // Virtualized rows are measured after paint. Reapply the logical anchor while
             // those measurements settle instead of preserving an obsolete pixel offset.
             const restore = () => {
@@ -53,13 +57,20 @@ export function useChatScrollActivity(
                     container.querySelectorAll<HTMLElement>('[data-message-id]'),
                 ).find((element) => element.dataset.messageId === saved.id);
                 if (anchor) {
-                    container.scrollTop +=
+                    const delta =
                         anchor.getBoundingClientRect().top -
                         container.getBoundingClientRect().top -
                         saved.offset;
+                    stableFrames = Math.abs(delta) < 1 ? stableFrames + 1 : 0;
+                    container.scrollTop += delta;
+                } else if (saved.id !== undefined) {
+                    stableFrames = 0;
+                    // A hidden prepend can move the anchor outside the virtual window.
+                    // Reveal its current row before applying the saved intra-message offset.
+                    revealAnchorRef.current?.(saved.id);
                 }
                 frame += 1;
-                if (frame < 8) {
+                if (frame < 30 && (frame < 8 || stableFrames < 3)) {
                     frameId = requestAnimationFrame(restore);
                 } else {
                     restoring = false;

@@ -137,3 +137,29 @@ it('keeps the form after a rejected guard and allows a subsequent close', async 
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(result.current.current).toBe('instructions');
 });
+
+it('allows Close and opening an available screen while a controlled invalid selection remains unchanged', async () => {
+    const onClose = jest.fn();
+    const onScreenChange = jest.fn();
+    const {result, rerender} = renderHook(() =>
+        useChatScreenNavigation({
+            activeScreen: 'missing',
+            screens: [instructions],
+            onClose,
+            onScreenChange,
+        }),
+    );
+    expect(result.current.current).toBe('chat');
+    expect(onScreenChange).toHaveBeenCalledTimes(1);
+    act(() => result.current.context.requestClose());
+    await flush();
+    expect(onClose).toHaveBeenCalledTimes(1);
+    rerender();
+    act(() => result.current.context.open('instructions'));
+    await flush();
+    expect(onScreenChange).toHaveBeenLastCalledWith('instructions', {
+        previousScreen: 'chat',
+        reason: 'open',
+    });
+    expect(onScreenChange).toHaveBeenCalledTimes(2);
+});

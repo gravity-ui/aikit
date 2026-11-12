@@ -206,6 +206,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     const rowHeight = useDynamicRowHeight({defaultRowHeight: DEFAULT_ROW_HEIGHT});
 
     const {listRef, isPrepending} = useVirtualStickToBottom({
+        messageIds: messages.map((message) => message.id),
         rowCount,
         isStreaming: isNotCompleted,
         status,

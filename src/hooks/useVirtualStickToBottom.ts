@@ -21,6 +21,8 @@ const PREPEND_SHIMMER_MS = 320;
 export interface UseVirtualStickToBottomParams {
     /** Total number of rows rendered by the list, including non-message header rows. */
     rowCount: number;
+    /** Message IDs in their current order, used to reveal a hidden scroll anchor after prepends. */
+    messageIds?: readonly (string | undefined)[];
     /** Whether a response is currently streaming (keep pinned to the growing last row). */
     isStreaming?: boolean;
     status?: ChatStatus;
@@ -57,6 +59,7 @@ export interface UseVirtualStickToBottomParams {
  */
 export function useVirtualStickToBottom({
     rowCount,
+    messageIds,
     isStreaming = false,
     status,
     messagesCount,
@@ -71,7 +74,16 @@ export function useVirtualStickToBottom({
     const userScrolledUpRef = useRef(false);
     const elementRef = useRef<HTMLElement | null>(null);
     elementRef.current = listApi?.element ?? null;
-    const active = useChatScrollActivity(elementRef, userScrolledUpRef, listApi);
+    const active = useChatScrollActivity(elementRef, userScrolledUpRef, listApi, (id) => {
+        const index = messageIds?.indexOf(id) ?? -1;
+        if (index >= 0) {
+            listApi?.scrollToRow({
+                index: index + headerOffset,
+                align: 'start',
+                behavior: 'instant',
+            });
+        }
+    });
     const activeRef = useRef(active);
     activeRef.current = active;
     const prependingRef = useRef(false);

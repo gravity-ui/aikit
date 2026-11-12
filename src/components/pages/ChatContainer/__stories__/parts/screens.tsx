@@ -120,6 +120,25 @@ export const ScreenNavigation: Story = {
                                 Receive response chunk
                             </Button>
                         )}
+                        {args.status === 'streaming' && (
+                            <Button
+                                onClick={() =>
+                                    setMessages((previous) => [
+                                        ...Array.from(
+                                            {length: 50},
+                                            (_, index): TChatMessage => ({
+                                                id: `older-${previous.length}-${index}`,
+                                                role: 'user',
+                                                content: `Earlier message ${index}`,
+                                            }),
+                                        ),
+                                        ...previous,
+                                    ])
+                                }
+                            >
+                                Receive older messages
+                            </Button>
+                        )}
                     </>
                 }
             >
