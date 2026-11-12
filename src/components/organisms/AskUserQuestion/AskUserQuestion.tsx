@@ -108,8 +108,8 @@ export function AskUserQuestion({
             answers[0];
         target?.focus({preventScroll: true});
     }, [questionKey]);
-    const [draft, setDraft] = useState({question, value: ''});
-    const value = customAnswer ?? (draft.question === question ? draft.value : '');
+    const [draft, setDraft] = useState({questionKey, value: ''});
+    const value = customAnswer ?? (draft.questionKey === questionKey ? draft.value : '');
     const hasValue = Boolean(value.trim());
 
     const submitCustom = () => {
@@ -336,7 +336,7 @@ export function AskUserQuestion({
                                     'aria-label': customAnswerPlaceholder ?? t('placeholder'),
                                 }}
                                 onUpdate={(nextValue) => {
-                                    setDraft({question, value: nextValue});
+                                    setDraft({questionKey, value: nextValue});
                                     onCustomAnswerChange?.(nextValue);
                                 }}
                                 onKeyDown={(event) => {
