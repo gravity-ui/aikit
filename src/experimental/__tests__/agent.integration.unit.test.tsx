@@ -1,4 +1,4 @@
-import type {ReactElement} from 'react';
+import {type ReactElement, useState} from 'react';
 
 import {ThemeProvider, configure} from '@gravity-ui/uikit';
 import '@testing-library/jest-dom';
@@ -12,6 +12,7 @@ import {
     RunActivity,
     ScrollToBottomButton,
 } from '..';
+import {AskUserQuestion} from '../../components/organisms/AskUserQuestion';
 import {ToolMessage} from '../../components/organisms/ToolMessage';
 import {MarkdownProvider} from '../../markdown/MarkdownProvider';
 import type {MarkdownRendererProps} from '../../markdown/types';
@@ -569,4 +570,38 @@ it('shows one waiting summary for approvals while preserving standalone tool sta
     rerender(approval);
     expect(screen.getByText('Awaiting confirmation')).toBeInTheDocument();
     expect(screen.getByRole('button', {name: /^Accept$/})).toBeInTheDocument();
+});
+
+it('does not submit another question’s draft when clarification questions have identical text', () => {
+    const answer = jest.fn();
+    function ClarificationRun() {
+        const [questionIndex, setQuestionIndex] = useState(0);
+        return (
+            <RunActivity
+                id="clarification"
+                state="needs-input"
+                durationMs={0}
+                steps={[]}
+                attention={
+                    <AskUserQuestion
+                        question="Which scope should we use?"
+                        options={[{id: 'shared', title: 'Shared'}]}
+                        questionIndex={questionIndex}
+                        questionCount={2}
+                        onQuestionChange={setQuestionIndex}
+                        onAnswer={answer}
+                    />
+                }
+            />
+        );
+    }
+    render(<ClarificationRun />);
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'First question draft'}});
+    fireEvent.click(screen.getByRole('button', {name: 'Next question'}));
+    expect(screen.getByRole('textbox')).toHaveValue('');
+    fireEvent.keyDown(screen.getByRole('textbox'), {key: 'Enter'});
+    expect(answer).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'Second question answer'}});
+    fireEvent.keyDown(screen.getByRole('textbox'), {key: 'Enter'});
+    expect(answer).toHaveBeenCalledWith({type: 'custom', value: 'Second question answer'});
 });
