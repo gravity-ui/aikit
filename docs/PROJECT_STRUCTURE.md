@@ -48,7 +48,8 @@ aikit/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/
 │   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
 │   │   │
-│   │   ├── organisms/       # 12 organisms
+│   │   ├── organisms/       # 13 organisms
+│   │   │   ├── AskUserQuestion/ # Clarification questions and answer options
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
 │   │   │   ├── ActivityList/       PromptInput/      ThinkingMessage/

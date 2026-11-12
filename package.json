@@ -528,6 +528,16 @@
         "default": "./build/cjs/components/organisms/ActivityList/index.js"
       }
     },
+    "./AskUserQuestion": {
+      "import": {
+        "types": "./build/esm/components/organisms/AskUserQuestion/index.d.ts",
+        "default": "./build/esm/components/organisms/AskUserQuestion/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/AskUserQuestion/index.d.ts",
+        "default": "./build/cjs/components/organisms/AskUserQuestion/index.js"
+      }
+    },
     "./AssistantMessage": {
       "import": {
         "types": "./build/esm/components/organisms/AssistantMessage/index.d.ts",

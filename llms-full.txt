@@ -1050,10 +1050,11 @@ Experimental entries use `@gravity-ui/aikit/experimental`; see [the compatibilit
 | [ToolStatus](../src/components/molecules/ToolStatus/README.md)                   | Tool-status indicator with localized text.                                                    |
 | [ChangedFilesSummary](../src/components/molecules/ChangedFilesSummary/README.md) | **Experimental.** Changed-files pill/card with baseline DiffStat and an accessible file list. |
 
-## Organisms (12)
+## Organisms (13)
 
 | Component                                                                          | Description                                                                               |
 | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [AskUserQuestion](../src/components/organisms/AskUserQuestion/README.md)           | Clarification card with answer options, navigation, and custom answers.                   |
 | [AssistantMessage](../src/components/organisms/AssistantMessage/README.md)         | Assistant message with multi-part content and custom renderers.                           |
 | [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md)         | Paperclip button that opens the file upload dialog.                                       |
 | [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md)         | Dialog with drag-and-drop and queued/uploaded files list.                                 |
@@ -2293,7 +2294,8 @@ aikit/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/
 │   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
 │   │   │
-│   │   ├── organisms/       # 12 organisms
+│   │   ├── organisms/       # 13 organisms
+│   │   │   ├── AskUserQuestion/ # Clarification questions and answer options
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
 │   │   │   ├── ActivityList/       PromptInput/      ThinkingMessage/

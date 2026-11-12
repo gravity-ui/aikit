@@ -1,14 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 
-import {
-    ArrowRotateLeft,
-    ChevronLeft,
-    ChevronRight,
-    ForwardStep,
-    Pause,
-    Play,
-} from '@gravity-ui/icons';
-import {Button, Icon, SegmentedRadioGroup, Select, Text} from '@gravity-ui/uikit';
+import {Button, SegmentedRadioGroup, Select, Text} from '@gravity-ui/uikit';
 
 import {AgentChat, type AgentRunContent} from '../..';
 import type {
@@ -31,6 +23,7 @@ import {useAgentActivity} from './AgentActivity';
 import {AgentComposer} from './AgentComposer';
 import {ChangedFilesResponse} from './ChangedFilesResponse';
 import {FixtureChangesSummary} from './FixtureChangesSummary';
+import {PlaybackControls} from './PlaybackControls';
 import {getDeveloperChanges} from './changedFilesFixture';
 import {
     developerCommentary,
@@ -593,77 +586,27 @@ export function ChatPlayground() {
                         {value: 'generation-error', content: 'Generation error'},
                     ]}
                 />
-                <SegmentedRadioGroup
-                    aria-label="Speed"
-                    value={speed}
-                    disabled={busy || paused}
-                    onUpdate={setSpeed}
-                    width="max"
-                >
-                    {['0.5', '1', '2', '4'].map((value) => (
-                        <SegmentedRadioGroup.Option key={value} value={value}>
-                            {value}×
-                        </SegmentedRadioGroup.Option>
-                    ))}
-                </SegmentedRadioGroup>
-                <Button
-                    view="action"
-                    disabled={busy || paused}
-                    onClick={() => send({content: developerPrompt})}
-                >
-                    <Icon data={Play} size={16} />
-                    Play scenario
-                </Button>
-                <>
-                    <div className="chat-playground__step-controls">
-                        <Button
-                            size="m"
-                            disabled={playbackStep <= 0}
-                            onClick={() => seekStep(playbackStep - 1)}
-                        >
-                            <Icon data={ChevronLeft} size={16} />
-                            Prev step
-                        </Button>
-                        <Button
-                            disabled={
-                                phase.startsWith('Completed') ||
-                                (playbackStep >= 0 && !busy && !paused)
-                            }
-                            size="m"
-                            onClick={() => seekStep(playbackStep + 1)}
-                        >
-                            Next step
-                            <Icon data={ChevronRight} size={16} />
-                        </Button>
-                    </div>
-                    <Text color="secondary">
-                        {playbackStep < 0 ? 'Not started' : `Step ${playbackStep + 1}`}
-                    </Text>
-                    <Button disabled={!busy && !paused} onClick={togglePause}>
-                        <Icon data={paused ? Play : Pause} size={16} />
-                        {paused ? 'Resume' : 'Pause'}
-                    </Button>
-                    <Button disabled={!busy} onClick={skipToEnd}>
-                        <Icon data={ForwardStep} size={16} />
-                        Skip to end
-                    </Button>
-                </>
-                <Button
-                    disabled={busy || paused || !lastPrompt.current}
-                    onClick={() => {
-                        send({content: lastPrompt.current}, true);
-                    }}
-                >
-                    <Icon data={ArrowRotateLeft} size={16} />
-                    Replay
-                </Button>
-                <Button onClick={reset}>
-                    <Icon data={ArrowRotateLeft} size={16} />
-                    Reset
-                </Button>
-                <Text color="secondary" aria-live="polite">
-                    {paused ? `Paused · ${phase}` : phase}
-                </Text>
+                <PlaybackControls
+                    speed={speed}
+                    onSpeedChange={setSpeed}
+                    busy={busy}
+                    paused={paused}
+                    step={playbackStep}
+                    phase={phase}
+                    previousDisabled={playbackStep <= 0}
+                    nextDisabled={
+                        phase.startsWith('Completed') || (playbackStep >= 0 && !busy && !paused)
+                    }
+                    skipDisabled={!busy}
+                    replayDisabled={busy || paused || !lastPrompt.current}
+                    onPlay={() => send({content: developerPrompt})}
+                    onPrevious={() => seekStep(playbackStep - 1)}
+                    onNext={() => seekStep(playbackStep + 1)}
+                    onPause={togglePause}
+                    onSkip={skipToEnd}
+                    onReplay={() => send({content: lastPrompt.current}, true)}
+                    onReset={reset}
+                />
             </div>
             <div ref={chatRef} className="chat-playground__chat" data-aikit-skin={skin}>
                 {skin === 'standard' ? (
