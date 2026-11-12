@@ -1,6 +1,7 @@
 import React, {useCallback, useMemo, useState} from 'react';
 
 import {
+    ArrowLeft,
     ChevronsCollapseUpRight,
     ChevronsExpandUpRight,
     ClockArrowRotateLeft,
@@ -35,6 +36,7 @@ const b = block('header');
 
 // Icons for base actions
 const ACTION_ICONS: Record<HeaderAction, typeof Xmark> = {
+    [HeaderAction.Back]: ArrowLeft,
     [HeaderAction.NewChat]: Plus,
     [HeaderAction.History]: ClockArrowRotateLeft,
     [HeaderAction.Folding]: ChevronsCollapseUpRight, // Default icon, will be switched based on state
@@ -161,6 +163,7 @@ export function Header(props: HeaderProps) {
                     aria-label={label}
                     size={actionSize}
                     view="flat"
+                    disabled={action.disabled}
                     onClick={action.onClick}
                     className={b('action-button')}
                     qa={actionQa?.[action.id as HeaderAction] ?? `header-action-${action.id}`}

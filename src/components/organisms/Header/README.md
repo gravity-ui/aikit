@@ -428,3 +428,7 @@ Unspecified groups and actions remain on the right.
 ## Chat activity
 
 See the [chat activity integration guide](../../../../docs/chat-activity.md) for request lifecycle, persistence and visibility handling.
+
+## Secondary screen navigation
+
+Include `HeaderAction.Back` in `baseActions` and provide `handleBack` to render a localized Back action. Use `actionsPlacement.base.back: 'left'` to place it before the title. `actionsDisabled` disables built-in action buttons while an asynchronous screen leave check is pending. `ChatContainer` configures these props for secondary screens automatically.

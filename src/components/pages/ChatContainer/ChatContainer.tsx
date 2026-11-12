@@ -1,8 +1,18 @@
-import {type CSSProperties, Fragment, type ReactNode, useCallback, useMemo, useRef} from 'react';
+import {
+    type CSSProperties,
+    Fragment,
+    type ReactNode,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+} from 'react';
 
 import {Alert, MobileProvider, Portal, useForkRef, useMobile} from '@gravity-ui/uikit';
 
 import {getMascotAnimationType, useKeyboardViewportFit} from '../../../hooks';
+import {ChatViewActivityContext} from '../../../hooks/ChatViewActivity';
 import {useChatActivity} from '../../../hooks/useChatActivity';
 import type {TSuggestionContext} from '../../../types/messages';
 import {block} from '../../../utils/cn';
@@ -18,6 +28,7 @@ import {ChatContent} from '../../templates/ChatContent/ChatContent';
 import {History} from '../../templates/History';
 
 import {ChatExportDialog} from './ChatExportDialog';
+import {ChatLayout} from './ChatLayout';
 import {defaultGravityMascots} from './GravityMascot';
 import {
     normalizeChatContainerQa,
@@ -31,6 +42,7 @@ import {useChatContainer} from './useChatContainer';
 import {useChatContainerMascot} from './useChatContainerMascot';
 import {useChatExport} from './useChatExport';
 import {useChatExportFeedbackPosition} from './useChatExportFeedbackPosition';
+import {useChatScreenNavigation} from './useChatScreenNavigation';
 import {useKeyboardLayoutFit} from './useKeyboardLayoutFit';
 
 import './ChatContainer.scss';
@@ -242,6 +254,8 @@ export function ChatContainer(props: ChatContainerProps) {
         qa,
     } = props;
 
+    const navigation = useChatScreenNavigation(props);
+    const isChatVisible = navigation.current === 'chat';
     const isMobileContext = useMobile();
     const isMobile = isMobileProp ?? isMobileContext;
 
@@ -262,13 +276,13 @@ export function ChatContainer(props: ChatContainerProps) {
         rootRef,
         headerRef,
         footerRef,
-        isKeyboardTracked,
+        isKeyboardTracked && isChatVisible,
     );
 
     const hookState = useChatContainer(props);
     const chatActivity = useChatActivity(props.chatActivity?.store, {
         chatId: hookState.activeChat?.id,
-        isPanelVisible: props.chatActivity?.isPanelVisible ?? false,
+        isPanelVisible: isChatVisible && (props.chatActivity?.isPanelVisible ?? false),
         renderedResponseId: props.chatActivity?.renderedResponseId,
     });
 
@@ -728,7 +742,45 @@ export function ChatContainer(props: ChatContainerProps) {
         ],
     );
 
-    const showFooter = finalPromptInputProps || finalDisclaimerProps;
+    const previousScreen = useRef('chat');
+    const returnFocus = useRef<HTMLElement | null>(null);
+    const screenHeadingRef = useRef<HTMLDivElement>(null);
+    useLayoutEffect(() => {
+        const previous = previousScreen.current;
+        previousScreen.current = navigation.current;
+        if (previous === navigation.current) {
+            return;
+        }
+        if (!isChatVisible) {
+            screenHeadingRef.current?.focus({preventScroll: true});
+        } else {
+            const target = returnFocus.current;
+            const fallback = headerRef.current?.querySelector<HTMLElement>('button');
+            (target?.isConnected && target.getClientRects().length ? target : fallback)?.focus({
+                preventScroll: true,
+            });
+        }
+    }, [navigation.current, isChatVisible]);
+    useEffect(() => {
+        if (!isChatVisible) {
+            hookState.handleHistoryOpenChange(false);
+            chatExport.dialogProps.onClose();
+        }
+    }, [isChatVisible]);
+    const screenMenuItems = (props.screens ?? []).flatMap((screen) => {
+        if (screen.enabled === false || !screen.menu) {
+            return [];
+        }
+        return [
+            {
+                id: `aikit-screen:${screen.id}`,
+                label: screen.menu.label,
+                icon: screen.menu.icon,
+                disabled: navigation.context.pending,
+                onClick: () => navigation.context.open(screen.id),
+            },
+        ];
+    });
 
     const rootStyle = useMemo<CSSProperties | undefined>(() => {
         if (maxHeight === undefined && promptInputMaxHeight === undefined && isHeroFitting) {
@@ -752,11 +804,16 @@ export function ChatContainer(props: ChatContainerProps) {
         <MobileProvider mobile={isMobile}>
             <div
                 ref={rootRef}
+                onFocusCapture={(event) => {
+                    if (isChatVisible && event.target instanceof HTMLElement) {
+                        returnFocus.current = event.target.closest('button');
+                    }
+                }}
                 className={b(
                     {
                         mobile: isMobile,
                         'keyboard-open': isKeyboardOpen,
-                        'floating-header': floatingHeader,
+                        'floating-header': floatingHeader && isChatVisible,
                     },
                     className,
                 )}
@@ -766,33 +823,82 @@ export function ChatContainer(props: ChatContainerProps) {
                 {isKeyboardTracked && (
                     <div className={b('viewport-probe')} ref={viewportProbeRef} aria-hidden />
                 )}
-                <div className={b('header', headerClassName)} ref={headerRef}>
-                    <Header
-                        {...finalHeaderProps}
-                        menuItems={[...(finalHeaderProps.menuItems ?? []), ...chatExport.menuItems]}
+                <ChatViewActivityContext.Provider
+                    value={{active: isChatVisible, conversationKey: hookState.chatExportKey}}
+                >
+                    <ChatLayout
+                        view={hookState.chatContentView}
+                        hidden={!isChatVisible}
+                        headerRef={headerRef}
+                        footerRef={footerRef}
+                        headerClassName={headerClassName}
+                        contentClassName={contentClassName}
+                        footerClassName={footerClassName}
+                        header={
+                            isChatVisible && (
+                                <Header
+                                    {...finalHeaderProps}
+                                    handleClose={navigation.context.requestClose}
+                                    actionsDisabled={navigation.context.pending}
+                                    menuItems={[
+                                        ...(finalHeaderProps.menuItems ?? []),
+                                        ...screenMenuItems,
+                                        ...chatExport.menuItems,
+                                    ]}
+                                />
+                            )
+                        }
+                        content={<ChatContent {...finalContentProps} />}
+                        footer={
+                            <>
+                                <PromptInput
+                                    key={hookState.promptInputKey}
+                                    {...finalPromptInputProps}
+                                />
+                                <Disclaimer {...finalDisclaimerProps} />
+                            </>
+                        }
                     />
-                </div>
-                <div className={b('content', {view: hookState.chatContentView}, contentClassName)}>
-                    <ChatContent {...finalContentProps} />
-                </div>
-                {showFooter && (
-                    <div
-                        className={b('footer', {view: hookState.chatContentView}, footerClassName)}
-                        ref={footerRef}
-                    >
-                        {finalPromptInputProps && (
-                            <PromptInput
-                                key={hookState.promptInputKey}
-                                {...finalPromptInputProps}
-                            />
-                        )}
-                        {finalDisclaimerProps && <Disclaimer {...finalDisclaimerProps} />}
-                    </div>
+                </ChatViewActivityContext.Provider>
+                {navigation.selected && (
+                    <ChatLayout
+                        key={navigation.selected.id}
+                        view="screen"
+                        headerClassName={headerClassName}
+                        contentClassName={contentClassName}
+                        footerClassName={footerClassName}
+                        header={
+                            <div
+                                ref={screenHeadingRef}
+                                tabIndex={-1}
+                                role="region"
+                                aria-label={navigation.selected.title}
+                                className={b('screen-header')}
+                            >
+                                <Header
+                                    title={navigation.selected.title}
+                                    withIcon={false}
+                                    baseActions={[
+                                        HeaderAction.Back,
+                                        ...(props.showClose ? [HeaderAction.Close] : []),
+                                    ]}
+                                    handleBack={navigation.context.back}
+                                    handleClose={navigation.context.requestClose}
+                                    actionsDisabled={navigation.context.pending}
+                                    actionsPlacement={{base: {[HeaderAction.Back]: 'left'}}}
+                                    actionSize={headerProps.actionSize}
+                                    actionTooltipTexts={headerProps.actionTooltipTexts}
+                                />
+                            </div>
+                        }
+                        content={navigation.selected.render(navigation.context)}
+                        footer={navigation.selected.footer?.(navigation.context)}
+                    />
                 )}
                 {/* History is integrated via popup anchored to button in Header */}
-                <History {...finalHistoryProps} />
-                {!chatExport.dialogProps.open && exportFeedback}
-                {props.chatExport && chatExport.dialogProps.open && (
+                <History {...finalHistoryProps} open={isChatVisible && finalHistoryProps.open} />
+                {isChatVisible && !chatExport.dialogProps.open && exportFeedback}
+                {isChatVisible && props.chatExport && chatExport.dialogProps.open && (
                     <ChatExportDialog {...chatExport.dialogProps} feedback={exportFeedback} />
                 )}
             </div>

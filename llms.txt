@@ -92,6 +92,8 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 - [EmptyContainer](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/EmptyContainer/README.md): welcome screen with image, title, description, suggestions
 - [History](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/History/README.md): chat history popup with search, grouping, and actions
 
+- [UserInstructionsScreen](https://github.com/gravity-ui/aikit/blob/main/src/components/templates/UserInstructionsScreen/README.md): instructions form with character counter, asynchronous saving, and external persistence
+
 ## Components — Pages
 
 - [AgentChat](https://github.com/gravity-ui/aikit/blob/main/src/components/pages/AgentChat/README.md): Experimental — Agent chat composition with host-owned messages and configuration.

@@ -3,6 +3,8 @@ import {type RefObject, useCallback, useEffect, useRef} from 'react';
 import type {ChatStatus} from '../types';
 import {observeScrollContent} from '../utils/observeScrollContent';
 
+import {useChatScrollActivity} from './useChatScrollActivity';
+
 export interface UseSmartScrollReturn<T extends HTMLElement> {
     containerRef: RefObject<T>;
     scrollToBottom: (behavior?: ScrollBehavior) => void;
@@ -21,9 +23,12 @@ export function useSmartScroll<T extends HTMLElement>({
 }): UseSmartScrollReturn<T> {
     const containerRef = useRef<T>(null);
     const userScrolledUpRef = useRef(false);
+    const active = useChatScrollActivity(containerRef, userScrolledUpRef);
+    const activeRef = useRef(active);
+    activeRef.current = active;
 
     const scrollToBottom = useCallback((behavior: ScrollBehavior = 'instant') => {
-        if (!userScrolledUpRef.current) {
+        if (activeRef.current && !userScrolledUpRef.current) {
             const container = containerRef.current;
             if (container) {
                 container.scrollTo({
@@ -37,17 +42,17 @@ export function useSmartScroll<T extends HTMLElement>({
     // Initial scroll to bottom
     useEffect(() => {
         scrollToBottom();
-    }, []);
+    }, [active]);
 
     // Handle user scroll events
     useEffect(() => {
         const container = containerRef.current;
-        if (!container) {
+        if (!container || !active) {
             return undefined;
         }
 
         const handleScroll = () => {
-            if (!container) {
+            if (!container || !activeRef.current) {
                 return;
             }
 
@@ -62,23 +67,23 @@ export function useSmartScroll<T extends HTMLElement>({
         return () => {
             container.removeEventListener('scroll', handleScroll);
         };
-    }, []);
+    }, [active]);
 
     // Keep pinned after delayed content renders as well as viewport changes,
     // even when the response has already finished streaming.
     useEffect(() => {
         const container = containerRef.current;
-        if (!container || typeof ResizeObserver === 'undefined') {
+        if (!container || !active || typeof ResizeObserver === 'undefined') {
             return undefined;
         }
 
         return observeScrollContent(container, () => scrollToBottom('instant'));
-    }, [scrollToBottom]);
+    }, [scrollToBottom, active]);
 
     // Handle DOM mutations during streaming
     useEffect(() => {
         const container = containerRef.current;
-        if (!container || !isStreaming) {
+        if (!container || !active || !isStreaming) {
             return undefined;
         }
 
@@ -96,7 +101,7 @@ export function useSmartScroll<T extends HTMLElement>({
         return () => {
             observer.disconnect();
         };
-    }, [isStreaming]);
+    }, [isStreaming, active]);
 
     // Handle status changes
     useEffect(() => {

@@ -77,9 +77,7 @@ function MessageRow({
 
     return (
         <div style={style} {...ariaAttributes}>
-            {/* data-message-id lets useVirtualStickToBottom anchor scroll position to a specific
-                rendered row (robust to off-screen height estimation) when older messages load. */}
-            <div className={b('row')} data-message-id={message.id}>
+            <div className={b('row')}>
                 <MessageItem
                     message={message}
                     suppressActions={isLast && isNotCompleted}
@@ -208,6 +206,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     const rowHeight = useDynamicRowHeight({defaultRowHeight: DEFAULT_ROW_HEIGHT});
 
     const {listRef, isPrepending} = useVirtualStickToBottom({
+        messageIds: messages.map((message) => message.id),
         rowCount,
         isStreaming: isNotCompleted,
         status,

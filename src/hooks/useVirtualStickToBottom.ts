@@ -5,6 +5,8 @@ import {useListCallbackRef} from 'react-window-v2';
 import type {ChatStatus} from '../types';
 import {observeScrollContent} from '../utils/observeScrollContent';
 
+import {useChatScrollActivity} from './useChatScrollActivity';
+
 const SCROLL_THRESHOLD = 10;
 // Number of animation frames over which a scroll correction is re-applied. react-window measures
 // rows after paint (ResizeObserver -> state update -> re-render) and keys heights by row index, so
@@ -19,6 +21,8 @@ const PREPEND_SHIMMER_MS = 320;
 export interface UseVirtualStickToBottomParams {
     /** Total number of rows rendered by the list, including non-message header rows. */
     rowCount: number;
+    /** Message IDs in their current order, used to reveal a hidden scroll anchor after prepends. */
+    messageIds?: readonly (string | undefined)[];
     /** Whether a response is currently streaming (keep pinned to the growing last row). */
     isStreaming?: boolean;
     status?: ChatStatus;
@@ -55,6 +59,7 @@ export interface UseVirtualStickToBottomParams {
  */
 export function useVirtualStickToBottom({
     rowCount,
+    messageIds,
     isStreaming = false,
     status,
     messagesCount,
@@ -67,6 +72,20 @@ export function useVirtualStickToBottom({
     // Drives a shimmer overlay while older messages are being prepended and the scroll is restored.
     const [isPrepending, setIsPrepending] = useState(false);
     const userScrolledUpRef = useRef(false);
+    const elementRef = useRef<HTMLElement | null>(null);
+    elementRef.current = listApi?.element ?? null;
+    const active = useChatScrollActivity(elementRef, userScrolledUpRef, listApi, (id) => {
+        const index = messageIds?.indexOf(id) ?? -1;
+        if (index >= 0) {
+            listApi?.scrollToRow({
+                index: index + headerOffset,
+                align: 'start',
+                behavior: 'instant',
+            });
+        }
+    });
+    const activeRef = useRef(active);
+    activeRef.current = active;
     const prependingRef = useRef(false);
     const shimmerTimerRef = useRef<ReturnType<typeof setTimeout>>();
     const prevFirstIdRef = useRef(firstMessageId);
@@ -75,10 +94,8 @@ export function useVirtualStickToBottom({
     // A prepend restores this offset for the same message so the viewport doesn't jump. Null until
     // the first message has been seen in the DOM.
     const firstMsgOffsetRef = useRef<number | null>(null);
-    // Last observed scrollTop - lets the scroll listener tell a user scroll-up (scrollTop decreases)
-    // from our own pin-to-bottom (scrollTop only ever increases toward the bottom). This direction
-    // check replaces a "programmatic scroll" flag, which during streaming was set almost every frame
-    // by the multi-frame pin and so swallowed the user's scroll-up, breaking auto-stick interruption.
+    // Track the latest observed or programmatically assigned position. A subsequent decrease
+    // indicates that the reader moved away from the response, rather than a virtual-row correction.
     const lastScrollTopRef = useRef(0);
     // Handle of the in-flight multi-frame correction so a new one cancels the previous.
     const rafRef = useRef(0);
@@ -107,17 +124,25 @@ export function useVirtualStickToBottom({
     // position computed from (partly estimated) row heights, so a single call lands short; once the
     // bottom rows render and are measured, the next frame re-targets the now-lower bottom.
     const pinToBottom = useCallback(() => {
-        if (userScrolledUpRef.current || prependingRef.current || rowCountRef.current <= 0) {
+        if (
+            !activeRef.current ||
+            userScrolledUpRef.current ||
+            prependingRef.current ||
+            rowCountRef.current <= 0
+        ) {
             return;
         }
         cancelPendingScroll();
         let frame = 0;
         const step = () => {
             const api = listApiRef.current;
-            if (userScrolledUpRef.current || prependingRef.current || !api) {
+            if (!activeRef.current || userScrolledUpRef.current || prependingRef.current || !api) {
                 return;
             }
             api.scrollToRow({index: rowCountRef.current - 1, align: 'end', behavior: 'instant'});
+            // Remeasuring virtual rows can move a programmatic pin upward. Do not mistake
+            // that correction for a reader scrolling away from the response.
+            lastScrollTopRef.current = api.element?.scrollTop ?? lastScrollTopRef.current;
             frame += 1;
             if (frame < REANCHOR_FRAMES) {
                 rafRef.current = requestAnimationFrame(step);
@@ -141,13 +166,11 @@ export function useVirtualStickToBottom({
         }
     }, []);
 
-    // Track scroll direction to decide whether auto-stick should pause. A user scroll-up moves the
-    // content down (scrollTop decreases); our pin-to-bottom only ever moves toward the bottom
-    // (scrollTop increases), so it never trips the "scrolled up" branch even when it momentarily
-    // undershoots the still-estimated bottom.
+    // Track scroll direction to decide whether auto-stick should pause. Programmatic pins update
+    // the baseline themselves, including upward corrections caused by virtual-row measurements.
     useEffect(() => {
         const element = listApi?.element;
-        if (!element) {
+        if (!element || !active) {
             return undefined;
         }
 
@@ -188,7 +211,7 @@ export function useVirtualStickToBottom({
             element.removeEventListener('scroll', handleScroll);
             clearTimeout(captureTimerRef.current);
         };
-    }, [listApi, captureFirstOffset]);
+    }, [listApi, captureFirstOffset, active]);
 
     // Initial scroll to bottom once the list element is mounted.
     useEffect(() => {
@@ -196,18 +219,18 @@ export function useVirtualStickToBottom({
             pinToBottom();
         }
         return cancelPendingScroll;
-    }, [listApi, pinToBottom, cancelPendingScroll]);
+    }, [listApi, pinToBottom, cancelPendingScroll, active]);
 
     // Re-pin after delayed row measurements (including diagrams) and viewport changes.
     // pinToBottom preserves user scroll intent and the existing prepend guard.
     useEffect(() => {
         const element = listApi?.element;
-        if (!element || typeof ResizeObserver === 'undefined') {
+        if (!element || !active || typeof ResizeObserver === 'undefined') {
             return undefined;
         }
 
         return observeScrollContent(element, pinToBottom);
-    }, [listApi, pinToBottom]);
+    }, [listApi, pinToBottom, active]);
 
     // Preserve the viewport when older messages are prepended (load previous) so the list doesn't
     // jump. A prepend is detected by a change of the first message id together with a growing count
@@ -229,7 +252,7 @@ export function useVirtualStickToBottom({
         prevMessagesCountRef.current = messagesCount;
 
         const element = listApi?.element;
-        if (!element) {
+        if (!element || !active) {
             return undefined;
         }
 
@@ -277,7 +300,7 @@ export function useVirtualStickToBottom({
         let stableFrames = 0;
         const step = () => {
             const api = listApiRef.current;
-            if (!api) {
+            if (!api || !activeRef.current) {
                 finish();
                 return;
             }
@@ -320,7 +343,7 @@ export function useVirtualStickToBottom({
             element.style.visibility = '';
             setIsPrepending(false);
         };
-    }, [messagesCount, firstMessageId, headerOffset, listApi, cancelPendingScroll]);
+    }, [messagesCount, firstMessageId, headerOffset, listApi, cancelPendingScroll, active]);
 
     // Scroll to bottom on status changes (mirrors useSmartScroll).
     useEffect(() => {

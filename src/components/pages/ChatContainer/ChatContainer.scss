@@ -37,6 +37,23 @@
         box-shadow: 0 4px 16px var(--g-color-sfx-shadow);
     }
 
+    &__view {
+        display: contents;
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    &__screen-header {
+        width: 100%;
+    }
+
+    &__content_view_screen {
+        overflow: auto;
+        @include mixins.scroll-contain;
+    }
+
     &_mobile {
         // On a phone the chat fills a surface pinned to the visible viewport, and a gesture that
         // chains out of an inner scroller drags that surface away. Desktop keeps native chaining.

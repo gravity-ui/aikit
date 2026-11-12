@@ -17,7 +17,13 @@ const b = block('user-message');
 
 export type UserMessageProps = Pick<
     BaseMessageProps,
-    'actions' | 'extraInfo' | 'showActionsOnHover' | 'showTimestamp' | 'timestamp' | 'onActionPopup'
+    | 'data-message-id'
+    | 'actions'
+    | 'extraInfo'
+    | 'showActionsOnHover'
+    | 'showTimestamp'
+    | 'timestamp'
+    | 'onActionPopup'
 > & {
     content: React.ReactNode;
     format?: 'plain' | 'markdown';
@@ -44,6 +50,7 @@ export const UserMessage = (props: UserMessageProps) => {
     const {
         className,
         qa,
+        'data-message-id': messageId,
         content,
         actions,
         extraInfo,
@@ -66,7 +73,7 @@ export const UserMessage = (props: UserMessageProps) => {
     } = props;
 
     return (
-        <div className={b(null, className)} data-qa={qa}>
+        <div className={b(null, className)} data-qa={qa} data-message-id={messageId}>
             {showAvatar ? <Avatar imgUrl={avatarUrl} size="s" view="filled" /> : null}
             <BaseMessage
                 role="user"
