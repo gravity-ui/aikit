@@ -106,6 +106,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
 
         return (
             <UserMessage
+                data-message-id={message.id}
                 content={message.content}
                 actions={actions}
                 extraInfo={UserExtraInfo ? <UserExtraInfo message={message} /> : undefined}
@@ -139,6 +140,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
 
         return (
             <AssistantMessage<TContent>
+                data-message-id={message.id}
                 content={message.content}
                 footerContent={renderAssistantFooter?.(message)}
                 actions={actions}

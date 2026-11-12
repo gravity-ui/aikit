@@ -204,37 +204,32 @@ function PlainMessageList<TContent extends TMessageContent = never>({
             )}
             <div className={b('messages')} data-qa={qa ? `${qa}-messages` : MessageListQa.Messages}>
                 {messages.map((message, index) => (
-                    <div
+                    <MessageItem<TContent>
                         key={message.id || `message-${index}`}
-                        data-message-id={message.id}
-                        className={b('screen-anchor')}
-                    >
-                        <MessageItem<TContent>
-                            message={message}
-                            suppressActions={index === messages.length - 1 && isNotCompleted}
-                            showActionsOnHover={
-                                showActionsOnHover &&
-                                !isActionPopupOpenForMessage(popupState, message.id)
-                            }
-                            messageRendererRegistry={messageRendererRegistry}
-                            thinkingMessageView={thinkingMessageView}
-                            transformOptions={transformOptions}
-                            shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
-                            mermaidOptions={mermaidOptions}
-                            openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
-                            mdxOptions={mdxProps?.mdxOptions}
-                            getMarkdownExtraProps={mdxProps?.getMarkdownExtraProps}
-                            getMdxContext={mdxProps?.getMdxContext}
-                            showTimestamp={showTimestamp}
-                            showAvatar={showAvatar}
-                            userActions={userActions}
-                            assistantActions={assistantActions}
-                            renderAssistantFooter={renderAssistantFooter}
-                            userExtraInfo={UserExtraInfo}
-                            assistantExtraInfo={AssistantExtraInfo}
-                            onActionPopup={handleActionPopup}
-                        />
-                    </div>
+                        message={message}
+                        suppressActions={index === messages.length - 1 && isNotCompleted}
+                        showActionsOnHover={
+                            showActionsOnHover &&
+                            !isActionPopupOpenForMessage(popupState, message.id)
+                        }
+                        messageRendererRegistry={messageRendererRegistry}
+                        thinkingMessageView={thinkingMessageView}
+                        transformOptions={transformOptions}
+                        shouldParseIncompleteMarkdown={shouldParseIncompleteMarkdown}
+                        mermaidOptions={mermaidOptions}
+                        openMarkdownLinksInNewTab={openMarkdownLinksInNewTab}
+                        mdxOptions={mdxProps?.mdxOptions}
+                        getMarkdownExtraProps={mdxProps?.getMarkdownExtraProps}
+                        getMdxContext={mdxProps?.getMdxContext}
+                        showTimestamp={showTimestamp}
+                        showAvatar={showAvatar}
+                        userActions={userActions}
+                        assistantActions={assistantActions}
+                        renderAssistantFooter={renderAssistantFooter}
+                        userExtraInfo={UserExtraInfo}
+                        assistantExtraInfo={AssistantExtraInfo}
+                        onActionPopup={handleActionPopup}
+                    />
                 ))}
             </div>
             <MessageListFooter

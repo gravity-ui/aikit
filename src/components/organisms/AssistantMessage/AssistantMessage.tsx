@@ -29,7 +29,13 @@ import './AssistantMessage.scss';
 
 type BaseMessagePick = Pick<
     BaseMessageProps,
-    'actions' | 'extraInfo' | 'timestamp' | 'showActionsOnHover' | 'showTimestamp' | 'onActionPopup'
+    | 'data-message-id'
+    | 'actions'
+    | 'extraInfo'
+    | 'timestamp'
+    | 'showActionsOnHover'
+    | 'showTimestamp'
+    | 'onActionPopup'
 >;
 type AssistantMessagePick<TContent extends TMessageContent> = Pick<
     TAssistantMessage<TContent, TMessageMetadata>,
@@ -78,6 +84,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
     userRating,
     className,
     qa,
+    'data-message-id': messageId,
     onActionPopup,
 }: AssistantMessageProps<TContent>) {
     const registry = useMemo<MessageRendererRegistry>(() => {
@@ -168,6 +175,7 @@ function AssistantMessageComponent<TContent extends TMessageContent = never>({
             userRating={userRating}
             className={b(null, className)}
             qa={qa}
+            data-message-id={messageId}
             onActionPopup={onActionPopup}
         >
             <MessageMarkdownContext.Provider value={markdownOptions}>
