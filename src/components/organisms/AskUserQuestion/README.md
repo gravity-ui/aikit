@@ -100,7 +100,9 @@ function buildAnswerSteps(
 ): RunActivityStep[] {
   return questions.flatMap((question) => {
     const answer = answers[question.id];
-    if (!answer) return [];
+    if (!answer) {
+      return [];
+    }
     const label =
       answer.type === 'custom'
         ? answer.value

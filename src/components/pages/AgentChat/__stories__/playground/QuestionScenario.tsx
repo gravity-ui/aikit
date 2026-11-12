@@ -96,7 +96,7 @@ const questions = [
 
 const composerOptions = [
     {
-        id: 'inherited',
+        id: 'custom',
         title: 'Shared with overrides',
         description: 'Inherit the organization color and allow workspace overrides.',
     },
@@ -135,7 +135,7 @@ function getFinalAnswer(answer: string) {
         'Use your custom response as the requirement for the workspace appearance settings.';
     if (answer === 'Shared with overrides') {
         proposal =
-            'Workspaces inherit the organization accent color by default and can save their own override. Reset restores the inherited color.';
+            'Workspaces inherit the organization accent color by default and can save their own override.';
     } else if (answer === 'Use independent accent colors.') {
         proposal =
             'Each workspace gets an accent color selector. Changing one workspace leaves the others unchanged.';
@@ -153,9 +153,9 @@ ${proposal}
 ### What changed
 
 - Added an **Accent color** section to the appearance settings with a color preview and a reset action.
-- ${answer === 'Use independent accent colors.' ? 'Saved the selected color per workspace, so updating one workspace leaves the others unchanged.' : 'Kept a single inherited color for all workspaces and showed where the value is managed.'}
-- Connected the selected color to buttons, links, and keyboard focus indicators in both light and dark themes.
-- Kept the previous value until the user saves. Cancel discards the draft; Reset restores the default palette.
+- Applied the recorded color scope to workspace appearance settings.
+- Connected the selected color to buttons, links, and keyboard focus indicators according to the recorded theme requirements.
+- Kept the previous value until the user saves. Cancel discards the draft; Reset follows the recorded palette requirements.
 
 ### Interaction details
 
@@ -165,7 +165,7 @@ ${answer.startsWith('Use ') ? '**Your choice:** ' + answer : '**Custom requireme
 
 ### Validation
 
-The demo flow covers saving a color, cancelling a draft, restoring defaults, and switching between workspaces. The selected scope is preserved when the settings panel is reopened.
+The demo flow covers saving a color, cancelling a draft, resetting the palette, and switching between workspaces. The selected scope is preserved when the settings panel is reopened.
 
 The change is ready for review. You can try a different answer by restarting the scenario.`;
 }

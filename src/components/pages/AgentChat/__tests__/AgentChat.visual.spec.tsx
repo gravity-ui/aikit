@@ -5,8 +5,10 @@ import {AgentChatStories} from './helpersPlaywright';
 test.describe('AgentChat', {tag: '@AgentChat'}, () => {
     test('should ask a clarification question and continue after an answer', async ({
         mount,
+        page,
         expectScreenshot,
     }) => {
+        await page.clock.setFixedTime(new Date('2026-11-10T19:26:00Z'));
         const component = await mount(<AgentChatStories.ClarificationQuestion />);
         await component.getByRole('radio', {name: '1 question', exact: true}).check();
         await component
@@ -25,6 +27,23 @@ test.describe('AgentChat', {tag: '@AgentChat'}, () => {
         ).toBeVisible();
         await expect(
             component.getByText('Each workspace gets an accent color selector.', {exact: false}),
+        ).toBeVisible();
+    });
+    test('should submit an option named custom with Enter and record its answer', async ({
+        mount,
+    }) => {
+        const component = await mount(<AgentChatStories.ClarificationQuestion />);
+        await component.getByRole('radio', {name: 'Replace input', exact: true}).check();
+        await component.getByRole('button', {name: 'Play scenario', exact: true}).click();
+        const question = component.locator('.g-aikit-ask-user-question:visible');
+        await question.getByRole('button', {name: /^Shared with overrides/}).press('Enter');
+        await expect(question).toHaveCount(0);
+        await component.getByRole('button', {name: 'Skip to end', exact: true}).click();
+        await expect(
+            component.getByText(
+                'Workspaces inherit the organization accent color by default and can save their own override.',
+                {exact: true},
+            ),
         ).toBeVisible();
     });
     test('should replace the composer and preserve drafts when switching placement', async ({
@@ -77,7 +96,7 @@ test.describe('AgentChat', {tag: '@AgentChat'}, () => {
         await expect(question.locator('[data-question-answer]').first()).toBeFocused();
         await expect(composer).toBeHidden();
         await expect(composer).toHaveValue('Follow-up draft');
-        await question.getByRole('button', {name: /Shared/}).click();
+        await question.getByRole('button', {name: /^Shared Recommended/}).click();
         await expect(composer).toBeVisible();
         await expect(composer).toBeFocused();
         await expect(composer).toHaveValue('Follow-up draft');
@@ -97,7 +116,7 @@ test.describe('AgentChat', {tag: '@AgentChat'}, () => {
         await expect(question.getByRole('textbox')).toBeVisible();
         await question.getByRole('button', {name: 'Previous question', exact: true}).click();
         await expect(question.getByRole('textbox')).toHaveValue('A custom workspace accent.');
-        await question.getByRole('button', {name: /Shared/}).click();
+        await question.getByRole('button', {name: /^Shared Recommended/}).click();
         await question.getByRole('button', {name: /Light and dark/}).click();
         await expect(
             question.getByRole('progressbar', {name: 'Answered questions'}),
@@ -182,7 +201,10 @@ test.describe('AgentChat', {tag: '@AgentChat'}, () => {
             component.getByRole('heading', {name: 'Workspace appearance settings review'}),
         ).toBeVisible();
         await expect(
-            component.getByText('Skipped — no answer provided.', {exact: false}).first(),
+            component
+                .getByRole('listitem')
+                .filter({hasText: 'Skipped — no answer provided.'})
+                .first(),
         ).toBeVisible();
         await expect(component.getByText('Use a shared accent color.', {exact: true})).toHaveCount(
             0,
@@ -226,7 +248,7 @@ test.describe('AgentChat', {tag: '@AgentChat'}, () => {
         await component.getByRole('button', {name: 'Prev step', exact: true}).click();
         await expect(question).toHaveCount(0);
         await component.getByRole('button', {name: 'Next step', exact: true}).click();
-        await question.getByRole('button', {name: /Shared/}).click();
+        await question.getByRole('button', {name: /^Shared Recommended/}).click();
         await component.getByRole('button', {name: 'Skip to end', exact: true}).click();
         await expect(
             component.getByRole('heading', {name: 'Workspace appearance settings are ready'}),

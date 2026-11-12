@@ -7,7 +7,7 @@ import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
 
 import {i18n} from './i18n';
-import type {AskUserQuestionProps} from './types';
+import type {AskUserQuestionAnswer, AskUserQuestionProps} from './types';
 import {useQuestionTransition} from './useQuestionTransition';
 
 import './AskUserQuestion.scss';
@@ -65,14 +65,15 @@ export function AskUserQuestion({
     const rootRef = useRef<HTMLDivElement>(null);
     useQuestionTransition(rootRef, contentRef);
     const inputRef = useRef<HTMLInputElement>(null);
-    const selectedOptions = useRef(new Map<string, string>());
+    const customRowRef = useRef<HTMLDivElement>(null);
+    const selectedOptions = useRef(new Map<string, AskUserQuestionAnswer>());
     const questionKey = `${questionIndex}:${question}`;
     const selectedAnswerRef = useRef(selectedAnswer);
     selectedAnswerRef.current = selectedAnswer;
     const [keyboardFocus, setKeyboardFocus] = useState(true);
     const answerOption = useCallback(
         (optionId: string) => {
-            selectedOptions.current.set(questionKey, optionId);
+            selectedOptions.current.set(questionKey, {type: 'option', optionId});
             onAnswer({type: 'option', optionId});
         },
         [onAnswer, questionKey],
@@ -99,13 +100,12 @@ export function AskUserQuestion({
         }
         setKeyboardFocus(true);
         const answers = Array.from(root.querySelectorAll<HTMLElement>('[data-question-answer]'));
-        const saved = selectedAnswerRef.current;
-        let selected = selectedOptions.current.get(questionKey);
-        if (saved) {
-            selected = saved.type === 'option' ? saved.optionId : 'custom';
-        }
+        const saved = selectedAnswerRef.current ?? selectedOptions.current.get(questionKey);
         const target =
-            answers.find((item) => item.dataset.questionAnswer === selected) ?? answers[0];
+            (saved?.type === 'custom'
+                ? customRowRef.current
+                : answers.find((item) => item.dataset.questionAnswer === saved?.optionId)) ??
+            answers[0];
         target?.focus({preventScroll: true});
     }, [questionKey]);
     const [draft, setDraft] = useState({question, value: ''});
@@ -114,7 +114,7 @@ export function AskUserQuestion({
 
     const submitCustom = () => {
         if (hasValue) {
-            selectedOptions.current.set(questionKey, 'custom');
+            selectedOptions.current.set(questionKey, {type: 'custom', value: value.trim()});
             onAnswer({type: 'custom', value: value.trim()});
         }
     };
@@ -208,7 +208,7 @@ export function AskUserQuestion({
                             : (current + (event.key === 'ArrowDown' ? 1 : -1) + answers.length) %
                               answers.length;
                     answers[next]?.focus({preventScroll: true});
-                } else if (event.key === 'Enter' && target.dataset.questionAnswer === 'custom') {
+                } else if (event.key === 'Enter' && target === customRowRef.current) {
                     event.preventDefault();
                     inputRef.current?.focus();
                 }
@@ -311,6 +311,7 @@ export function AskUserQuestion({
                                 filled: hasValue,
                                 selected: selectedAnswer?.type === 'custom',
                             })}
+                            ref={customRowRef}
                             data-question-answer="custom"
                             role="group"
                             aria-label={customAnswerPlaceholder ?? t('placeholder')}
