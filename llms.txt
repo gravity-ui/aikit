@@ -63,6 +63,8 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 
 ## Components — Organisms
 
+- [AskUserQuestion](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/AskUserQuestion/README.md): Clarification card with answer options, navigation, and custom answers.
+
 - [RunActivity](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/RunActivity/README.md): Experimental — Presentational ordered run history with explicit state and duration.
 
 - [AssistantMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/organisms/AssistantMessage/README.md): assistant message with multi-part content and custom renderers

@@ -11,3 +11,9 @@ import Readme from '../README.md?raw';
 <Controls of={Stories.Playground} />
 
 The playground uses local fixture data and the exported components. Pause/resume, seeking, approval, recovery, cancellation, file previews and Undo/Restore simulate host behavior; they do not execute backend, filesystem or Git operations. Switching Standard / Agent resets playback. Production execution and response-local file state belong to the host.
+
+## Clarification question
+
+Both demos share the same playback controls: speed, previous/next step, pause/resume, skip, replay, and reset. Seeking preserves question drafts; skip stops at unanswered questions. Use the toolbar to switch between an inline question and a question replacing the composer. Composer replacement animates the shared container height and fades content, preserves the mounted composer draft, and returns focus after the transition. Reduced-motion users get an immediate swap. Both fill the available width; switching preserves the custom answer draft. The demo starts with one question; choose three questions in the toolbar to test navigation. The three-question flow preserves answers and drafts during navigation, offers two predefined answers inline or three when replacing the composer, followed by a custom response for every question, and automatically resumes after every question is answered and the final progress segment finishes animating. Changing the question count resets the scenario. Send a prompt, choose an answer (or write your own), and watch the assistant continue to a final response. Skip preserves saved answers and records unanswered questions as skipped, without selecting defaults. This scenario runs entirely on local fixture data.
+
+<Canvas of={Stories.ClarificationQuestion} />

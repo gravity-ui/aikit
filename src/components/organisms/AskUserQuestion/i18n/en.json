@@ -1,0 +1,12 @@
+{
+  "previous": "Previous question",
+  "next": "Next question",
+  "skip": "Skip",
+  "answered-progress": "Answered questions",
+  "answered-count": "{{count}} of {{total}} answered",
+  "progress": "{{current}} of {{total}}",
+  "recommended": "Recommended",
+  "placeholder": "Write your own response",
+  "confirm": "Confirm",
+  "tool-name": "Question"
+}
