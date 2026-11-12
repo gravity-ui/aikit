@@ -1,0 +1,11 @@
+.question-scenario {
+    &__attention {
+        &:not(:empty) {
+            padding-top: var(--g-spacing-3);
+        }
+    }
+
+    &__question {
+        --g-aikit-ask-user-question-width: 100%;
+    }
+}

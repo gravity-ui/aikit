@@ -1,9 +1,12 @@
+import {useContext} from 'react';
+
 import {Card} from '@gravity-ui/uikit';
 
 import {useToolMessage} from '../../../hooks/useToolMessage';
 import type {ToolMessageProps} from '../../../types/tool';
 import {block} from '../../../utils/cn';
 import {CompactRow} from '../../internal/CompactRow/CompactRow';
+import {RunActivityWaitingContext} from '../../internal/RunActivityWaitingContext';
 import {ToolFooter} from '../../molecules/ToolFooter';
 import {ToolHeader} from '../../molecules/ToolHeader';
 
@@ -15,6 +18,7 @@ const b = block('tool-message');
 
 export function ToolMessage(props: ToolMessageProps) {
     const {t} = i18n.useTranslation();
+    const hasWaitingSummary = useContext(RunActivityWaitingContext);
     const {toolName, className, qa, bodyContent, status, toolIcon, headerContent} = props;
 
     const {
@@ -63,8 +67,8 @@ export function ToolMessage(props: ToolMessageProps) {
                     <ToolFooter
                         actionSize={props.footerActionSize}
                         actions={footerActions}
-                        content={footerContent}
-                        showLoader={showLoader}
+                        content={hasWaitingSummary ? props.footerContent : footerContent}
+                        showLoader={!hasWaitingSummary && showLoader}
                     />
                 )}
             </div>
@@ -86,8 +90,8 @@ export function ToolMessage(props: ToolMessageProps) {
                     <ToolFooter
                         actionSize={props.footerActionSize}
                         actions={footerActions}
-                        content={footerContent}
-                        showLoader={showLoader}
+                        content={hasWaitingSummary ? props.footerContent : footerContent}
+                        showLoader={!hasWaitingSummary && showLoader}
                     />
                 )}
             </div>
