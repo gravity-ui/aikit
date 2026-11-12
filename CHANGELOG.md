@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.0](https://github.com/gravity-ui/aikit/compare/v3.6.0...v3.7.0) (2026-11-12)
+
+
+### Features
+
+* add AskUserQuestion and AgentChat clarification flow ([#328](https://github.com/gravity-ui/aikit/issues/328)) ([1e9028e](https://github.com/gravity-ui/aikit/commit/1e9028eaae55b7bc6a7d94654ac1a6d2803ec075))
+
 ## [3.6.0](https://github.com/gravity-ui/aikit/compare/v3.5.0...v3.6.0) (2026-11-11)
 
 
