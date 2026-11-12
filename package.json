@@ -1,6 +1,6 @@
 {
   "name": "@gravity-ui/aikit",
-  "version": "3.4.0",
+  "version": "3.6.0",
   "description": "Gravity UI base kit for building ai assistant chats",
   "license": "MIT",
   "type": "commonjs",
@@ -516,6 +516,16 @@
       "require": {
         "types": "./build/cjs/components/molecules/ToolStatus/index.d.ts",
         "default": "./build/cjs/components/molecules/ToolStatus/index.js"
+      }
+    },
+    "./ActivityList": {
+      "import": {
+        "types": "./build/esm/components/organisms/ActivityList/index.d.ts",
+        "default": "./build/esm/components/organisms/ActivityList/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/organisms/ActivityList/index.d.ts",
+        "default": "./build/cjs/components/organisms/ActivityList/index.js"
       }
     },
     "./AskUserQuestion": {

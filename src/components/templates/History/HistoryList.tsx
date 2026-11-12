@@ -9,6 +9,7 @@ import {
     QAProps,
     TextInput,
     useListFocusOwner,
+    useMobile,
 } from '@gravity-ui/uikit';
 
 import {DateLocaleConfig} from '../../../hooks';
@@ -23,6 +24,7 @@ import {Loader} from '../../atoms/Loader';
 
 import {ChatItem} from './ChatItem';
 import {DateHeaderItem} from './DateHeaderItem';
+import {DeleteChatSheet} from './DeleteChatSheet';
 import {orderHistoryChats} from './historyOrdering';
 import {i18n} from './i18n';
 
@@ -63,6 +65,7 @@ export interface HistoryListProps extends QAProps, DOMProps {
     onSelectChat?: (chat: ChatType) => void;
     /** Callback when a chat is deleted */
     onDeleteChat?: (chat: ChatType) => Promise<void>;
+    confirmDeleteOnMobile?: boolean;
     /**
      * Callback to load more chats.
      * - Full mode: () => void - triggers load, parent updates chats prop
@@ -124,6 +127,7 @@ export function HistoryList(props: HistoryListProps) {
         pinningDisabled,
         onSelectChat,
         onDeleteChat,
+        confirmDeleteOnMobile = false,
         onLoadMore,
         hasMore = false,
         loadMode = 'full',
@@ -148,6 +152,8 @@ export function HistoryList(props: HistoryListProps) {
     const activity = useChatActivity(activityStore);
     const orderRef = useRef<string[]>([]);
     const size = useMobileControlSize(sizeProp, 'm', 'xl');
+    const isMobile = useMobile();
+    const shouldConfirmDelete = isMobile && confirmDeleteOnMobile && Boolean(onDeleteChat);
 
     const [filter, setFilter] = useState('');
     const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -160,8 +166,19 @@ export function HistoryList(props: HistoryListProps) {
     const [loadedChats, setLoadedChats] = useState<ChatType[]>([]);
     const [lazyHasMore, setLazyHasMore] = useState(hasMore);
     const [deletedChats, setDeletedChats] = useState<Set<string>>(new Set());
+    const [deleteSheetState, setDeleteSheetState] = useState<'closed' | 'confirming' | 'deleting'>(
+        'closed',
+    );
 
     const loadingMoreRef = useRef(false);
+    const resolveDeleteConfirmation = useRef<((confirmed: boolean) => void) | null>(null);
+
+    useEffect(() => {
+        if (shouldConfirmDelete) {
+            return () => resolveDeleteConfirmation.current?.(false);
+        }
+        return undefined;
+    }, [shouldConfirmDelete]);
 
     const displayChats = useMemo(() => {
         const totalChats = loadMode === 'lazy' ? [...chats, ...loadedChats] : chats;
@@ -310,13 +327,33 @@ export function HistoryList(props: HistoryListProps) {
 
     const handleDeleteClick = async (e: React.MouseEvent, chat: ChatType) => {
         e.stopPropagation();
+        if (shouldConfirmDelete && resolveDeleteConfirmation.current) {
+            return;
+        }
+
         try {
+            if (shouldConfirmDelete) {
+                const confirmed = await new Promise<boolean>((resolve) => {
+                    resolveDeleteConfirmation.current = resolve;
+                    setDeleteSheetState('confirming');
+                });
+                if (!confirmed) {
+                    return;
+                }
+                setDeleteSheetState('deleting');
+            }
+
             await onDeleteChat?.(chat);
             activityStore?.deleteChat(chat.id);
             setDeletedChats((prevDeletedChats) => new Set([...prevDeletedChats, chat.id]));
         } catch (error) {
             // eslint-disable-next-line no-console
             console.error('HistoryList: failed to delete chat', error);
+        } finally {
+            if (shouldConfirmDelete) {
+                resolveDeleteConfirmation.current = null;
+                setDeleteSheetState('closed');
+            }
         }
     };
 
@@ -446,6 +483,18 @@ export function HistoryList(props: HistoryListProps) {
                 <Button view="flat-action" size="m" width="max" onClick={handleLoadMore}>
                     {t('action-load-more')}
                 </Button>
+            )}
+            {shouldConfirmDelete && (
+                <DeleteChatSheet
+                    isVisible={deleteSheetState !== 'closed'}
+                    isDeleting={deleteSheetState === 'deleting'}
+                    onCancel={() => {
+                        if (deleteSheetState === 'confirming') {
+                            resolveDeleteConfirmation.current?.(false);
+                        }
+                    }}
+                    onConfirm={() => resolveDeleteConfirmation.current?.(true)}
+                />
             )}
         </div>
     );

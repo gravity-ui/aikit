@@ -1050,22 +1050,23 @@ Experimental entries use `@gravity-ui/aikit/experimental`; see [the compatibilit
 | [ToolStatus](../src/components/molecules/ToolStatus/README.md)                   | Tool-status indicator with localized text.                                                    |
 | [ChangedFilesSummary](../src/components/molecules/ChangedFilesSummary/README.md) | **Experimental.** Changed-files pill/card with baseline DiffStat and an accessible file list. |
 
-## Organisms (11)
+## Organisms (13)
 
-| Component                                                                          | Description                                                                           |
-| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md)         | Assistant message with multi-part content and custom renderers.                       |
-| [AskUserQuestion](../src/components/organisms/AskUserQuestion/README.md)           | Clarification card with answer options, navigation, and custom answers.               |
-| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md)         | Paperclip button that opens the file upload dialog.                                   |
-| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md)         | Dialog with drag-and-drop and queued/uploaded files list.                             |
-| [Header](../src/components/organisms/Header/README.md)                             | Chat header with navigation and actions.                                              |
-| [MessageList](../src/components/organisms/MessageList/README.md)                   | Message list with custom renderer registry support.                                   |
-| [PromptInput](../src/components/organisms/PromptInput/README.md)                   | Flexible chat input — simple/full views, panels, suggestions, attachments.            |
-| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md)           | AI thinking process with collapsible content and status.                              |
-| [ThinkingMessageGroup](../src/components/organisms/ThinkingMessageGroup/README.md) | Compact progress and expandable step history with legacy migration helpers.           |
-| [ToolMessage](../src/components/organisms/ToolMessage/README.md)                   | Tool message with automatic expand/collapse and status behavior.                      |
-| [UserMessage](../src/components/organisms/UserMessage/README.md)                   | User message renderer.                                                                |
-| [RunActivity](../src/components/organisms/RunActivity/README.md)                   | **Experimental.** Ordered activity history with explicit lifecycle and compact steps. |
+| Component                                                                          | Description                                                                               |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [AskUserQuestion](../src/components/organisms/AskUserQuestion/README.md)           | Clarification card with answer options, navigation, and custom answers.                   |
+| [AssistantMessage](../src/components/organisms/AssistantMessage/README.md)         | Assistant message with multi-part content and custom renderers.                           |
+| [AttachmentPicker](../src/components/organisms/AttachmentPicker/README.md)         | Paperclip button that opens the file upload dialog.                                       |
+| [FileUploadDialog](../src/components/organisms/FileUploadDialog/README.md)         | Dialog with drag-and-drop and queued/uploaded files list.                                 |
+| [Header](../src/components/organisms/Header/README.md)                             | Chat header with navigation and actions.                                                  |
+| [MessageList](../src/components/organisms/MessageList/README.md)                   | Message list with custom renderer registry support.                                       |
+| [PromptInput](../src/components/organisms/PromptInput/README.md)                   | Flexible chat input — simple/full views, panels, suggestions, attachments.                |
+| [ThinkingMessage](../src/components/organisms/ThinkingMessage/README.md)           | AI thinking process with collapsible content and status.                                  |
+| [ActivityList](../src/components/organisms/ActivityList/README.md)                 | Compact progress and expandable activity history with thinking message migration helpers. |
+| [ThinkingMessageGroup](../src/components/organisms/ThinkingMessageGroup/README.md) | Deprecated compatibility alias for ActivityList.                                          |
+| [ToolMessage](../src/components/organisms/ToolMessage/README.md)                   | Tool message with automatic expand/collapse and status behavior.                          |
+| [UserMessage](../src/components/organisms/UserMessage/README.md)                   | User message renderer.                                                                    |
+| [RunActivity](../src/components/organisms/RunActivity/README.md)                   | **Experimental.** Ordered activity history with explicit lifecycle and compact steps.     |
 
 ## Templates (4)
 
@@ -1132,6 +1133,13 @@ Defined under `.g-root`, applied regardless of theme.
 | Variable                          | Default | Description         |
 | --------------------------------- | ------- | ------------------- |
 | `--g-aikit-layout-base-padding-m` | `12px`  | Base medium padding |
+
+### Mobile Sheets
+
+| Variable                         | Default              | Description                                                                 |
+| -------------------------------- | -------------------- | --------------------------------------------------------------------------- |
+| `--g-aikit-sheet-inline-padding` | `var(--g-spacing-5)` | Side padding for the header menu and chat deletion confirmation             |
+| `--g-aikit-sheet-bottom-padding` | `var(--g-spacing-5)` | Bottom padding for the header menu, chat history, and deletion confirmation |
 
 ### Scrolling
 
@@ -2286,11 +2294,12 @@ aikit/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/
 │   │   │   ├── ToolFooter/     ToolHeader/       ToolStatus/
 │   │   │
-│   │   ├── organisms/       # 12 organisms
+│   │   ├── organisms/       # 13 organisms
 │   │   │   ├── AskUserQuestion/ # Clarification questions and answer options
 │   │   │   ├── AssistantMessage/   AttachmentPicker/
 │   │   │   ├── FileUploadDialog/   Header/        MessageList/
-│   │   │   ├── PromptInput/        ThinkingMessage/  ThinkingMessageGroup/
+│   │   │   ├── ActivityList/       PromptInput/      ThinkingMessage/
+│   │   │   ├── ThinkingMessageGroup/              Deprecated ActivityList alias
 │   │   │   ├── RunActivity/        ToolMessage/      UserMessage/
 │   │   │
 │   │   ├── templates/       # 4 templates

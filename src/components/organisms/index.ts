@@ -1,3 +1,4 @@
+export * from './ActivityList';
 // Export all organisms
 export * from './AssistantMessage';
 export * from './Header';
