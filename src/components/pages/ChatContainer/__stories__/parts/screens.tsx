@@ -1,9 +1,9 @@
 import {useRef, useState} from 'react';
 
-import {Button, Flex} from '@gravity-ui/uikit';
+import {Button, Flex, Switch} from '@gravity-ui/uikit';
 
 import {ChatContainer} from '../..';
-import {ContentWrapper} from '../../../../../demo/ContentWrapper';
+import {StoryPlayground} from '../../../../../demo/StoryPlayground/StoryPlayground';
 import type {TChatMessage} from '../../../../../types';
 import {
     UserInstructionsScreen,
@@ -11,10 +11,10 @@ import {
 } from '../../../../templates/UserInstructionsScreen';
 import type {ChatScreenDefinition} from '../../screenTypes';
 
-import {type Story, defaultDecorators} from './shared';
+import type {Story} from './shared';
 
 export const ScreenNavigation: Story = {
-    decorators: defaultDecorators,
+    decorators: [],
     args: {
         showHistory: false,
         texts: {emptyStateTitle: 'Welcome', promptPlaceholder: 'Write a message'},
@@ -91,29 +91,38 @@ export const ScreenNavigation: Story = {
             },
         ];
         return (
-            <Flex direction="column" style={{height: '100%', width: '100%'}} gap="2">
-                <Button onClick={() => setEnabled((value) => !value)}>
-                    Toggle instructions availability
-                </Button>
-                <Button onClick={() => setFailNextSave(true)}>Fail next save</Button>
-                {args.status === 'streaming' && (
-                    <Button
-                        onClick={() =>
-                            setMessages((previous) => [
-                                ...previous,
-                                {
-                                    id: `response-${previous.length}`,
-                                    role: 'assistant',
-                                    content: 'A response arrived while you were reading. '.repeat(
-                                        12,
-                                    ),
-                                },
-                            ])
-                        }
-                    >
-                        Receive response chunk
-                    </Button>
-                )}
+            <StoryPlayground
+                mobile={args.isMobile}
+                controls={
+                    <>
+                        <Switch checked={enabled} onUpdate={setEnabled}>
+                            Instructions available
+                        </Switch>
+                        <Switch checked={failNextSave} onUpdate={setFailNextSave}>
+                            Fail next save
+                        </Switch>
+                        {args.status === 'streaming' && (
+                            <Button
+                                onClick={() =>
+                                    setMessages((previous) => [
+                                        ...previous,
+                                        {
+                                            id: `response-${previous.length}`,
+                                            role: 'assistant',
+                                            content:
+                                                'A response arrived while you were reading. '.repeat(
+                                                    12,
+                                                ),
+                                        },
+                                    ])
+                                }
+                            >
+                                Receive response chunk
+                            </Button>
+                        )}
+                    </>
+                }
+            >
                 <ChatContainer
                     {...args}
                     screens={screens}
@@ -132,20 +141,14 @@ export const ScreenNavigation: Story = {
                         ]);
                     }}
                 />
-            </Flex>
+            </StoryPlayground>
         );
     },
 };
 
 export const MobileScreenNavigation: Story = {
     ...ScreenNavigation,
-    decorators: [
-        (Story) => (
-            <ContentWrapper height="760px" width="360px" maxWidth="100%" boxSizing="border-box">
-                <Story />
-            </ContentWrapper>
-        ),
-    ],
+    decorators: [],
     args: {...ScreenNavigation.args, isMobile: true, floatingHeader: true},
 };
 
