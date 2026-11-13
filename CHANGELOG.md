@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.36.0](https://github.com/gravity-ui/aikit/compare/v2.35.0...v2.36.0) (2026-11-13)
+
+
+### Features
+
+* **MessageList:** restore reading position across remounts ([#340](https://github.com/gravity-ui/aikit/issues/340)) ([#341](https://github.com/gravity-ui/aikit/issues/341)) ([71e7a1f](https://github.com/gravity-ui/aikit/commit/71e7a1fb36ad2ce9eff5898bd20107f94e710e6f))
+
 ## [2.35.0](https://github.com/gravity-ui/aikit/compare/v2.34.0...v2.35.0) (2026-11-12)
 
 
