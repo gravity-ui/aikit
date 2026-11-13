@@ -96,6 +96,7 @@ function MessageRow({
 
 export function VirtualizedMessageList<TContent extends TMessageContent = never>({
     messages,
+    scrollPositionRef,
     messageRendererRegistry,
     thinkingMessageView,
     transformOptions,
@@ -209,6 +210,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
 
     const {listRef, isPrepending} = useVirtualStickToBottom({
         rowCount,
+        scrollPositionRef,
         isStreaming: isNotCompleted,
         status,
         messagesCount: messages.length,
