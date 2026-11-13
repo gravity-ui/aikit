@@ -3,7 +3,11 @@ import type {HTMLAttributes, ReactNode} from 'react';
 import type {OptionsType} from '@diplodoc/transform/lib/typings';
 import type {PopupPlacement} from '@gravity-ui/uikit';
 
-import {useScrollPreservation, useSmartScroll} from '../../../hooks';
+import {
+    type MessageListScrollPositionRef,
+    useScrollPreservation,
+    useSmartScroll,
+} from '../../../hooks';
 import type {MarkdownRendererMdxOptions, MermaidOptions} from '../../../markdown/types';
 import {ChatStatus} from '../../../types';
 import type {
@@ -78,6 +82,8 @@ export type MdxProps<TContent extends TMessageContent = never> = {
 
 export type MessageListProps<TContent extends TMessageContent = never> = {
     messages: TChatMessage<TContent, TMessageMetadata>[];
+    /** Host-owned reading position. Use a separate ref and list key for each conversation. */
+    scrollPositionRef?: MessageListScrollPositionRef;
     /** Render message-local content before assistant actions and timestamp. */
     renderAssistantFooter?: (message: TAssistantMessage<TContent, TMessageMetadata>) => ReactNode;
     /** Delegate scrolling to a surrounding layout such as ChatContentV2. */
@@ -136,6 +142,7 @@ export function MessageList<TContent extends TMessageContent = never>(
 
 function PlainMessageList<TContent extends TMessageContent = never>({
     messages,
+    scrollPositionRef,
     scrollMode = 'internal',
     messageRendererRegistry,
     thinkingMessageView,
@@ -180,6 +187,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
         isStreaming: isStreaming || isSubmitted,
         messagesCount: messages.length,
         status,
+        scrollPositionRef,
     });
 
     // Preserve scroll position when older messages are loaded

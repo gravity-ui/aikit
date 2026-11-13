@@ -5,6 +5,8 @@ import {useListCallbackRef} from 'react-window-v2';
 import type {ChatStatus} from '../types';
 import {observeScrollContent} from '../utils/observeScrollContent';
 
+import type {MessageListScrollPositionRef} from './useSmartScroll';
+
 const SCROLL_THRESHOLD = 10;
 // Number of animation frames over which a scroll correction is re-applied. react-window measures
 // rows after paint (ResizeObserver -> state update -> re-render) and keys heights by row index, so
@@ -19,6 +21,7 @@ const PREPEND_SHIMMER_MS = 320;
 export interface UseVirtualStickToBottomParams {
     /** Total number of rows rendered by the list, including non-message header rows. */
     rowCount: number;
+    scrollPositionRef?: MessageListScrollPositionRef;
     /** Whether a response is currently streaming (keep pinned to the growing last row). */
     isStreaming?: boolean;
     status?: ChatStatus;
@@ -55,6 +58,7 @@ export interface UseVirtualStickToBottomParams {
  */
 export function useVirtualStickToBottom({
     rowCount,
+    scrollPositionRef,
     isStreaming = false,
     status,
     messagesCount,
@@ -63,10 +67,11 @@ export function useVirtualStickToBottom({
     streamingSignal,
     trailingContentSignal,
 }: UseVirtualStickToBottomParams) {
+    const positionRef = scrollPositionRef;
     const [listApi, listRef] = useListCallbackRef();
     // Drives a shimmer overlay while older messages are being prepended and the scroll is restored.
     const [isPrepending, setIsPrepending] = useState(false);
-    const userScrolledUpRef = useRef(false);
+    const userScrolledUpRef = useRef(positionRef?.current?.isAtBottom === false);
     const prependingRef = useRef(false);
     const shimmerTimerRef = useRef<ReturnType<typeof setTimeout>>();
     const prevFirstIdRef = useRef(firstMessageId);
@@ -165,11 +170,15 @@ export function useVirtualStickToBottom({
 
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
             if (scrollTop < prevTop - 1) {
+                cancelPendingScroll();
                 // User scrolled up: pause auto-stick unless they are still effectively at the bottom.
                 userScrolledUpRef.current = distanceFromBottom > SCROLL_THRESHOLD;
             } else if (distanceFromBottom <= SCROLL_THRESHOLD) {
                 // At (or back to) the bottom: resume auto-stick.
                 userScrolledUpRef.current = false;
+            }
+            if (positionRef) {
+                positionRef.current = {scrollTop, isAtBottom: !userScrolledUpRef.current};
             }
             // Measure the first message's offset only after scrolling settles: react-window renders
             // the rows for the new position asynchronously, and a programmatic pin jumps through
@@ -188,15 +197,40 @@ export function useVirtualStickToBottom({
             element.removeEventListener('scroll', handleScroll);
             clearTimeout(captureTimerRef.current);
         };
-    }, [listApi, captureFirstOffset]);
+    }, [listApi, captureFirstOffset, positionRef, cancelPendingScroll]);
 
-    // Initial scroll to bottom once the list element is mounted.
-    useEffect(() => {
-        if (listApi) {
+    // Restore the host position before paint. Re-apply while virtual row heights settle.
+    useLayoutEffect(() => {
+        const element = listApi?.element;
+        if (!element) {
+            return undefined;
+        }
+        const position = positionRef?.current;
+        userScrolledUpRef.current = position ? !position.isAtBottom : false;
+        if (position && !position.isAtBottom) {
+            let frame = 0;
+            const restore = () => {
+                element.scrollTop = position.scrollTop;
+                lastScrollTopRef.current = element.scrollTop;
+                frame += 1;
+                if (frame < REANCHOR_FRAMES) {
+                    rafRef.current = requestAnimationFrame(restore);
+                }
+            };
+            restore();
+        } else {
             pinToBottom();
         }
-        return cancelPendingScroll;
-    }, [listApi, pinToBottom, cancelPendingScroll]);
+        return () => {
+            cancelPendingScroll();
+            if (positionRef) {
+                positionRef.current = {
+                    scrollTop: element.scrollTop,
+                    isAtBottom: !userScrolledUpRef.current,
+                };
+            }
+        };
+    }, [listApi, pinToBottom, cancelPendingScroll, positionRef]);
 
     // Re-pin after delayed row measurements (including diagrams) and viewport changes.
     // pinToBottom preserves user scroll intent and the existing prepend guard.
