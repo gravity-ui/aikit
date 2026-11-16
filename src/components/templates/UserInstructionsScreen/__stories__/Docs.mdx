@@ -1,0 +1,24 @@
+import {Meta, Canvas, Controls, Markdown} from '@storybook/addon-docs';
+import * as Stories from './UserInstructionsScreen.stories';
+import Readme from '../README.md?raw';
+
+<Meta of={Stories} />
+
+<Markdown>{Readme}</Markdown>
+
+## Playground
+
+<Canvas of={Stories.Playground} />
+<Controls of={Stories.Playground} />
+
+## Saved value
+
+<Canvas of={Stories.WithValue} />
+
+## Persistence failure
+
+<Canvas of={Stories.SaveFailure} />
+
+## Saved value exceeding the limit
+
+<Canvas of={Stories.OverLimit} />

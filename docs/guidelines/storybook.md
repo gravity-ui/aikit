@@ -185,3 +185,24 @@ export const Playground: Story = {
 - Use `args` for simple prop variations
 - Test all major props and their combinations
 - Include accessibility considerations in stories
+
+## Example state controls
+
+For both new stories and edits to existing stories, use the shared internal `src/demo/StoryPlayground/StoryPlayground.tsx` wrapper whenever the affected story needs buttons, switches, or inputs to simulate application state. Move existing scenario controls into this wrapper when editing that story; do not introduce another per-story controls layout or put scenario controls inside the product preview. Stories without scenario controls do not require this wrapper, and unrelated stories need not be migrated. Pass arbitrary React nodes through `controls` and the product through `children`; keep state in the story. This helper is not a package export.
+
+On wide canvases it displays a 240px control panel to the left of the preview. On canvases up to 760px wide, or with `mobile`, it provides an Example controls button and a dismissible sheet. Only the control surface changes on resize; the preview stays mounted. The sheet has a Done action so fields can be edited together before returning to the example.
+
+```tsx
+<StoryPlayground
+  mobile={args.isMobile}
+  controls={
+    <Switch checked={enabled} onUpdate={setEnabled}>
+      Feature available
+    </Switch>
+  }
+>
+  <ChatContainer {...args} />
+</StoryPlayground>
+```
+
+Use `previewStyle` to customize preview dimensions. This wrapper supplies its own preview frame. Do not also use a ContentWrapper decorator around the story. Use stateful controls such as Switch for boolean settings and Button for one-time actions.

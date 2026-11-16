@@ -2,6 +2,7 @@ import {type Ref, useImperativeHandle, useRef} from 'react';
 
 import {useForkRef} from '@gravity-ui/uikit';
 
+import {useChatViewActivity} from '../../../hooks/ChatViewActivity';
 import {ChatStatus, type PromptCommandsConfig, TSubmitData} from '../../../types';
 
 import {PromptInputCommands} from './PromptInputCommands';
@@ -101,6 +102,7 @@ export function PromptInput(props: PromptInputProps) {
         qa,
     } = props;
 
+    const {active} = useChatViewActivity();
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const mergedInputRef = useForkRef(inputRef, bodyProps?.inputRef);
     const commandsRef = useRef<ReturnType<typeof usePromptCommands> | null>(null);
@@ -133,7 +135,7 @@ export function PromptInput(props: PromptInputProps) {
     }));
 
     const commandsDisabled =
-        disabled || hookState.isInputDisabled || Boolean(bodyProps?.disabledInput);
+        !active || disabled || hookState.isInputDisabled || Boolean(bodyProps?.disabledInput);
     const commands = usePromptCommands({
         config: commandsConfig,
         resetKey: commandsResetKey,
@@ -146,6 +148,7 @@ export function PromptInput(props: PromptInputProps) {
     commandsRef.current = commands;
     const inputBodyProps = {
         ...bodyProps,
+        autoFocus: active && bodyProps?.autoFocus,
         inputRef: mergedInputRef,
         controlProps: {
             ...bodyProps?.controlProps,
@@ -170,13 +173,19 @@ export function PromptInput(props: PromptInputProps) {
         ...hookState,
         isInputDisabled: commandsDisabled,
         handleChange: (value: string) => {
-            if (maxLength !== undefined && value.length > maxLength) return;
+            if (maxLength !== undefined && value.length > maxLength) {
+                return;
+            }
             hookState.handleChange(value);
             const input = inputRef.current;
-            if (input) commands.detect(value, input.selectionStart, input.selectionEnd, true);
+            if (input) {
+                commands.detect(value, input.selectionStart, input.selectionEnd, true);
+            }
         },
         handleKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (!commands.handleKeyDown(event)) hookState.handleKeyDown(event);
+            if (!commands.handleKeyDown(event)) {
+                hookState.handleKeyDown(event);
+            }
         },
     };
     const commandsContent = (

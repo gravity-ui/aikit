@@ -57,6 +57,8 @@ export type HeaderProps = {
 
     // Actions
     baseActions?: HeaderAction[];
+    /** Disable built-in actions while a navigation check is pending. */
+    actionsDisabled?: boolean;
     handleNewChat?: () => void;
     handleHistoryToggle?: () => void;
     /** Shared activity summary; the history button remains available during generation. */

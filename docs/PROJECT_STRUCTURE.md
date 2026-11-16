@@ -56,8 +56,9 @@ aikit/
 │   │   │   ├── ThinkingMessageGroup/              Deprecated ActivityList alias
 │   │   │   ├── RunActivity/        ToolMessage/      UserMessage/
 │   │   │
-│   │   ├── templates/       # 4 templates
+│   │   ├── templates/       # 5 templates
 │   │   │   ├── ChatContent/        ChatContentV2/    EmptyContainer/   History/
+│   │   │   └── UserInstructionsScreen/
 │   │   │
 │   │   └── pages/           # 3 pages
 │   │       ├── AIStudioChat/       ChatContainer/    AgentChat/

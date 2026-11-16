@@ -30,6 +30,7 @@ const BaseMessageComponent = (props: BaseMessageProps) => {
     const {
         className,
         qa,
+        'data-message-id': messageId,
         showActionsOnHover,
         actions,
         extraInfo,
@@ -57,7 +58,11 @@ const BaseMessageComponent = (props: BaseMessageProps) => {
     const showFooter = hasActions || Boolean(extraInfo);
 
     return (
-        <div className={b({variant, 'btn-hover': showActionsOnHover}, className)} data-qa={qa}>
+        <div
+            className={b({variant, 'btn-hover': showActionsOnHover}, className)}
+            data-qa={qa}
+            data-message-id={messageId}
+        >
             {children}
             {showFooter && (
                 <div className={b('actions', {reverse: variant !== 'user'})}>
