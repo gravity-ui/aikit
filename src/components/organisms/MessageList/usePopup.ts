@@ -1,5 +1,6 @@
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
+import {useChatViewActivity} from '../../../hooks/ChatViewActivity';
 import type {
     ActionPopupContext,
     BaseMessageActionConfig,
@@ -37,7 +38,14 @@ export interface PopupState {
  * @returns Popup state, open/close handlers, and whether the action popup should render.
  */
 export function usePopup<TContent extends TMessageContent, TMessageMetadata>() {
+    const {active} = useChatViewActivity();
     const [popupState, setPopupState] = useState<PopupState>(INITIAL_POPUP_STATE);
+
+    useEffect(() => {
+        if (!active) {
+            setPopupState(INITIAL_POPUP_STATE);
+        }
+    }, [active]);
 
     // Mirror the latest popup state so the stable (deps: []) handler can read it without
     // re-creating itself on every popup change (it is passed to memoized message items).
@@ -116,7 +124,10 @@ export function usePopup<TContent extends TMessageContent, TMessageMetadata>() {
     }, []);
 
     const showActionPopup =
-        popupState.open && popupState.content !== null && popupState.anchorElement !== null;
+        active &&
+        popupState.open &&
+        popupState.content !== null &&
+        popupState.anchorElement !== null;
 
     return {
         popupState,
