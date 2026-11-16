@@ -47,6 +47,13 @@ import {RunActivity} from '@gravity-ui/aikit/experimental';
 
 The host adapter must explicitly identify the activity boundary and final answer. Render the final answer separately; never infer it from the last text part or completed tool. Steps retain the host's tool identity, input/output and callbacks in `props`. This component does not execute tools, infer status or copy callback-bearing content into state. Completed duration is provided by the host, so remounts and history preserve it. Keep actionable errors and input requests in `attention`.
 
+The summary label uses Shimmer while `state` is `running` or `needs-input`,
+including custom `label` content. This gives pending questions and approvals the
+same waiting treatment. Other states, including `paused`, show a static label.
+ToolMessage cards inside `attention` automatically hide their default waiting label
+and loader while the run is `needs-input`. Confirmation actions and explicitly
+provided footer content remain visible. Standalone tool cards keep their waiting status.
+
 ## Adoption
 
 1. Use ThinkingMessage or ToolMessage with `view="compact"` alone.

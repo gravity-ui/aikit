@@ -1,0 +1,12 @@
+{
+  "previous": "Предыдущий вопрос",
+  "next": "Следующий вопрос",
+  "skip": "Пропустить",
+  "answered-progress": "Отвеченные вопросы",
+  "answered-count": "Отвечено на {{count}} из {{total}}",
+  "progress": "{{current}} из {{total}}",
+  "recommended": "Рекомендуется",
+  "placeholder": "Напишите свой ответ",
+  "confirm": "Подтвердить",
+  "tool-name": "Вопрос"
+}

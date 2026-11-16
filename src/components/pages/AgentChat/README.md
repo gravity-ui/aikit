@@ -116,3 +116,45 @@ const models: AgentModelOption[] = [{id: 'default', name: 'Default model'}];
 | resetKey           | string or number                              | —        | —                   | Active conversation identity for stale draft recovery                 |
 
 Enter sends, Shift+Enter inserts a newline, Ctrl/Cmd+Enter follows the standard prompt shortcut. IME confirmation does not send. Slash completion takes precedence only while its menu is active. Controls use the configured UIKit language.
+
+## Clarification questions
+
+Compose `AskUserQuestion` from the stable package entry with the experimental
+AgentChat run API. Question state, answer persistence, and model execution belong
+to the host; neither component automatically adds answers to the conversation.
+
+Keep a single structured answer store keyed by tool-call ID and question ID. Each
+`onAnswer` handler associates the callback with the active question, saves the
+answer, and rebuilds one stable `commentary` activity step per answered question.
+Include both the question text and the selected label or custom response in the
+step. Updating a previous answer replaces that step. Preserve the structured
+option ID for the model/tool response rather than parsing the rendered label.
+
+For inline placement, render the pending card in `runs[].activity.attention`.
+The activity summary automatically uses Shimmer in the `needs-input` state,
+for both questions and approvals. Avoid repeating the waiting status inside the card.
+For composer placement, render it in `composer` instead of `AgentComposer` and
+leave `attention` empty. Both placements should use the same controlled answers,
+drafts, index, and callbacks so switching placement does not lose progress.
+Keep `activity.state` at `needs-input` while waiting. Pending cards stay outside
+folded traces; answer summaries remain in `activity.steps` after the card closes.
+
+Save each `onAnswer` result and automatically submit the collected answers and
+resume the run once every required question is answered. When segmented progress
+is enabled, save the final answer first and resume in `onProgressComplete`, so the
+last segment can finish before the card disappears. For a single question or when
+progress is omitted, resume immediately in `onAnswer`. On skip, preserve saved answers, record unanswered questions as
+skipped, and submit an explicit skip result without substituting recommended options. Submit them via the provider's tool-result adapter,
+restore the composer, and keep the accumulated answer steps in the run history.
+Stream the final response in the assistant message, separately from activity.
+Adding visible activity steps does not itself submit answers to the model.
+
+`onQuestionChange` is navigation, not submission. `onClose` does not choose an
+answer. The Clarification Question demo records unanswered questions as skipped;
+production callers must send an explicit skip/cancel result through their adapter.
+
+See [AskUserQuestion](../../organisms/AskUserQuestion/README.md#answers-and-conversation-history)
+for callback payloads, answer-step code, and the multi-question lifecycle. The
+**Clarification Question** story demonstrates both placements, one or three
+questions, draft preservation, and continuation after all answers. Its answer
+history is built by the story's host simulation, not by `AskUserQuestion` itself.

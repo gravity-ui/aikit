@@ -1,0 +1,59 @@
+.composer-question-transition {
+    position: relative;
+    &_moving {
+        transition: height 220ms cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    &__composer,
+    &__question {
+        position: absolute;
+        inset: auto 0 0;
+        width: 100%;
+        transition:
+            opacity 80ms ease,
+            visibility 0s linear 80ms;
+    }
+
+    &__composer {
+        opacity: 1;
+        visibility: visible;
+        transition:
+            opacity 140ms ease 80ms,
+            visibility 0s;
+    }
+
+    &__question {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    &_question &__composer {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            opacity 80ms ease,
+            visibility 0s linear 80ms;
+    }
+
+    &_question &__question {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition:
+            opacity 140ms ease 80ms,
+            visibility 0s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &,
+        &_moving,
+        &__composer,
+        &__question,
+        &_question &__composer,
+        &_question &__question {
+            transition: none;
+        }
+    }
+}

@@ -437,3 +437,16 @@ automatically grouped across run boundaries.
 For non-virtualized content inside ChatContentV2, use `scrollMode="external"`. The layout owns scrolling, following and history preservation; MessageList renders a normal-flow transcript without attaching its internal scroll observers. The default `internal` mode and the virtualized path remain unchanged.
 
 `renderAssistantFooter(message)` supplies the corresponding AssistantMessage body footer in both plain and virtualized lists. The callback receives the concrete assistant message, so saved history and multiple responses can retain their own summary. Its return value precedes actions/time; `assistantExtraInfo` retains its existing action-row behavior.
+
+## Restoring a conversation
+
+Pass a host-owned `scrollPositionRef` to retain the reading position when the list unmounts.
+Create it with `useRef<MessageListScrollPosition | undefined>(undefined)` and keep it above the
+panel or dialog. Give each conversation its own ref and use `key={conversationId}` on the list
+(or on `ChatContainer`, passing the ref through `messageListConfig`) when switching conversations.
+
+The list restores `scrollTop` before paint. A reader at the bottom continues following new replies;
+a reader who scrolled up keeps that position while streaming continues. Clearing the ref resets the
+next mount to the default bottom position. State is kept in memory only: persistence across page
+reloads and conversation ownership belong to the host. This works with internal scrolling in both
+plain and virtualized lists; `scrollMode="external"` delegates restoration to the surrounding layout.
