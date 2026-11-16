@@ -156,3 +156,79 @@ for (const variant of [
             .toBeLessThan(15);
     });
 }
+
+test('review scenarios render and normalize saved instructions without remounting', async ({
+    page,
+}) => {
+    await page.goto('/iframe.html?id=pages-chatcontainer--review-scenarios&viewMode=story');
+    await page.getByRole('button', {name: 'Open instructions', exact: true}).click();
+    await page.getByRole('textbox', {name: 'User instructions', exact: true}).fill('  concise  ');
+    await page.getByRole('button', {name: 'Save', exact: true}).click();
+    await expect(page.getByRole('textbox', {name: 'User instructions', exact: true})).toHaveValue(
+        'concise',
+    );
+});
+
+for (const width of [1400, 950]) {
+    test(`retains a settled reading position across a simple Back at width ${width}`, async ({
+        page,
+    }) => {
+        await page.setViewportSize({width, height: 1000});
+        await page.goto(
+            '/iframe.html?id=pages-chatcontainer--virtualized-screen-navigation&viewMode=story',
+        );
+        const scroller = page.locator('.g-aikit-message-list__list').first();
+        await expect(scroller).toBeVisible();
+        await expect
+            .poll(() =>
+                scroller.evaluate(
+                    (element) => element.scrollHeight - element.clientHeight - element.scrollTop,
+                ),
+            )
+            .toBeLessThan(15);
+        await scroller.hover();
+        await page.mouse.wheel(0, -1200);
+        await page.waitForTimeout(500);
+        const anchor = await scroller.evaluate((element) => {
+            const top = element.getBoundingClientRect().top;
+            const row = Array.from(element.querySelectorAll<HTMLElement>('[data-message-id]')).find(
+                (item) => item.getBoundingClientRect().bottom > top,
+            )!;
+            return {id: row.dataset.messageId, offset: row.getBoundingClientRect().top - top};
+        });
+        await page.locator('[data-qa="header-menu-button"]').click();
+        await page.getByText('User instructions', {exact: true}).click();
+        await page.getByRole('button', {name: 'Back', exact: true}).click();
+        await expect(scroller).toBeVisible();
+        await page.waitForTimeout(1000);
+        const offset = await scroller.evaluate((element, saved) => {
+            const row = Array.from(element.querySelectorAll<HTMLElement>('[data-message-id]')).find(
+                (item) => item.dataset.messageId === saved.id,
+            );
+            return row
+                ? row.getBoundingClientRect().top - element.getBoundingClientRect().top
+                : null;
+        }, anchor);
+        expect(offset).not.toBeNull();
+        expect(Math.abs(offset! - anchor.offset)).toBeLessThan(2);
+    });
+}
+
+test('review scenarios work through the Storybook manager and dismiss an attachment portal', async ({
+    page,
+}) => {
+    await page.goto('/?path=/story/pages-chatcontainer--review-scenarios');
+    const preview = page.frameLocator('#storybook-preview-iframe');
+    await preview
+        .getByRole('button', {name: 'Open instructions in 5 seconds', exact: true})
+        .click();
+    await preview.getByRole('button', {name: 'Attach files', exact: true}).click();
+    await expect(preview.getByText('queued.txt', {exact: true})).toBeVisible();
+    await expect(preview.getByRole('region', {name: 'User instructions', exact: true})).toBeVisible(
+        {timeout: 10000},
+    );
+    await expect(preview.getByRole('dialog')).toBeHidden();
+    await preview.getByRole('button', {name: 'Back', exact: true}).click();
+    await preview.getByRole('button', {name: 'Attach files', exact: true}).click();
+    await expect(preview.getByText('queued.txt', {exact: true})).toBeVisible();
+});

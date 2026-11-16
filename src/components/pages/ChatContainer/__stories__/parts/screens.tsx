@@ -1,10 +1,11 @@
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
-import {Button, Flex, Switch} from '@gravity-ui/uikit';
+import {Button, Flex, Switch, Text} from '@gravity-ui/uikit';
 
 import {ChatContainer} from '../..';
 import {StoryPlayground} from '../../../../../demo/StoryPlayground/StoryPlayground';
 import type {TChatMessage} from '../../../../../types';
+import {AttachmentPicker} from '../../../../organisms/AttachmentPicker';
 import {
     UserInstructionsScreen,
     type UserInstructionsScreenState,
@@ -197,4 +198,104 @@ export const AnonymousScreenNavigation: Story = {
 export const AnonymousVirtualizedScreenNavigation: Story = {
     ...AnonymousScreenNavigation,
     args: {...AnonymousScreenNavigation.args, messageListConfig: {virtualized: true}},
+};
+
+function ReviewScenariosExample(args: React.ComponentProps<typeof ChatContainer>) {
+    const [activeScreen, setActiveScreen] = useState('chat');
+    const [value, setValue] = useState('');
+    const [normalize, setNormalize] = useState(true);
+    const [stayOpen, setStayOpen] = useState(true);
+    const [scheduled, setScheduled] = useState(false);
+    const [closeCount, setCloseCount] = useState(0);
+    const [files, setFiles] = useState([{id: 'queued', name: 'queued.txt'}]);
+    useEffect(() => {
+        if (!scheduled) {
+            return undefined;
+        }
+        const timer = setTimeout(() => {
+            setActiveScreen('instructions');
+            setScheduled(false);
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, [scheduled]);
+    return (
+        <StoryPlayground
+            controls={
+                <>
+                    <Button onClick={() => setActiveScreen('instructions')}>
+                        Open instructions
+                    </Button>
+                    <Button disabled={scheduled} onClick={() => setScheduled(true)}>
+                        {scheduled ? 'Navigation scheduled…' : 'Open instructions in 5 seconds'}
+                    </Button>
+                    <Switch checked={normalize} onUpdate={setNormalize}>
+                        Trim saved value
+                    </Switch>
+                    <Switch checked={stayOpen} onUpdate={setStayOpen}>
+                        Stay on instructions after Save
+                    </Switch>
+                    <Text>Saved value: {JSON.stringify(value)}</Text>
+                    <Text>Close requests: {closeCount}</Text>
+                </>
+            }
+        >
+            <ChatContainer
+                {...args}
+                activeScreen={activeScreen}
+                onScreenChange={setActiveScreen}
+                onClose={() => setCloseCount((count) => count + 1)}
+                promptInputProps={{
+                    footerProps: {
+                        attachmentContent: (
+                            <AttachmentPicker
+                                uploadLabel="Attach files"
+                                fileDialogProps={{
+                                    title: 'Attach files',
+                                    files,
+                                    onAdd: (added) =>
+                                        setFiles((previous) => [
+                                            ...previous,
+                                            ...added.map((file, index) => ({
+                                                id: `${previous.length}-${index}`,
+                                                name: file.name,
+                                            })),
+                                        ]),
+                                    onCancel: () => setFiles([]),
+                                }}
+                            />
+                        ),
+                    },
+                }}
+                screens={[
+                    {
+                        id: 'instructions',
+                        title: 'User instructions',
+                        menu: {label: 'User instructions'},
+                        render: () => (
+                            <UserInstructionsScreen
+                                value={value}
+                                maxLength={2000}
+                                onSave={async (next) => {
+                                    setValue(normalize ? next.trim() : next);
+                                    await new Promise((resolve) => setTimeout(resolve, 500));
+                                }}
+                                onSaved={() => {
+                                    if (!stayOpen) {
+                                        setActiveScreen('chat');
+                                    }
+                                }}
+                                onCancel={() => setActiveScreen('chat')}
+                            />
+                        ),
+                    },
+                ]}
+            />
+        </StoryPlayground>
+    );
+}
+
+export const ReviewScenarios: Story = {
+    decorators: [],
+    args: {...ScreenNavigation.args, showClose: true, onSendMessage: async () => {}},
+    render: (args) => <ReviewScenariosExample {...args} />,
 };
