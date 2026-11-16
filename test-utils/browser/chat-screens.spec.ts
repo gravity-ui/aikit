@@ -232,3 +232,34 @@ test('review scenarios work through the Storybook manager and dismiss an attachm
     await preview.getByRole('button', {name: 'Attach files', exact: true}).click();
     await expect(preview.getByText('queued.txt', {exact: true})).toBeVisible();
 });
+
+test('rebuilding ID-less messages and appending does not act as a virtual prepend', async ({
+    page,
+}) => {
+    await page.goto(
+        '/iframe.html?id=pages-chatcontainer--anonymous-virtualized-screen-navigation&viewMode=story',
+    );
+    const scroller = page.locator('.g-aikit-message-list__list').first();
+    await expect(scroller).toBeVisible();
+    await expect.poll(() => scroller.evaluate((element) => element.scrollTop)).toBeGreaterThan(100);
+    await scroller.hover();
+    await page.mouse.wheel(0, -1200);
+    await page.waitForTimeout(500);
+    const before = await scroller.evaluate((element) => {
+        const top = element.getBoundingClientRect().top;
+        const row = Array.from(element.querySelectorAll<HTMLElement>('[data-message-id]')).find(
+            (item) => item.getBoundingClientRect().bottom > top,
+        )!;
+        return {text: row.textContent, offset: row.getBoundingClientRect().top - top};
+    });
+    await page.getByRole('button', {name: 'Rebuild messages and append', exact: true}).click();
+    await page.waitForTimeout(1000);
+    const offset = await scroller.evaluate((element, anchor) => {
+        const row = Array.from(element.querySelectorAll<HTMLElement>('[data-message-id]')).find(
+            (item) => item.textContent === anchor.text,
+        );
+        return row ? row.getBoundingClientRect().top - element.getBoundingClientRect().top : null;
+    }, before);
+    expect(offset).not.toBeNull();
+    expect(Math.abs(offset! - before.offset)).toBeLessThan(2);
+});

@@ -106,6 +106,18 @@ export const ScreenNavigation: Story = {
                             <Button
                                 onClick={() =>
                                     setMessages((previous) => [
+                                        ...previous.map((message) => ({...message})),
+                                        {role: 'assistant', content: 'A newly appended response'},
+                                    ])
+                                }
+                            >
+                                Rebuild messages and append
+                            </Button>
+                        )}
+                        {args.status === 'streaming' && (
+                            <Button
+                                onClick={() =>
+                                    setMessages((previous) => [
                                         ...previous,
                                         {
                                             id: `response-${previous.length}`,

@@ -1,7 +1,7 @@
 const anonymousIds = new WeakMap<object, string>();
 let nextId = 0;
 
-/** Preserve identity through prepends when a consumer keeps ID-less message objects. */
+/** Scroll-restoration anchor only; never use object identity for React keys or prepend detection. */
 export function getMessageAnchor(message: {id?: string}): string {
     if (message.id !== undefined) {
         return message.id;

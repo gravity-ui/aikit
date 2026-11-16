@@ -293,3 +293,27 @@ it('adopts a normalized value supplied before save completion while remaining on
         'concise',
     );
 });
+
+it('keeps expanded thinking when an ID-less message is rebuilt during streaming', async () => {
+    const message: NonNullable<ChatContainerProps['messages']>[number] = {
+        role: 'assistant',
+        content: [
+            {
+                type: 'thinking',
+                data: {
+                    title: 'Reasoning details',
+                    content: 'Preserved reasoning',
+                    status: 'thought',
+                    defaultExpanded: false,
+                },
+            },
+        ],
+    };
+    const view = render(chat({messages: [message], status: 'streaming'}));
+    const toggle = screen.getByRole('button', {name: 'Thought', exact: true});
+    fireEvent.click(toggle);
+    expect(screen.getByText('Preserved reasoning')).toBeTruthy();
+    view.rerender(chat({messages: [{...message}], status: 'streaming'}));
+    expect(screen.getByRole('button', {name: 'Thought', exact: true})).toBe(toggle);
+    expect(screen.getByText('Preserved reasoning')).toBeTruthy();
+});

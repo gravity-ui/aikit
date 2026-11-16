@@ -214,7 +214,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
         isStreaming: isNotCompleted,
         status,
         messagesCount: messages.length,
-        firstMessageId: messages[0] ? getMessageAnchor(messages[0]) : undefined,
+        firstMessageId: messages[0]?.id,
         headerOffset,
         // The last message reference changes on every streamed token, so it pins the view to the
         // growing last row even while react-window keeps the same set of rows mounted.
