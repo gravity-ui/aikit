@@ -46,7 +46,6 @@ export function useHeader(props: HeaderProps): {
         preview,
         baseActions = [],
         actionsDisabled,
-        handleBack,
         handleNewChat,
         handleHistoryToggle,
         handleClose,
@@ -98,7 +97,6 @@ export function useHeader(props: HeaderProps): {
             }
 
             const actionMap: Partial<Record<HeaderAction, () => void>> = {
-                [HeaderAction.Back]: handleBack,
                 [HeaderAction.NewChat]: handleNewChat,
                 [HeaderAction.History]: handleHistoryToggle,
                 [HeaderAction.Close]: handleClose,
@@ -119,7 +117,6 @@ export function useHeader(props: HeaderProps): {
     }, [
         baseActions,
         actionsDisabled,
-        handleBack,
         handleNewChat,
         handleHistoryToggle,
         handleClose,

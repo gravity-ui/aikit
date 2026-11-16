@@ -186,3 +186,15 @@ export const VirtualizedScreenNavigation: Story = {
     ...StreamingScreenNavigation,
     args: {...StreamingScreenNavigation.args, messageListConfig: {virtualized: true}},
 };
+
+export const AnonymousScreenNavigation: Story = {
+    ...StreamingScreenNavigation,
+    args: {
+        ...StreamingScreenNavigation.args,
+        messages: longConversation.map(({id: _id, ...message}) => message),
+    },
+};
+export const AnonymousVirtualizedScreenNavigation: Story = {
+    ...AnonymousScreenNavigation,
+    args: {...AnonymousScreenNavigation.args, messageListConfig: {virtualized: true}},
+};

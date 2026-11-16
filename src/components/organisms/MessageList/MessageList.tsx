@@ -25,6 +25,7 @@ import {type RatingBlockProps} from '../../molecules/RatingBlock/RatingBlock';
 import {MessageItem} from './MessageItem';
 import {VirtualizedMessageList} from './MessageList.virtualized';
 import {MessageListFooter} from './MessageListFooter';
+import {getMessageAnchor} from './messageAnchor';
 import {isActionPopupOpenForMessage, usePopup} from './usePopup';
 
 import './MessageList.scss';
@@ -205,7 +206,7 @@ function PlainMessageList<TContent extends TMessageContent = never>({
             <div className={b('messages')} data-qa={qa ? `${qa}-messages` : MessageListQa.Messages}>
                 {messages.map((message, index) => (
                     <MessageItem<TContent>
-                        key={message.id || `message-${index}`}
+                        key={getMessageAnchor(message)}
                         message={message}
                         suppressActions={index === messages.length - 1 && isNotCompleted}
                         showActionsOnHover={

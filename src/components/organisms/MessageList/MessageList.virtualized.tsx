@@ -11,6 +11,7 @@ import {Loader} from '../../atoms/Loader';
 import {MessageItem, type MessageItemConfig} from './MessageItem';
 import {type MessageListProps, MessageListQa} from './MessageList';
 import {MessageListFooter} from './MessageListFooter';
+import {getMessageAnchor} from './messageAnchor';
 import {type PopupState, isActionPopupOpenForMessage, usePopup} from './usePopup';
 
 const b = block('message-list');
@@ -206,12 +207,12 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     const rowHeight = useDynamicRowHeight({defaultRowHeight: DEFAULT_ROW_HEIGHT});
 
     const {listRef, isPrepending} = useVirtualStickToBottom({
-        messageIds: messages.map((message) => message.id),
+        messageIds: messages.map(getMessageAnchor),
         rowCount,
         isStreaming: isNotCompleted,
         status,
         messagesCount: messages.length,
-        firstMessageId: messages[0]?.id,
+        firstMessageId: messages[0] ? getMessageAnchor(messages[0]) : undefined,
         headerOffset,
         // The last message reference changes on every streamed token, so it pins the view to the
         // growing last row even while react-window keeps the same set of rows mounted.

@@ -19,5 +19,6 @@
   "export-close": "Close",
   "export-copy-selected": "Copy",
   "export-download-selected": "Download",
-  "export-select-all": "Select all"
+  "export-select-all": "Select all",
+  "screen-back": "Back"
 }

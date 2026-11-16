@@ -3,6 +3,7 @@ import {useRef, useState} from 'react';
 import {Button, ThemeProvider} from '@gravity-ui/uikit';
 import {act, configure, fireEvent, render, screen, waitFor} from '@testing-library/react';
 
+import {AttachmentPicker} from '../../src/components/organisms/AttachmentPicker';
 import {ChatContainer} from '../../src/components/pages/ChatContainer/ChatContainer';
 import type {ChatContainerProps} from '../../src/components/pages/ChatContainer/types';
 import {
@@ -229,5 +230,66 @@ it('ignores a departed instructions visit save completion after forced fallback 
     expect(onSaved).not.toHaveBeenCalled();
     expect((screen.getByLabelText('User instructions') as HTMLTextAreaElement).value).toBe(
         'new draft',
+    );
+});
+
+it('dismisses the attachment portal on external navigation without cancelling the file queue', async () => {
+    const onCancel = jest.fn();
+    const picker = (
+        <AttachmentPicker
+            uploadLabel="Attach files"
+            fileDialogProps={{
+                title: 'Attach files',
+                onAdd: () => {},
+                onCancel,
+                files: [{id: 'queued', name: 'queued.txt', status: 'success'}],
+            }}
+        />
+    );
+    const options = {promptInputProps: {footerProps: {attachmentContent: picker}}};
+    const view = render(chat(options));
+    fireEvent.click(screen.getByRole('button', {name: 'Attach files'}));
+    expect(await screen.findByText('queued.txt')).toBeTruthy();
+    view.rerender(chat({...options, activeScreen: 'instructions'}));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(onCancel).not.toHaveBeenCalled();
+    view.rerender(chat({...options, activeScreen: 'chat'}));
+    fireEvent.click(screen.getByRole('button', {name: 'Attach files'}));
+    expect(await screen.findByText('queued.txt')).toBeTruthy();
+});
+
+it('adopts a normalized value supplied before save completion while remaining on the screen', async () => {
+    let resolve!: () => void;
+    const onSave = jest.fn(
+        () =>
+            new Promise<void>((done) => {
+                resolve = done;
+            }),
+    );
+    const renderChat = (value: string) =>
+        chat({
+            activeScreen: 'instructions',
+            screens: [
+                {
+                    id: 'instructions',
+                    title: 'Instructions',
+                    render: () => (
+                        <UserInstructionsScreen
+                            value={value}
+                            maxLength={100}
+                            onSave={onSave}
+                            onCancel={() => {}}
+                        />
+                    ),
+                },
+            ],
+        });
+    const view = render(renderChat(''));
+    fireEvent.change(screen.getByLabelText('User instructions'), {target: {value: '  concise  '}});
+    fireEvent.click(screen.getByRole('button', {name: 'Save'}));
+    view.rerender(renderChat('concise'));
+    await act(async () => resolve());
+    expect((screen.getByLabelText('User instructions') as HTMLTextAreaElement).value).toBe(
+        'concise',
     );
 });

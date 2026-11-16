@@ -102,3 +102,5 @@ The component uses Gravity UI spacing tokens `--g-spacing-2`, `--g-spacing-3`, a
   --g-spacing-5: 16px;
 }
 ```
+
+If `value` changes while a save is pending, successful completion adopts that supplied value, including consumer normalization. If it has not changed, the submitted text becomes the clean baseline until the consumer updates `value`.

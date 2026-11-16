@@ -431,4 +431,4 @@ See the [chat activity integration guide](../../../../docs/chat-activity.md) for
 
 ## Secondary screen navigation
 
-Include `HeaderAction.Back` in `baseActions` and provide `handleBack` to render a localized Back action. Use `actionsPlacement.base.back: 'left'` to place it before the title. `actionsDisabled` disables built-in action buttons while an asynchronous screen leave check is pending. `ChatContainer` configures these props for secondary screens automatically.
+`actionsDisabled` disables built-in action buttons while an asynchronous screen leave check is pending. Secondary-screen Back is composed internally through the existing additional-actions slot.

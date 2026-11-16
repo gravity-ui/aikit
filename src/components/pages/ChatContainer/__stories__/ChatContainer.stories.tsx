@@ -97,4 +97,6 @@ export {
     MobileScreenNavigation,
     StreamingScreenNavigation,
     VirtualizedScreenNavigation,
+    AnonymousScreenNavigation,
+    AnonymousVirtualizedScreenNavigation,
 } from './parts/screens';

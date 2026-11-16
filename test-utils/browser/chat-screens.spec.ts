@@ -80,13 +80,17 @@ for (const mobile of [false, true]) {
     });
 }
 
-for (const virtualized of [false, true]) {
-    test(`preserves reading position and follow-end intent during background responses (${virtualized ? 'virtualized' : 'plain'})`, async ({
+for (const variant of [
+    {virtualized: false, story: 'streaming-screen-navigation'},
+    {virtualized: true, story: 'virtualized-screen-navigation'},
+    {virtualized: false, story: 'anonymous-screen-navigation'},
+    {virtualized: true, story: 'anonymous-virtualized-screen-navigation'},
+]) {
+    const {virtualized, story} = variant;
+    test(`preserves reading position and follow-end intent during background responses (${story})`, async ({
         page,
     }) => {
-        await page.goto(
-            `/iframe.html?id=pages-chatcontainer--${virtualized ? 'virtualized' : 'streaming'}-screen-navigation&viewMode=story`,
-        );
+        await page.goto(`/iframe.html?id=pages-chatcontainer--${story}&viewMode=story`);
         const scroller = page
             .locator(virtualized ? '.g-aikit-message-list__list' : '.g-aikit-message-list')
             .first();
@@ -142,6 +146,7 @@ for (const virtualized of [false, true]) {
         await page.getByText('User instructions', {exact: true}).click();
         await page.getByRole('button', {name: 'Receive response chunk'}).click();
         await page.getByRole('button', {name: 'Back', exact: true}).click();
+        await expect(scroller).toBeVisible();
         await expect
             .poll(() =>
                 scroller.evaluate(

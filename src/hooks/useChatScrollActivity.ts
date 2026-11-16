@@ -9,7 +9,7 @@ export function useChatScrollActivity(
     instance?: unknown,
     revealAnchor?: (id: string) => void,
 ) {
-    const {active, conversationKey} = useChatViewActivity();
+    const {active, conversationKey, trackScroll} = useChatViewActivity();
     const revealAnchorRef = useRef(revealAnchor);
     revealAnchorRef.current = revealAnchor;
     const previous = useRef({active, conversationKey});
@@ -25,7 +25,7 @@ export function useChatScrollActivity(
             // eslint-disable-next-line no-param-reassign
             userScrolledUpRef.current = false;
         }
-        if (!container || !active) {
+        if (!container || !active || !trackScroll) {
             return undefined;
         }
         let restoring = false;
@@ -35,9 +35,18 @@ export function useChatScrollActivity(
                 return;
             }
             const top = container.getBoundingClientRect().top;
-            const anchor = Array.from(
-                container.querySelectorAll<HTMLElement>('[data-message-id]'),
-            ).find((element) => element.getBoundingClientRect().bottom > top);
+            const rows = container.querySelectorAll<HTMLElement>('[data-message-id]');
+            let left = 0;
+            let right = rows.length;
+            while (left < right) {
+                const middle = Math.floor((left + right) / 2);
+                if (rows[middle].getBoundingClientRect().bottom <= top) {
+                    left = middle + 1;
+                } else {
+                    right = middle;
+                }
+            }
+            const anchor = rows[left];
             snapshot.current = {
                 top: container.scrollTop,
                 id: anchor?.dataset.messageId,
@@ -94,6 +103,6 @@ export function useChatScrollActivity(
             container.removeEventListener('wheel', stopRestoring);
             container.removeEventListener('pointerdown', stopRestoring);
         };
-    }, [active, conversationKey, containerRef, userScrolledUpRef, instance]);
+    }, [active, conversationKey, containerRef, userScrolledUpRef, instance, trackScroll]);
     return active;
 }

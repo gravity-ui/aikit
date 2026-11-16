@@ -28,6 +28,10 @@ export function UserInstructionsScreen({
     const [form, setForm] = useState({draft: value, baseline: value});
     const [saving, setSaving] = useState(false);
     const [saveFailed, setSaveFailed] = useState(false);
+    const latestValue = useRef(value);
+    useLayoutEffect(() => {
+        latestValue.current = value;
+    }, [value]);
     const revision = useRef(0);
     const busy = useRef(false);
     const mounted = useRef(false);
@@ -69,6 +73,7 @@ export function UserInstructionsScreen({
         }
         const token = ++revision.current;
         const submitted = form.draft;
+        const valueAtSubmit = latestValue.current;
         busy.current = true;
         setSaving(true);
         setSaveFailed(false);
@@ -85,7 +90,8 @@ export function UserInstructionsScreen({
         if (mounted.current && token === revision.current) {
             busy.current = false;
             setSaving(false);
-            setForm({draft: submitted, baseline: submitted});
+            const saved = latestValue.current !== valueAtSubmit ? latestValue.current : submitted;
+            setForm({draft: saved, baseline: saved});
             onSaved?.();
         }
     };

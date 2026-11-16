@@ -1,7 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 
 import {
-    ArrowLeft,
     ChevronsCollapseUpRight,
     ChevronsExpandUpRight,
     ClockArrowRotateLeft,
@@ -36,7 +35,6 @@ const b = block('header');
 
 // Icons for base actions
 const ACTION_ICONS: Record<HeaderAction, typeof Xmark> = {
-    [HeaderAction.Back]: ArrowLeft,
     [HeaderAction.NewChat]: Plus,
     [HeaderAction.History]: ClockArrowRotateLeft,
     [HeaderAction.Folding]: ChevronsCollapseUpRight, // Default icon, will be switched based on state

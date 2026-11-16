@@ -9,7 +9,8 @@ import {
     useRef,
 } from 'react';
 
-import {Alert, MobileProvider, Portal, useForkRef, useMobile} from '@gravity-ui/uikit';
+import {ArrowLeft} from '@gravity-ui/icons';
+import {Alert, Icon, MobileProvider, Portal, useForkRef, useMobile} from '@gravity-ui/uikit';
 
 import {getMascotAnimationType, useKeyboardViewportFit} from '../../../hooks';
 import {ChatViewActivityContext} from '../../../hooks/ChatViewActivity';
@@ -17,6 +18,7 @@ import {useChatActivity} from '../../../hooks/useChatActivity';
 import type {TSuggestionContext} from '../../../types/messages';
 import {block} from '../../../utils/cn';
 import {getMascotNode, resolveMascotAssets, resolveMascotCollection} from '../../../utils/mascot';
+import {ActionButton} from '../../atoms/ActionButton';
 import {Disclaimer} from '../../atoms/Disclaimer';
 import {Header, HeaderAction, type HeaderProps} from '../../organisms/Header';
 import {
@@ -254,7 +256,12 @@ export function ChatContainer(props: ChatContainerProps) {
         qa,
     } = props;
 
+    const {t: screenT} = i18n.useTranslation();
     const navigation = useChatScreenNavigation(props);
+    const trackScrollRef = useRef(false);
+    if (props.screens?.length) {
+        trackScrollRef.current = true;
+    }
     const isChatVisible = navigation.current === 'chat';
     const isMobileContext = useMobile();
     const isMobile = isMobileProp ?? isMobileContext;
@@ -824,7 +831,11 @@ export function ChatContainer(props: ChatContainerProps) {
                     <div className={b('viewport-probe')} ref={viewportProbeRef} aria-hidden />
                 )}
                 <ChatViewActivityContext.Provider
-                    value={{active: isChatVisible, conversationKey: hookState.chatExportKey}}
+                    value={{
+                        active: isChatVisible,
+                        conversationKey: hookState.chatExportKey,
+                        trackScroll: trackScrollRef.current,
+                    }}
                 >
                     <ChatLayout
                         view={hookState.chatContentView}
@@ -878,14 +889,22 @@ export function ChatContainer(props: ChatContainerProps) {
                                 <Header
                                     title={navigation.selected.title}
                                     withIcon={false}
-                                    baseActions={[
-                                        HeaderAction.Back,
-                                        ...(props.showClose ? [HeaderAction.Close] : []),
-                                    ]}
-                                    handleBack={navigation.context.back}
+                                    baseActions={[...(props.showClose ? [HeaderAction.Close] : [])]}
                                     handleClose={navigation.context.requestClose}
                                     actionsDisabled={navigation.context.pending}
-                                    actionsPlacement={{base: {[HeaderAction.Back]: 'left'}}}
+                                    additionalActions={[
+                                        <ActionButton
+                                            key="back"
+                                            tooltipTitle={screenT('screen-back')}
+                                            aria-label={screenT('screen-back')}
+                                            view="flat"
+                                            disabled={navigation.context.pending}
+                                            onClick={navigation.context.back}
+                                        >
+                                            <Icon data={ArrowLeft} size={16} />
+                                        </ActionButton>,
+                                    ]}
+                                    actionsPlacement={{additional: 'left'}}
                                     actionSize={headerProps.actionSize}
                                     actionTooltipTexts={headerProps.actionTooltipTexts}
                                 />

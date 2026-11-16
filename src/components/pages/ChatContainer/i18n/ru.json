@@ -19,5 +19,6 @@
   "export-close": "Закрыть",
   "export-copy-selected": "Скопировать",
   "export-download-selected": "Скачать",
-  "export-select-all": "Выбрать все"
+  "export-select-all": "Выбрать все",
+  "screen-back": "Назад"
 }
