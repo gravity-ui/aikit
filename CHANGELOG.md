@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.0](https://github.com/gravity-ui/aikit/compare/v3.8.0...v3.9.0) (2026-11-16)
+
+
+### Features
+
+* **chat:** add screen navigation and user instructions template ([#336](https://github.com/gravity-ui/aikit/issues/336)) ([ad58006](https://github.com/gravity-ui/aikit/commit/ad580062a03fb56b8353bc0e12892476a75adace))
+
 ## [3.8.0](https://github.com/gravity-ui/aikit/compare/v3.7.0...v3.8.0) (2026-11-13)
 
 
