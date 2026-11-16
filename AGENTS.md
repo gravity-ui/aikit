@@ -12,6 +12,12 @@ Detailed guidelines live in `docs/guidelines/`:
 
 Read the relevant file before working on a component, its `__stories__/`, `__tests__/`, or `README.md`. Codex skills (`aikit-storybook`, `aikit-testing`, `aikit-readme`, `aikit-new-component`) and Cursor rules under `.cursor/rules/aikit-*` are thin pointers to the same files.
 
+## Storybook example controls
+
+When creating a story or editing an existing one that has controls for simulated application state, use the shared internal `StoryPlayground` wrapper from `src/demo/StoryPlayground/StoryPlayground.tsx`. Move scenario buttons, switches, and inputs into its `controls` slot and keep the demonstrated component in `children`. Do not place these controls inside the product preview or create a separate controls layout per story.
+
+The wrapper places controls in a desktop sidebar and a mobile sheet. Keep scenario state in the story and use `previewStyle` for preview dimensions; do not nest a `ContentWrapper` decorator around it. Stories without scenario controls can keep their existing decorators. Apply this convention to the stories being changed; unrelated stories do not need to be migrated as part of another task. See [the Storybook guidelines](./docs/guidelines/storybook.md#example-state-controls) for the API and example.
+
 ## Running Tests
 
 ```bash

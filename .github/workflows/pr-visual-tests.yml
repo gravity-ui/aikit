@@ -35,6 +35,19 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      - name: Run screen navigation integration tests
+        if: matrix.shard == 1
+        run: npx --no-install playwright test --config=test-utils/playwright.screens.config.ts
+        env:
+          CI: 'true'
+      - name: Upload screen navigation diagnostics
+        if: ${{ failure() && matrix.shard == 1 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: screen-navigation-diagnostics
+          path: playwright/test-results/screens
+          retention-days: 1
+
   visual_tests:
     name: Visual Tests
     needs: visual_test_shards

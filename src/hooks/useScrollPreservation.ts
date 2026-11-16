@@ -1,5 +1,7 @@
 import {type RefObject, useEffect, useLayoutEffect, useRef} from 'react';
 
+import {useChatViewActivity} from './ChatViewActivity';
+
 /**
  * Hook to preserve scroll position when older messages are loaded at the top
  * This prevents the chat from jumping when new content is prepended
@@ -11,6 +13,8 @@ export function useScrollPreservation<T extends HTMLElement>(
     containerRef: RefObject<T>,
     messagesCount: number,
 ) {
+    const {active} = useChatViewActivity();
+    const wasActive = useRef(active);
     const prevMessagesCount = useRef(messagesCount);
     // Distance from the top of the viewport to the bottom of the content (`scrollHeight - scrollTop`).
     // It is invariant when content is prepended above the viewport, so restoring it after a prepend
@@ -21,7 +25,7 @@ export function useScrollPreservation<T extends HTMLElement>(
 
     useEffect(() => {
         const container = containerRef.current;
-        if (!container) {
+        if (!container || !active) {
             return undefined;
         }
 
@@ -34,11 +38,15 @@ export function useScrollPreservation<T extends HTMLElement>(
         return () => {
             container.removeEventListener('scroll', captureGap);
         };
-    }, [containerRef]);
+    }, [containerRef, active]);
 
     useLayoutEffect(() => {
         const container = containerRef.current;
-        if (!container) {
+        const resumed = active && !wasActive.current;
+        wasActive.current = active;
+        if (!container || !active || resumed) {
+            prevMessagesCount.current = messagesCount;
+            bottomGapRef.current = null;
             return;
         }
 
@@ -55,5 +63,5 @@ export function useScrollPreservation<T extends HTMLElement>(
 
         prevMessagesCount.current = messagesCount;
         bottomGapRef.current = container.scrollHeight - container.scrollTop;
-    }, [containerRef, messagesCount]);
+    }, [containerRef, messagesCount, active]);
 }

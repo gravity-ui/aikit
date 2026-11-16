@@ -161,6 +161,7 @@ export function Header(props: HeaderProps) {
                     aria-label={label}
                     size={actionSize}
                     view="flat"
+                    disabled={action.disabled}
                     onClick={action.onClick}
                     className={b('action-button')}
                     qa={actionQa?.[action.id as HeaderAction] ?? `header-action-${action.id}`}

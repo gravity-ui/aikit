@@ -11,6 +11,7 @@ import {Loader} from '../../atoms/Loader';
 import {MessageItem, type MessageItemConfig} from './MessageItem';
 import {type MessageListProps, MessageListQa} from './MessageList';
 import {MessageListFooter} from './MessageListFooter';
+import {getMessageAnchor} from './messageAnchor';
 import {type PopupState, isActionPopupOpenForMessage, usePopup} from './usePopup';
 
 const b = block('message-list');
@@ -77,9 +78,7 @@ function MessageRow({
 
     return (
         <div style={style} {...ariaAttributes}>
-            {/* data-message-id lets useVirtualStickToBottom anchor scroll position to a specific
-                rendered row (robust to off-screen height estimation) when older messages load. */}
-            <div className={b('row')} data-message-id={message.id}>
+            <div className={b('row')}>
                 <MessageItem
                     message={message}
                     suppressActions={isLast && isNotCompleted}
@@ -209,6 +208,7 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
     const rowHeight = useDynamicRowHeight({defaultRowHeight: DEFAULT_ROW_HEIGHT});
 
     const {listRef, isPrepending} = useVirtualStickToBottom({
+        messageIds: messages.map(getMessageAnchor),
         rowCount,
         scrollPositionRef,
         isStreaming: isNotCompleted,

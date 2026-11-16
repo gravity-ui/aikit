@@ -23,6 +23,8 @@ import {type MessageRendererRegistry} from '../../../utils/messageTypeRegistry';
 import {AssistantMessage} from '../AssistantMessage/AssistantMessage';
 import {UserMessage} from '../UserMessage/UserMessage';
 
+import {getMessageAnchor} from './messageAnchor';
+
 /**
  * Shared configuration for a single rendered message. These props are expected to be
  * referentially stable across renders (memoized by the parent list), so that the memoized
@@ -106,6 +108,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
 
         return (
             <UserMessage
+                data-message-id={getMessageAnchor(message)}
                 content={message.content}
                 actions={actions}
                 extraInfo={UserExtraInfo ? <UserExtraInfo message={message} /> : undefined}
@@ -139,6 +142,7 @@ function MessageItemComponent<TContent extends TMessageContent = never>({
 
         return (
             <AssistantMessage<TContent>
+                data-message-id={getMessageAnchor(message)}
                 content={message.content}
                 footerContent={renderAssistantFooter?.(message)}
                 actions={actions}

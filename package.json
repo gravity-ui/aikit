@@ -668,6 +668,16 @@
         "default": "./build/cjs/components/templates/History/index.js"
       }
     },
+    "./UserInstructionsScreen": {
+      "import": {
+        "types": "./build/esm/components/templates/UserInstructionsScreen/index.d.ts",
+        "default": "./build/esm/components/templates/UserInstructionsScreen/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/components/templates/UserInstructionsScreen/index.d.ts",
+        "default": "./build/cjs/components/templates/UserInstructionsScreen/index.js"
+      }
+    },
     "./AIStudioChat": {
       "import": {
         "types": "./build/esm/components/pages/AIStudioChat/index.d.ts",

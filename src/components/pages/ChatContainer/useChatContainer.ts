@@ -47,7 +47,7 @@ export function useChatContainer(props: ChatContainerProps) {
     const [conversationRevision, setConversationRevision] = useState(0);
 
     // Determine view for ChatContent (empty or chat)
-    const chatContentView = useMemo(() => {
+    const chatContentView = useMemo<'empty' | 'chat'>(() => {
         // If there is an active chat (selected from history), show chat view
         // even if there are no messages yet
         if (activeChat) {

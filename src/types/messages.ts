@@ -87,6 +87,7 @@ export type DefaultMessageAction<TMessage> = {
 export type MessageExtraInfoComponent<TMessage> = React.ComponentType<{message: TMessage}>;
 
 export type BaseMessageProps<TMessage = unknown> = {
+    'data-message-id'?: string;
     children: React.ReactNode;
     role: TMessageRole;
     actions?: BaseMessageAction<TMessage>[];

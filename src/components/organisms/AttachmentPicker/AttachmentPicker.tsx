@@ -1,9 +1,10 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {Paperclip} from '@gravity-ui/icons';
 import {Icon, Menu, MenuItem} from '@gravity-ui/uikit';
 import type {ButtonButtonProps} from '@gravity-ui/uikit';
 
+import {useChatViewActivity} from '../../../hooks/ChatViewActivity';
 import {getControlIconSize, useMobileControlSize} from '../../../hooks/useMobileControlSize';
 import {block} from '../../../utils/cn';
 import {ActionButton} from '../../atoms/ActionButton';
@@ -53,6 +54,12 @@ export const AttachmentPicker = ({
     const buttonSize = useMobileControlSize(buttonSizeProp, 'm', 'xl');
     const iconSize = getControlIconSize(buttonSize);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const {active} = useChatViewActivity();
+    useEffect(() => {
+        if (!active) {
+            setDialogOpen(false);
+        }
+    }, [active]);
 
     const handleUploadClick = () => setDialogOpen(true);
 
@@ -64,6 +71,7 @@ export const AttachmentPicker = ({
                 onClick={uploadOnly ? handleUploadClick : undefined}
                 disabled={disabled}
                 className={b('button')}
+                aria-label={uploadLabel}
             >
                 <Icon data={Paperclip} size={iconSize} />
             </ActionButton>
@@ -99,7 +107,7 @@ export const AttachmentPicker = ({
 
             <FileUploadDialog
                 {...fileDialogProps}
-                open={dialogOpen}
+                open={active && dialogOpen}
                 onClose={() => setDialogOpen(false)}
                 onCancel={() => {
                     fileDialogProps.onCancel?.();

@@ -70,14 +70,15 @@ Experimental entries use `@gravity-ui/aikit/experimental`; see [the compatibilit
 | [UserMessage](../src/components/organisms/UserMessage/README.md)                   | User message renderer.                                                                    |
 | [RunActivity](../src/components/organisms/RunActivity/README.md)                   | **Experimental.** Ordered activity history with explicit lifecycle and compact steps.     |
 
-## Templates (4)
+## Templates (5)
 
-| Component                                                              | Description                                                                          |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [ChatContent](../src/components/templates/ChatContent/README.md)       | Chat content container — empty state vs message list switching.                      |
-| [EmptyContainer](../src/components/templates/EmptyContainer/README.md) | Welcome screen with image, title, description, suggestions.                          |
-| [History](../src/components/templates/History/README.md)               | Chat history popup — list, search, grouping, actions.                                |
-| [ChatContentV2](../src/components/templates/ChatContentV2/README.md)   | **Experimental.** Transcript layout with an overlay composer and scroll cooperation. |
+| Component                                                                              | Description                                                                          |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [ChatContent](../src/components/templates/ChatContent/README.md)                       | Chat content container — empty state vs message list switching.                      |
+| [EmptyContainer](../src/components/templates/EmptyContainer/README.md)                 | Welcome screen with image, title, description, suggestions.                          |
+| [History](../src/components/templates/History/README.md)                               | Chat history popup — list, search, grouping, actions.                                |
+| [ChatContentV2](../src/components/templates/ChatContentV2/README.md)                   | **Experimental.** Transcript layout with an overlay composer and scroll cooperation. |
+| [UserInstructionsScreen](../src/components/templates/UserInstructionsScreen/README.md) | Instructions form with draft state, character counter, and asynchronous Save/Cancel. |
 
 ## Pages (3)
 

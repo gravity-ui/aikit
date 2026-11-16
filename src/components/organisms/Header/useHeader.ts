@@ -9,6 +9,7 @@ import {HeaderAction, type HeaderMenuItem, type HeaderProps} from './types';
 export type ActionItem = {
     id: string;
     type: 'base' | 'additional';
+    disabled?: boolean;
     onClick?: () => void;
     foldingState?: 'collapsed' | 'opened';
 };
@@ -44,6 +45,7 @@ export function useHeader(props: HeaderProps): {
         title,
         preview,
         baseActions = [],
+        actionsDisabled,
         handleNewChat,
         handleHistoryToggle,
         handleClose,
@@ -83,6 +85,7 @@ export function useHeader(props: HeaderProps): {
                     actions.push({
                         id: action,
                         type: 'base',
+                        disabled: actionsDisabled,
                         onClick: () => {
                             const newState = foldingState === 'opened' ? 'collapsed' : 'opened';
                             handleFolding(newState);
@@ -104,13 +107,22 @@ export function useHeader(props: HeaderProps): {
                 actions.push({
                     id: action,
                     type: 'base',
+                    disabled: actionsDisabled,
                     onClick: handler,
                 });
             }
         });
 
         return actions;
-    }, [baseActions, handleNewChat, handleHistoryToggle, handleClose, handleFolding, foldingState]);
+    }, [
+        baseActions,
+        actionsDisabled,
+        handleNewChat,
+        handleHistoryToggle,
+        handleClose,
+        handleFolding,
+        foldingState,
+    ]);
 
     return {
         title,

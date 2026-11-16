@@ -25,6 +25,8 @@ import type {ChatContentProps} from '../../templates/ChatContent';
 import type {AlignmentConfig, EmptyContainerProps} from '../../templates/EmptyContainer';
 import type {HistoryProps} from '../../templates/History';
 
+import type {ChatScreenNavigationProps} from './screenTypes';
+
 /**
  * Welcome screen configuration
  */
@@ -202,7 +204,7 @@ export interface ChatExportConfig extends ChatMarkdownOptions {
 /**
  * Props for ChatContainer component
  */
-export interface ChatContainerProps {
+export interface ChatContainerProps extends ChatScreenNavigationProps {
     /** Stable account-scoped activity source; accepts local and server-backed stores. */
     chatActivity?: {
         store: ChatActivityStore;
