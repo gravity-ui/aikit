@@ -106,13 +106,13 @@ By default, the completed group heading does not add another checkmark above the
 Use `headerIconMode` to control the heading independently:
 
 - `auto` (default) follows `iconMode` and hides the completed heading icon.
-- `status` always shows the run's status icon, including a check after completion, even when
+- `always` shows the run's status icon, including a check after completion, even when
   `iconMode="none"`. The heading keeps its icon space when the run finishes.
 - `none` hides only the heading icon. Step icons, the timeline and the disclosure chevron
   are unchanged.
 
 ```tsx
-<ActivityList steps={steps} headerIconMode="status" />
+<ActivityList steps={steps} headerIconMode="always" />
 <ActivityList steps={steps} headerIconMode="none" iconMode="status" />
 ```
 
@@ -131,7 +131,7 @@ the existing custom thinking renderer, as in the example above.
 | -------------------------- | ----------------------------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------ |
 | `steps`                    | `readonly ActivityStep[]`                       | Yes      | —                                | Accumulated, ordered steps with stable unique IDs                  |
 | `iconMode`                 | `'type' \| 'status' \| 'none'`                  | No       | Category icon or status icon     | Category icons, execution-state icons, or no icons/timeline        |
-| `headerIconMode`           | `'auto' \| 'status' \| 'none'`                  | No       | `'auto'`                         | Heading icon only: automatic, always a status icon, or hidden      |
+| `headerIconMode`           | `'auto' \| 'always' \| 'none'`                  | No       | `'auto'`                         | Heading icon only: automatic, always a status icon, or hidden      |
 | `activeStepLabel`          | `string`                                        | No       | Active title or localized status | Plain-text override of the running heading                         |
 | `stepTypes`                | `Record<string, ActivityStepType>`              | No       | —                                | Category icons and labels                                          |
 | `status`                   | `ActivityStepStatus`                            | No       | Last step status                 | Overall run status, independent of stored step statuses            |

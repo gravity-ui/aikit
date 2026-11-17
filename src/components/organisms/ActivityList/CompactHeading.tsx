@@ -25,7 +25,7 @@ interface CompactHeadingProps
 
 function getHeaderIconMode({headerIconMode = 'auto', iconMode, status}: CompactHeadingProps) {
     if (headerIconMode !== 'auto') {
-        return headerIconMode;
+        return headerIconMode === 'always' ? 'status' : 'none';
     }
     return status === 'thought' ? 'none' : iconMode;
 }

@@ -61,7 +61,7 @@ export default {
         },
         format: {control: 'select', options: ['plain', 'markdown']},
         iconMode: {control: 'select', options: ['type', 'status', 'none']},
-        headerIconMode: {control: 'select', options: ['auto', 'status', 'none']},
+        headerIconMode: {control: 'select', options: ['auto', 'always', 'none']},
         activeStepLabel: {control: 'text'},
         maxHistoryHeight: {
             control: 'text',
@@ -472,7 +472,7 @@ export const HeaderIcons: Story = {
     },
     render: () => (
         <Showcase direction="column">
-            {(['auto', 'status', 'none'] as const).map((headerIconMode) => (
+            {(['auto', 'always', 'none'] as const).map((headerIconMode) => (
                 <ShowcaseItem
                     key={headerIconMode}
                     title={`headerIconMode="${headerIconMode}"`}

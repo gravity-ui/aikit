@@ -418,10 +418,10 @@ test.describe('ActivityList header icons', {tag: '@ActivityList'}, () => {
         ).toHaveCount(1);
     });
 
-    test('status keeps the header icon and label position through completion with step icons hidden', async ({
+    test('always keeps the header icon and label position through completion with step icons hidden', async ({
         mount,
     }) => {
-        const component = await mount(<IconModesExample headerIconMode="status" iconMode="none" />);
+        const component = await mount(<IconModesExample headerIconMode="always" iconMode="none" />);
         const heading = component.getByRole('button');
         const icon = heading.locator('.g-aikit-thinking-message-group__step-icon > svg');
         const label = heading.locator('.g-aikit-thinking-message-group__compact-label');
@@ -435,7 +435,7 @@ test.describe('ActivityList header icons', {tag: '@ActivityList'}, () => {
         const runningOffset = await getLabelOffset();
         const runningIcon = await icon.innerHTML();
         await component.update(
-            <IconModesExample headerIconMode="status" iconMode="none" status="thought" />,
+            <IconModesExample headerIconMode="always" iconMode="none" status="thought" />,
         );
         await expect(icon).toBeVisible();
         expect(await icon.innerHTML()).not.toBe(runningIcon);
