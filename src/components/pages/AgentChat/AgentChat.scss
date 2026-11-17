@@ -11,7 +11,7 @@
         line-height: 20px;
     }
     .g-aikit-assistant-message__content {
-        gap: 16px;
+        gap: var(--g-spacing-4);
     }
     .g-aikit-base-message_variant_assistant > .g-aikit-base-message__actions {
         margin-top: 8px;
@@ -34,6 +34,7 @@
         }
     }
     &__agent-footer {
+        container: agent-composer / inline-size;
         padding: 0;
         flex-shrink: 0;
     }
@@ -63,14 +64,13 @@
 
 .agent-chat__confirmation {
     position: relative;
-    margin-top: var(--g-spacing-3);
     padding: var(--g-spacing-3);
 
     .g-aikit-tool-message__container {
         gap: var(--g-spacing-4);
     }
 
-    &::after {
+    &:where(.g-aikit-tool-message_waiting)::after {
         content: '';
         position: absolute;
         inset: -1px;
@@ -108,10 +108,6 @@
 
 .agent-chat__confirmation-context {
     color: var(--g-color-text-secondary);
-}
-
-.agent-chat__tool-error {
-    margin-top: var(--g-spacing-3);
 }
 
 .agent-chat__agent-input {

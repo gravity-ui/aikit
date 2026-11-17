@@ -153,6 +153,14 @@ $block: '.#{variables.$ns}ask-user-question';
     &__option {
         cursor: pointer;
 
+        &_compact {
+            align-items: center;
+
+            #{$block}__shortcut {
+                padding-top: 0;
+            }
+        }
+
         &:hover,
         &:focus-visible {
             background: var(--g-color-base-simple-hover);

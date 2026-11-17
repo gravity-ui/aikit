@@ -271,6 +271,7 @@ export function AskUserQuestion({
                             key={option.id}
                             type="button"
                             className={b('option', {
+                                compact: !option.description,
                                 selected:
                                     selectedAnswer?.type === 'option' &&
                                     selectedAnswer.optionId === option.id,
