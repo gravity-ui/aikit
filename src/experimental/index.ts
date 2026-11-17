@@ -6,6 +6,7 @@
 
 export * from '../components/atoms/ScrollToBottomButton';
 export * from '../components/molecules/ChangedFilesSummary';
+export * from '../components/molecules/PlanProgress';
 export * from '../components/organisms/RunActivity';
 export * from '../components/templates/ChatContentV2';
 export * from '../components/pages/AgentChat';

@@ -5,6 +5,9 @@
   "ChangedFilesSummary": {
     "stability": "experimental"
   },
+  "PlanProgress": {
+    "stability": "experimental"
+  },
   "RunActivity": {
     "stability": "experimental"
   },

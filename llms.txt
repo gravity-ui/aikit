@@ -46,6 +46,7 @@ Tree-shaken imports: `@gravity-ui/aikit/PromptInput`, `/Header`, `/MessageList`,
 ## Components — Molecules
 
 - [ChangedFilesSummary](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ChangedFilesSummary/README.md): Experimental — Changed-files pill/card with baseline DiffStat and an accessible file list.
+- [PlanProgress](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/PlanProgress/README.md): Experimental — Plan progress pill with a popup listing step statuses.
 
 - [ActionPopup](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/ActionPopup/README.md): anchored popup container for action-button content
 - [BaseMessage](https://github.com/gravity-ui/aikit/blob/main/src/components/molecules/BaseMessage/README.md): base wrapper with action buttons support

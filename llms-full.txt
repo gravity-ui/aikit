@@ -1049,6 +1049,7 @@ Experimental entries use `@gravity-ui/aikit/experimental`; see [the compatibilit
 | [ToolHeader](../src/components/molecules/ToolHeader/README.md)                   | Tool-message header with icon, name, actions, indicators.                                     |
 | [ToolStatus](../src/components/molecules/ToolStatus/README.md)                   | Tool-status indicator with localized text.                                                    |
 | [ChangedFilesSummary](../src/components/molecules/ChangedFilesSummary/README.md) | **Experimental.** Changed-files pill/card with baseline DiffStat and an accessible file list. |
+| [PlanProgress](../src/components/molecules/PlanProgress/README.md)               | **Experimental.** Plan progress pill with a popup listing step statuses.                      |
 
 ## Organisms (13)
 
@@ -2289,6 +2290,7 @@ aikit/
 │   │   │   ├── ActionPopup/    BaseMessage/      ButtonGroup/
 │   │   │   ├── FeedbackForm/   FileDropZone/     FileItem/
 │   │   │   ├── ChangedFilesSummary/
+│   │   │   ├── PlanProgress/
 │   │   │   ├── InputContext/   PromptInputBody/  PromptInputFooter/
 │   │   │   ├── PromptInputHeader/  PromptInputPanel/   RatingBlock/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/
