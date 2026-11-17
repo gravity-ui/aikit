@@ -61,6 +61,7 @@ export default {
         },
         format: {control: 'select', options: ['plain', 'markdown']},
         iconMode: {control: 'select', options: ['type', 'status', 'none']},
+        headerIconMode: {control: 'select', options: ['auto', 'status', 'none']},
         activeStepLabel: {control: 'text'},
         maxHistoryHeight: {
             control: 'text',
@@ -458,6 +459,49 @@ export const Presentation: Story = {
                             },
                         ]}
                     />
+                </ShowcaseItem>
+            ))}
+        </Showcase>
+    ),
+};
+
+export const HeaderIcons: Story = {
+    parameters: {
+        description:
+            'Header icon modes before and after completion. Step icons and the disclosure chevron remain independent. Use headerIconMode in Playground to combine it with any step icon mode.',
+    },
+    render: () => (
+        <Showcase direction="column">
+            {(['auto', 'status', 'none'] as const).map((headerIconMode) => (
+                <ShowcaseItem
+                    key={headerIconMode}
+                    title={`headerIconMode="${headerIconMode}"`}
+                    width="100%"
+                >
+                    <Showcase direction="column">
+                        {(['thinking', 'thought'] as const).map((status) => (
+                            <ShowcaseItem
+                                key={status}
+                                title={status === 'thinking' ? 'Running' : 'Completed'}
+                                width="100%"
+                            >
+                                <ActivityList
+                                    headerIconMode={headerIconMode}
+                                    iconMode="status"
+                                    defaultExpanded
+                                    status={status}
+                                    steps={[
+                                        {
+                                            id: 'search',
+                                            type: 'search',
+                                            status,
+                                            content: 'Checking the available database clusters.',
+                                        },
+                                    ]}
+                                />
+                            </ShowcaseItem>
+                        ))}
+                    </Showcase>
                 </ShowcaseItem>
             ))}
         </Showcase>

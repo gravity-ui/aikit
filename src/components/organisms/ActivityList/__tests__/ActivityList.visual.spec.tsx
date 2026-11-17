@@ -7,6 +7,7 @@ import {ActivityListStories, EmptySummaryExample, IconModesExample} from './help
 test.describe('ActivityList', {tag: '@ActivityList'}, () => {
     const stories = {
         Legacy: ActivityListStories.Legacy,
+        HeaderIcons: ActivityListStories.HeaderIcons,
         Presentation: ActivityListStories.Presentation,
         Compact: ActivityListStories.Playground,
         CompactCompleted: ActivityListStories.Completed,
@@ -402,5 +403,62 @@ test.describe('ActivityList presentation', {tag: '@ActivityList'}, () => {
         await expect(component.getByRole('button')).toContainText('1 completed');
         await expect(component.getByText('Checking the quota')).toHaveCount(0);
         await expect(component.getByRole('listitem').getByText('Stored step title')).toBeVisible();
+    });
+});
+
+test.describe('ActivityList header icons', {tag: '@ActivityList'}, () => {
+    test('auto keeps the existing completed header without an icon', async ({mount}) => {
+        const component = await mount(<IconModesExample />);
+        const heading = component.getByRole('button');
+        await expect(heading.locator('[data-qa="operation-icon"]')).toHaveCount(1);
+        await component.update(<IconModesExample status="thought" />);
+        await expect(heading.locator('.g-aikit-thinking-message-group__step-icon')).toHaveCount(0);
+        await expect(
+            component.getByRole('listitem').locator('[data-qa="operation-icon"]'),
+        ).toHaveCount(1);
+    });
+
+    test('status keeps the header icon and label position through completion with step icons hidden', async ({
+        mount,
+    }) => {
+        const component = await mount(<IconModesExample headerIconMode="status" iconMode="none" />);
+        const heading = component.getByRole('button');
+        const icon = heading.locator('.g-aikit-thinking-message-group__step-icon > svg');
+        const label = heading.locator('.g-aikit-thinking-message-group__compact-label');
+        await expect(icon).toBeVisible();
+        const getLabelOffset = () =>
+            label.evaluate((element) => {
+                const button = element.closest('button');
+                if (!button) throw new Error('Expected a disclosure button');
+                return element.getBoundingClientRect().x - button.getBoundingClientRect().x;
+            });
+        const runningOffset = await getLabelOffset();
+        const runningIcon = await icon.innerHTML();
+        await component.update(
+            <IconModesExample headerIconMode="status" iconMode="none" status="thought" />,
+        );
+        await expect(icon).toBeVisible();
+        expect(await icon.innerHTML()).not.toBe(runningIcon);
+        expect(await getLabelOffset()).toBe(runningOffset);
+        await expect(component.getByRole('listitem').locator('svg')).toHaveCount(0);
+        await expect(heading).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    test('none hides only the header icon and keeps history expandable across statuses', async ({
+        mount,
+    }) => {
+        const component = await mount(<IconModesExample headerIconMode="none" />);
+        const heading = component.getByRole('button');
+        for (const status of ['thinking', 'thought', 'error', 'cancelled', 'paused'] as const) {
+            await component.update(<IconModesExample headerIconMode="none" status={status} />);
+            await expect(heading.locator('.g-aikit-thinking-message-group__step-icon')).toHaveCount(
+                0,
+            );
+            await expect(component.getByRole('listitem').locator('svg').first()).toBeVisible();
+            await heading.click();
+            await expect(heading).toHaveAttribute('aria-expanded', 'false');
+            await heading.press('Enter');
+            await expect(component.getByRole('listitem')).toBeVisible();
+        }
     });
 });

@@ -12,7 +12,10 @@ import type {ActivityListProps, ActivityStep} from './types';
 const b = block('thinking-message-group');
 
 interface CompactHeadingProps
-    extends Pick<ActivityListProps, 'stepTypes' | 'iconMode' | 'activeStepLabel'> {
+    extends Pick<
+        ActivityListProps,
+        'stepTypes' | 'iconMode' | 'headerIconMode' | 'activeStepLabel'
+    > {
     status: NonNullable<ActivityListProps['status']>;
     activeStep?: ActivityStep;
     summary: ReactNode;
@@ -20,16 +23,15 @@ interface CompactHeadingProps
     isExpanded: boolean;
 }
 
-export function CompactHeading({
-    activeStep,
-    stepTypes,
-    iconMode,
-    activeStepLabel,
-    status,
-    summary,
-    hasDetails,
-    isExpanded,
-}: CompactHeadingProps) {
+function getHeaderIconMode({headerIconMode = 'auto', iconMode, status}: CompactHeadingProps) {
+    if (headerIconMode !== 'auto') {
+        return headerIconMode;
+    }
+    return status === 'thought' ? 'none' : iconMode;
+}
+
+export function CompactHeading(props: CompactHeadingProps) {
+    const {activeStep, stepTypes, activeStepLabel, status, summary, hasDetails, isExpanded} = props;
     const {t} = i18n.useTranslation();
     const isThinking = status === 'thinking';
     const hasSummary =
@@ -39,7 +41,8 @@ export function CompactHeading({
         (isThinking && activeStepLabel) ||
         (isThinking && activeStep?.title) ||
         t(`status-${status}`);
-    const showIcon = status !== 'thought' && iconMode !== 'none';
+    const headerIconMode = getHeaderIconMode(props);
+    const showIcon = headerIconMode !== 'none';
     const operationIcon = isThinking && activeStep ? stepTypes?.[activeStep.type]?.icon : null;
     const showSecondarySummary = !showCompletedSummary && hasSummary;
     return (
@@ -53,7 +56,7 @@ export function CompactHeading({
                         <StepIcon
                             status={status}
                             operationIcon={operationIcon}
-                            iconMode={iconMode}
+                            iconMode={headerIconMode}
                         />
                     </span>
                 )}
