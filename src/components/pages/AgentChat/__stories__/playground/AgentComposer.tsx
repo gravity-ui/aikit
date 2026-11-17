@@ -1,5 +1,7 @@
 import {type ComponentProps, useState} from 'react';
 
+import {Sparkles} from '@gravity-ui/icons';
+
 import {AgentComposer as Composer} from '../../AgentComposer';
 import type {AgentModelOption} from '../../types';
 const skills: Array<{slug: string; title?: string}> = [
@@ -15,9 +17,12 @@ const models: AgentModelOption[] = [
     },
 ];
 
-export function AgentComposer(
-    props: Pick<ComponentProps<typeof Composer>, 'status' | 'onSend' | 'onStop'>,
-) {
+export function AgentComposer({
+    compactControls,
+    ...props
+}: Pick<ComponentProps<typeof Composer>, 'status' | 'onSend' | 'onStop'> & {
+    compactControls?: boolean;
+}) {
     const [repository, setRepository] = useState({orgSlug: 'demo', repoSlug: 'storefront'});
     const [model, setModel] = useState('default');
     return (
@@ -25,6 +30,8 @@ export function AgentComposer(
             {...props}
             models={models}
             modelLabel="Default"
+            modelCompactIcon={compactControls ? Sparkles : undefined}
+            hideModelChevron={compactControls}
             skills={skills}
             repositories={[
                 {orgSlug: 'demo', slug: 'storefront'},
