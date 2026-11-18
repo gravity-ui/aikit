@@ -895,7 +895,9 @@ export function ChatPlayground({flow = 'developer'}: {flow?: 'developer' | 'plan
                 <Dialog
                     open={Boolean(planDetails)}
                     onOpenChange={(open) => {
-                        if (!open) setPlanDetails(undefined);
+                        if (!open) {
+                            setPlanDetails(undefined);
+                        }
                     }}
                     aria-label={planDialogTitle}
                 >

@@ -13,6 +13,9 @@
     .g-aikit-assistant-message__content {
         gap: var(--g-spacing-4);
     }
+    .g-aikit-tool-header__left {
+        color: var(--g-color-text-secondary);
+    }
     .g-aikit-base-message_variant_assistant > .g-aikit-base-message__actions {
         margin-top: 8px;
     }

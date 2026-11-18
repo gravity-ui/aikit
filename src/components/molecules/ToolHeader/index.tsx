@@ -21,7 +21,7 @@ export function ToolHeader(props: ToolHeaderProps) {
         <div className={b('', className)} data-qa={qa}>
             <div className={b('left')}>
                 {toolIcon}
-                <Text color="secondary">{toolName}</Text>
+                <Text>{toolName}</Text>
                 {content}
             </div>
             <div className={b('right')}>

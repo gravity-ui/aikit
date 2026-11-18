@@ -229,6 +229,11 @@ export function getPlanReview(message: TChatMessage | undefined) {
     return review?.type === 'tool' ? review : undefined;
 }
 
+/**
+ * Fixture-only projection of the scripted operations into plan presentation data.
+ * footerContent carries fixture operation IDs, not a production tool identity contract.
+ * Production hosts should map explicit plan, step, and operation IDs from their runtime.
+ */
 export function getMessagePlan(message: TChatMessage | undefined, now?: number) {
     if (
         message?.role !== 'assistant' ||

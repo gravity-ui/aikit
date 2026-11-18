@@ -100,22 +100,150 @@ const models: AgentModelOption[] = [{id: 'default', name: 'Default model'}];
 />;
 ```
 
-| Prop               | Type                                          | Required | Default             | Description                                                           |
-| ------------------ | --------------------------------------------- | -------- | ------------------- | --------------------------------------------------------------------- |
-| models             | AgentModelOption[]                            | ✓        | —                   | Host-localized model options                                          |
-| model              | string                                        | ✓        | —                   | Controlled model ID                                                   |
-| modelLabel         | string                                        | —        | Selected model name | Short trigger label                                                   |
-| onModelChange      | (id: string) => void                          | ✓        | —                   | Model selection                                                       |
-| repositories       | {orgSlug: string; slug: string}[]             | ✓        | —                   | Available repositories                                                |
-| repository         | {orgSlug: string; repoSlug: string}           | ✓        | —                   | Controlled repository                                                 |
-| onRepositoryChange | (repository) => void                          | ✓        | —                   | Repository selection                                                  |
-| skills             | {slug: string; title?: string}[]              | ✓        | —                   | Available slash commands                                              |
-| status             | ChatStatus                                    | ✓        | —                   | Host lifecycle                                                        |
-| onSend             | (data: TSubmitData) => Promise<void or false> | ✓        | —                   | Send; rejection or false restores the draft unless newer input exists |
-| onStop             | () => void                                    | ✓        | —                   | Cancel the active run                                                 |
-| resetKey           | string or number                              | —        | —                   | Active conversation identity for stale draft recovery                 |
+| Prop               | Type                                          | Required | Default             | Description                                                                                         |
+| ------------------ | --------------------------------------------- | -------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| models             | AgentModelOption[]                            | ✓        | —                   | Host-localized model options                                                                        |
+| model              | string                                        | ✓        | —                   | Controlled model ID                                                                                 |
+| modelLabel         | string                                        | —        | Selected model name | Short trigger label                                                                                 |
+| modelCompactIcon   | AgentModelOption['icon']                      | —        | —                   | Replaces the model label and brand icon when the AgentChat composer container is at most 480px wide |
+| hideModelChevron   | boolean                                       | —        | false               | Hides the model selector chevron; model selection remains available                                 |
+| onModelChange      | (id: string) => void                          | ✓        | —                   | Model selection                                                                                     |
+| repositories       | {orgSlug: string; slug: string}[]             | ✓        | —                   | Available repositories                                                                              |
+| repository         | {orgSlug: string; repoSlug: string}           | ✓        | —                   | Controlled repository                                                                               |
+| onRepositoryChange | (repository) => void                          | ✓        | —                   | Repository selection                                                                                |
+| skills             | {slug: string; title?: string}[]              | ✓        | —                   | Available slash commands                                                                            |
+| status             | ChatStatus                                    | ✓        | —                   | Host lifecycle                                                                                      |
+| onSend             | (data: TSubmitData) => Promise<void or false> | ✓        | —                   | Send; rejection or false restores the draft unless newer input exists                               |
+| onStop             | () => void                                    | ✓        | —                   | Cancel the active run                                                                               |
+| resetKey           | string or number                              | —        | —                   | Active conversation identity for stale draft recovery                                               |
 
 Enter sends, Shift+Enter inserts a newline, Ctrl/Cmd+Enter follows the standard prompt shortcut. IME confirmation does not send. Slash completion takes precedence only while its menu is active. Controls use the configured UIKit language.
+
+`modelCompactIcon` responds to the `agent-composer` container supplied by AgentChat.
+When composing AgentComposer outside AgentChat, provide that named inline-size container
+to enable the same responsive presentation. Without the option, the label remains visible.
+
+## Plan progress and approval
+
+Use `PlanProgress` and `PlanStepList` from `/experimental` to compose plan UI.
+The host owns the plan, approval request, execution, cancellation, elapsed times,
+and changed-file baseline. AIKit renders the supplied snapshot and calls host actions.
+No planning backend or automatic execution is included.
+
+The following example uses a host-local view model, not an AIKit runtime contract:
+
+```tsx
+import {
+  AgentChat,
+  AgentToolAttention,
+  ChangedFilesSummary,
+  PlanProgress,
+  PlanStepList,
+  type AgentChatProps,
+  type ChangedFile,
+  type PlanStatus,
+  type PlanStep,
+} from '@gravity-ui/aikit/experimental';
+
+interface HostPlanView {
+  id: string;
+  proposalMessageId: string;
+  executionMessageId?: string;
+  awaitingApproval: boolean;
+  status: PlanStatus;
+  steps: readonly PlanStep[];
+  files: readonly ChangedFile[];
+}
+
+type PlanChatProps = Omit<AgentChatProps, 'renderAssistantFooter'> & {
+  plan: HostPlanView;
+  onApprovePlan: () => void;
+  onDeclinePlan: () => void;
+  onCancelPlan: () => void;
+  onOpenStep?: (stepId: string) => void;
+  onUndoChanges?: () => void;
+};
+
+function PlanChat({
+  plan,
+  composer,
+  onApprovePlan,
+  onDeclinePlan,
+  onCancelPlan,
+  onOpenStep,
+  onUndoChanges,
+  ...chatProps
+}: PlanChatProps) {
+  const finished = ['completed', 'failed', 'cancelled'].includes(plan.status);
+
+  return (
+    <AgentChat
+      {...chatProps}
+      composer={
+        <>
+          {plan.status === 'running' && (
+            <PlanProgress
+              key={plan.id}
+              steps={plan.steps}
+              status={plan.status}
+              onStepClick={onOpenStep}
+              onCancel={onCancelPlan}
+            />
+          )}
+          {composer}
+        </>
+      }
+      renderAssistantFooter={(message) => {
+        if (plan.awaitingApproval && message.id === plan.proposalMessageId) {
+          return (
+            <AgentToolAttention
+              toolName="Review plan"
+              status="waitingConfirmation"
+              bodyContent={<PlanStepList steps={plan.steps} onStepClick={onOpenStep} />}
+              onAccept={onApprovePlan}
+              onReject={onDeclinePlan}
+            />
+          );
+        }
+        if (finished && message.id === plan.executionMessageId) {
+          return (
+            <>
+              <PlanProgress
+                key={plan.id}
+                steps={plan.steps}
+                status={plan.status}
+                view="card"
+                onStepClick={onOpenStep}
+              />
+              {plan.files.length > 0 && (
+                <ChangedFilesSummary files={plan.files} view="card" onUndo={onUndoChanges} />
+              )}
+            </>
+          );
+        }
+        return null;
+      }}
+    />
+  );
+}
+```
+
+Pass the host's messages, `runs`, composer, and chat status through `chatProps`.
+Keep the proposal in history after approval and create an execution message with
+its own run ID and clock. Mark the proposal run completed and the execution run
+running only after the host accepts approval; keep pending questions and approvals
+outside folded activity. Localize host-supplied titles and action labels.
+
+Use explicit plan, step, and operation IDs from the runtime adapter. Do not infer
+identity from labels, rendered content, or `footerContent`. Map provider events to
+the view model in the host. On failure or cancellation, preserve successful edits
+and leave later steps pending. Supply final per-file differences against the
+baseline, rather than summing every intermediate edit. Undo and restore update
+that baseline in the host and then publish a new view snapshot.
+
+The Plan Mode Storybook uses scripted local fixtures, including simulated approval,
+file edits, verification, and undo. Its `planFlow.tsx` projection is demonstration
+code and is not a production adapter or a public message metadata contract.
 
 ## Clarification questions
 
