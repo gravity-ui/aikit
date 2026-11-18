@@ -35,6 +35,7 @@ export function ActivityList(props: ActivityListProps) {
     const {
         steps,
         iconMode,
+        headerIconMode,
         activeStepLabel,
         stepTypes,
         status = steps[steps.length - 1]?.status ?? 'thought',
@@ -99,6 +100,7 @@ export function ActivityList(props: ActivityListProps) {
             activeStep={activeStep}
             stepTypes={stepTypes}
             iconMode={iconMode}
+            headerIconMode={headerIconMode}
             activeStepLabel={activeStepLabel}
             status={status}
             summary={summary}
