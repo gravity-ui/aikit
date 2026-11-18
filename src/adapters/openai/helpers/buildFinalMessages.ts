@@ -3,7 +3,9 @@ import type {TAssistantMessage, TChatMessage, TMessageContentUnion} from '../../
 import {contentPartsToMessageContent} from './contentPartsToMessageContent';
 
 function isMessageContentEmpty(content: TAssistantMessage['content']): boolean {
-    if (typeof content === 'string') return content.trim() === '';
+    if (typeof content === 'string') {
+        return content.trim() === '';
+    }
     return Array.isArray(content) && content.length === 0;
 }
 

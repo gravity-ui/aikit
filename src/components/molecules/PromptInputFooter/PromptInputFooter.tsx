@@ -91,8 +91,12 @@ export function PromptInputFooter(props: PromptInputFooterProps) {
     }
 
     const renderAttachment = () => {
-        if (attachmentContent) return attachmentContent;
-        if (!showAttachment) return null;
+        if (attachmentContent) {
+            return attachmentContent;
+        }
+        if (!showAttachment) {
+            return null;
+        }
         return (
             <ActionButton
                 view="flat"

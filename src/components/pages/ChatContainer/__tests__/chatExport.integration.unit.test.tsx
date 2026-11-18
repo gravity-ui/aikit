@@ -42,8 +42,11 @@ afterAll(() => {
     document.execCommand = originalExecCommand;
     window.matchMedia = originalMatchMedia;
     global.ResizeObserver = originalResizeObserver;
-    if (originalClipboard) Object.defineProperty(navigator, 'clipboard', originalClipboard);
-    else Reflect.deleteProperty(navigator, 'clipboard');
+    if (originalClipboard) {
+        Object.defineProperty(navigator, 'clipboard', originalClipboard);
+    } else {
+        Reflect.deleteProperty(navigator, 'clipboard');
+    }
 });
 
 function Conversation({
@@ -75,7 +78,9 @@ function Conversation({
 
 function clickQa(qa: string) {
     const element = document.querySelector(`[data-qa="${qa}"]`);
-    if (!element) throw new Error(`Missing control: ${qa}`);
+    if (!element) {
+        throw new Error(`Missing control: ${qa}`);
+    }
     fireEvent.click(element);
 }
 
@@ -116,8 +121,11 @@ describe.each([true, false])('chat export conversation isolation (autofocus=%s)'
             expect(original.writeText).toHaveBeenCalledWith('## User\n\nSaved message');
             clickQa('header-action-newChat');
             await act(async () => {
-                if (outcome === 'success') original.resolve();
-                else original.reject(new Error('Clipboard denied'));
+                if (outcome === 'success') {
+                    original.resolve();
+                } else {
+                    original.reject(new Error('Clipboard denied'));
+                }
             });
             expect(screen.queryByRole('status')).toBeNull();
 
@@ -278,8 +286,11 @@ describe('custom export notifications', () => {
             render(<Conversation autoFocus={false} onResult={onResult} />);
             copy();
             await act(async () => {
-                if (status === 'success') clipboard.resolve();
-                else clipboard.reject(error);
+                if (status === 'success') {
+                    clipboard.resolve();
+                } else {
+                    clipboard.reject(error);
+                }
             });
             expect(onResult).toHaveBeenCalledTimes(1);
             expect(onResult).toHaveBeenCalledWith({
@@ -300,7 +311,9 @@ describe('custom export notifications', () => {
             const download = jest
                 .spyOn(chatMarkdown, 'downloadChatMarkdown')
                 .mockImplementation(() => {
-                    if (status === 'error') throw error;
+                    if (status === 'error') {
+                        throw error;
+                    }
                 });
             const {result} = renderHook(() =>
                 useChatExport({
@@ -351,7 +364,9 @@ describe('custom export notifications', () => {
                 rerender({conversationKey: 'A', enabled: true});
             } else if (transition === 'disable') {
                 rerender({conversationKey: 'A', enabled: false});
-            } else unmount();
+            } else {
+                unmount();
+            }
             await act(async () => clipboard.resolve());
             expect(onResult).not.toHaveBeenCalled();
         },

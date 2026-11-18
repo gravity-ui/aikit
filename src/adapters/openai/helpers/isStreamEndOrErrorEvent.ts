@@ -9,6 +9,8 @@ export function isStreamEndOrErrorEvent(event: OpenAIStreamEventLike | null | un
         return false;
     }
     const e = event as Record<string, unknown>;
-    if (e.type === 'error') return true;
+    if (e.type === 'error') {
+        return true;
+    }
     return isEventOneOf(e, e.data as Record<string, unknown> | undefined, STREAM_END_TYPES);
 }

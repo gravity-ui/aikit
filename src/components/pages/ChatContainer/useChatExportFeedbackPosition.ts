@@ -5,7 +5,9 @@ export function useChatExportFeedbackPosition(ref: RefObject<HTMLElement>, visib
     const [position, setPosition] = useState<CSSProperties>();
     useLayoutEffect(() => {
         const element = ref.current;
-        if (!visible || !element) return undefined;
+        if (!visible || !element) {
+            return undefined;
+        }
         const update = () => {
             const {top, left, width, height} = element.getBoundingClientRect();
             setPosition({top, left, width, height});

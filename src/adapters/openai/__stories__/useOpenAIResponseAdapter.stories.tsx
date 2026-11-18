@@ -197,9 +197,13 @@ export const WithClientTool: Story = {
 
         useEffect(() => {
             for (const message of currentStream.messages) {
-                if (message.role !== 'assistant' || !Array.isArray(message.content)) continue;
+                if (message.role !== 'assistant' || !Array.isArray(message.content)) {
+                    continue;
+                }
                 for (const item of message.content) {
-                    if (typeof item === 'string' || !item || item.type !== 'tool') continue;
+                    if (typeof item === 'string' || !item || item.type !== 'tool') {
+                        continue;
+                    }
                     const toolId = item.id;
                     const data = item.data as ToolMessageContentData;
                     if (

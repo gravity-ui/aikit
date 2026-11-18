@@ -99,7 +99,9 @@ function applyToolUpdate(
         idx = partsToUpdate.length - 1;
     }
     const prev = partsToUpdate[idx];
-    if (prev.type !== 'tool') return partsToUpdate;
+    if (prev.type !== 'tool') {
+        return partsToUpdate;
+    }
 
     const bodyText = update.error || update.output || undefined;
 
