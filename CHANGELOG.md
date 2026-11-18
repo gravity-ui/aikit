@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.0](https://github.com/gravity-ui/aikit/compare/v3.9.0...v3.10.0) (2026-11-18)
+
+
+### Features
+
+* **ActivityList:** add independent header icon mode ([#348](https://github.com/gravity-ui/aikit/issues/348)) ([9b32f21](https://github.com/gravity-ui/aikit/commit/9b32f212b64efe886da8753fc7d64d2b46c1c3a7))
+
 ## [3.9.0](https://github.com/gravity-ui/aikit/compare/v3.8.0...v3.9.0) (2026-11-16)
 
 
