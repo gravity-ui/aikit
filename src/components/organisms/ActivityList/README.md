@@ -101,7 +101,20 @@ and a check after completion.
 falling back to a dot. Error, paused and cancelled states keep their dedicated status icons.
 `iconMode="none"` removes icons and the timeline gutter; accessible statuses remain, and
 exceptional states retain a visible status label. Custom icons can supply their own colors.
-The completed group heading does not add another checkmark above the step icons.
+By default, the completed group heading does not add another checkmark above the step icons.
+
+Use `headerIconMode` to control the heading independently:
+
+- `auto` (default) follows `iconMode` and hides the completed heading icon.
+- `always` shows the run's status icon, including a check after completion, even when
+  `iconMode="none"`. The heading keeps its icon space when the run finishes.
+- `none` hides only the heading icon. Step icons, the timeline and the disclosure chevron
+  are unchanged.
+
+```tsx
+<ActivityList steps={steps} headerIconMode="always" />
+<ActivityList steps={steps} headerIconMode="none" iconMode="status" />
+```
 
 Use `activeStepLabel` for an application-supplied plain-text heading while running. It takes
 precedence over the active step title, is truncated visually and is available in full on hover.
@@ -118,6 +131,7 @@ the existing custom thinking renderer, as in the example above.
 | -------------------------- | ----------------------------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------ |
 | `steps`                    | `readonly ActivityStep[]`                       | Yes      | —                                | Accumulated, ordered steps with stable unique IDs                  |
 | `iconMode`                 | `'type' \| 'status' \| 'none'`                  | No       | Category icon or status icon     | Category icons, execution-state icons, or no icons/timeline        |
+| `headerIconMode`           | `'auto' \| 'always' \| 'none'`                  | No       | `'auto'`                         | Heading icon only: automatic, always a status icon, or hidden      |
 | `activeStepLabel`          | `string`                                        | No       | Active title or localized status | Plain-text override of the running heading                         |
 | `stepTypes`                | `Record<string, ActivityStepType>`              | No       | —                                | Category icons and labels                                          |
 | `status`                   | `ActivityStepStatus`                            | No       | Last step status                 | Overall run status, independent of stored step statuses            |
