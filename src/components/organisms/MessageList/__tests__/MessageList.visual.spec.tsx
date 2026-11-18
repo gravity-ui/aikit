@@ -506,6 +506,33 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         ).toBe(true);
     });
 
+    test('should remeasure a streaming row taller than the viewport after resizing', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<MessageListStories.VirtualizedStreaming />);
+        const scroller = page.locator(VIRTUAL_SCROLLER);
+        await expect(scroller).toBeVisible();
+        await page.evaluate(() =>
+            window.__appendStreamChunk?.(' Additional response text.'.repeat(150)),
+        );
+        await expect.poll(() => scroller.evaluate(distanceFromBottom)).toBeLessThan(10);
+        const response = page.locator('[data-message-id="streaming"]');
+        const before = await response.boundingBox();
+        expect(before?.height).toBeGreaterThan(400);
+
+        await page
+            .locator('.content-wrapper')
+            .last()
+            .evaluate((element) => {
+                element.style.setProperty('width', '300px');
+            });
+        await expect
+            .poll(async () => (await response.boundingBox())?.height ?? 0)
+            .toBeGreaterThan(before?.height ?? 0);
+        await expect.poll(() => scroller.evaluate(distanceFromBottom)).toBeLessThan(10);
+    });
+
     test('should render footer content as the last virtualized row', async ({mount, page}) => {
         await mount(<MessageListStories.VirtualizedWithFooterContent />);
 
