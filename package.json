@@ -887,7 +887,7 @@
     "marked": "^17.0.1",
     "react-window-v2": "npm:react-window@^2.2.1",
     "remend": ">=1.0.1 <1.2.0",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "optionalDependencies": {
     "openai": "^6.22.0",
