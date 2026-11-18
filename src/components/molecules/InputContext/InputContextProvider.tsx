@@ -89,9 +89,15 @@ export function InputContextProvider({
                         size: entry.file.size,
                         mimeType: entry.file.type || undefined,
                         status: (() => {
-                            if (entry.status === 'uploading') return 'loading';
-                            if (entry.status === 'done') return 'success';
-                            if (entry.status === 'error') return 'error';
+                            if (entry.status === 'uploading') {
+                                return 'loading';
+                            }
+                            if (entry.status === 'done') {
+                                return 'success';
+                            }
+                            if (entry.status === 'error') {
+                                return 'error';
+                            }
                             return undefined;
                         })(),
                         onRemove: () => removeFile(entry.id),

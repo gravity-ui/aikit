@@ -153,25 +153,39 @@ function getUpdateFromOutputItemAdded(
     const item = (e.item ?? (data?.item as OpenAIStreamOutputItemLike)) as
         | OpenAIStreamOutputItemLike
         | undefined;
-    if (!item) return null;
+    if (!item) {
+        return null;
+    }
     const id = typeof item.id === 'string' ? item.id : '';
 
-    if (item.type === 'reasoning') return addUpdateForReasoning(id, itemId);
-    if (item.type === 'mcp_call') return addUpdateForMcpCall(item, id);
-    if (item.type === 'function_call') return addUpdateForFunctionCall(item);
-    if (item.type === 'mcp_approval_request')
+    if (item.type === 'reasoning') {
+        return addUpdateForReasoning(id, itemId);
+    }
+    if (item.type === 'mcp_call') {
+        return addUpdateForMcpCall(item, id);
+    }
+    if (item.type === 'function_call') {
+        return addUpdateForFunctionCall(item);
+    }
+    if (item.type === 'mcp_approval_request') {
         return addUpdateForMcpRequest(item, id, 'waitingConfirmation');
-    if (item.type === 'mcp_submission_request')
+    }
+    if (item.type === 'mcp_submission_request') {
         return addUpdateForMcpRequest(item, id, 'waitingSubmission');
+    }
 
     const toolName = item.type ? OUTPUT_ITEM_TYPE_TO_TOOL_NAME[item.type] : undefined;
-    if (toolName) return addUpdateForSimpleTool(id, toolName);
+    if (toolName) {
+        return addUpdateForSimpleTool(id, toolName);
+    }
 
     return null;
 }
 
 function getReasoningDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventContentUpdate | null {
-    if (item.type !== 'reasoning' || typeof item.id !== 'string') return null;
+    if (item.type !== 'reasoning' || typeof item.id !== 'string') {
+        return null;
+    }
     const reasoning = item as {
         id: string;
         content?: Array<{type: string; text?: string}>;
@@ -186,7 +200,9 @@ function getReasoningDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCo
 }
 
 function mcpOutputIndicatesApplicationError(output: string | undefined): boolean {
-    if (!output) return false;
+    if (!output) {
+        return false;
+    }
     return /\berror\s*=\s*["']true["']/.test(output);
 }
 
@@ -201,7 +217,9 @@ function mcpTerminalToolStatus(
 }
 
 function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventContentUpdate | null {
-    if (item.type !== 'mcp_call' || typeof item.id !== 'string') return null;
+    if (item.type !== 'mcp_call' || typeof item.id !== 'string') {
+        return null;
+    }
     const mcp = item as {
         id: string;
         name?: string;
@@ -227,9 +245,13 @@ function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCont
         status = mcpTerminalToolStatus(errStr, outputStr);
     }
     let toolName: string | undefined;
-    if (typeof mcp.name === 'string') toolName = mcp.name;
-    else if (typeof mcp.server_label === 'string') toolName = mcp.server_label;
-    else toolName = undefined;
+    if (typeof mcp.name === 'string') {
+        toolName = mcp.name;
+    } else if (typeof mcp.server_label === 'string') {
+        toolName = mcp.server_label;
+    } else {
+        toolName = undefined;
+    }
 
     const mcpRequest = prettyPrintJson(argsStr);
     const mcpResponse = prettyPrintJson(errStr ?? outputStr);
@@ -249,7 +271,9 @@ function getMcpCallDoneUpdate(item: OpenAIStreamOutputItemLike): StreamEventCont
 function getFunctionCallDoneUpdate(
     item: OpenAIStreamOutputItemLike,
 ): StreamEventContentUpdate | null {
-    if (item.type !== 'function_call') return null;
+    if (item.type !== 'function_call') {
+        return null;
+    }
     const fn = item as {
         call_id: string;
         name?: string;
@@ -261,7 +285,9 @@ function getFunctionCallDoneUpdate(
     };
     const fnCallId = fn.call_id ? fn.call_id : '';
 
-    if (!fnCallId) return null;
+    if (!fnCallId) {
+        return null;
+    }
 
     let fnStatus: TToolStatus = 'loading';
     if (fn.status === 'completed') {
@@ -296,7 +322,9 @@ function getToolCallDoneUpdate(
     item: OpenAIStreamOutputItemLike,
     toolName: string,
 ): StreamEventContentUpdate | null {
-    if (typeof item.id !== 'string') return null;
+    if (typeof item.id !== 'string') {
+        return null;
+    }
     const t = item as {
         id: string;
         status?: string;
@@ -305,8 +333,11 @@ function getToolCallDoneUpdate(
         results?: unknown;
     };
     let status: TToolStatus = 'loading';
-    if (t.status === 'completed') status = 'success';
-    else if (t.status === 'failed' || t.status === 'incomplete') status = 'error';
+    if (t.status === 'completed') {
+        status = 'success';
+    } else if (t.status === 'failed' || t.status === 'incomplete') {
+        status = 'error';
+    }
 
     let output: string | undefined;
     if (typeof t.output === 'string') {
@@ -335,7 +366,9 @@ function getUpdateFromOutputItemDone(
     const item = (e.item ?? (data?.item as OpenAIStreamOutputItemLike)) as
         | OpenAIStreamOutputItemLike
         | undefined;
-    if (!item) return null;
+    if (!item) {
+        return null;
+    }
     return (
         getReasoningDoneUpdate(item) ??
         getMcpCallDoneUpdate(item) ??
@@ -357,7 +390,9 @@ function getUpdateFromOutputItemDone(
 export function getStreamEventContentUpdate(
     event: OpenAIStreamEventLike | null | undefined,
 ): StreamEventContentUpdate | null {
-    if (!event) return null;
+    if (!event) {
+        return null;
+    }
     const e = event as EventRecord;
     const type = e.type ?? (e.data as {type?: string})?.type ?? e.event;
     const data = e.data as EventRecord | undefined;
@@ -366,11 +401,15 @@ export function getStreamEventContentUpdate(
 
     if (itemId) {
         const reasoningUpdate = getReasoningUpdate(e, data, type, itemId);
-        if (reasoningUpdate) return reasoningUpdate;
+        if (reasoningUpdate) {
+            return reasoningUpdate;
+        }
     }
 
     const delta = getTextDeltaFromStreamEvent(event);
-    if (delta) return {kind: 'text_delta', delta};
+    if (delta) {
+        return {kind: 'text_delta', delta};
+    }
 
     if (type === 'response.output_item.added') {
         return getUpdateFromOutputItemAdded(e, data, itemId);

@@ -24,7 +24,9 @@ function shouldShowStatus(
     iconMode: ActivityListProps['iconMode'],
     hasContent: boolean,
 ) {
-    if (iconMode !== 'none') return false;
+    if (iconMode !== 'none') {
+        return false;
+    }
     const isEmpty = !step.title && !hasContent;
     return isEmpty || (step.status !== 'thinking' && step.status !== 'thought');
 }
@@ -224,8 +226,11 @@ export function ActivityList(props: ActivityListProps) {
                                                 tooltipTitle={t('copy')}
                                                 className={b('copy')}
                                                 onClick={() => {
-                                                    if (step.onCopyClick) step.onCopyClick();
-                                                    else copyToClipboard(step.content ?? '');
+                                                    if (step.onCopyClick) {
+                                                        step.onCopyClick();
+                                                    } else {
+                                                        copyToClipboard(step.content ?? '');
+                                                    }
                                                 }}
                                             >
                                                 <Icon data={Copy} size={14} />

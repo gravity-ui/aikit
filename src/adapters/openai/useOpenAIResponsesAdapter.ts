@@ -148,7 +148,9 @@ export function useOpenAIStreamAdapter(
         ]);
 
         const injectUsageMetadata = (msgs: TChatMessage[]): TChatMessage[] => {
-            if (usageMapRef.current.size === 0) return msgs;
+            if (usageMapRef.current.size === 0) {
+                return msgs;
+            }
             return msgs.map((msg) => {
                 if (msg.role === 'assistant' && msg.id && usageMapRef.current.has(msg.id)) {
                     return {
@@ -168,7 +170,9 @@ export function useOpenAIStreamAdapter(
             getAssistantMessageId,
             // Provisional id from getAssistantMessageId → OpenAI item id once the stream provides it.
             onAssistantMessageIdResolved: (previousId, openaiItemId) => {
-                if (cancelled) return;
+                if (cancelled) {
+                    return;
+                }
                 setMessages((prev) =>
                     prev.map((msg): TChatMessage => {
                         if (msg.id === previousId && msg.role === 'assistant') {
@@ -179,7 +183,9 @@ export function useOpenAIStreamAdapter(
                 );
             },
             onContentUpdate: (messageId, content) => {
-                if (cancelled) return;
+                if (cancelled) {
+                    return;
+                }
                 setMessages((prev) => {
                     const targetIndex = resolveStreamContentTargetIndex(prev, messageId);
                     if (targetIndex < 0) {

@@ -93,7 +93,9 @@ export function useChatExport({
     }, [historyKey]);
 
     const run = async (action: 'copy' | 'download', selection = entries) => {
-        if (!config || disabled || inFlight.current || !selection.length) return;
+        if (!config || disabled || inFlight.current || !selection.length) {
+            return;
+        }
         inFlight.current = true;
         setPending(true);
         setNotice(undefined);
@@ -103,7 +105,9 @@ export function useChatExport({
                 selection.map(({message}) => message),
                 options,
             );
-            if (!markdown.trim()) throw new Error('No public content to export');
+            if (!markdown.trim()) {
+                throw new Error('No public content to export');
+            }
             if (action === 'download') {
                 downloadChatMarkdown(markdown, config.filename);
             } else if (!copyToClipboard(markdown)) {
@@ -123,7 +127,9 @@ export function useChatExport({
                 setPending(false);
             }
         }
-        if (activeScope.current !== scope) return;
+        if (activeScope.current !== scope) {
+            return;
+        }
         // Notify outside the operation catch: a consumer error is not an export failure.
         if (config.onResult) {
             config.onResult(result);
@@ -194,8 +200,11 @@ export function useChatExport({
         onSelectionChange: (index, checked) =>
             setSelected((previous) => {
                 const next = new Set(previous);
-                if (checked) next.add(index);
-                else next.delete(index);
+                if (checked) {
+                    next.add(index);
+                } else {
+                    next.delete(index);
+                }
                 return next;
             }),
         onClose: () => setOpen(false),

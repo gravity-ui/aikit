@@ -136,9 +136,13 @@ export function CommandsAndContextExample() {
                             reject(new Error('Aborted'));
                         };
                         signal.addEventListener('abort', onAbort, {once: true});
-                        if (signal.aborted) onAbort();
+                        if (signal.aborted) {
+                            onAbort();
+                        }
                     });
-                    if (query.toLowerCase() === 'error') throw new Error('Demo search error');
+                    if (query.toLowerCase() === 'error') {
+                        throw new Error('Demo search error');
+                    }
                     return documents.filter((item) =>
                         `${item.title} ${item.description}`
                             .toLowerCase()
@@ -158,7 +162,9 @@ export function CommandsAndContextExample() {
         setStatus('submitted');
         await new Promise((resolve) => setTimeout(resolve, 400));
         setStatus('ready');
-        if (failSend) throw new Error('Demo send failure');
+        if (failSend) {
+            throw new Error('Demo send failure');
+        }
         const payload = buildRequest(data);
         setRequest(payload);
         const id = String(++sequence.current);

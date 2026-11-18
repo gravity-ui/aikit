@@ -40,7 +40,9 @@ export const FileDropZone = ({
 
     const handleFiles = useCallback(
         (fileList: FileList | null) => {
-            if (!fileList || fileList.length === 0) return;
+            if (!fileList || fileList.length === 0) {
+                return;
+            }
             const files = Array.from(fileList);
             onAdd(files);
         },
@@ -50,7 +52,9 @@ export const FileDropZone = ({
     const handleDragOver = useCallback(
         (e: React.DragEvent) => {
             e.preventDefault();
-            if (!disabled) setIsDragging(true);
+            if (!disabled) {
+                setIsDragging(true);
+            }
         },
         [disabled],
     );
@@ -64,7 +68,9 @@ export const FileDropZone = ({
         (e: React.DragEvent) => {
             e.preventDefault();
             setIsDragging(false);
-            if (disabled) return;
+            if (disabled) {
+                return;
+            }
             handleFiles(e.dataTransfer.files);
         },
         [disabled, handleFiles],
@@ -81,7 +87,9 @@ export const FileDropZone = ({
     );
 
     const handleClick = useCallback(() => {
-        if (!disabled) inputRef.current?.click();
+        if (!disabled) {
+            inputRef.current?.click();
+        }
     }, [disabled]);
 
     const handleKeyDown = useCallback(

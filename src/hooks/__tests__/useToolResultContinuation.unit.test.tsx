@@ -123,7 +123,9 @@ describe('findNewlySettledTools', () => {
             },
         ];
         const next = prev.map((msg) => {
-            if (msg.role !== 'assistant' || !Array.isArray(msg.content)) return msg;
+            if (msg.role !== 'assistant' || !Array.isArray(msg.content)) {
+                return msg;
+            }
             return {
                 ...msg,
                 content: msg.content.map((part) =>

@@ -50,8 +50,11 @@ it.each(['false', 'reject'])(
         expect(result.current.value).toBe('');
         expect(result.current.attachments).toEqual([]);
         await act(async () => {
-            if (mode === 'false') send.resolve(false);
-            else send.reject(new Error('failed'));
+            if (mode === 'false') {
+                send.resolve(false);
+            } else {
+                send.reject(new Error('failed'));
+            }
         });
         expect(result.current.value).toBe('original');
         expect(result.current.attachments).toEqual([file]);
@@ -72,10 +75,15 @@ it.each(['text', 'files', 'conversation'])(
             {initialProps: {resetKey: 0}},
         );
         await act(() => result.current.handleSubmit());
-        if (change === 'text') act(() => result.current.handleChange('new'));
-        if (change === 'files')
+        if (change === 'text') {
+            act(() => result.current.handleChange('new'));
+        }
+        if (change === 'files') {
             act(() => result.current.setAttachments([new File(['new'], 'new.txt')]));
-        if (change === 'conversation') rerender({resetKey: 1});
+        }
+        if (change === 'conversation') {
+            rerender({resetKey: 1});
+        }
         act(() => {
             expect(result.current.clearFailedDraft()).toBe(false);
         });

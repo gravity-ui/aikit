@@ -58,7 +58,9 @@ function isToolPartContent(part: TMessageContent): part is ToolPartContent {
 function toContentParts<TCustom extends TMessageContent>(
     content: TChatMessage<TCustom>['content'],
 ): TMessageContent[] {
-    if (typeof content === 'string') return [];
+    if (typeof content === 'string') {
+        return [];
+    }
     return Array.isArray(content) ? content : [content];
 }
 
@@ -67,10 +69,16 @@ function collectToolPartsByCallId<TCustom extends TMessageContent>(
 ): Map<string, ToolPartContentData> {
     const map = new Map<string, ToolPartContentData>();
     for (const msg of messages) {
-        if (msg.role !== 'assistant') continue;
+        if (msg.role !== 'assistant') {
+            continue;
+        }
         for (const part of toContentParts(msg.content)) {
-            if (!part || typeof part !== 'object') continue;
-            if (!isToolPartContent(part)) continue;
+            if (!part || typeof part !== 'object') {
+                continue;
+            }
+            if (!isToolPartContent(part)) {
+                continue;
+            }
             map.set(part.data.toolCallId, part.data);
         }
     }

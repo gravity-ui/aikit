@@ -5,23 +5,31 @@ type ItemRecord = {type?: string; id?: string} & Record<string, unknown>;
 
 function readEventType(e: EventRecord): string | undefined {
     const top = e.type as string | undefined;
-    if (top) return top;
+    if (top) {
+        return top;
+    }
     const data = e.data as EventRecord | undefined;
     const fromData = data?.type as string | undefined;
-    if (fromData) return fromData;
+    if (fromData) {
+        return fromData;
+    }
     return e.event as string | undefined;
 }
 
 function readEventItem(e: EventRecord): ItemRecord | undefined {
     const top = e.item as ItemRecord | undefined;
-    if (top) return top;
+    if (top) {
+        return top;
+    }
     const data = e.data as EventRecord | undefined;
     return data?.item as ItemRecord | undefined;
 }
 
 function readEventOutputIndex(e: EventRecord): number | undefined {
     const top = e.output_index;
-    if (typeof top === 'number') return top;
+    if (typeof top === 'number') {
+        return top;
+    }
     const data = e.data as EventRecord | undefined;
     const fromData = data?.output_index;
     return typeof fromData === 'number' ? fromData : undefined;

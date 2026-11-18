@@ -79,7 +79,9 @@ export function createPinnedChatsStore(storage: PinnedChatsStorage): PinnedChats
             enqueue(async () => {
                 await ensureLoaded();
                 const current = snapshot.pinnedChatIds;
-                if (current.includes(id) === pinned) return;
+                if (current.includes(id) === pinned) {
+                    return;
+                }
                 const next = pinned ? [...current, id] : current.filter((item) => item !== id);
                 await storage.save([...next]);
                 update({pinnedChatIds: Object.freeze(next)});

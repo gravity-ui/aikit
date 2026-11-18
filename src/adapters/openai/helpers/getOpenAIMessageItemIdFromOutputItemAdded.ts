@@ -5,10 +5,14 @@ import type {OpenAIStreamEventLike} from '../types';
 export function getOpenAIMessageItemIdFromOutputItemAdded(
     event: OpenAIStreamEventLike | null | undefined,
 ): string | null {
-    if (!event) return null;
+    if (!event) {
+        return null;
+    }
 
     const e = event as Record<string, unknown>;
-    if (e.type !== 'response.output_item.added') return null;
+    if (e.type !== 'response.output_item.added') {
+        return null;
+    }
 
     const item = e.item as {type?: string; id?: string} | undefined;
     if (item?.type !== 'message' || typeof item.id !== 'string' || item.id.length === 0) {

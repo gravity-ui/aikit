@@ -32,7 +32,9 @@ function listComponents() {
             .filter((e) => e.isDirectory() && /^[A-Z]/.test(e.name))
             .map((e) => e.name)
             .sort();
-        for (const name of names) result.push({level, name});
+        for (const name of names) {
+            result.push({level, name});
+        }
     }
     for (const [name, metadata] of Object.entries(STABILITY)) {
         if (!result.some((component) => component.name === name)) {
@@ -83,7 +85,9 @@ function buildExports(currentExports, components) {
     for (const [key, value] of Object.entries(currentExports)) {
         if (/^\.\/[A-Z]/.test(key) || key === './experimental') {
             if (!inserted) {
-                for (const [gk, gv] of Object.entries(generated)) next[gk] = gv;
+                for (const [gk, gv] of Object.entries(generated)) {
+                    next[gk] = gv;
+                }
                 inserted = true;
             }
             continue;
@@ -92,7 +96,9 @@ function buildExports(currentExports, components) {
     }
     if (!inserted) {
         // No component keys yet — append at the end of the exports object.
-        for (const [gk, gv] of Object.entries(generated)) next[gk] = gv;
+        for (const [gk, gv] of Object.entries(generated)) {
+            next[gk] = gv;
+        }
     }
     return next;
 }

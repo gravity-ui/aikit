@@ -73,7 +73,9 @@ export function useFileUploadStore<Meta = {id: string; name: string}>(
                 return {id: createFileId({sequence: idCounterRef.current}), file};
             });
 
-            if (filesToUpload.length === 0) return;
+            if (filesToUpload.length === 0) {
+                return;
+            }
 
             applyEntriesUpdate((current) => [
                 ...current,

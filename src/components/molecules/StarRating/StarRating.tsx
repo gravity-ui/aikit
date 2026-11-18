@@ -16,14 +16,22 @@ const b = block('star-rating');
 const STAR_COUNT = 5;
 
 const getButtonSize = (size: StarRatingSize): ButtonSize => {
-    if (size === 's') return 'xs';
-    if (size === 'm') return 's';
+    if (size === 's') {
+        return 'xs';
+    }
+    if (size === 'm') {
+        return 's';
+    }
     return 'm';
 };
 
 const getIconSize = (size: StarRatingSize): number => {
-    if (size === 's') return 16;
-    if (size === 'm') return 20;
+    if (size === 's') {
+        return 16;
+    }
+    if (size === 'm') {
+        return 20;
+    }
     return 24;
 };
 

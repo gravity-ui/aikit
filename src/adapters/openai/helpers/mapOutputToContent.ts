@@ -108,7 +108,11 @@ export function mapOutputToContent(
     for (const item of output ?? []) {
         pushBlocksForItem(item, blocks);
     }
-    if (blocks.length === 0) return '';
-    if (blocks.length === 1 && blocks[0].type === 'text') return blocks[0].data.text;
+    if (blocks.length === 0) {
+        return '';
+    }
+    if (blocks.length === 1 && blocks[0].type === 'text') {
+        return blocks[0].data.text;
+    }
     return blocks;
 }
