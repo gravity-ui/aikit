@@ -133,13 +133,17 @@ function isToolPartContent(part: TMessageContent): part is ToolPartContent {
 
 function getToolResult(messages: TChatMessage<ToolPartContent>[], toolCallId: string): unknown {
     for (const message of messages) {
-        if (message.role !== 'assistant' || typeof message.content === 'string') continue;
+        if (message.role !== 'assistant' || typeof message.content === 'string') {
+            continue;
+        }
         const parts = Array.isArray(message.content) ? message.content : [message.content];
         const tool = parts.find(
             (part): part is ToolPartContent =>
                 isToolPartContent(part) && part.data.toolCallId === toolCallId,
         );
-        if (tool) return tool.data.result;
+        if (tool) {
+            return tool.data.result;
+        }
     }
     return undefined;
 }
@@ -205,7 +209,9 @@ export const Playground: StoryFn = () => {
     useToolResultContinuation({
         messages,
         onSettled: ({toolCallId, status, messages: next}) => {
-            if (status !== 'success') return;
+            if (status !== 'success') {
+                return;
+            }
             const toolResult = getToolResult(next, toolCallId);
 
             const timer = setTimeout(() => {

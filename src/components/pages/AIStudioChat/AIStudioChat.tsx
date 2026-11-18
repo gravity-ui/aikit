@@ -34,7 +34,9 @@ import {normalizeMcpCallIds, omitMcpListToolsEvents} from './transforms';
 import type {AIStudioChatProps} from './types';
 
 function isFileAttachment(value: unknown): value is FileAttachment {
-    if (!value || typeof value !== 'object') return false;
+    if (!value || typeof value !== 'object') {
+        return false;
+    }
     const v = value as Record<string, unknown>;
     return typeof v.id === 'string' && typeof v.name === 'string';
 }
@@ -43,8 +45,12 @@ function resolveFileAttachments(
     attachments: FileAttachment[] | undefined,
     fileIds: string[] | undefined,
 ): FileAttachment[] | undefined {
-    if (attachments && attachments.length > 0) return attachments;
-    if (fileIds && fileIds.length > 0) return fileIds.map((id) => ({id, name: id}));
+    if (attachments && attachments.length > 0) {
+        return attachments;
+    }
+    if (fileIds && fileIds.length > 0) {
+        return fileIds.map((id) => ({id, name: id}));
+    }
     return undefined;
 }
 
@@ -88,8 +94,12 @@ function getMessageTextContent(message: TChatMessage): string {
     if (Array.isArray(content)) {
         return content
             .map((item) => {
-                if (typeof item === 'string') return item;
-                if (item.type === 'text' && item.data?.text) return item.data.text;
+                if (typeof item === 'string') {
+                    return item;
+                }
+                if (item.type === 'text' && item.data?.text) {
+                    return item.data.text;
+                }
                 return '';
             })
             .join('\n');
@@ -239,11 +249,17 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
 
     const status = useMemo((): ChatStatus => {
         if (!hasSource) {
-            if (isFetching) return 'submitted';
+            if (isFetching) {
+                return 'submitted';
+            }
             return sendError ? 'error' : 'ready';
         }
-        if (streamResult.status === 'streaming') return 'streaming';
-        if (streamResult.status === 'error') return 'error';
+        if (streamResult.status === 'streaming') {
+            return 'streaming';
+        }
+        if (streamResult.status === 'error') {
+            return 'error';
+        }
         return 'ready';
     }, [hasSource, isFetching, streamResult.status, sendError]);
 
@@ -324,7 +340,9 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                     transformRequest,
                     retryRequest,
                 );
-                if (body === false || epoch !== sendEpoch.current) return false;
+                if (body === false || epoch !== sendEpoch.current) {
+                    return false;
+                }
                 sentRequests.current.set(userMessageId, body);
                 // Auto-create a chat when history is enabled and no chat is active yet
                 if (showHistory && !activeChatRef.current) {
@@ -353,7 +371,9 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                     signal: abortController.signal,
                 });
 
-                if (epoch !== sendEpoch.current) return false;
+                if (epoch !== sendEpoch.current) {
+                    return false;
+                }
                 if (!response.ok) {
                     throw new Error(`API error: ${response.status} ${response.statusText}`);
                 }
@@ -366,7 +386,9 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                 setStreamOptions({initialMessages: messagesWithUser, assistantMessageId});
                 return true;
             } catch (error) {
-                if (epoch !== sendEpoch.current) return false;
+                if (epoch !== sendEpoch.current) {
+                    return false;
+                }
                 // Roll back the optimistic attempt; errors and failed messages are UI state only.
                 setMessages(previousMessages);
                 if ((error as Error).name !== 'AbortError') {
@@ -403,13 +425,19 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             let perSendParams: Record<string, unknown> = {};
             if (onBeforeSend) {
                 const result = await onBeforeSend(data);
-                if (result === false || result === null) return false;
-                if (result) perSendParams = result;
+                if (result === false || result === null) {
+                    return false;
+                }
+                if (result) {
+                    perSendParams = result;
+                }
             }
 
             const {base64Images, perSendFileParams} = await prepareFilesForSend(data.attachments);
 
-            if (epoch !== sendEpoch.current) return false;
+            if (epoch !== sendEpoch.current) {
+                return false;
+            }
             const accepted = await performSend({
                 submitData: data,
                 previousMessages: messages,
@@ -421,7 +449,9 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
                 },
             });
 
-            if (epoch !== sendEpoch.current) return false;
+            if (epoch !== sendEpoch.current) {
+                return false;
+            }
             if (!accepted) {
                 failedFileDraftKey.current = fileDraftKey;
                 return false;
@@ -457,7 +487,9 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
         const lastUserMsg = [...messages]
             .reverse()
             .find((m): m is TUserMessage => m.role === 'user');
-        if (!lastUserMsg) return;
+        if (!lastUserMsg) {
+            return;
+        }
 
         const lastUserIndex = messages.lastIndexOf(lastUserMsg);
         const trimmedMessages = messages.slice(0, lastUserIndex);
@@ -596,7 +628,9 @@ function AIStudioChatInner(props: AIStudioChatInnerProps) {
             const typed = action as DefaultMessageAction<TAssistantMessage>;
             const isLike = typed.type === BaseMessageActionType.Like;
             const isDislike = typed.type === BaseMessageActionType.Dislike;
-            if (!isLike && !isDislike) return action;
+            if (!isLike && !isDislike) {
+                return action;
+            }
 
             const targetRating: UserRating = isLike ? 'like' : 'dislike';
             const originalOnClick = typed.onClick;

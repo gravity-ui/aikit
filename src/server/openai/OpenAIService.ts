@@ -155,9 +155,13 @@ export class OpenAIService extends OpenAI {
     }
 
     private getMetadataForResponse(payloadMetadata: ResponseCreateParamsStreaming['metadata']) {
-        if (payloadMetadata) return payloadMetadata;
+        if (payloadMetadata) {
+            return payloadMetadata;
+        }
 
-        if (this.agent) return {agent: this.agent};
+        if (this.agent) {
+            return {agent: this.agent};
+        }
 
         return undefined;
     }
@@ -174,7 +178,9 @@ export class OpenAIService extends OpenAI {
 
             yield page.data;
 
-            if (!page.has_more) return;
+            if (!page.has_more) {
+                return;
+            }
 
             after = page.data[page.data.length - 1]?.id;
         }

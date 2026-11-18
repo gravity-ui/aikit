@@ -37,38 +37,74 @@ function getIconByMimeType(mimeType: string): IconData {
     const type = mimeType.split('/')[0];
     const subtype = mimeType.split('/')[1] ?? '';
 
-    if (type === 'image') return File;
-    if (type === 'audio' || subtype.includes('audio')) return Headphones;
-    if (type === 'video') return Video;
-    if (type === 'text') return subtype === 'plain' ? FileText : FileCode;
-    if (subtype === 'pdf') return FileLetterP;
-    if (CODE_SUBTYPES.includes(subtype)) return FileCode;
-    if (ARCHIVE_KEYWORDS.some((kw) => subtype.includes(kw))) return FileZipper;
-    if (TEXT_KEYWORDS.some((kw) => subtype.includes(kw))) return FileText;
-    if (subtype.includes('presentation')) return File;
+    if (type === 'image') {
+        return File;
+    }
+    if (type === 'audio' || subtype.includes('audio')) {
+        return Headphones;
+    }
+    if (type === 'video') {
+        return Video;
+    }
+    if (type === 'text') {
+        return subtype === 'plain' ? FileText : FileCode;
+    }
+    if (subtype === 'pdf') {
+        return FileLetterP;
+    }
+    if (CODE_SUBTYPES.includes(subtype)) {
+        return FileCode;
+    }
+    if (ARCHIVE_KEYWORDS.some((kw) => subtype.includes(kw))) {
+        return FileZipper;
+    }
+    if (TEXT_KEYWORDS.some((kw) => subtype.includes(kw))) {
+        return FileText;
+    }
+    if (subtype.includes('presentation')) {
+        return File;
+    }
     return File;
 }
 
 function getIconByExtension(ext: string): IconData {
     const lower = ext.toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'].includes(lower)) return File;
-    if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'].includes(lower)) return MusicNote;
-    if (['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv'].includes(lower)) return Video;
-    if (['pdf'].includes(lower)) return FileLetterP;
-    if (['zip', 'tar', 'gz', 'rar', '7z', 'bz2'].includes(lower)) return FileZipper;
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'].includes(lower)) {
+        return File;
+    }
+    if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'].includes(lower)) {
+        return MusicNote;
+    }
+    if (['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv'].includes(lower)) {
+        return Video;
+    }
+    if (['pdf'].includes(lower)) {
+        return FileLetterP;
+    }
+    if (['zip', 'tar', 'gz', 'rar', '7z', 'bz2'].includes(lower)) {
+        return FileZipper;
+    }
     if (['js', 'ts', 'tsx', 'jsx', 'py', 'go', 'rs', 'java', 'cpp', 'c', 'cs'].includes(lower)) {
         return Code;
     }
-    if (['json', 'xml', 'html', 'css', 'yml', 'yaml'].includes(lower)) return FileCode;
-    if (['txt', 'md', 'log', 'csv', 'tsv'].includes(lower)) return FileText;
+    if (['json', 'xml', 'html', 'css', 'yml', 'yaml'].includes(lower)) {
+        return FileCode;
+    }
+    if (['txt', 'md', 'log', 'csv', 'tsv'].includes(lower)) {
+        return FileText;
+    }
     return File;
 }
 
 function resolveIcon(mimeType?: string, fileName?: string): IconData {
-    if (mimeType) return getIconByMimeType(mimeType);
+    if (mimeType) {
+        return getIconByMimeType(mimeType);
+    }
     if (fileName) {
         const parts = fileName.split('.');
-        if (parts.length > 1) return getIconByExtension(parts[parts.length - 1]);
+        if (parts.length > 1) {
+            return getIconByExtension(parts[parts.length - 1]);
+        }
     }
     return File;
 }

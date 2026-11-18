@@ -9,7 +9,9 @@ export async function serializeChatRequest(
     transform: AIStudioChatProps['transformRequest'],
     retryBody?: string,
 ): Promise<string | false> {
-    if (retryBody !== undefined) return retryBody;
+    if (retryBody !== undefined) {
+        return retryBody;
+    }
     const mapped = transform ? await transform(request, data) : request;
     return mapped === false ? false : JSON.stringify(mapped);
 }

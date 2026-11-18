@@ -182,20 +182,28 @@ export type CreateToolsetRendererOptions = {
 const OUTCOME_KEYS = new Set(['status', 'result', 'error']);
 
 function isToolExecutionOutcome<TResult>(value: unknown): value is ToolExecutionOutcome<TResult> {
-    if (!value || typeof value !== 'object') return false;
+    if (!value || typeof value !== 'object') {
+        return false;
+    }
     const status = (value as {status?: unknown}).status;
-    if (status !== 'success' && status !== 'error' && status !== 'cancelled') return false;
+    if (status !== 'success' && status !== 'error' && status !== 'cancelled') {
+        return false;
+    }
     // A bare TResult may coincidentally carry a `status` field. Require all
     // own keys to be in {status, result, error} so e.g. `{status: 'success',
     // id: '123'}` is treated as a result, not a (result-less) outcome.
     for (const key of Object.keys(value)) {
-        if (!OUTCOME_KEYS.has(key)) return false;
+        if (!OUTCOME_KEYS.has(key)) {
+            return false;
+        }
     }
     return true;
 }
 
 function normalizeOutcome<TResult>(value: unknown): ToolExecutionOutcome<TResult> {
-    if (isToolExecutionOutcome<TResult>(value)) return value;
+    if (isToolExecutionOutcome<TResult>(value)) {
+        return value;
+    }
     return {status: 'success', result: value as TResult};
 }
 
@@ -318,13 +326,17 @@ export function applyToolResult<TCustom extends TMessageContent = never>(
     const isError = status === 'error';
 
     const next = messages.map((msg): TChatMessage<TCustom> => {
-        if (msg.role !== 'assistant') return msg;
+        if (msg.role !== 'assistant') {
+            return msg;
+        }
 
         const parts = toContentParts<TCustom>(msg.content);
         const hasMatch = parts.some(
             (part) => isToolPartContent(part) && part.data.toolCallId === event.toolCallId,
         );
-        if (!hasMatch) return msg;
+        if (!hasMatch) {
+            return msg;
+        }
 
         changed = true;
         const updatedParts = parts.map((part) => {

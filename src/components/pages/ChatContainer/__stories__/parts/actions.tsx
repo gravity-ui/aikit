@@ -780,7 +780,9 @@ export const WithMarkdownExport: Story = {
         messageListConfig: {messageRendererRegistry: exportMessageRegistry},
         chatExport: {
             getContentMarkdown: (part) => {
-                if (part.type !== 'export-card') return undefined;
+                if (part.type !== 'export-card') {
+                    return undefined;
+                }
                 const {title, description} = (part as ExportCardContent).data;
                 return `**${title}**\n\n${description}`;
             },

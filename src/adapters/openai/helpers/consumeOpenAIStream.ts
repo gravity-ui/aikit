@@ -47,14 +47,20 @@ export async function consumeOpenAIStream(
     let contentParts: TMessageContentUnion[] = [];
 
     const applyContentToCurrentMessage = (parts: TMessageContentUnion[]) => {
-        if (getIsCancelled()) return;
+        if (getIsCancelled()) {
+            return;
+        }
         onContentUpdate(currentAssistantMessageId, contentPartsToMessageContent(parts));
     };
 
     const resolveAssistantMessageId = (openaiMessageItemId: string) => {
-        if (assistantMessageItemIdResolved) return;
+        if (assistantMessageItemIdResolved) {
+            return;
+        }
         assistantMessageItemIdResolved = true;
-        if (openaiMessageItemId === currentAssistantMessageId) return;
+        if (openaiMessageItemId === currentAssistantMessageId) {
+            return;
+        }
 
         const previousId = currentAssistantMessageId;
         currentAssistantMessageId = openaiMessageItemId;
@@ -65,7 +71,9 @@ export async function consumeOpenAIStream(
 
     try {
         for await (const event of stream) {
-            if (getIsCancelled()) return;
+            if (getIsCancelled()) {
+                return;
+            }
 
             const openaiMessageItemId = getOpenAIMessageItemIdFromOutputItemAdded(event);
             if (openaiMessageItemId) {
@@ -80,7 +88,9 @@ export async function consumeOpenAIStream(
                     contentParts,
                 });
                 const endResult = getStreamEndResult(event);
-                if (getIsCancelled()) return;
+                if (getIsCancelled()) {
+                    return;
+                }
                 onEnd(
                     finalMessages,
                     endResult.status,
@@ -90,7 +100,9 @@ export async function consumeOpenAIStream(
             }
 
             const update = getStreamEventContentUpdate(event);
-            if (!update) continue;
+            if (!update) {
+                continue;
+            }
 
             const nextParts = applyContentUpdate(contentParts, update);
             if (nextParts !== null) {
@@ -98,7 +110,9 @@ export async function consumeOpenAIStream(
                 applyContentToCurrentMessage(contentParts);
                 if (shouldYieldAfterUpdate(update)) {
                     await waitForNextTask();
-                    if (getIsCancelled()) return;
+                    if (getIsCancelled()) {
+                        return;
+                    }
                 }
             }
         }

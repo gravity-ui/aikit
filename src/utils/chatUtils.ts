@@ -16,7 +16,9 @@ export function groupChatsByDate(chats: ChatType[]): Map<string, ChatType[]> {
     const grouped = new Map<string, ChatType[]>();
 
     chats.forEach((chat) => {
-        if (!chat.createTime) return;
+        if (!chat.createTime) {
+            return;
+        }
 
         const date = new Date(chat.createTime);
         const dateKey = date.toDateString();

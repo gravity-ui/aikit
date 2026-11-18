@@ -47,7 +47,9 @@ export function useAIAgentContext<T = unknown>(): AIAgentContextAPI<T> {
     const ctx = useContext(AIAgentContext);
 
     const getData = useCallback((): AIDataEntry<T>[] => {
-        if (!ctx) return [];
+        if (!ctx) {
+            return [];
+        }
         return ctx.getData() as AIDataEntry<T>[];
     }, [ctx]);
 

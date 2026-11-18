@@ -11,6 +11,8 @@
         "jest": true,
     },
     "rules": {
+        "curly": ["error", "all"],
+        "brace-style": ["error", "1tbs", {"allowSingleLine": false}],
         "import/no-extraneous-dependencies": "off",
         "valid-jsdoc": "off",
     },

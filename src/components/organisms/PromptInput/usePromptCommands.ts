@@ -45,7 +45,9 @@ export function usePromptCommands({
     const selectionRevision = useRef(0);
     const previousResetKey = useRef(resetKey);
     useEffect(() => {
-        if (previousResetKey.current === resetKey) return;
+        if (previousResetKey.current === resetKey) {
+            return;
+        }
         previousResetKey.current = resetKey;
         selectionRevision.current++;
         setInternalSelections([]);
@@ -80,7 +82,9 @@ export function usePromptCommands({
     latest.current = {selections, config};
 
     const updateSelections = (next: PromptSelection[]) => {
-        if (!mounted.current) return;
+        if (!mounted.current) {
+            return;
+        }
         selectionRevision.current++;
         latest.current.selections = next;
         setInternalSelections(next);
@@ -94,27 +98,38 @@ export function usePromptCommands({
         setSession(undefined);
     };
     const detect = (text: string, start: number, end: number, edited = false) => {
-        if (disabled || !config || (!edited && suppressed.current !== undefined)) return;
-        if (edited) suppressed.current = undefined;
+        if (disabled || !config || (!edited && suppressed.current !== undefined)) {
+            return;
+        }
+        if (edited) {
+            suppressed.current = undefined;
+        }
         const match = findCommandMatch(text, start, end, config.sources);
         setSession((previous) => {
-            if (!match) return undefined;
+            if (!match) {
+                return undefined;
+            }
             if (
                 previous?.origin === 'input' &&
                 previous.sourceId === match.sourceId &&
                 previous.query === match.query &&
                 previous.start === match.start &&
                 previous.end === match.end
-            )
+            ) {
                 return previous;
+            }
             return {...match, origin: 'input'};
         });
     };
     useEffect(() => {
-        if (disabled) setSession(undefined);
+        if (disabled) {
+            setSession(undefined);
+        }
     }, [disabled]);
     useEffect(() => {
-        if (!session || !source || !open) return undefined;
+        if (!session || !source || !open) {
+            return undefined;
+        }
         const controller = new AbortController();
         setActiveIndex(0);
         setSelectionError(false);
@@ -137,8 +152,9 @@ export function usePromptCommands({
                     );
                 }
             } catch {
-                if (!controller.signal.aborted)
+                if (!controller.signal.aborted) {
                     setResult({session, source, items: [], error: true});
+                }
             }
         };
         load();
@@ -146,7 +162,9 @@ export function usePromptCommands({
     }, [session, source, open]);
 
     const select = (item: PromptCommandItem) => {
-        if (!session || !source || item.disabled || disabled) return;
+        if (!session || !source || item.disabled || disabled) {
+            return;
+        }
         const replacement =
             session.origin === 'button' && item.insertText === undefined
                 ? {value, caret: session.start}
@@ -180,15 +198,21 @@ export function usePromptCommands({
         setSession(undefined);
         requestAnimationFrame(() => {
             const input = inputRef.current;
-            if (!input?.isConnected) return;
+            if (!input?.isConnected) {
+                return;
+            }
             input.focus();
             input.setSelectionRange(replacement.caret, replacement.caret);
         });
     };
     const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-        if (!open || event.nativeEvent.isComposing) return false;
+        if (!open || event.nativeEvent.isComposing) {
+            return false;
+        }
         if (event.key === 'Escape' || event.key === 'Tab') {
-            if (event.key === 'Escape') event.preventDefault();
+            if (event.key === 'Escape') {
+                event.preventDefault();
+            }
             close();
             return true;
         }
@@ -206,7 +230,9 @@ export function usePromptCommands({
         }
         if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.metaKey) {
             event.preventDefault();
-            if (items[activeIndex]) select(items[activeIndex]);
+            if (items[activeIndex]) {
+                select(items[activeIndex]);
+            }
             return true;
         }
         return false;
@@ -243,7 +269,9 @@ export function usePromptCommands({
         remove: (selection: PromptSelection) =>
             updateSelections(selections.filter((item) => item !== selection)),
         openSource: (sourceId: string) => {
-            if (disabled) return;
+            if (disabled) {
+                return;
+            }
             const start = inputRef.current?.selectionStart ?? value.length;
             const end = inputRef.current?.selectionEnd ?? start;
             setSession({sourceId, query: '', start, end, origin: 'button'});

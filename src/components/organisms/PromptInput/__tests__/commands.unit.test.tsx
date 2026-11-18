@@ -31,7 +31,9 @@ describe('command parsing', () => {
     it('replaces the whole active token in the middle without changing adjacent text', () => {
         const text = 'Please /review this';
         const match = findCommandMatch(text, 10, 10, sources);
-        if (!match) throw new Error('Expected an active command');
+        if (!match) {
+            throw new Error('Expected an active command');
+        }
         expect(match.query).toBe('re');
         expect(replaceCommand(text, match, 'explain')).toEqual({
             value: 'Please explain  this',
