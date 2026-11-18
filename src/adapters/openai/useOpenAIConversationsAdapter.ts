@@ -16,8 +16,12 @@ export type UseOpenAIConversationsAdapterResult = {
 function getConversationsList(
     input: OpenAIConversationLike[] | OpenAIConversationsListResponseLike | null | undefined,
 ): OpenAIConversationLike[] | null | undefined {
-    if (!input || Array.isArray(input)) return input;
-    if (typeof input === 'object' && 'data' in input) return input.data ?? null;
+    if (!input || Array.isArray(input)) {
+        return input;
+    }
+    if (typeof input === 'object' && 'data' in input) {
+        return input.data ?? null;
+    }
     return null;
 }
 

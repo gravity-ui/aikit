@@ -71,7 +71,9 @@ export function toYamlLike(data: unknown, indent = 0): string {
 }
 
 function toYamlLikeInternal(data: unknown, indent: number, visited: Set<object>): string {
-    if (data === null || data === undefined) return 'null';
+    if (data === null || data === undefined) {
+        return 'null';
+    }
 
     if (typeof data === 'string') {
         if (data.includes('\n')) {
@@ -85,7 +87,9 @@ function toYamlLikeInternal(data: unknown, indent: number, visited: Set<object>)
     }
 
     if (Array.isArray(data)) {
-        if (data.length === 0) return '[]';
+        if (data.length === 0) {
+            return '[]';
+        }
 
         return withVisitedObject(data, visited, () =>
             data
@@ -94,7 +98,9 @@ function toYamlLikeInternal(data: unknown, indent: number, visited: Set<object>)
                     if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
                         return withVisitedObject(item, visited, () => {
                             const entries = Object.entries(item);
-                            if (entries.length === 0) return `${prefix}{}`;
+                            if (entries.length === 0) {
+                                return `${prefix}{}`;
+                            }
                             const [firstKey, firstVal] = entries[0];
                             const firstLine = formatKeyValue(
                                 firstKey,
@@ -127,7 +133,9 @@ function toYamlLikeInternal(data: unknown, indent: number, visited: Set<object>)
     if (typeof data === 'object') {
         return withVisitedObject(data, visited, () => {
             const entries = Object.entries(data as Record<string, unknown>);
-            if (entries.length === 0) return '{}';
+            if (entries.length === 0) {
+                return '{}';
+            }
 
             return entries
                 .map(([key, val]) => formatKeyValue(key, val, ' '.repeat(indent), indent, visited))

@@ -3,7 +3,9 @@
  * if it doesn't parse as JSON, so non-JSON payloads render unchanged.
  */
 export function prettyPrintJson(s: string | undefined): string | undefined {
-    if (!s) return undefined;
+    if (!s) {
+        return undefined;
+    }
     try {
         return JSON.stringify(JSON.parse(s), null, 2);
     } catch {

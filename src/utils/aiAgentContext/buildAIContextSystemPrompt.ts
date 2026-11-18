@@ -11,7 +11,9 @@ export function buildAIContextSystemPrompt<T = unknown>(
     entries: AIDataEntry<T>[],
     options: BuildAIContextOptions<T> = {},
 ): string {
-    if (entries.length === 0) return '';
+    if (entries.length === 0) {
+        return '';
+    }
 
     const builder = createDefaultSystemPromptBuilder<T>(entries, {
         formatData: options.formatData ?? toYamlLike,

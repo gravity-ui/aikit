@@ -9,11 +9,17 @@ export function findCommandMatch(
     end: number,
     sources: readonly PromptCommandSource[],
 ): CommandMatch | undefined {
-    if (start !== end) return undefined;
+    if (start !== end) {
+        return undefined;
+    }
     const match = /(?:^|\s)([/@])([^\s/@]*)$/.exec(value.slice(0, start));
-    if (!match) return undefined;
+    if (!match) {
+        return undefined;
+    }
     const source = sources.find((item) => item.trigger === match[1]);
-    if (!source) return undefined;
+    if (!source) {
+        return undefined;
+    }
     const tokenStart = start - match[2].length - 1;
     const suffix = /^[^\s/@]*/.exec(value.slice(start))?.[0] ?? '';
     return {sourceId: source.id, query: match[2], start: tokenStart, end: start + suffix.length};

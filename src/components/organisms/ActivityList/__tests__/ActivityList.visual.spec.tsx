@@ -429,7 +429,9 @@ test.describe('ActivityList header icons', {tag: '@ActivityList'}, () => {
         const getLabelOffset = () =>
             label.evaluate((element) => {
                 const button = element.closest('button');
-                if (!button) throw new Error('Expected a disclosure button');
+                if (!button) {
+                    throw new Error('Expected a disclosure button');
+                }
                 return element.getBoundingClientRect().x - button.getBoundingClientRect().x;
             });
         const runningOffset = await getLabelOffset();

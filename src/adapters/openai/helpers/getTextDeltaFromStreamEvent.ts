@@ -20,13 +20,19 @@ export function getTextDeltaFromStreamEvent(
     }
 
     const outputTextDelta = getDeltaForEventTypes(e, data, ['response.output_text.delta']);
-    if (outputTextDelta !== null) return outputTextDelta;
+    if (outputTextDelta !== null) {
+        return outputTextDelta;
+    }
 
     const contentPartDelta = getDeltaForEventTypes(e, data, ['response.content_part.delta']);
-    if (contentPartDelta !== null) return contentPartDelta;
+    if (contentPartDelta !== null) {
+        return contentPartDelta;
+    }
 
     const refusalDelta = getDeltaForEventTypes(e, data, ['response.refusal.delta']);
-    if (refusalDelta !== null) return refusalDelta;
+    if (refusalDelta !== null) {
+        return refusalDelta;
+    }
 
     if (typeof data?.text === 'string') {
         return data.text;

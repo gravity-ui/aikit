@@ -139,7 +139,9 @@ describe('AIStudioChat failed-send integration', () => {
         await send('hello');
         expect(mockChatProps.promptInputProps?.commandsResetKey).toBe(initialKey);
         const firstChat = mockChatProps.activeChat;
-        if (!firstChat) throw new Error('Expected an implicitly created conversation');
+        if (!firstChat) {
+            throw new Error('Expected an implicitly created conversation');
+        }
         await act(async () => {
             await mockChatProps.onCreateChat?.();
         });

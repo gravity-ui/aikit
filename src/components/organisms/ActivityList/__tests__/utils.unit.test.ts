@@ -29,7 +29,9 @@ describe('thinking message migration and grouping', () => {
         const entries = group(items);
         expect(entries).toHaveLength(1);
         const entry = entries[0];
-        if (entry.type !== 'thinking-group') throw new Error('Expected group');
+        if (entry.type !== 'thinking-group') {
+            throw new Error('Expected group');
+        }
         expect(entry.items[0]).toBe(one);
         expect(entry.items[1]).toBe(two);
         expect(entry.steps.map((step) => step.status)).toEqual(['thought', 'thinking']);
@@ -51,12 +53,15 @@ describe('thinking message migration and grouping', () => {
     it('keeps a stable group ID as streaming appends and replaces details', () => {
         const first = group([one])[0];
         const updated = group([{...one, data: {...data, content: 'updated'}}, two])[0];
-        if (first.type !== 'thinking-group' || updated.type !== 'thinking-group')
+        if (first.type !== 'thinking-group' || updated.type !== 'thinking-group') {
             throw new Error('Expected groups');
+        }
         expect(updated.id).toBe(first.id);
         expect(updated.steps[0].content).toBe('updated');
         const retry = group([{...one, run: 'retry'}])[0];
-        if (retry.type !== 'thinking-group') throw new Error('Expected group');
+        if (retry.type !== 'thinking-group') {
+            throw new Error('Expected group');
+        }
         expect(retry.id).not.toBe(first.id);
     });
 });

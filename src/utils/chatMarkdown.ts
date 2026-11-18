@@ -21,7 +21,9 @@ function escapePlainText(text: string): string {
     let result = '';
     for (const match of text.matchAll(/(?:https?:\/\/|www\.)[^\s<>]+/gi)) {
         const token = Lexer.lexInline(match[0])[0];
-        if (token?.type !== 'link') continue;
+        if (token?.type !== 'link') {
+            continue;
+        }
         const offset = match.index;
         const href = token.href.replace(/&/g, '&amp;').replace(/</g, '%3C').replace(/>/g, '%3E');
         result += escapeMarkdownSyntax(text.slice(cursor, offset));
@@ -36,7 +38,9 @@ function rewriteChildren(raw: string, tokens: Token[], rewrite: (token: Token) =
     let result = '';
     for (const token of tokens) {
         const offset = raw.indexOf(token.raw, cursor);
-        if (offset < 0) continue;
+        if (offset < 0) {
+            continue;
+        }
         result += raw.slice(cursor, offset) + rewrite(token);
         cursor = offset + token.raw.length;
     }
@@ -45,7 +49,9 @@ function rewriteChildren(raw: string, tokens: Token[], rewrite: (token: Token) =
 
 function closeCodeFence(raw: string): string {
     const fence = raw.match(/^ {0,3}(`{3,}|~{3,})/);
-    if (!fence) return raw;
+    if (!fence) {
+        return raw;
+    }
     const closing = new RegExp(`\\n {0,3}${fence[1][0]}{${fence[1].length},}[ \\t]*(?:\\n)?$`);
     return closing.test(raw) ? raw : `${raw}\n${fence[1]}\n`;
 }
@@ -53,7 +59,9 @@ function closeCodeFence(raw: string): string {
 /** Resolve references per message before joining independent Markdown documents. */
 function isolateMarkdown(markdown: string): string {
     const rewrite = (token: Token): string => {
-        if (token.type === 'def') return '';
+        if (token.type === 'def') {
+            return '';
+        }
         if (
             (token.type === 'link' || token.type === 'image') &&
             /^!?\[/.test(token.raw) &&
@@ -80,10 +88,14 @@ function isolateMarkdown(markdown: string): string {
                       .map((line) => `> ${line}`)
                       .join('\n') + '\n';
         }
-        if (token.type === 'list') return rewriteChildren(token.raw, token.items, rewrite);
+        if (token.type === 'list') {
+            return rewriteChildren(token.raw, token.items, rewrite);
+        }
         if (token.type === 'list_item') {
             const text = (token.tokens ?? []).map(rewrite).join('');
-            if (text === token.text) return token.raw;
+            if (text === token.text) {
+                return token.raw;
+            }
             const prefix = token.raw.match(/^\s*(?:[-+*]|\d+[.)])\s+/)?.[0] ?? '- ';
             const checkbox = token.task ? `[${token.checked ? 'x' : ' '}] ` : '';
             const trailingNewlines = token.raw.match(/\n+$/)?.[0] ?? '';
@@ -143,7 +155,9 @@ export function getMessageMarkdown(
                 }
             } else if (item.type !== 'thinking' && item.type !== 'tool') {
                 const text = options.getContentMarkdown?.(item, message);
-                if (text) parts.push(text);
+                if (text) {
+                    parts.push(text);
+                }
             }
         }
     }

@@ -139,7 +139,9 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     }
 
     // Input is disabled when loading
-    if (sending && submitButtonState !== 'cancelable') submitButtonState = 'loading';
+    if (sending && submitButtonState !== 'cancelable') {
+        submitButtonState = 'loading';
+    }
     const isInputDisabled = submitButtonState === 'loading';
 
     const handleChange = useCallback(
@@ -155,7 +157,9 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
     const submit = useCallback(
         async (override?: TSubmitData) => {
             const content = override?.content.trim() ?? trimmedValue;
-            if (disabled || isSubmitted || inFlight.current || !content) return;
+            if (disabled || isSubmitted || inFlight.current || !content) {
+                return;
+            }
             const draftValue = value;
             const submitData: TSubmitData = {
                 ...override,
@@ -175,8 +179,9 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
                     !mounted.current ||
                     revision.current !== clearedRevision ||
                     selectionSnapshot?.hasChanged()
-                )
+                ) {
                     return;
+                }
                 updateValue(draftValue);
                 updateAttachments(attachments);
                 selectionSnapshot?.restore();
@@ -186,8 +191,9 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
                         !mounted.current ||
                         revision.current !== restoredRevision ||
                         selectionSnapshot?.hasChanged()
-                    )
+                    ) {
                         return false;
+                    }
                     updateValue('');
                     updateAttachments([]);
                     selectionSnapshot?.clear();
@@ -197,12 +203,18 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
             };
             try {
                 const result = await onSend(submitData);
-                if (result === false) restore();
+                if (result === false) {
+                    restore();
+                }
             } catch {
-                if (restore()) setSendError(true);
+                if (restore()) {
+                    setSendError(true);
+                }
             } finally {
                 inFlight.current = false;
-                if (mounted.current) setSending(false);
+                if (mounted.current) {
+                    setSending(false);
+                }
             }
         },
         [
@@ -233,7 +245,9 @@ export function usePromptInput(props: UsePromptInputProps): UsePromptInputReturn
 
     const handleKeyDown = useCallback(
         (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (event.nativeEvent.isComposing || event.defaultPrevented) return;
+            if (event.nativeEvent.isComposing || event.defaultPrevented) {
+                return;
+            }
             const isEnter = event.code === 'Enter' || event.code === 'NumpadEnter';
 
             // Insert new line on Ctrl/Cmd + Enter
