@@ -18,11 +18,12 @@ export function EmptySummaryExample() {
 
 export function IconModesExample({
     iconMode,
+    headerIconMode,
     status = 'thinking',
     activeStepLabel,
     withIcon = true,
     legacy = false,
-}: Pick<ActivityListProps, 'iconMode' | 'status' | 'activeStepLabel'> & {
+}: Pick<ActivityListProps, 'iconMode' | 'headerIconMode' | 'status' | 'activeStepLabel'> & {
     withIcon?: boolean;
     legacy?: boolean;
 }) {
@@ -32,6 +33,7 @@ export function IconModesExample({
             defaultExpanded
             format="markdown"
             iconMode={iconMode}
+            headerIconMode={headerIconMode}
             activeStepLabel={activeStepLabel}
             status={status}
             stepTypes={

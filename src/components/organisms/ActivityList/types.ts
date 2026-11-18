@@ -42,6 +42,8 @@ export interface ActivityListProps
     steps: readonly ActivityStep[];
     /** When omitted, preserves supplied category icons and otherwise uses status icons. Explicit modes override this behavior. */
     iconMode?: 'type' | 'status' | 'none';
+    /** Header only: auto follows iconMode and hides the completed icon; always shows a status icon; none hides it. Defaults to auto. */
+    headerIconMode?: 'auto' | 'always' | 'none';
     /** Plain-text running heading supplied by the application; overrides the active step title. */
     activeStepLabel?: string;
     stepTypes?: Readonly<Record<string, ActivityStepType>>;
