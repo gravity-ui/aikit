@@ -27,7 +27,11 @@ Use for **streaming** responses: consumes an SSE stream or an `AsyncIterable` of
 
 **Options:** `initialMessages`, `assistantMessageId`, `onStreamEnd`, `trackTokenUsage`.
 
-**Result:** `{ messages, status, error, responseId }` where `responseId` is populated from stream lifecycle events such as `response.created`, and `status` is `'idle' | 'streaming' | 'done' | 'error'`.
+**Result:** `{ messages, status, error, responseId }` where `responseId` is populated from stream lifecycle events such as `response.created`, and `status` is `'ready' | 'streaming' | 'error'`.
+
+**Stream completion:** `response.completed` finishes successfully. `response.failed`, `response.incomplete`, and `error` set `status` to `'error'`, preserving partial message content. The error includes the backend error message or incomplete reason when available. EOF without a terminal event is an interrupted response, including an SSE `[DONE]` marker without a preceding terminal event. Explicit `response.done` events remain supported for compatibility. No additional guard wrapper is needed.
+
+`fetchResponseToStreamEvents` throws on interrupted streams and preserves terminal response events for the adapter to classify. Reader errors, including abort errors, propagate unchanged. Setting the hook's stream to `null`, replacing it, or unmounting stops updates from the previous stream; abort the underlying request separately when cancelling generation.
 
 **`trackTokenUsage` option (opt-in):** When `true`, the adapter listens for `response.completed` events and stores `output_tokens` from the usage data in each assistant message's `metadata.outputTokens`. Disabled by default — no metadata is added unless explicitly enabled. Use together with a `children` render function in `assistantActions` to display the count in the UI.
 

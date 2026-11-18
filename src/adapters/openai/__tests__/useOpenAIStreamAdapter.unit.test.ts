@@ -12,6 +12,70 @@ async function* createMockStream(
 }
 
 describe('useOpenAIStreamAdapter', () => {
+    it.each([
+        [
+            {type: 'response.failed', response: {error: {message: 'Model unavailable'}}},
+            'Model unavailable',
+        ],
+        [{type: 'response.failed'}, 'Response failed'],
+        [{type: 'response.incomplete'}, 'Response incomplete'],
+        [
+            {
+                type: 'response.incomplete',
+                response: {incomplete_details: {reason: 'max_output_tokens'}},
+            },
+            'Response incomplete: max_output_tokens',
+        ],
+        [{event: 'response.failed', data: {response: {error: {message: 'Failed'}}}}, 'Failed'],
+        [{data: {type: 'error', message: 'Backend error'}}, 'Backend error'],
+        [{event: 'error', data: {}, error: 'Rate limit exceeded'}, 'Rate limit exceeded'],
+        [
+            {event: 'error', error: 'Top-level error', data: {error: 'Nested error'}},
+            'Top-level error',
+        ],
+        [
+            {event: 'error', error: {message: 'Top-level error'}, data: {error: 'Nested error'}},
+            'Top-level error',
+        ],
+        [{event: 'error', data: {error: 'Nested error'}}, 'Nested error'],
+        [{event: 'error', data: {error: {message: 'Nested error'}}}, 'Nested error'],
+        [null, 'Response stream interrupted'],
+    ])(
+        'reports unsuccessful completion %j while retaining partial content',
+        async (event, message) => {
+            const stream = createMockStream([
+                {type: 'response.output_text.delta', delta: 'Partial answer'},
+                ...(event ? [event as OpenAIStreamEventLike] : []),
+            ]);
+            const onStreamEnd = jest.fn();
+            const {result} = renderHook(() => useOpenAIStreamAdapter(stream, {onStreamEnd}));
+            await waitFor(() => expect(result.current.status).toBe('error'));
+            expect(result.current.error?.message).toBe(message);
+            expect(result.current.messages[0]).toMatchObject({content: 'Partial answer'});
+            expect(onStreamEnd).toHaveBeenCalledTimes(1);
+        },
+    );
+
+    it('does not report an interrupted stream after unmount', async () => {
+        let finish!: () => void;
+        const stream = {
+            async *[Symbol.asyncIterator]() {
+                yield {type: 'response.output_text.delta', delta: 'Partial'};
+                await new Promise<void>((resolve) => {
+                    finish = resolve;
+                });
+            },
+        };
+        const onStreamEnd = jest.fn();
+        const {result, unmount} = renderHook(() => useOpenAIStreamAdapter(stream, {onStreamEnd}));
+        await waitFor(() => expect(result.current.messages[0]).toMatchObject({content: 'Partial'}));
+        unmount();
+        await act(async () => {
+            finish();
+        });
+        expect(onStreamEnd).not.toHaveBeenCalled();
+    });
+
     it('should accumulate text deltas into a single assistant message', async () => {
         const stream = createMockStream([
             {type: 'response.output_text.delta', delta: 'Hello '},

@@ -137,6 +137,7 @@ export type OpenAIStreamEventLike =
     | {type: 'response.done'}
     | {type: 'response.completed'}
     | {type: 'response.failed'}
+    | {type: 'response.incomplete'}
     | {type: 'error'; error?: string}
     | {
           event?: string;
