@@ -66,14 +66,19 @@ export function AskUserQuestion({
     useQuestionTransition(rootRef, contentRef);
     const inputRef = useRef<HTMLInputElement>(null);
     const customRowRef = useRef<HTMLDivElement>(null);
-    const selectedOptions = useRef(new Map<string, AskUserQuestionAnswer>());
+    const [selectedOptions, setSelectedOptions] = useState<Record<string, AskUserQuestionAnswer>>(
+        {},
+    );
     const questionKey = `${questionIndex}:${question}`;
     const selectedAnswerRef = useRef(selectedAnswer);
-    selectedAnswerRef.current = selectedAnswer;
+    selectedAnswerRef.current = selectedAnswer ?? selectedOptions[questionKey];
     const [keyboardFocus, setKeyboardFocus] = useState(true);
     const answerOption = useCallback(
         (optionId: string) => {
-            selectedOptions.current.set(questionKey, {type: 'option', optionId});
+            setSelectedOptions((previous) => ({
+                ...previous,
+                [questionKey]: {type: 'option', optionId},
+            }));
             onAnswer({type: 'option', optionId});
         },
         [onAnswer, questionKey],
@@ -100,7 +105,7 @@ export function AskUserQuestion({
         }
         setKeyboardFocus(true);
         const answers = Array.from(root.querySelectorAll<HTMLElement>('[data-question-answer]'));
-        const saved = selectedAnswerRef.current ?? selectedOptions.current.get(questionKey);
+        const saved = selectedAnswerRef.current;
         const target =
             (saved?.type === 'custom'
                 ? customRowRef.current
@@ -109,12 +114,48 @@ export function AskUserQuestion({
         target?.focus({preventScroll: true});
     }, [questionKey]);
     const [draft, setDraft] = useState({questionKey, value: ''});
+    const [editingKey, setEditingKey] = useState<string>();
+    const savedAnswer = selectedAnswer ?? selectedOptions[questionKey];
+    const savedCustom = savedAnswer?.type === 'custom' ? savedAnswer.value : undefined;
+    const customKey = `${questionKey}:${savedCustom ?? ''}`;
+    const editing = savedCustom === undefined || editingKey === customKey;
     const value = customAnswer ?? (draft.questionKey === questionKey ? draft.value : '');
     const hasValue = Boolean(value.trim());
 
+    useEffect(() => {
+        setEditingKey(undefined);
+    }, [questionKey, savedCustom]);
+
+    const updateCustom = useCallback(
+        (nextValue: string) => {
+            setDraft({questionKey, value: nextValue});
+            onCustomAnswerChange?.(nextValue);
+        },
+        [onCustomAnswerChange, questionKey],
+    );
+    const editCustom = useCallback(() => {
+        if (savedCustom !== undefined) {
+            updateCustom(savedCustom);
+            setEditingKey(customKey);
+        } else {
+            inputRef.current?.focus();
+        }
+    }, [customKey, savedCustom, updateCustom]);
+
+    useEffect(() => {
+        if (editingKey === customKey) {
+            inputRef.current?.focus({preventScroll: true});
+        }
+    }, [customKey, editingKey]);
+
     const submitCustom = () => {
         if (hasValue) {
-            selectedOptions.current.set(questionKey, {type: 'custom', value: value.trim()});
+            setSelectedOptions((previous) => ({
+                ...previous,
+                [questionKey]: {type: 'custom', value: value.trim()},
+            }));
+            setEditingKey(undefined);
+            customRowRef.current?.focus({preventScroll: true});
             onAnswer({type: 'custom', value: value.trim()});
         }
     };
@@ -163,13 +204,13 @@ export function AskUserQuestion({
                 answerOption(option.id);
             } else if (allowCustomAnswer && index === options.length) {
                 event.preventDefault();
-                inputRef.current?.focus();
+                editCustom();
             }
         };
         const doc = rootRef.current?.ownerDocument;
         doc?.addEventListener('keydown', handleKeyDown);
         return () => doc?.removeEventListener('keydown', handleKeyDown);
-    }, [allowCustomAnswer, answerOption, onClose, options, showShortcuts]);
+    }, [allowCustomAnswer, answerOption, editCustom, onClose, options, showShortcuts]);
 
     return (
         <div
@@ -192,6 +233,19 @@ export function AskUserQuestion({
                     return;
                 }
                 const target = event.target as HTMLElement;
+                if (
+                    event.key === 'Escape' &&
+                    editing &&
+                    savedCustom !== undefined &&
+                    customRowRef.current?.contains(target)
+                ) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    updateCustom(savedCustom);
+                    setEditingKey(undefined);
+                    customRowRef.current.focus({preventScroll: true});
+                    return;
+                }
                 if (target.closest('input, textarea, select, [contenteditable="true"]')) {
                     return;
                 }
@@ -210,7 +264,7 @@ export function AskUserQuestion({
                     answers[next]?.focus({preventScroll: true});
                 } else if (event.key === 'Enter' && target === customRowRef.current) {
                     event.preventDefault();
-                    inputRef.current?.focus();
+                    editCustom();
                 }
             }}
         >
@@ -309,8 +363,8 @@ export function AskUserQuestion({
                     {allowCustomAnswer && (
                         <div
                             className={b('custom', {
-                                filled: hasValue,
-                                selected: selectedAnswer?.type === 'custom',
+                                filled: editing && hasValue,
+                                selected: savedCustom !== undefined && !editing,
                             })}
                             ref={customRowRef}
                             data-question-answer="custom"
@@ -326,30 +380,39 @@ export function AskUserQuestion({
                                     />
                                 </span>
                             )}
-                            <TextInput
-                                controlRef={inputRef}
-                                view="clear"
-                                size="m"
-                                className={b('input')}
-                                value={value}
-                                placeholder={customAnswerPlaceholder ?? t('placeholder')}
-                                controlProps={{
-                                    'aria-label': customAnswerPlaceholder ?? t('placeholder'),
-                                }}
-                                onUpdate={(nextValue) => {
-                                    setDraft({questionKey, value: nextValue});
-                                    onCustomAnswerChange?.(nextValue);
-                                }}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
-                                        event.preventDefault();
-                                        submitCustom();
-                                    }
-                                }}
-                            />
-                            {hasValue && (
-                                <Button view="normal" size="m" onClick={submitCustom}>
+                            {editing ? (
+                                <TextInput
+                                    controlRef={inputRef}
+                                    view="clear"
+                                    size="m"
+                                    className={b('input')}
+                                    value={value}
+                                    placeholder={customAnswerPlaceholder ?? t('placeholder')}
+                                    controlProps={{
+                                        'aria-label': customAnswerPlaceholder ?? t('placeholder'),
+                                    }}
+                                    onUpdate={updateCustom}
+                                    onKeyDown={(event) => {
+                                        if (
+                                            event.key === 'Enter' &&
+                                            !event.nativeEvent.isComposing
+                                        ) {
+                                            event.preventDefault();
+                                            submitCustom();
+                                        }
+                                    }}
+                                />
+                            ) : (
+                                <span className={b('saved-answer')}>{savedCustom}</span>
+                            )}
+                            {editing && hasValue && (
+                                <Button view="action" size="m" onClick={submitCustom}>
                                     {t('confirm')}
+                                </Button>
+                            )}
+                            {!editing && (
+                                <Button view="raised" size="m" onClick={editCustom}>
+                                    {t('edit')}
                                 </Button>
                             )}
                         </div>

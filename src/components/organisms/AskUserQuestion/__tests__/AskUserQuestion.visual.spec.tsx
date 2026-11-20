@@ -12,6 +12,10 @@ test.describe('AskUserQuestion', {tag: '@AskUserQuestion'}, () => {
         await mount(<Stories.CustomAnswerFilled />);
         await expectScreenshot();
     });
+    test('should render custom answer selected state', async ({mount, expectScreenshot}) => {
+        await mount(<Stories.CustomAnswerSelected />);
+        await expectScreenshot();
+    });
     test('should render without a custom answer', async ({mount, expectScreenshot}) => {
         await mount(<Stories.WithoutCustomAnswer />);
         await expectScreenshot();
@@ -25,15 +29,23 @@ test.describe('AskUserQuestion', {tag: '@AskUserQuestion'}, () => {
         await expectScreenshot();
     });
     test('should submit options and custom answers', async ({mount, page}) => {
-        await mount(<Stories.Playground />);
+        await mount(<Stories.SingleQuestion />);
         await page.getByRole('button', {name: /Shared/}).click();
         await expect(page.getByRole('status')).toHaveText('shared');
         const input = page.getByRole('textbox');
         await input.fill('  Another answer  ');
         await input.press('Enter');
         await expect(page.getByRole('status')).toHaveText('Another answer');
+        await page.getByRole('button', {name: 'Edit', exact: true}).click();
+        await expect(input).toBeFocused();
         await input.fill('Confirmed answer');
         await page.getByRole('button', {name: 'Confirm', exact: true}).click();
+        await expect(page.getByRole('status')).toHaveText('Confirmed answer');
+        await expect(input).toHaveCount(0);
+        await page.getByRole('button', {name: 'Edit', exact: true}).click();
+        await input.fill('Discard this edit');
+        await input.press('Escape');
+        await expect(input).toHaveCount(0);
         await expect(page.getByRole('status')).toHaveText('Confirmed answer');
     });
     test('should render a single question without navigation', async ({
@@ -46,7 +58,7 @@ test.describe('AskUserQuestion', {tag: '@AskUserQuestion'}, () => {
         await expectScreenshot();
     });
     test('should navigate answers with arrows and enter custom input', async ({mount, page}) => {
-        const component = await mount(<Stories.Playground />);
+        const component = await mount(<Stories.SingleQuestion />);
         const first = component.locator('[data-question-answer]').first();
         await first.focus();
         await page.keyboard.press('ArrowDown');
@@ -83,7 +95,7 @@ test.describe('AskUserQuestion', {tag: '@AskUserQuestion'}, () => {
         mount,
         page,
     }) => {
-        await mount(<Stories.Playground />);
+        await mount(<Stories.SingleQuestion />);
         await page.keyboard.press('2');
         await expect(page.getByRole('status')).toHaveText('independent');
         await page.keyboard.press('3');
@@ -92,6 +104,24 @@ test.describe('AskUserQuestion', {tag: '@AskUserQuestion'}, () => {
         await expect(page.getByRole('textbox')).toHaveValue('123');
         await page.keyboard.press('Escape');
         await expect(page.getByRole('status')).toHaveText('Question closed');
+    });
+    test('should advance after answers and restore them when navigating back in narrow state', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<Stories.Narrow />);
+        await page.getByRole('button', {name: /^Shared/}).click();
+        await expect(page.getByText('2 of 3')).toBeVisible();
+        await page.getByRole('button', {name: /^Immediately/}).click();
+        await expect(page.getByText('3 of 3')).toBeVisible();
+        await page.getByRole('button', {name: /^System theme/}).click();
+        await expect(page.getByText('3 of 3')).toBeVisible();
+        await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '3');
+        await page.getByRole('button', {name: 'Previous question', exact: true}).click();
+        await expect(page.getByRole('button', {name: /^Immediately/})).toHaveAttribute(
+            'aria-pressed',
+            'true',
+        );
     });
     test('should hide custom input and its shortcut when custom answers are unavailable', async ({
         mount,
