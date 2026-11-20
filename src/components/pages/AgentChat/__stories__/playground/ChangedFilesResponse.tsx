@@ -1,3 +1,5 @@
+import type {ComponentProps} from 'react';
+
 import {Button} from '@gravity-ui/uikit';
 
 import type {TAssistantMessage} from '../../../../../types';
@@ -9,10 +11,12 @@ import {getMessageChanges, getResponseState} from './changedFilesFixture';
 /** Host-owned simulation controls. Undo only changes this run's local fixture baseline. */
 export function ChangedFilesResponse({
     message,
+    files = getMessageChanges(message)?.files,
     onUndo,
     onRestore,
 }: {
     message: TAssistantMessage;
+    files?: ComponentProps<typeof FixtureChangesSummary>['files'];
     onUndo: () => void;
     onRestore: () => void;
 }) {
@@ -29,12 +33,10 @@ export function ChangedFilesResponse({
             </div>
         );
     }
-    // The fixture adapter supplies ordinary parts; custom run content is presentation-only.
-    const changes = getMessageChanges(message);
-    if (!changes) {
+    if (!files?.length) {
         return null;
     }
-    const countLabel = `${changes.files.length} ${changes.files.length === 1 ? 'file' : 'files'}`;
+    const countLabel = `${files.length} ${files.length === 1 ? 'file' : 'files'}`;
     let label = `${countLabel} changed`;
     if (state === 'cancelled') {
         label = `${countLabel} changed before cancellation`;
@@ -45,7 +47,7 @@ export function ChangedFilesResponse({
     return (
         <FixtureChangesSummary
             view="card"
-            files={changes.files}
+            files={files}
             label={label}
             onUndo={() => preserve(onUndo)}
         />

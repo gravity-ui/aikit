@@ -45,6 +45,7 @@ type Activity = {
     finishedAt?: number;
     pausedAt?: number;
     pausedDuration: number;
+    awaitingAnswer: boolean;
     state: 'running' | 'completed' | 'stopped' | 'error';
 };
 
@@ -52,6 +53,7 @@ type ActivityPart = ThinkingMessageContent & {data: {activity: Activity}};
 
 function getActivity(part: ActivityPart, now: number): RunActivityProps {
     const {parts, startedAt, finishedAt, pausedAt, pausedDuration, state} = part.data.activity;
+    const awaitingAnswer = state === 'running' && part.data.activity.awaitingAnswer;
     const waiting = parts.find(
         (item) =>
             item.type === 'tool' &&
@@ -120,11 +122,19 @@ function getActivity(part: ActivityPart, now: number): RunActivityProps {
         };
     });
     let activityState: RunActivityProps['state'] = state === 'stopped' ? 'cancelled' : state;
-    if (waiting) {
+    if (waiting || awaitingAnswer) {
         activityState = 'needs-input';
-    }
-    if (pausedAt !== undefined && !waiting) {
+    } else if (pausedAt !== undefined) {
         activityState = 'paused';
+    }
+    const currentLabel = current?.type === 'tool' ? toolLabel(current) : 'Thinking';
+    let label: string | undefined;
+    if (awaitingAnswer) {
+        label = 'Waiting for your response';
+    } else if (activityState === 'paused') {
+        label = `Paused · ${currentLabel}`;
+    } else if (state === 'completed' && failedTool) {
+        label = 'Completed with recovery · 1 tool failed';
     }
     return {
         id: part.id!,
@@ -132,25 +142,19 @@ function getActivity(part: ActivityPart, now: number): RunActivityProps {
         state: activityState,
         durationMs: Math.max(0, (pausedAt ?? finishedAt ?? now) - startedAt - pausedDuration),
         currentAction: {
-            label: current?.type === 'tool' ? toolLabel(current) : 'Thinking',
+            label: currentLabel,
             icon: current?.type === 'tool' ? toolIcon(current) : <Icon data={Sparkles} size={14} />,
         },
-        label:
-            pausedAt !== undefined && !waiting
-                ? `Paused · ${current?.type === 'tool' ? toolLabel(current) : 'Thinking'}`
-                : state === 'completed' && failedTool
-                  ? 'Completed with recovery · 1 tool failed'
-                  : undefined,
+        label,
         attention:
-            waiting?.type === 'tool' ? (
+            waiting?.type === 'tool' && waiting.data.footerContent !== 'review_plan' ? (
                 <AgentToolAttention
                     {...waiting.data}
                     onAccept={waiting.data.onAccept}
                     onReject={waiting.data.onReject}
                 />
-            ) : failedTool?.type === 'tool' ? (
+            ) : failedTool?.type === 'tool' && state !== 'error' ? (
                 <Alert
-                    className="agent-chat__tool-error"
                     variant="error"
                     text="Repository search timed out. Continuing with direct file reads using the directory listing."
                 />
@@ -192,6 +196,7 @@ export function useAgentActivity(messages: TChatMessage[]) {
                         finishedAt: metadata.activityFinishedAt as number | undefined,
                         pausedAt: metadata.activityPausedAt as number | undefined,
                         pausedDuration: Number(metadata.activityPausedDuration ?? 0),
+                        awaitingAnswer: metadata.awaitingAnswer === true,
                         state: (metadata.activityState as Activity['state']) ?? 'completed',
                     },
                 },
@@ -202,6 +207,6 @@ export function useAgentActivity(messages: TChatMessage[]) {
                 content: message.content.filter((item) => item.id === 'demo-answer'),
             };
         });
-        return {messages: finalMessages, runs};
+        return {messages: finalMessages, runs, now};
     }, [messages, now]);
 }

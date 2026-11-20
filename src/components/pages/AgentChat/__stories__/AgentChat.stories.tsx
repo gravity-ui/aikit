@@ -12,15 +12,19 @@ export default {
     parameters: {layout: 'fullscreen', docs: {page: MDXDocs}},
 } satisfies Meta<typeof AgentChat>;
 
-export const Playground: StoryObj<typeof AgentChat> = {
-    render: () => (
+function renderPlayground(flow?: 'plan') {
+    return (
         <div className="chat-playground-decorator">
             <div className="chat-playground-decorator__container">
-                <ChatPlayground />
+                <ChatPlayground flow={flow} />
             </div>
         </div>
-    ),
-};
+    );
+}
+
+export const Playground: StoryObj<typeof AgentChat> = {render: () => renderPlayground()};
+
+export const PlanMode: StoryObj<typeof AgentChat> = {render: () => renderPlayground('plan')};
 
 export const ClarificationQuestion: StoryObj<typeof AgentChat> = {
     render: () => <QuestionScenario />,

@@ -1,5 +1,6 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
+import {Button} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {AskUserQuestion} from '..';
@@ -73,6 +74,10 @@ function InteractiveQuestion(args: AskUserQuestionProps) {
     const current = demoQuestions[index % demoQuestions.length];
     const answer = answers[index];
     const [closed, setClosed] = useState(false);
+    const count = args.questionCount ?? 1;
+    useEffect(() => {
+        setIndex(Math.max(0, Math.min(args.questionIndex ?? 0, count - 1)));
+    }, [args.questionIndex, count]);
     return closed ? (
         <div role="status">Question closed</div>
     ) : (
@@ -88,13 +93,18 @@ function InteractiveQuestion(args: AskUserQuestionProps) {
                 questionIndex={index}
                 onQuestionChange={setIndex}
                 onClose={() => setClosed(true)}
-                selectedAnswer={answer ?? args.selectedAnswer}
-                answeredQuestionIndices={
-                    args.answeredQuestionIndices === undefined
-                        ? undefined
-                        : Object.keys(answers).map(Number)
-                }
-                onAnswer={(value) => setAnswers((previous) => ({...previous, [index]: value}))}
+                selectedAnswer={answer ?? (index === 0 ? args.selectedAnswer : undefined)}
+                answeredQuestionIndices={[
+                    ...new Set([
+                        ...(args.answeredQuestionIndices ?? []),
+                        ...(args.selectedAnswer ? [0] : []),
+                        ...Object.keys(answers).map(Number),
+                    ]),
+                ]}
+                onAnswer={(value) => {
+                    setAnswers((previous) => ({...previous, [index]: value}));
+                    setIndex((previous) => Math.min(previous + 1, count - 1));
+                }}
             />
             {answer && (
                 <div role="status">{answer.type === 'option' ? answer.optionId : answer.value}</div>
@@ -124,12 +134,54 @@ export const Playground: Story = {
 
 export const CustomAnswerFilled: Story = {
     ...Playground,
-    args: {...Playground.args, customAnswer: 'Use a separate accent color for each workspace.'},
+    args: {
+        ...Playground.args,
+        questionCount: 1,
+        customAnswer: 'Use a separate accent color for each workspace.',
+    },
+};
+
+export const CustomAnswerSelected: Story = {
+    ...Playground,
+    args: {
+        ...Playground.args,
+        questionCount: 1,
+        selectedAnswer: {type: 'custom', value: 'Use a separate accent color for each workspace.'},
+    },
+};
+
+export const ControlledAnswerReset: Story = {
+    ...Playground,
+    args: {...Playground.args, questionCount: 1},
+    render: function Render(args) {
+        const [answer, setAnswer] = useState<AskUserQuestionAnswer>();
+        const [draft, setDraft] = useState('');
+
+        return (
+            <>
+                <AskUserQuestion
+                    {...args}
+                    selectedAnswer={answer}
+                    customAnswer={draft}
+                    onCustomAnswerChange={setDraft}
+                    onAnswer={setAnswer}
+                />
+                <Button
+                    onClick={() => {
+                        setAnswer(undefined);
+                        setDraft('');
+                    }}
+                >
+                    Clear answer
+                </Button>
+            </>
+        );
+    },
 };
 
 export const WithoutCustomAnswer: Story = {
     ...Playground,
-    args: {...Playground.args, allowCustomAnswer: false},
+    args: {...Playground.args, allowCustomAnswer: false, questionCount: 1},
 };
 
 export const WithoutShortcuts: Story = {

@@ -9,6 +9,7 @@ import {
   RunActivity,
   ChatContentV2,
   ChangedFilesSummary,
+  PlanProgress,
   ScrollToBottomButton,
 } from '@gravity-ui/aikit/experimental';
 import type {
