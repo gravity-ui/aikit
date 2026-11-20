@@ -43,10 +43,13 @@
 }
 
 .chat-playground__code {
+    max-height: 360px;
+}
+
+:not(.g-aikit-tool-message__compact-content) > .chat-playground__code {
     margin: 8px 0;
     padding: 12px 16px;
     overflow: auto;
-    max-height: 360px;
     border-radius: 8px;
     background: var(--g-color-base-generic);
     font-family: var(--g-font-family-monospace);
@@ -128,7 +131,9 @@
 
 .chat-playground__changes {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    gap: var(--g-spacing-1);
     padding-bottom: 8px;
 }
 
@@ -145,4 +150,8 @@
 .chat-playground__toolbar .g-segmented-radio-group__option {
     flex: 1;
     text-align: center;
+}
+
+.chat-playground__plan-scenarios .g-segmented-radio-group__option-text {
+    margin-inline: var(--g-spacing-2);
 }

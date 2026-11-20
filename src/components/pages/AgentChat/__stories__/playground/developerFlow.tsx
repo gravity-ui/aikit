@@ -9,6 +9,7 @@ import {
 } from '@gravity-ui/icons';
 import {Icon, Text} from '@gravity-ui/uikit';
 
+import {FixtureCode as Code} from './FixtureCode';
 import {developerChanges} from './changedFilesFixture';
 
 export const developerPrompt =
@@ -21,29 +22,6 @@ export const developerCommentary: Record<number, string> = {
 };
 export function developerResponse(recovered: boolean) {
     return `${recovered ? 'Repository search timed out; I located the catalog using the directory listing and continued with direct file reads.\n\n' : ''}### Catalog filters ready for review\n\nAdded accessible search and category controls. Filters combine, empty results are handled, and the selection is preserved in \`q\` and \`category\` URL parameters while retaining unrelated parameters.\n\n**Changes**\n- \`src/components/ProductFilters.tsx\`: new controlled filter inputs.\n- \`src/components/ProductList.tsx\`: catalog integration and empty state.\n- \`src/hooks/useProducts.ts\`: filtering and URL state.\n- \`tests/catalogFilters.test.ts\`: search, combined category filters and URL-state cases.\n\n**Verification**\nReviewed the written test source through simulated \`read_file\`. No local tests or CI checks were executed.\n\n**Ready for review**\nDemo commit **f7a9c2d** and draft PR **#44 · Add catalog search and filters** target \`main\` from \`feat/catalog-filters\`. Four files changed, **+98 / −7** against the scenario baseline.\n\nAll edits, commits and pull requests in this Playground are local fixtures. Expand the activity or the change summary to inspect them.`;
-}
-
-function Code({children, diff = false}: {children: string; diff?: boolean}) {
-    return (
-        <pre className="chat-playground__code">
-            <code>
-                {children.split('\n').map((line, index) => (
-                    <span
-                        key={index}
-                        className={[
-                            diff && line.startsWith('+') && 'chat-playground__added',
-                            diff && line.startsWith('-') && 'chat-playground__removed',
-                        ]
-                            .filter(Boolean)
-                            .join(' ')}
-                    >
-                        {line}
-                        {'\n'}
-                    </span>
-                ))}
-            </code>
-        </pre>
-    );
 }
 
 export const developerSteps = [

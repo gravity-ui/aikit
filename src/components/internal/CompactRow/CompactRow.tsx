@@ -4,9 +4,12 @@ import {ChevronRight} from '@gravity-ui/icons';
 import {Icon, Tooltip} from '@gravity-ui/uikit';
 
 import {LayoutChangeContext} from '../../../utils/chatLayoutChange';
+import {block} from '../../../utils/cn';
 import {Shimmer} from '../../atoms/Shimmer';
 
 import './CompactRow.scss';
+
+const b = block('compact-row');
 
 export function CompactRow({
     label,
@@ -19,9 +22,13 @@ export function CompactRow({
     children,
     tooltip,
     persistentChevron = false,
+    secondary = false,
+    secondaryIcons = false,
 }: {
     tooltip?: ReactNode;
     persistentChevron?: boolean;
+    secondary?: boolean;
+    secondaryIcons?: boolean;
     label: ReactNode;
     icon?: ReactNode;
     showIcon?: boolean;
@@ -34,24 +41,26 @@ export function CompactRow({
     const preserve = useContext(LayoutChangeContext);
     const Heading = onToggle ? 'button' : 'div';
     return (
-        <div
-            className={`g-aikit-compact-row ${showIcon ? '' : 'g-aikit-compact-row_without-icon'}`}
-        >
+        <div className={b({'without-icon': !showIcon})}>
             <Tooltip placement="top" content={tooltip} disabled={!tooltip}>
                 <Heading
                     type={onToggle ? 'button' : undefined}
-                    className={`g-aikit-compact-row__toggle ${persistentChevron ? 'g-aikit-compact-row__toggle_persistent' : ''}`}
+                    className={b('toggle', {
+                        persistent: persistentChevron,
+                        secondary,
+                        'secondary-icons': secondaryIcons,
+                    })}
                     aria-label={typeof label === 'string' ? label : undefined}
                     aria-expanded={onToggle ? expanded : undefined}
                     onClick={onToggle ? () => preserve(onToggle) : undefined}
                 >
                     {showIcon && (
-                        <span className="g-aikit-compact-row__icon" aria-hidden="true">
+                        <span className={b('icon')} aria-hidden="true">
                             {icon}
                         </span>
                     )}
                     {active ? <Shimmer>{label}</Shimmer> : <span>{label}</span>}
-                    {context && <span className="g-aikit-compact-row__context">{context}</span>}
+                    {context && <span className={b('context')}>{context}</span>}
                     {onToggle && (
                         <Icon
                             data={ChevronRight}
@@ -61,7 +70,7 @@ export function CompactRow({
                     )}
                 </Heading>
             </Tooltip>
-            <div hidden={!expanded} className="g-aikit-compact-row__detail">
+            <div hidden={!expanded} className={b('detail')}>
                 {children}
             </div>
         </div>

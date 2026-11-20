@@ -23,6 +23,8 @@
     }
 
     &__question {
+        --g-aikit-ask-user-question-width: 100%;
+
         opacity: 0;
         visibility: hidden;
         pointer-events: none;

@@ -35,6 +35,7 @@ export function ToolMessage(props: ToolMessageProps) {
         return (
             <div className={className} data-qa={qa}>
                 <CompactRow
+                    secondary
                     label={
                         <>
                             {toolName}
@@ -58,7 +59,7 @@ export function ToolMessage(props: ToolMessageProps) {
                     }
                 >
                     {headerContent}
-                    {bodyContent}
+                    {bodyContent && <div className={b('compact-content')}>{bodyContent}</div>}
                 </CompactRow>
                 {props.headerActions && (
                     <ToolFooter actions={props.headerActions} showLoader={false} />

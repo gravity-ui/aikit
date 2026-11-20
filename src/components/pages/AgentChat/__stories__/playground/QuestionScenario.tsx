@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 
 import {BookOpen, CircleCheck, Sparkles, Terminal} from '@gravity-ui/icons';
-import {Button, Icon, SegmentedRadioGroup, Text} from '@gravity-ui/uikit';
+import {Icon, SegmentedRadioGroup, Text} from '@gravity-ui/uikit';
 
 import {AgentChat, type AgentChatRun, type AgentRunContent} from '../..';
 import {
@@ -16,6 +16,7 @@ import {copyToClipboard} from '../../../../../utils/clipboardUtils';
 import {AskUserQuestion} from '../../../../organisms/AskUserQuestion';
 import type {AskUserQuestionAnswer} from '../../../../organisms/AskUserQuestion';
 import type {RunActivityStep} from '../../../../organisms/RunActivity';
+import {EmptyContainer} from '../../../../templates/EmptyContainer';
 
 import {AgentComposer} from './AgentComposer';
 import {ComposerQuestionTransition} from './ComposerQuestionTransition';
@@ -25,6 +26,8 @@ import './ChatPlayground.scss';
 import './QuestionScenario.scss';
 
 type ScenarioAnswer = AskUserQuestionAnswer | {type: 'skipped'};
+
+const defaultPrompt = 'Add accent color settings for workspaces.';
 
 type Phase =
     | 'idle'
@@ -54,7 +57,7 @@ const options = [
 
 const questions = [
     {
-        title: 'Should all workspaces share the same accent color or use separate settings?',
+        title: 'Should workspaces share an accent color?',
         options,
         allowCustomAnswer: true,
     },
@@ -428,11 +431,6 @@ export function QuestionScenario() {
                     customAnswer={drafts[questionIndex] ?? ''}
                     onCustomAnswerChange={(value) => {
                         setDrafts((previous) => ({...previous, [questionIndex]: value}));
-                        setResponses((previous) => {
-                            const next = {...previous};
-                            delete next[questionIndex];
-                            return next;
-                        });
                     }}
                     selectedAnswer={
                         currentResponse?.type === 'skipped' ? undefined : currentResponse
@@ -466,7 +464,7 @@ export function QuestionScenario() {
                   messageId: 'question-response',
                   activity: {
                       id: `question-run-${version}`,
-                      state: paused ? 'paused' : activityState,
+                      state: paused && activityState === 'running' ? 'paused' : activityState,
                       label: getActivityLabel(phase, paused, action.label),
                       durationMs: elapsed,
                       currentAction: {
@@ -474,10 +472,7 @@ export function QuestionScenario() {
                           icon: <Icon data={action.icon} size={14} />,
                       },
                       steps: getActivitySteps(phase, answer, responses, questionCount),
-                      attention:
-                          placement === 'inline' ? (
-                              <div className="question-scenario__attention">{question}</div>
-                          ) : undefined,
+                      attention: placement === 'inline' ? question : undefined,
                   },
               },
           ];
@@ -591,7 +586,7 @@ Keep the existing behavior for the unresolved settings. The recorded answers can
     const seekStep = (target: number) => {
         setPaused(true);
         if (!prompt) {
-            setPrompt('Add accent color settings for workspaces.');
+            setPrompt(defaultPrompt);
         }
         if (target < 3) {
             setPhase((['loading', 'thinking', 'reading'] as Phase[])[Math.max(0, target)]);
@@ -717,7 +712,7 @@ Keep the existing behavior for the unresolved settings. The recorded answers can
                             nextDisabled={playbackState.nextDisabled}
                             skipDisabled={!busy}
                             replayDisabled={playbackState.replayDisabled}
-                            onPlay={() => sendPrompt('Add accent color settings for workspaces.')}
+                            onPlay={() => sendPrompt(defaultPrompt)}
                             onPrevious={() => seekStep(step - 1)}
                             onNext={() => seekStep(step + 1)}
                             onPause={() => setPaused((value) => !value)}
@@ -758,28 +753,12 @@ Keep the existing behavior for the unresolved settings. The recorded answers can
                             status={status}
                             onCreateChat={reset}
                             emptyContent={
-                                <div
-                                    style={{
-                                        padding: 24,
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'flex-start',
-                                        gap: 12,
-                                    }}
-                                >
-                                    <span>
-                                        The assistant will ask a question before continuing.
-                                    </span>
-                                    <Button
-                                        size="l"
-                                        view="outlined"
-                                        onClick={() =>
-                                            sendPrompt('Add accent color settings for workspaces.')
-                                        }
-                                    >
-                                        Add accent color settings for workspaces
-                                    </Button>
-                                </div>
+                                <EmptyContainer
+                                    title="Add workspace accent colors"
+                                    description="The assistant will ask a question before continuing."
+                                    suggestions={[{id: 'start', title: defaultPrompt}]}
+                                    onSuggestionClick={() => sendPrompt(defaultPrompt)}
+                                />
                             }
                             composer={
                                 <ComposerQuestionTransition

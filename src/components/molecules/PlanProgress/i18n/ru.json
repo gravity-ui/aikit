@@ -1,0 +1,16 @@
+{
+  "title": "План задач",
+  "pending": "Ожидает запуска",
+  "running": "Выполняется",
+  "completed": "Выполнен",
+  "failed": "Ошибка",
+  "cancelled": "Отменён",
+  "plan-pending": "Ожидает запуска",
+  "plan-running": "В процессе",
+  "plan-completed": "План выполнен",
+  "plan-failed": "Что-то пошло не так",
+  "plan-cancelled": "План отменён",
+  "progress": "Выполнено {{completed}} из {{total}} шагов",
+  "cancel": "Отменить",
+  "view-preview": "Посмотреть"
+}

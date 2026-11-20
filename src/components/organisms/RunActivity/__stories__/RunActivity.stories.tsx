@@ -1,6 +1,9 @@
+import {useState} from 'react';
+
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {RunActivity} from '..';
+import {ToolMessage} from '../../ToolMessage';
 
 import MDXDocs from './Docs.mdx';
 
@@ -36,7 +39,11 @@ export const Playground: Story = {
                     secondaryText: 'products.ts',
                     contextTooltip: 'src/api/products.ts',
                     status: 'success',
-                    bodyContent: <pre>return items.slice(start, end);</pre>,
+                    bodyContent: (
+                        <pre>
+                            <code>return items.slice(start, end);</code>
+                        </pre>
+                    ),
                 },
             },
         ],
@@ -54,7 +61,31 @@ export const Error: Story = {
     },
 };
 export const NeedsInput: Story = {
-    args: {...Playground.args, state: 'needs-input', attention: <button>Approve change</button>},
+    args: {...Playground.args, state: 'needs-input'},
+    render: function Render(args) {
+        const [approved, setApproved] = useState(false);
+        return (
+            <RunActivity
+                {...args}
+                state={approved ? 'completed' : args.state}
+                attention={
+                    !approved && args.state === 'needs-input' ? (
+                        <ToolMessage
+                            toolName="Apply changes"
+                            status="waitingConfirmation"
+                            footerActions={[
+                                {
+                                    label: 'Approve change',
+                                    view: 'action',
+                                    onClick: () => setApproved(true),
+                                },
+                            ]}
+                        />
+                    ) : undefined
+                }
+            />
+        );
+    },
 };
 
 export const WithoutIcons: Story = {args: {...Completed.args, showIcon: false}};

@@ -1,0 +1,169 @@
+.g-aikit-plan-progress {
+    display: inline-flex;
+
+    align-items: center;
+    gap: var(--g-spacing-1);
+
+    &_view_card {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: var(--g-spacing-2);
+        padding: var(--g-spacing-3);
+        border-radius: var(--g-border-radius-xl);
+        background: var(--g-color-base-generic);
+    }
+
+    &__summary_view_pill,
+    &_split {
+        border-radius: var(--g-border-radius-s);
+        box-shadow: var(--g-aikit-plan-progress-shadow, 0 2px 8px var(--g-color-sfx-shadow));
+        background: var(--g-color-base-background);
+    }
+
+    &_split {
+        gap: 0;
+
+        > .g-button {
+            --g-button-border-radius: var(--g-border-radius-s);
+            --g-button-focus-outline-offset: -2px;
+
+            &:active {
+                transform: scale(1);
+            }
+        }
+
+        > .g-aikit-plan-progress__summary {
+            box-shadow: none;
+            background: transparent;
+        }
+    }
+
+    &__summary {
+        --g-button-font-size: 12px;
+
+        .g-button__text {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--g-spacing-2);
+        }
+    }
+
+    &__count,
+    &__status {
+        color: var(--g-color-text-secondary);
+    }
+
+    &__status {
+        display: inline-flex;
+        width: 14px;
+        height: 16px;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+
+        .g-aikit-plan-progress__spinner {
+            width: 12px;
+            height: 12px;
+        }
+
+        &_status_completed {
+            color: var(--g-color-text-positive);
+        }
+
+        &_status_failed {
+            color: var(--g-color-text-danger);
+        }
+    }
+
+    &__popup {
+        --g-popup-border-radius: var(--g-border-radius-xl);
+
+        overflow: hidden;
+    }
+
+    &__content {
+        box-sizing: border-box;
+        width: min(360px, calc(100vw - 32px));
+        max-height: min(calc(10 * var(--_step-height) + 2 * var(--g-spacing-1)), 60vh);
+        overflow: auto;
+        scrollbar-width: thin;
+        padding: var(--g-spacing-1);
+    }
+
+    &__content,
+    &__steps {
+        --_step-height: 28px;
+    }
+
+    &__steps {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__step {
+        display: flex;
+        box-sizing: border-box;
+        min-height: var(--_step-height);
+        align-items: flex-start;
+        gap: var(--g-spacing-2);
+        padding: 6px var(--g-spacing-2);
+        color: var(--g-color-text-primary);
+        font: inherit;
+        font-size: 12px;
+        line-height: 16px;
+        overflow-wrap: anywhere;
+        text-align: start;
+
+        &_interactive {
+            width: 100%;
+            border: 0;
+            border-radius: var(--g-border-radius-m);
+            background: transparent;
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--g-color-base-simple-hover);
+            }
+
+            &:hover .g-aikit-plan-progress__step-chevron,
+            &:focus-visible .g-aikit-plan-progress__step-chevron {
+                visibility: visible;
+            }
+
+            &:hover .g-aikit-plan-progress__step-elapsed,
+            &:focus-visible .g-aikit-plan-progress__step-elapsed {
+                opacity: 0;
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--g-color-line-focus);
+                outline-offset: -2px;
+            }
+        }
+    }
+
+    &__step-trailing {
+        display: grid;
+        flex: none;
+        place-items: center end;
+        min-height: 16px;
+        margin-inline-start: auto;
+        color: var(--g-color-text-secondary);
+    }
+
+    &__step-chevron,
+    &__step-elapsed {
+        grid-area: 1 / 1;
+    }
+
+    &__step-chevron {
+        visibility: hidden;
+    }
+
+    &__step-elapsed {
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+}
