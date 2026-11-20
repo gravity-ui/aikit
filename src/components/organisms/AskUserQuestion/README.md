@@ -153,6 +153,13 @@ without closing the question or emitting another answer. Confirm uses the standa
 UIKit Action button; Edit uses Raised. Controlled `selectedAnswer` remains the source
 of truth for saved answers, while `customAnswer` controls the editable draft.
 
+Omit `selectedAnswer` to keep confirmed custom answers locally. Passing the prop,
+including `selectedAnswer={undefined}`, makes the saved selection host-controlled;
+explicit `undefined` clears it without restoring a locally cached answer. Clear
+`customAnswer` separately when the editable draft should also be empty.
+Keep confirmed answers when handling `onCustomAnswerChange`: starting or cancelling
+an edit also updates the draft, but only `onAnswer` replaces the confirmed response.
+
 Pass `answeredQuestionIndices` to enable optional segmented progress for multiple
 questions. Each answered question fills its own segment over 220 ms, so answering
 out of order remains accurate. Skipped questions are excluded. Omit the prop to

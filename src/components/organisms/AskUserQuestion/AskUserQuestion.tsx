@@ -14,26 +14,27 @@ import './AskUserQuestion.scss';
 
 const b = block('ask-user-question');
 
-export function AskUserQuestion({
-    question,
-    options,
-    onAnswer,
-    selectedAnswer,
-    questionIndex = 0,
-    questionCount = 1,
-    answeredQuestionIndices,
-    onProgressComplete,
-    onQuestionChange,
-    onClose,
-    allowCustomAnswer = true,
-    customAnswer,
-    onCustomAnswerChange,
-    customAnswerPlaceholder,
-    showShortcuts = true,
-    footer,
-    className,
-    qa,
-}: AskUserQuestionProps) {
+export function AskUserQuestion(props: AskUserQuestionProps) {
+    const {
+        question,
+        options,
+        onAnswer,
+        selectedAnswer,
+        questionIndex = 0,
+        questionCount = 1,
+        answeredQuestionIndices,
+        onProgressComplete,
+        onQuestionChange,
+        onClose,
+        allowCustomAnswer = true,
+        customAnswer,
+        onCustomAnswerChange,
+        customAnswerPlaceholder,
+        showShortcuts = true,
+        footer,
+        className,
+        qa,
+    } = props;
     const {t} = i18n.useTranslation();
     const titleId = useId();
     const answered = new Set(
@@ -70,8 +71,11 @@ export function AskUserQuestion({
         {},
     );
     const questionKey = `${questionIndex}:${question}`;
+    const savedAnswer = Object.prototype.hasOwnProperty.call(props, 'selectedAnswer')
+        ? selectedAnswer
+        : selectedOptions[questionKey];
     const selectedAnswerRef = useRef(selectedAnswer);
-    selectedAnswerRef.current = selectedAnswer ?? selectedOptions[questionKey];
+    selectedAnswerRef.current = savedAnswer;
     const [keyboardFocus, setKeyboardFocus] = useState(true);
     const answerOption = useCallback(
         (optionId: string) => {
@@ -115,7 +119,6 @@ export function AskUserQuestion({
     }, [questionKey]);
     const [draft, setDraft] = useState({questionKey, value: ''});
     const [editingKey, setEditingKey] = useState<string>();
-    const savedAnswer = selectedAnswer ?? selectedOptions[questionKey];
     const savedCustom = savedAnswer?.type === 'custom' ? savedAnswer.value : undefined;
     const customKey = `${questionKey}:${savedCustom ?? ''}`;
     const editing = savedCustom === undefined || editingKey === customKey;

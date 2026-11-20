@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 
+import {Button} from '@gravity-ui/uikit';
 import type {Meta, StoryObj} from '@storybook/react-webpack5';
 
 import {AskUserQuestion} from '..';
@@ -146,6 +147,35 @@ export const CustomAnswerSelected: Story = {
         ...Playground.args,
         questionCount: 1,
         selectedAnswer: {type: 'custom', value: 'Use a separate accent color for each workspace.'},
+    },
+};
+
+export const ControlledAnswerReset: Story = {
+    ...Playground,
+    args: {...Playground.args, questionCount: 1},
+    render: function Render(args) {
+        const [answer, setAnswer] = useState<AskUserQuestionAnswer>();
+        const [draft, setDraft] = useState('');
+
+        return (
+            <>
+                <AskUserQuestion
+                    {...args}
+                    selectedAnswer={answer}
+                    customAnswer={draft}
+                    onCustomAnswerChange={setDraft}
+                    onAnswer={setAnswer}
+                />
+                <Button
+                    onClick={() => {
+                        setAnswer(undefined);
+                        setDraft('');
+                    }}
+                >
+                    Clear answer
+                </Button>
+            </>
+        );
     },
 };
 

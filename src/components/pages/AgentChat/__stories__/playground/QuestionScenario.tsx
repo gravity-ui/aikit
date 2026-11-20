@@ -431,11 +431,6 @@ export function QuestionScenario() {
                     customAnswer={drafts[questionIndex] ?? ''}
                     onCustomAnswerChange={(value) => {
                         setDrafts((previous) => ({...previous, [questionIndex]: value}));
-                        setResponses((previous) => {
-                            const next = {...previous};
-                            delete next[questionIndex];
-                            return next;
-                        });
                     }}
                     selectedAnswer={
                         currentResponse?.type === 'skipped' ? undefined : currentResponse

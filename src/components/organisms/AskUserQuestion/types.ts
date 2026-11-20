@@ -16,7 +16,7 @@ export interface AskUserQuestionProps {
     options: AskUserQuestionOption[];
     /** Emits one answer. The host saves it and resumes the run once all required answers are collected. */
     onAnswer: (answer: AskUserQuestionAnswer) => void;
-    /** Saved answer for the current question, controlled by the host. */
+    /** Saved answer controlled by the host. Omit for local selection; explicit undefined clears it. */
     selectedAnswer?: AskUserQuestionAnswer;
     /** Zero-based question index. Navigation is controlled by the host. */
     questionIndex?: number;
