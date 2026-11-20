@@ -30,7 +30,7 @@ export function stopRunMessages(
                 activityPausedAt: undefined,
                 activityPausedDuration:
                     message.metadata?.activityState === 'running'
-                        ? pausedDuration
+                        ? pausedDuration - Number(message.metadata?.activityPauseBaseline ?? 0)
                         : message.metadata?.activityPausedDuration,
             },
             content: Array.isArray(message.content)

@@ -146,6 +146,20 @@ Pass the saved `selectedAnswer` for the current question when navigating back.
 Selected predefined and custom responses use `--g-color-base-selection` independently
 of keyboard focus. Predefined answer buttons expose their selection with `aria-pressed`.
 
+Confirm (or Enter) saves a custom response and replaces the input with the saved text
+and an Edit button. Edit restores the current answer in the input and focuses it.
+Escape during editing discards the draft and restores the last confirmed response,
+without closing the question or emitting another answer. Confirm uses the standard
+UIKit Action button; Edit uses Raised. Controlled `selectedAnswer` remains the source
+of truth for saved answers, while `customAnswer` controls the editable draft.
+
+Omit `selectedAnswer` to keep confirmed custom answers locally. Passing the prop,
+including `selectedAnswer={undefined}`, makes the saved selection host-controlled;
+explicit `undefined` clears it without restoring a locally cached answer. Clear
+`customAnswer` separately when the editable draft should also be empty.
+Keep confirmed answers when handling `onCustomAnswerChange`: starting or cancelling
+an edit also updates the draft, but only `onAnswer` replaces the confirmed response.
+
 Pass `answeredQuestionIndices` to enable optional segmented progress for multiple
 questions. Each answered question fills its own segment over 220 ms, so answering
 out of order remains accurate. Skipped questions are excluded. Omit the prop to
@@ -190,7 +204,8 @@ cancelled if progress becomes incomplete or the card unmounts.
 - Tab / Shift+Tab moves through controls; Enter / Space activates buttons.
 - Keys 1–9 select options without first focusing the card, except while editing text.
 - The next number focuses the custom answer when fewer than nine options exist.
-- Enter confirms a non-empty custom answer; Escape invokes `onClose`.
+- Enter confirms a non-empty custom answer, except during IME composition.
+- Escape restores the saved custom answer while editing; otherwise it invokes `onClose`.
 
 ## Accessibility
 
@@ -223,12 +238,12 @@ Progress sits below the answers and optional footer. It uses `--g-color-base-inf
 | `--g-color-base-simple-hover`                                                           | Hovered option background                             |
 | `--g-color-text-primary`                                                                | Question and option text                              |
 | `--g-color-text-secondary`                                                              | Descriptions, progress and arrows                     |
-| `--g-color-text-utility`                                                                | Card border                                           |
+| `--g-color-line-utility`                                                                | Card border                                           |
 | `--g-color-line-focus`                                                                  | Keyboard focus outline                                |
 | `--g-color-line-generic-hover`                                                          | Custom field hover border                             |
 | `--g-color-line-generic-active`                                                         | Active or filled custom field border                  |
-| `--g-border-radius-xl`                                                                  | Card radius                                           |
-| `--g-border-radius-m`                                                                   | Answer radius                                         |
+| `--g-aikit-ask-user-question-border-radius`                                             | Card radius, default `16px`                           |
+| `--g-border-radius-xl`                                                                  | Answer radius                                         |
 | `--g-spacing-1`, `--g-spacing-2`, `--g-spacing-3`                                       | Layout spacing                                        |
 | `--g-text-body-font-family`, `--g-text-body-1-font-size`, `--g-text-body-1-line-height` | Body typography                                       |
 | `--g-text-subheader-font-family`, `--g-text-subheader-font-weight`                      | Question and title typography                         |

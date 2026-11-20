@@ -43,6 +43,7 @@ aikit/
 │   │   │   ├── ActionPopup/    BaseMessage/      ButtonGroup/
 │   │   │   ├── FeedbackForm/   FileDropZone/     FileItem/
 │   │   │   ├── ChangedFilesSummary/
+│   │   │   ├── PlanProgress/
 │   │   │   ├── InputContext/   PromptInputBody/  PromptInputFooter/
 │   │   │   ├── PromptInputHeader/  PromptInputPanel/   RatingBlock/
 │   │   │   ├── StarRating/     Suggestions/      Tabs/

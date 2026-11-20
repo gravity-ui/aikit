@@ -17,3 +17,14 @@ $block: '.#{variables.$ns}tool-message';
         gap: var(--g-spacing-2);
     }
 }
+
+:where(#{$block}__compact-content) > pre {
+    margin: 0;
+    padding: var(--g-spacing-2) var(--g-spacing-3);
+    overflow: auto;
+    border-radius: var(--g-border-radius-m);
+    background: var(--g-color-base-generic);
+    font-family: var(--g-font-family-monospace);
+    font-size: 12px;
+    line-height: 16px;
+}

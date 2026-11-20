@@ -15,6 +15,8 @@ const css = {
     switcher: 'g-aikit-agent-model-select__switcher',
     switcherWidthMax: 'g-aikit-agent-model-select__switcherWidthMax',
     switcherLoading: 'g-aikit-agent-model-select__switcherLoading',
+    switcherCompact: 'g-aikit-agent-model-select__switcherCompact',
+    compactIcon: 'g-aikit-agent-model-select__compactIcon',
     switcherOutlined: 'g-aikit-agent-model-select__switcherOutlined',
     label: 'g-aikit-agent-model-select__label',
     switcherLabel: 'g-aikit-agent-model-select__switcherLabel',
@@ -39,6 +41,8 @@ export interface AssistantModelSelectProps {
     size?: 's' | 'm' | 'l' | 'xl';
     width?: 'auto' | 'max';
     view?: 'normal' | 'outlined';
+    hideChevron?: boolean;
+    compactIcon?: AgentModelOption['icon'];
     qa?: string;
     header?: React.ReactNode;
     footer?: React.ReactNode;
@@ -55,6 +59,8 @@ export function AssistantModelSelect({
     size = 's',
     width = 'auto',
     view = 'normal',
+    hideChevron = false,
+    compactIcon,
     qa = 'assistant-model-selector',
     header,
     footer,
@@ -97,11 +103,13 @@ export function AssistantModelSelect({
                 loading && css.switcherLoading,
                 width === 'max' && css.switcherWidthMax,
                 view === 'outlined' && css.switcherOutlined,
+                compactIcon && css.switcherCompact,
             )}
             qa={qa}
             disabled={disabled || models.length === 0}
             loading={loading}
             selected={open}
+            aria-label={selectedModelLabel}
             aria-haspopup="listbox"
             aria-expanded={open}
         >
@@ -112,10 +120,20 @@ export function AssistantModelSelect({
                             <Icon {...getAssistantModelIcon(selectedModel)} />
                         </span>
                     ) : null}
+                    {compactIcon && (
+                        <Icon
+                            className={css.compactIcon}
+                            data={compactIcon}
+                            size={16}
+                            aria-hidden
+                        />
+                    )}
                     <span className={css.label}>{selectedModelLabel}</span>
                 </span>
             )}
-            {!loading && <Icon data={ChevronDown} size={view === 'outlined' ? 16 : 14} />}
+            {!loading && !hideChevron && (
+                <Icon data={ChevronDown} size={view === 'outlined' ? 16 : 14} />
+            )}
         </Button>
     );
 

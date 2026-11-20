@@ -1,0 +1,16 @@
+{
+  "title": "Task plan",
+  "pending": "Pending",
+  "running": "In progress",
+  "completed": "Completed",
+  "failed": "Failed",
+  "cancelled": "Cancelled",
+  "plan-pending": "Awaiting start",
+  "plan-running": "In progress",
+  "plan-completed": "Plan completed",
+  "plan-failed": "Something went wrong",
+  "plan-cancelled": "Plan cancelled",
+  "progress": "{{completed}} of {{total}} steps completed",
+  "cancel": "Cancel",
+  "view-preview": "View preview"
+}

@@ -7,6 +7,7 @@ import {Icon} from '@gravity-ui/uikit';
 
 import {withDefaultMarkdown} from '../../../markdown/withDefaultMarkdown';
 import type {ToolMessageProps} from '../../../types/tool';
+import {block} from '../../../utils/cn';
 import {CompactRow} from '../../internal/CompactRow/CompactRow';
 import {MessageMarkdownContext} from '../../internal/MessageMarkdownContext';
 import {RunActivityWaitingContext} from '../../internal/RunActivityWaitingContext';
@@ -16,6 +17,9 @@ import {ToolMessage} from '../ToolMessage';
 
 import {i18n} from './i18n';
 
+import './RunActivity.scss';
+
+const b = block('run-activity');
 const ThinkingStep = withDefaultMarkdown(ThinkingMessageView);
 
 /** @experimental May change or be removed in minor releases. */
@@ -126,9 +130,11 @@ export function RunActivity({
         return <div style={{margin: '6px 0 6px 24px'}}>{step.content}</div>;
     }
     return (
-        <section data-run-id={id} className={className}>
+        <section data-run-id={id} className={b(null, className)}>
             <CompactRow
                 persistentChevron
+                secondary={state === 'completed'}
+                secondaryIcons={state !== 'completed'}
                 label={
                     label ??
                     (state === 'running'

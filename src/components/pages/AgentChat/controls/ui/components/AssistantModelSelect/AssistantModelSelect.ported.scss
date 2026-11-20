@@ -101,3 +101,26 @@
     flex: 1;
     min-width: 0;
 }
+
+.g-aikit-agent-model-select__compactIcon {
+    display: none;
+}
+
+@container agent-composer (max-width: 480px) {
+    .g-aikit-agent-model-select__switcherCompact {
+        --g-button-padding: 0;
+
+        aspect-ratio: 1;
+        min-width: 0;
+
+        .g-aikit-agent-model-select__label,
+        .g-aikit-agent-model-select__switcherBrandIcon,
+        > .g-button__icon {
+            display: none;
+        }
+
+        .g-aikit-agent-model-select__compactIcon {
+            display: inline-flex;
+        }
+    }
+}

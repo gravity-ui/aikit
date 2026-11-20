@@ -3,16 +3,20 @@ import {useState} from 'react';
 import {Dialog} from '@gravity-ui/uikit';
 
 import {
+    type ChangedFile,
     ChangedFilesSummary,
     type ChangedFilesSummaryProps,
 } from '../../../../molecules/ChangedFilesSummary';
 
+import {FixtureCode} from './FixtureCode';
 import {developerChanges} from './changedFilesFixture';
 import {developerSteps} from './developerFlow';
 
 /** Local file/source preview for the simulation; the host owns actual navigation. */
 export function FixtureChangesSummary(
-    props: Omit<ChangedFilesSummaryProps, 'onFileClick' | 'onViewChanges'>,
+    props: Omit<ChangedFilesSummaryProps, 'files' | 'onFileClick' | 'onViewChanges'> & {
+        files: readonly (ChangedFile & {diff?: string})[];
+    },
 ) {
     const [preview, setPreview] = useState(false);
     const [selectedId, setSelectedId] = useState<string>();
@@ -27,22 +31,23 @@ export function FixtureChangesSummary(
             <Dialog open={preview} onOpenChange={setPreview} aria-label="Fixture changes">
                 <Dialog.Header caption={files[0]?.path ?? 'File changes'} />
                 <Dialog.Body>
-                    <p>
-                        Local fixture preview. Undo reverts only this response's simulated change
-                        summary; no Git or filesystem operation runs.
-                    </p>
+                    {props.onUndo && (
+                        <p>Undo reverts only this response’s simulated change summary.</p>
+                    )}
                     <div style={{maxHeight: '60vh', overflow: 'auto'}}>
                         {files.map((file) => (
                             <section key={file.id}>
                                 <h4>{file.path}</h4>
-                                {
+                                {file.diff === undefined ? (
                                     developerSteps[
                                         5 +
                                             developerChanges.files.findIndex(
                                                 (item) => item.id === file.id,
                                             )
                                     ].body
-                                }
+                                ) : (
+                                    <FixtureCode diff>{file.diff}</FixtureCode>
+                                )}
                             </section>
                         ))}
                     </div>

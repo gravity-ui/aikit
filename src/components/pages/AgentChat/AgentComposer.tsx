@@ -36,6 +36,8 @@ export interface AgentComposerProps {
     onRepositoryChange: (repository: {orgSlug: string; repoSlug: string}) => void;
     model: string;
     modelLabel?: string;
+    modelCompactIcon?: AgentModelOption['icon'];
+    hideModelChevron?: boolean;
     onModelChange: (model: string) => void;
     status: ChatStatus;
     onSend: (data: TSubmitData) => Promise<void | false>;
@@ -57,6 +59,8 @@ export function AgentComposer({
     model,
     onModelChange,
     modelLabel,
+    modelCompactIcon,
+    hideModelChevron,
     resetKey,
 }: AgentComposerProps) {
     const {t} = i18n.useTranslation();
@@ -217,6 +221,8 @@ export function AgentComposer({
                                 <AssistantModelSelect
                                     size="m"
                                     models={models}
+                                    compactIcon={modelCompactIcon}
+                                    hideChevron={hideModelChevron}
                                     selectedModelId={model}
                                     selectedModelLabel={
                                         modelLabel ??

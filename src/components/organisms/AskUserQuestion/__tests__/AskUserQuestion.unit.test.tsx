@@ -1,9 +1,11 @@
+import {useState} from 'react';
+
 import {ThemeProvider, configure} from '@gravity-ui/uikit';
 import '@testing-library/jest-dom';
-import {act, render, screen, waitFor} from '@testing-library/react';
+import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 
 import {AskUserQuestion} from '..';
-import type {AskUserQuestionProps} from '..';
+import type {AskUserQuestionAnswer, AskUserQuestionProps} from '..';
 
 const originalResizeObserver = global.ResizeObserver;
 const originalMatchMedia = window.matchMedia;
@@ -55,6 +57,71 @@ function Card(props: Partial<AskUserQuestionProps>) {
         </ThemeProvider>
     );
 }
+
+it('confirms, edits and restores a controlled custom answer without submitting on Escape', () => {
+    const onAnswer = jest.fn();
+    const onClose = jest.fn();
+    function ControlledCard() {
+        const [answer, setAnswer] = useState<AskUserQuestionAnswer>();
+        const [customAnswer, setCustomAnswer] = useState('');
+        return (
+            <Card
+                selectedAnswer={answer}
+                customAnswer={customAnswer}
+                onCustomAnswerChange={setCustomAnswer}
+                onClose={onClose}
+                onAnswer={(next) => {
+                    setAnswer(next);
+                    onAnswer(next);
+                }}
+            />
+        );
+    }
+    render(<ControlledCard />);
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: '  First answer  '}});
+    fireEvent.click(screen.getByRole('button', {name: 'Confirm'}));
+    expect(onAnswer).toHaveBeenLastCalledWith({type: 'custom', value: 'First answer'});
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveFocus();
+    expect(input).toHaveValue('First answer');
+    fireEvent.change(input, {target: {value: 'Second answer'}});
+    fireEvent.keyDown(input, {key: 'Enter', isComposing: true});
+    expect(onAnswer).toHaveBeenCalledTimes(1);
+    fireEvent.keyDown(input, {key: 'Enter'});
+    expect(onAnswer).toHaveBeenLastCalledWith({type: 'custom', value: 'Second answer'});
+    fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'Discard'}});
+    fireEvent.keyDown(screen.getByRole('textbox'), {key: 'Escape'});
+    expect(screen.getByText('Second answer')).toBeVisible();
+    expect(onAnswer).toHaveBeenCalledTimes(2);
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
+    expect(screen.getByRole('textbox')).toHaveValue('Second answer');
+});
+
+it('keeps unsubmitted edits separate across questions and honours controlled answer changes', () => {
+    const {rerender} = render(<Card selectedAnswer={{type: 'custom', value: 'Saved'}} />);
+    fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'Unsaved'}});
+    rerender(<Card question="Another question" questionIndex={1} />);
+    expect(screen.getByRole('textbox')).toHaveValue('');
+    rerender(<Card selectedAnswer={{type: 'custom', value: 'Saved'}} />);
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    expect(screen.getByText('Saved')).toBeVisible();
+    rerender(<Card selectedAnswer={{type: 'custom', value: 'External update'}} />);
+    expect(screen.getByText('External update')).toBeVisible();
+});
+
+it('supports the custom answer edit cycle without controlled props', () => {
+    render(<Card />);
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'Saved locally'}});
+    fireEvent.keyDown(screen.getByRole('textbox'), {key: 'Enter'});
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
+    expect(screen.getByRole('textbox')).toHaveValue('Saved locally');
+});
 
 it('waits for every progress animation before completing with the latest callback', async () => {
     let finishFirst = () => {};

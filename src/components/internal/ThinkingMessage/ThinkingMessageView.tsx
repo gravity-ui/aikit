@@ -102,6 +102,7 @@ export const ThinkingMessageView = (props: ThinkingMessageProps) => {
         return (
             <div className={className} data-qa={qa} style={style}>
                 <CompactRow
+                    secondary
                     label={data.title || buttonTitle}
                     icon={icon}
                     showIcon={showIcon}

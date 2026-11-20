@@ -139,10 +139,9 @@ export function ChangedFilesSummary({
                                 className={b('file', {interactive: Boolean(onFileClick)})}
                             >
                                 {onFileClick ? (
-                                    <Button
+                                    <button
+                                        type="button"
                                         className={b('file-action')}
-                                        view="flat"
-                                        size="m"
                                         onClick={() => {
                                             onFileClick(file);
                                             changeOpen(false);
@@ -152,7 +151,7 @@ export function ChangedFilesSummary({
                                             {file.path}
                                         </span>
                                         <DiffStat added={file.added} deleted={file.deleted} />
-                                    </Button>
+                                    </button>
                                 ) : (
                                     <span className={b('path')} title={file.path}>
                                         {file.path}
