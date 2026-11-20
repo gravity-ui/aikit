@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.39.0](https://github.com/gravity-ui/aikit/compare/v2.38.0...v2.39.0) (2026-11-20)
+
+
+### Features
+
+* add PlanProgress and AgentChat Plan Mode ([#355](https://github.com/gravity-ui/aikit/issues/355)) ([a0730c9](https://github.com/gravity-ui/aikit/commit/a0730c9abf51b452325dac9f4c4892a75e5386a3))
+
 ## [2.38.0](https://github.com/gravity-ui/aikit/compare/v2.37.0...v2.38.0) (2026-11-18)
 
 
