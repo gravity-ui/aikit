@@ -11,6 +11,44 @@ const mockPin = jest.fn();
 let mockApi = {element, scrollToRow: mockPin};
 jest.mock('../../utils/observeScrollContent', () => ({observeScrollContent: () => () => {}}));
 
+it('keeps following asynchronous programmatic corrections but stops after a reader scroll', () => {
+    const scroller = document.createElement('div');
+    Object.defineProperties(scroller, {
+        scrollHeight: {value: 2000},
+        clientHeight: {value: 400},
+    });
+    scroller.scrollTop = 1000;
+    const scrollToRow = jest.fn();
+    const api = {element: scroller, scrollToRow, programmaticScrollTop: 900};
+    const view = renderHook(
+        ({signal}) =>
+            useVirtualStickToBottom({
+                rowCount: 10,
+                messagesCount: 10,
+                isStreaming: true,
+                streamingSignal: signal,
+            }),
+        {initialProps: {signal: 0}},
+    );
+    act(() => view.result.current.listRef(api));
+    act(() => {
+        scroller.scrollTop = 900;
+        fireEvent.scroll(scroller);
+    });
+    scrollToRow.mockClear();
+    view.rerender({signal: 1});
+    expect(scrollToRow).toHaveBeenCalled();
+
+    act(() => {
+        scroller.scrollTop = 800;
+        fireEvent.scroll(scroller);
+    });
+    scrollToRow.mockClear();
+    view.rerender({signal: 2});
+    expect(scrollToRow).not.toHaveBeenCalled();
+    view.unmount();
+});
+
 it('keeps a host-owned reading position across hidden API replacements and a later remount', () => {
     const position: MessageListScrollPositionRef = {current: {scrollTop: 700, isAtBottom: false}};
     Object.defineProperties(element, {

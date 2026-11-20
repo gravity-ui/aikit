@@ -123,7 +123,7 @@ export async function consumeOpenAIStream(
                 currentAssistantMessageId,
                 contentParts,
             });
-            onEnd(finalMessages, 'done');
+            onEnd(finalMessages, 'error', new Error('Response stream interrupted'));
         }
     } catch (err) {
         if (!getIsCancelled()) {

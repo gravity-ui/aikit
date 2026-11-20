@@ -1,7 +1,5 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
-import {useListCallbackRef} from 'react-window-v2';
-
 import type {ChatStatus} from '../types';
 import {observeScrollContent} from '../utils/observeScrollContent';
 
@@ -18,6 +16,18 @@ const REANCHOR_FRAMES = 8;
 // transition. Keeping it up a touch longer makes it read as an intentional loading animation
 // rather than a blink.
 const PREPEND_SHIMMER_MS = 320;
+
+/** Structural scroll interface, independent of the virtualization implementation. */
+export interface VirtualMessageListApi {
+    readonly element: HTMLDivElement | null;
+    /** Last committed programmatic offset, for virtualizers that scroll asynchronously. */
+    readonly programmaticScrollTop?: number;
+    scrollToRow: (options: {
+        index: number;
+        align?: 'auto' | 'smart' | 'start' | 'center' | 'end';
+        behavior?: 'auto' | 'instant' | 'smooth';
+    }) => void;
+}
 
 export interface UseVirtualStickToBottomParams {
     /** Total number of rows rendered by the list, including non-message header rows. */
@@ -72,7 +82,7 @@ export function useVirtualStickToBottom({
     trailingContentSignal,
 }: UseVirtualStickToBottomParams) {
     const positionRef = scrollPositionRef;
-    const [listApi, listRef] = useListCallbackRef();
+    const [listApi, listRef] = useState<VirtualMessageListApi | null>(null);
     // Drives a shimmer overlay while older messages are being prepended and the scroll is restored.
     const [isPrepending, setIsPrepending] = useState(false);
     const userScrolledUpRef = useRef(positionRef?.current?.isAtBottom === false);
@@ -239,7 +249,11 @@ export function useVirtualStickToBottom({
                 cancelPendingScroll();
                 // A reader can interrupt restoration in either direction.
                 userScrolledUpRef.current = distanceFromBottom > SCROLL_THRESHOLD;
-            } else if (scrollTop < prevTop - 1) {
+            } else if (
+                scrollTop < prevTop - 1 &&
+                (listApi.programmaticScrollTop === undefined ||
+                    Math.abs(scrollTop - listApi.programmaticScrollTop) >= 1)
+            ) {
                 cancelPendingScroll();
                 // User scrolled up: pause auto-stick unless they are still effectively at the bottom.
                 userScrolledUpRef.current = distanceFromBottom > SCROLL_THRESHOLD;
