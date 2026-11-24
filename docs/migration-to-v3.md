@@ -139,7 +139,7 @@ AIKit's `--g-aikit-*` variables keep their names. UIKit 8's default palette chan
 
 AIKit's loader and examples use `gap="spacing-2"` to retain the previous 8px spacing. In application code, migrate numeric UIKit Flex spacing to spacing tokens as described in that guide.
 
-Virtualized `MessageList` continues using react-window v2. AIKit installs it as the npm alias `react-window-v2`, avoiding a conflict with UIKit's optional legacy peer `react-window@1`. Consumers need no new import or dependency; keep using AIKit's `virtualized` prop. If your application itself uses react-window v2 under its original package name, its own UIKit peer conflict must also be resolved.
+Virtualized `MessageList` uses `react-window@^1.8.11`, compatible with UIKit's optional `react-window@^1` peer. AIKit measures dynamic message heights and preserves streaming and scroll restoration through an internal adapter. Consumers need no new imports or dependencies; keep using AIKit's `virtualized` prop.
 
 ## Verification after upgrading
 
