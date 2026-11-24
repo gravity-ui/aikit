@@ -1,5 +1,7 @@
 import {FetchResponseLike, OpenAIStreamEventLike} from '../types';
 
+import {isStreamEndOrErrorEvent} from './isStreamEndOrErrorEvent';
+
 const SSE_DATA_PREFIX = 'data: ';
 
 function parseSSELine(line: string): Record<string, unknown> | null {
@@ -10,7 +12,7 @@ function parseSSELine(line: string): Record<string, unknown> | null {
     }
 }
 
-/** Fetch Response (text/event-stream) → AsyncIterable of stream events. Handles [DONE], errors; 4xx/5xx yield error. */
+/** Parses SSE events. EOF without a terminal event or [DONE] marker is an error. */
 
 export async function* fetchResponseToStreamEvents(
     response: FetchResponseLike,
@@ -24,7 +26,7 @@ export async function* fetchResponseToStreamEvents(
 
     const reader = response.body?.getReader();
     if (!reader) {
-        return;
+        throw new Error('Response stream interrupted');
     }
 
     const decoder = new TextDecoder();
@@ -33,18 +35,15 @@ export async function* fetchResponseToStreamEvents(
     try {
         while (true) {
             const {done, value} = await reader.read();
-            if (done) {
-                break;
-            }
-            buffer += decoder.decode(value, {stream: true});
+            buffer += done ? decoder.decode() : decoder.decode(value, {stream: true});
             const lines = buffer.split('\n');
-            buffer = lines.pop() ?? '';
+            buffer = done ? '' : (lines.pop() ?? '');
 
             for (const line of lines) {
                 const trimmed = line.trim();
                 if (trimmed === `${SSE_DATA_PREFIX}[DONE]`) {
                     yield {type: 'response.done'};
-                    continue;
+                    return;
                 }
                 if (!trimmed.startsWith(SSE_DATA_PREFIX)) {
                     continue;
@@ -63,11 +62,16 @@ export async function* fetchResponseToStreamEvents(
                     return;
                 }
 
-                yield parsed as OpenAIStreamEventLike;
+                const event = parsed as OpenAIStreamEventLike;
+                yield event;
+                if (isStreamEndOrErrorEvent(event)) {
+                    return;
+                }
+            }
+            if (done) {
+                throw new Error('Response stream interrupted');
             }
         }
-
-        yield {type: 'response.done'};
     } finally {
         reader.releaseLock();
     }

@@ -2,7 +2,13 @@ import {OpenAIStreamEventLike} from '../types';
 
 import {isEventOneOf} from './eventTypeUtils';
 
-const STREAM_END_TYPES = ['response.done', 'response.completed', 'response.failed'];
+const STREAM_END_TYPES = [
+    'response.done',
+    'response.completed',
+    'response.failed',
+    'response.incomplete',
+    'error',
+];
 
 export function isStreamEndOrErrorEvent(event: OpenAIStreamEventLike | null | undefined): boolean {
     if (!event) {

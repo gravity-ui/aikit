@@ -6,7 +6,7 @@ import {MessageList} from '..';
 import type {TAssistantMessage, TUserMessage} from '../../../../types/messages';
 import {BaseMessageActionType} from '../../../../types/messages';
 
-import {MessageListStories} from './helpersPlaywright';
+import {MessageListStories, VirtualizedPopupReplacement} from './helpersPlaywright';
 
 /** Reveal action buttons hidden by showActionsOnHover before interacting with them. */
 async function hoverAssistantMessage(page: Page) {
@@ -320,6 +320,19 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
     });
 
     test.describe('action popups', () => {
+        test('should close the popup when its virtualized message is replaced', async ({
+            mount,
+            page,
+        }) => {
+            const component = await mount(<VirtualizedPopupReplacement messageId="original" />);
+            await page.locator('[data-message-id="original"]').getByRole('button').click();
+            await expect(page.getByText('Feedback for the original message')).toBeVisible();
+
+            await component.update(<VirtualizedPopupReplacement messageId="replacement" />);
+            await expect(page.locator('[data-message-id="replacement"]')).toBeVisible();
+            await expect(page.getByText('Feedback for the original message')).not.toBeVisible();
+        });
+
         test('should open feedback popup on dislike click', async ({mount, page}) => {
             await mount(<MessageListStories.WithFeedbackPopup />);
 
@@ -415,6 +428,27 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         });
     });
 
+    test('should keep virtualized rows adjacent inside a scaled container', async ({
+        mount,
+        page,
+    }) => {
+        await mount(
+            <div style={{transform: 'scale(0.5)', transformOrigin: 'top left'}}>
+                <VirtualizedPopupReplacement messageId="first" />
+            </div>,
+        );
+        await expect(page.getByRole('listitem')).toHaveCount(2);
+        await expect
+            .poll(() =>
+                page.getByRole('listitem').evaluateAll((items) => {
+                    const first = items[0].parentElement?.getBoundingClientRect();
+                    const second = items[1].parentElement?.getBoundingClientRect();
+                    return first && second ? Math.abs(second.top - first.bottom) : Infinity;
+                }),
+            )
+            .toBeLessThan(1);
+    });
+
     // Virtualization renders only a window of rows, so a 2000-message history must keep the
     // DOM small. Assert the number of mounted rows is far below the total instead of taking a
     // screenshot (dynamically measured rows are not pixel-stable).
@@ -504,6 +538,33 @@ test.describe('MessageList', {tag: '@MessageList'}, () => {
         expect(
             await scroller.evaluate((element) => element.scrollHeight <= element.clientHeight),
         ).toBe(true);
+    });
+
+    test('should remeasure a streaming row taller than the viewport after resizing', async ({
+        mount,
+        page,
+    }) => {
+        await mount(<MessageListStories.VirtualizedStreaming />);
+        const scroller = page.locator(VIRTUAL_SCROLLER);
+        await expect(scroller).toBeVisible();
+        await page.evaluate(() =>
+            window.__appendStreamChunk?.(' Additional response text.'.repeat(150)),
+        );
+        await expect.poll(() => scroller.evaluate(distanceFromBottom)).toBeLessThan(10);
+        const response = page.locator('[data-message-id="streaming"]');
+        const before = await response.boundingBox();
+        expect(before?.height).toBeGreaterThan(400);
+
+        await page
+            .locator('.content-wrapper')
+            .last()
+            .evaluate((element) => {
+                element.style.setProperty('width', '300px');
+            });
+        await expect
+            .poll(async () => (await response.boundingBox())?.height ?? 0)
+            .toBeGreaterThan(before?.height ?? 0);
+        await expect.poll(() => scroller.evaluate(distanceFromBottom)).toBeLessThan(10);
     });
 
     test('should render footer content as the last virtualized row', async ({mount, page}) => {

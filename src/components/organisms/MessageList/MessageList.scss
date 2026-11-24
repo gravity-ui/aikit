@@ -65,6 +65,11 @@ $block: '.#{variables.$ns}message-list';
         }
     }
 
+    &__viewport {
+        flex: 1;
+        min-height: 0;
+    }
+
     // react-window turns this element into the real scroller through an inline style
     &__list {
         flex: 1;

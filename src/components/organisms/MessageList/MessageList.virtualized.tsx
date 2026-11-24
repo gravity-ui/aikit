@@ -1,6 +1,4 @@
-import {useCallback, useMemo} from 'react';
-
-import {List, type RowComponentProps, useDynamicRowHeight} from 'react-window';
+import {useCallback, useEffect, useMemo} from 'react';
 
 import {useVirtualStickToBottom} from '../../../hooks';
 import type {TChatMessage, TMessageContent, TMessageMetadata} from '../../../types/messages';
@@ -8,6 +6,7 @@ import {block} from '../../../utils/cn';
 import {IntersectionContainer} from '../../atoms/IntersectionContainer';
 import {Loader} from '../../atoms/Loader';
 
+import {MeasuredMessageList, type MessageRowComponentProps} from './MeasuredMessageList';
 import {MessageItem, type MessageItemConfig} from './MessageItem';
 import {type MessageListProps, MessageListQa} from './MessageList';
 import {MessageListFooter} from './MessageListFooter';
@@ -46,7 +45,7 @@ function MessageRow({
     popupState,
     config,
     footerContent,
-}: RowComponentProps<MessageRowProps>) {
+}: MessageRowComponentProps<MessageRowProps>) {
     // Header row: the "load previous messages" intersection trigger.
     if (hasPreviousMessages && index === 0) {
         return (
@@ -205,8 +204,6 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
         ],
     );
 
-    const rowHeight = useDynamicRowHeight({defaultRowHeight: DEFAULT_ROW_HEIGHT});
-
     const {listRef, isPrepending} = useVirtualStickToBottom({
         messageIds: messages.map(getMessageAnchor),
         rowCount,
@@ -221,6 +218,16 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
         streamingSignal: isNotCompleted ? messages[messages.length - 1] : undefined,
         trailingContentSignal: footerOffset,
     });
+
+    useEffect(() => {
+        if (
+            popupState.open &&
+            popupState.messageId !== null &&
+            !messages.some((message) => message.id === popupState.messageId)
+        ) {
+            handlePopupOpenChange(false);
+        }
+    }, [messages, popupState.open, popupState.messageId, handlePopupOpenChange]);
 
     // Close a popup whose anchor row scrolls out of view (react-window unmounts off-screen rows,
     // detaching the popup's anchor element).
@@ -254,12 +261,24 @@ export function VirtualizedMessageList<TContent extends TMessageContent = never>
                     ))}
                 </div>
             )}
-            <List<MessageRowProps>
+            <MeasuredMessageList<MessageRowProps>
                 className={b('list')}
                 listRef={listRef}
                 rowComponent={MessageRow}
                 rowCount={rowCount}
-                rowHeight={rowHeight}
+                defaultRowHeight={DEFAULT_ROW_HEIGHT}
+                rowKeys={[
+                    ...(hasPreviousMessages ? ['header'] : []),
+                    ...messages.map((message, index) =>
+                        message.id === undefined ? `index:${index}` : `message:${message.id}`,
+                    ),
+                    ...(hasFooterContent ? ['footer'] : []),
+                ]}
+                rowVersions={[
+                    ...(hasPreviousMessages ? [onLoadPreviousMessages] : []),
+                    ...messages,
+                    ...(hasFooterContent ? [footerContent] : []),
+                ]}
                 rowProps={rowProps}
                 overscanCount={OVERSCAN_COUNT}
                 onRowsRendered={onRowsRendered}
