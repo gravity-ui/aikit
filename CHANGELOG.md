@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.39.1](https://github.com/gravity-ui/aikit/compare/v2.39.0...v2.39.1) (2026-11-24)
+
+
+### Bug Fixes
+
+* backport MessageList and OpenAI stream fixes ([#359](https://github.com/gravity-ui/aikit/issues/359)) ([83b3179](https://github.com/gravity-ui/aikit/commit/83b31798871961bdb184cf48a09863439b22ec9c))
+
 ## [2.39.0](https://github.com/gravity-ui/aikit/compare/v2.38.0...v2.39.0) (2026-11-20)
 
 
