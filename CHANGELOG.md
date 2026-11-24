@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.1](https://github.com/gravity-ui/aikit/compare/v3.11.0...v3.11.1) (2026-11-24)
+
+
+### Bug Fixes
+
+* **MessageList:** align react-window dependency with UIKit ([#354](https://github.com/gravity-ui/aikit/issues/354)) ([bf3c8fc](https://github.com/gravity-ui/aikit/commit/bf3c8fc44580103eadbedc0694f59ff05ef63545))
+
 ## [3.11.0](https://github.com/gravity-ui/aikit/compare/v3.10.0...v3.11.0) (2026-11-20)
 
 
